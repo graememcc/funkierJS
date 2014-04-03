@@ -16,7 +16,7 @@
 
 
     describe('Base exports', function() {
-      var expectedFunctions = ['curry', 'curryWithArity'];
+      var expectedFunctions = ['curry', 'curryWithArity', 'compose'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -141,6 +141,119 @@
         curried(args[0])(args[1])(args[2])(args[3])(args[4]);
         expect(f.args).to.deep.equal(args);
       });
+    });
+
+
+    describe('compose', function() {
+      var compose = base.compose;
+
+      it('compose composes two functions correctly (1)', function() {
+        var f = function(x) {return x + 2;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('compose composes two functions correctly (2)', function() {
+        var f = function(x) {return x + 3;};
+        var g = function(x) {return x + 2;};
+        var composition = compose(f, g);
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('compose calls the second function first', function() {
+        var f = function(x) {return x * 2;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+        expect(composition(1)).to.not.equal(g(f(1)));
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('composition works if the second function has arity 0', function() {
+        var f = function(x) {return x + 1;};
+        var g = function() {return 3;};
+        var composition = compose(f, g);
+        expect(composition.length).to.equal(0);
+        expect(composition()).to.equal(f(g()));
+      });
+
+
+      it('composition works if the first function has arity 0', function() {
+        var f = function() {return 3;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+        expect(composition.length).to.equal(1);
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('composition works if the both functions have arity 0', function() {
+        var f = function() {return 3;};
+        var g = function() {return 4;};
+        var composition = compose(f, g);
+        expect(composition.length).to.equal(0);
+        expect(composition()).to.equal(f(g()));
+      });
+
+
+      it('composition throws if second function has arity > 1', function() {
+        var f = function(x) {return x + 1;};
+        var g = function(a, b) {return a + b;};
+
+        var fn = function() {
+          var composition = compose(f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('composition throws if first function has arity > 1', function() {
+        var f = function(a, b) {return a + b;};
+        var g = function(x) {return x + 1;};
+
+        var fn = function() {
+          var composition = compose(f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('composition throws if both functions have arity > 1', function() {
+        var f = function(a, b) {return a * b;};
+        var g = function(c, d) {return c + d;};
+
+        var fn = function() {
+          var composition = compose(f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      // Compose is binary, and should of course be curried
+      // We use an IIFE here to avoid an 'it' wrapped in an 'it'
+      (function() {
+        var fn = function(a) {return a + 1;};
+        var args = {firstArgs: [fn, fn], thenArgs: [1]};
+        var message = 'compose';
+        testCurriedFunction(compose, [fn, fn], compose, args, message);
+      }());
+
+
+      // Also, lets test the composed functions too
+      (function() {
+        var fn = function(a) {return a + 3;};
+        var fn2 = function(a) {return a * 4;};
+        var composed = compose(fn, fn2);
+        var args = [1];
+        var message = 'Composed function';
+        testCurriedFunction(composed, args, composed, args, message);
+      }());
     });
   };
 

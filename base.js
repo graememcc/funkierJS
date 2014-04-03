@@ -96,7 +96,37 @@
     };
 
 
+    /*
+     * compose: Composes the two functions f and g, returning a new function that will return f(g(<arguments>)).
+     *          Both functions must have arity 0 or 1. A TypeError will be thrown when this is not the case.
+     *
+     * For example:
+     *
+     * var f1 = function(a) {return a + 1;};
+     * var f2 = function(b) {return b * 2;};
+     * var f = compose(f1, f2); // f(x) = 2(x + 1)
+     *
+     * As usual, superfluous arguments supplied to the returned function will be discarded.
+     *
+     */
+
+    var compose = function(f, g) {
+      var gLen = g.length;
+      var fLen = f.length;
+      if (gLen > 1 || fLen > 1) {
+        var badArity = gLen > 1 ? gLen : fLen;
+        throw new TypeError('compose called with function of arity ' + badArity);
+      }
+
+      return curryWithArity(gLen, function() {
+        var args = [].slice.call(arguments);
+        return f(g.apply(null, args));
+      });
+    };
+
+
     var exported = {
+      compose: compose,
       curry: curry,
       curryWithArity: curryWithArity
     };
