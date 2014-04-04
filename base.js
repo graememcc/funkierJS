@@ -59,10 +59,12 @@
     var curryWithArity = function(length, fn) {
       // Handle the special case of length 0
       if (length === 0) {
-        return function() {
+        var result = function() {
           // Don't simply return fn: need to discard any arguments
           return fn();
         };
+        result['_trueArity'] = 0;
+        return result;
       }
 
       var curried = function(a) {
@@ -87,18 +89,27 @@
           return curryWithArity(argsNeeded, newFn);
 
         // The trivial case
-        return function(b) {
+        var trivial = function(b) {
           return newFn(b);
         };
+        trivial['_trueArity'] = 1;
+        return trivial;
       };
 
+      curried['_trueArity'] = length;
       return curried;
     };
+
+    // curryWithArity should itself be curried
+    curryWithArity = curry(curryWithArity);
 
 
     /*
      * compose: Composes the two functions f and g, returning a new function that will return f(g(<arguments>)).
-     *          Both functions must have arity 0 or 1. A TypeError will be thrown when this is not the case.
+     *          The function g must have arity 0 or 1. A TypeError will be thrown when this is not the case.
+     *          Likewise, g must have arity >= 1. A TypeError will be thrown when this is not the case.
+     *          If f has arity > 1, it will be curried, and partially applied when an argument is supplied to the
+     *          composed function.
      *
      * For example:
      *
@@ -110,19 +121,28 @@
      *
      */
 
-    var compose = function(f, g) {
-      var gLen = g.length;
-      var fLen = f.length;
-      if (gLen > 1 || fLen > 1) {
-        var badArity = gLen > 1 ? gLen : fLen;
-        throw new TypeError('compose called with function of arity ' + badArity);
-      }
+    var compose = curry(function(f, g) {
+      var gLen = g.hasOwnProperty('_trueArity') ? g['_trueArity'] : g.length;
+      var fLen = f.hasOwnProperty('_trueArity') ? f['_trueArity'] : f.length;
 
-      return curryWithArity(gLen, function() {
+      if (fLen === 0)
+        throw new TypeError('compose called with function of arity 0');
+
+      f = curry(f);
+      g = curry(g);
+
+      // If g has arity > 0, then we accept one argument for g, and f.length - 1 arguments for f
+      // Otherwise, we accept fLen - 1 arguments.
+      var curryTo = fLen - (gLen > 0 ? 0 : 1);
+
+      return curryWithArity(curryTo, function() {
         var args = [].slice.call(arguments);
-        return f(g.apply(null, args));
+
+        var gArgs = gLen > 0 ? [args[0]] : [];
+        var fArgs = gLen > 0 ? args.slice(1) : args;
+        return f.apply(null, [g.apply(null, gArgs)].concat(fArgs));
       });
-    };
+    });
 
 
     /*
@@ -149,26 +169,21 @@
      *
      */
 
-    var constant = function(x, y) {
+    var constant = curry(function(x, y) {
       return x;
-    };
+    });
 
 
     /*
      * constant0: Similar to constant, but returns a function of arity 0.
      *
-     * constant(x)() === x for all x
+     * constant0(x)() === x for all x
      *
      * Superfluous arguments supplied to the returned function will be discarded.
      *
      */
 
-    var constant0 = function(x) {
-      return function() {
-        return x;
-      };
-    };
-
+    var constant0 = compose(curryWithArity(0), constant);
 
 
     var exported = {
@@ -179,14 +194,6 @@
       curryWithArity: curryWithArity,
       id: id
     };
-
-
-    for (var k in exported) {
-      if (!exported.hasOwnProperty(k))
-        continue;
-
-      exported[k] = curry(exported[k]);
-    }
 
 
     module.exports = exported;
