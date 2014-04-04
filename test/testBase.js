@@ -16,7 +16,8 @@
 
 
     describe('Base exports', function() {
-      var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id'];
+      var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
+                               'constant'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -279,12 +280,63 @@
       tests.forEach(function(test) {
         var name = test.name;
         var value = test.value;
+
         it('id works correctly for value of type ' + name, function() {
           expect(id(value)).to.equal(value);
         });
 
         it('id ignores superfluous arguments for value of type ' + name, function() {
           expect(id(value, 'x')).to.equal(value);
+        });
+      });
+    });
+
+
+    describe('constant', function() {
+      var constant = base.constant;
+
+      it('constant has arity 1', function() {
+        expect(constant.length).to.equal(1);
+      });
+
+
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+      it('constant returns a function of arity 1', function() {
+        tests.forEach(function(test) {
+          expect(constant(test.value).length).to.equal(1);
+        });
+      });
+
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+
+        it('constant works correctly for value of type ' + name, function() {
+          var fn = constant(value);
+
+          tests.forEach(function(test) {
+            expect(fn(test.value)).to.equal(value);
+          });
+        });
+
+        it('constant ignores superfluous arguments for value of type ' + name, function() {
+          var fn = constant(value);
+          expect(fn(value, 'x')).to.equal(value);
+        });
+
+        it('constant returns value immediately when called with two arguments, with first of type ' + name, function() {
+          expect(constant(value, 'x')).to.equal(value);
         });
       });
     });

@@ -139,8 +139,25 @@
     };
 
 
+    /*
+     * constant: Takes a value x, and returns a function of one parameter that, when called, returns x
+     *           regardless of input
+     *
+     * constant(x)(y) === x for all x, y
+     *
+     * Superfluous arguments supplied to the returned function will be discarded.
+     *
+     */
+
+    // We curry constant below, to get something of the required 'shape'
+    var constant = function(x, y) {
+      return x;
+    };
+
+
     var exported = {
       compose: compose,
+      constant: constant,
       curry: curry,
       curryWithArity: curryWithArity,
       id: id
