@@ -149,15 +149,32 @@
      *
      */
 
-    // We curry constant below, to get something of the required 'shape'
     var constant = function(x, y) {
       return x;
     };
 
 
+    /*
+     * constant0: Similar to constant, but returns a function of arity 0.
+     *
+     * constant(x)() === x for all x
+     *
+     * Superfluous arguments supplied to the returned function will be discarded.
+     *
+     */
+
+    var constant0 = function(x) {
+      return function() {
+        return x;
+      };
+    };
+
+
+
     var exported = {
       compose: compose,
       constant: constant,
+      constant0: constant0,
       curry: curry,
       curryWithArity: curryWithArity,
       id: id

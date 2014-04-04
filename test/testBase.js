@@ -17,7 +17,7 @@
 
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
-                               'constant'];
+                               'constant', 'constant0'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -337,6 +337,52 @@
 
         it('constant returns value immediately when called with two arguments, with first of type ' + name, function() {
           expect(constant(value, 'x')).to.equal(value);
+        });
+      });
+    });
+
+
+    describe('constant0', function() {
+      var constant0 = base.constant0;
+
+      it('constant0 has arity 1', function() {
+        expect(constant0.length).to.equal(1);
+      });
+
+
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+      it('constant0 returns a function of arity 0', function() {
+        tests.forEach(function(test) {
+          expect(constant0(test.value).length).to.equal(0);
+        });
+      });
+
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+
+        it('constant0 works correctly for value of type ' + name, function() {
+          var fn = constant0(value);
+
+          tests.forEach(function(test) {
+            expect(fn()).to.equal(value);
+          });
+        });
+
+        it('constant0 ignores superfluous arguments for value of type ' + name, function() {
+          var fn = constant0(value);
+          expect(fn('x')).to.equal(value);
         });
       });
     });
