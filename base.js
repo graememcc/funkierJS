@@ -125,10 +125,25 @@
     };
 
 
+    /*
+     * id: Returns the value passed in
+     *
+     * Satisfies id(x) === x.
+     *
+     * Superfluous arguments supplied will be discarded.
+     *
+     */
+
+    var id = function(x) {
+      return x;
+    };
+
+
     var exported = {
       compose: compose,
       curry: curry,
-      curryWithArity: curryWithArity
+      curryWithArity: curryWithArity,
+      id: id
     };
 
 

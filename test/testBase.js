@@ -16,7 +16,7 @@
 
 
     describe('Base exports', function() {
-      var expectedFunctions = ['curry', 'curryWithArity', 'compose'];
+      var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -254,6 +254,39 @@
         var message = 'Composed function';
         testCurriedFunction(composed, args, composed, args, message);
       }());
+    });
+
+
+    describe('id', function() {
+      var id = base.id;
+
+      it('id has arity 1', function() {
+        expect(id.length).to.equal(1);
+      });
+
+
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+        it('id works correctly for value of type ' + name, function() {
+          expect(id(value)).to.equal(value);
+        });
+
+        it('id ignores superfluous arguments for value of type ' + name, function() {
+          expect(id(value, 'x')).to.equal(value);
+        });
+      });
     });
   };
 
