@@ -187,6 +187,29 @@
 
 
     /*
+     * flip: takes a binary function f, and returns a curried function that flips the arguments.
+     *       Throws if called with a function of arity > 2
+     *
+     * i.e. flip(f)(a, b) == f(b, a);
+     *
+     */
+
+    var flip = function(f) {
+      var fLen = f.hasOwnProperty('_trueArity') ? f['_trueArity'] : f.length;
+
+      if (fLen < 2)
+        return curry(f);
+
+      if (fLen > 2)
+        throw new TypeError('flip called with function of arity > 2');
+
+      return curry(function(a, b) {
+        return f(b, a);
+      });
+    };
+
+
+    /*
      * composeMany: repeatedly composes the given array of functions, from right to left
      *
      * composeMany([f1, f2, f3]) behaves like f1(f2(f3(x)));
@@ -201,10 +224,7 @@
       if (fnArray.length === 1)
         return curry(fnArray[0]);
 
-      // TODO rewrite using flip
-      return fnArray.reduceRight(function(soFar, current) {
-        return compose(current, soFar);
-      });
+      return fnArray.reduceRight(flip(compose));
     };
 
 
@@ -215,6 +235,7 @@
       constant0: constant0,
       curry: curry,
       curryWithArity: curryWithArity,
+      flip: flip,
       id: id
     };
 

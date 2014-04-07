@@ -17,7 +17,7 @@
 
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
-                               'constant', 'constant0', 'composeMany'];
+                               'constant', 'constant0', 'composeMany', 'flip'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -608,6 +608,87 @@
         expect(result).to.be.a('function');
         expect(result(2)).to.be.a('function');
         expect(result(2)(3)).to.deep.equal([1, 2, 3]);
+      });
+    });
+
+
+    describe('flip', function() {
+      var flip = base.flip;
+      var curry = base.curry;
+
+
+      it('flip has arity 1', function() {
+        expect(flip.length).to.equal(1);
+      });
+
+
+      it('Returns a curried version of original function when called with function of length 0', function() {
+        var f = function() {return [].slice.call(arguments);};
+        var flipped = flip(f);
+        expect(flipped.length).to.equal(0);
+        expect(flipped()).to.deep.equal([]);
+        expect(flipped(42)).to.deep.equal([]);
+      });
+
+
+      it('Returns a curried version of original function when called with function of length 1', function() {
+        var f = function(x) {return [].slice.call(arguments);};
+        var flipped = flip(f);
+        expect(flipped.length).to.equal(1);
+        expect(flipped(42)).to.deep.equal(f(42));
+        expect(flipped(42, 'x')).to.deep.equal([42]);
+      });
+
+
+      it('Throws if called with a function of arity > 2 (1)', function() {
+        var f = function(x, y, z) {return [].slice.call(arguments);};
+        var fn = function() {
+          var flipped = flip(f);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if called with a function of arity > 2 (2)', function() {
+        var f = curry(function(x, y, z) {return [].slice.call(arguments);});
+        var fn = function() {
+          var flipped = flip(f);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Returns a curried function (1)', function() {
+        var f = function(x, y) {};
+        var flipped = flip(f);
+        expect(flipped.length).to.equal(1);
+        expect(flipped(1).length).to.equal(1);
+      });
+
+
+      it('Returns a curried function (2)', function() {
+        var f = curry(function(x, y) {});
+        var flipped = flip(f);
+        expect(flipped.length).to.equal(1);
+        expect(flipped(1).length).to.equal(1);
+      });
+
+
+      it('flip works correctly (1)', function() {
+        var f = function(x, y) {return [].slice.call(arguments);};
+        var flipped = flip(f);
+        expect(flipped(1, 2)).to.deep.equal(f(2, 1));
+        expect(flipped('a', 'b')).to.deep.equal(f('b', 'a'));
+      });
+
+
+      it('flip works correctly (2)', function() {
+        var f = curry(function(x, y) {return [].slice.call(arguments);});
+        var flipped = flip(f);
+        expect(flipped(1)(2)).to.deep.equal(f(2)(1));
+        expect(flipped('a')('b')).to.deep.equal(f('b')('a'));
       });
     });
   };
