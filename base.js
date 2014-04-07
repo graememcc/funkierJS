@@ -186,8 +186,31 @@
     var constant0 = compose(curryWithArity(0), constant);
 
 
+    /*
+     * composeMany: repeatedly composes the given array of functions, from right to left
+     *
+     * composeMany([f1, f2, f3]) behaves like f1(f2(f3(x)));
+     * All functions are curried when necessary.
+     *
+     */
+
+    var composeMany = function(fnArray) {
+      if (fnArray.length === 0)
+        throw new TypeError('composeMany called with empty array');
+
+      if (fnArray.length === 1)
+        return curry(fnArray[0]);
+
+      // TODO rewrite using flip
+      return fnArray.reduceRight(function(soFar, current) {
+        return compose(current, soFar);
+      });
+    };
+
+
     var exported = {
       compose: compose,
+      composeMany: composeMany,
       constant: constant,
       constant0: constant0,
       curry: curry,

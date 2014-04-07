@@ -17,7 +17,7 @@
 
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
-                               'constant', 'constant0'];
+                               'constant', 'constant0', 'composeMany'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -425,6 +425,189 @@
           var fn = constant0(value);
           expect(fn('x')).to.equal(value);
         });
+      });
+    });
+
+
+    describe('composeMany', function() {
+      var composeMany = base.composeMany;
+      var id = base.id;
+
+
+      it('composeMany throws if called with empty array', function() {
+          var fn = function() {
+            var composition = composeMany([]);
+          };
+
+          expect(fn).to.throw(TypeError);
+      });
+
+
+      var makeZeroArityTest = function(i) {
+        return function() {
+          var args = [id, id, id, id];
+          args[i] = function() {return 3;};
+
+          var fn = function() {
+            var composition = composeMany(args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        };
+      };
+
+
+      for (var i = 0; i < 3; i++)
+        it('composeMany throws if function other than last has zero arity ' + (i + 1),
+           makeZeroArityTest(i));
+
+
+      it('composeMany returns curried original function if supplied one function of arity 0', function() {
+        var f = function() {return [].slice.call(arguments);};
+        var g = composeMany([f]);
+        expect(g()).to.deep.equal(f());
+        expect(g(42)).to.deep.equal([]);
+      });
+
+
+      it('composeMany returns original function if supplied one function of arity 1', function() {
+        var f = function(x) {return [].slice.call(arguments);};
+        var g = composeMany([f]);
+        expect(g(42)).to.deep.equal(f(42));
+        expect(g(42, 'x')).to.deep.equal([42]);
+      });
+
+
+      it('composeMany returns original function curried, if supplied one function of arity > 1', function() {
+        var f = function(x, y) {return x + y;};
+        var g = composeMany([f]);
+
+        expect(g.length).to.equal(1);
+        expect(g(1).length).to.equal(1);
+        expect(g(1)(2)).to.equal(f(1, 2));
+        expect(g(1, 2)).to.equal(f(1, 2));
+      });
+
+
+      it('composeMany acts like compose when called with two functions (1)', function() {
+        var compose = base.compose;
+        var f = function(x) {return x + 1;};
+        var g = function(x) {return x * 2;};
+        var composeM= composeMany([f, g]);
+        var composed = compose(f, g);
+
+        expect(composeM.length).to.equal(composed.length);
+        expect(composeM(1)).to.equal(composed(1));
+      });
+
+
+      it('composeMany acts like compose when called with two functions (2)', function() {
+        var compose = base.compose;
+        var f = function(x, y) {return x + y + 1;};
+        var g = function(x) {return x * 2;};
+        var composeM = composeMany([f, g]);
+        var composed = compose(f, g);
+
+        expect(composeM.length).to.equal(composed.length);
+        expect(composeM(1).length).to.equal(composed(1).length);
+        expect(composeM(1)(2)).to.equal(composed(1)(2));
+        expect(composeM(1, 2)).to.equal(composed(1, 2));
+      });
+
+
+      it('composeMany works correctly (1)', function() {
+        var composed = composeMany([id, id, id]);
+        expect(composed.length).to.equal(1);
+        expect(composed(1)).to.equal(id(id(id(1))));
+      });
+
+
+      it('composeMany works correctly (2)', function() {
+        var args = [
+          function(x) {return x + 3},
+          function(x) {return x + 2},
+          function(x) {return x + 1}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed.length).to.equal(1);
+        expect(composed(1)).to.equal(args[0](args[1](args[2](1))));
+      });
+
+
+      it('composeMany composes in right direction (1)', function() {
+        var args = [
+          function(x) {return x + 'three';},
+          function(x) {return x + 'two';},
+          function() {return 'one';}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed()).to.equal('onetwothree');
+      });
+
+
+      it('composeMany composes in right direction (2)', function() {
+        var args = [
+          function(x) {return x.concat([3]);},
+          function(x) {return x.concat([2]);},
+          function(x) {return [x].concat([1]);}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed(0)).to.deep.equal([0, 1, 2, 3]);
+      });
+
+
+      it('composeMany returns function with correct arity (1)', function() {
+        var args = [
+          function(x) {return x + 1;},
+          id,
+          function() {return 3;}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed.length).to.equal(0);
+      });
+
+
+      it('composeMany returns function with correct arity (2)', function() {
+        var args = [
+          function(x, y, z) {return x + 1;},
+          id,
+          function() {return 3;}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed.length).to.equal(1);
+        expect(composed(1).length).to.equal(1);
+      });
+
+
+      it('Only one argument fed to first composed function: remaining fed to last (1)', function() {
+        var args = [
+          function(x, y, z) {return [].slice.call(arguments, 1);},
+          id,
+          function(x) {return x;}
+        ];
+
+        var composed = composeMany(args);
+        expect(composed(1, 2, 3)).to.deep.equal([2, 3]);
+      });
+
+
+      it('Only one argument fed to first composed function: remaining fed to last (2)', function() {
+        var args = [
+          id,
+          function(x, y, z) {return [].slice.call(arguments);},
+          id
+        ];
+
+        var composed = composeMany(args);
+        var result = composed(1, 2, 3);
+        expect(result).to.be.a('function');
+        expect(result(2)).to.be.a('function');
+        expect(result(2)(3)).to.deep.equal([1, 2, 3]);
       });
     });
   };
