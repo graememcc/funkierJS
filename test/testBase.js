@@ -30,6 +30,7 @@
     describe('curry', function() {
       var curry = base.curry;
 
+
       // We shall test curry with binary, ternary, and quarternary functions
       var testFuncs = [
         {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
@@ -55,12 +56,47 @@
         curried(args[0], args[1], args[2], args[3]);
         expect(f.args).to.deep.equal(args.slice(0, f.length));
       });
+
+
+      it('Currying a function of length 0 returns a function of length 0', function() {
+        var f = function() {};
+        var curried = curry(f);
+        expect(curried.length).to.equal(0);
+      });
+
+
+      it('Currying a function of length 1 returns a function of length 1', function() {
+        var f = function(x) {};
+        var curried = curry(f);
+        expect(curried.length).to.equal(1);
+      });
+
+
+      it('Previously curried function not recurried', function() {
+        var f = curry(function(a, b) {});
+        expect(curry(f)).to.equal(f);
+      });
     });
 
 
     describe('curryWithArity', function() {
       var curryWithArity = base.curryWithArity;
       var fromCharCodes = String.fromCharCode;
+
+
+      it('Currying a function of length 0 to 0 returns a function of length 0', function() {
+        var f = function() {};
+        var curried = curryWithArity(0, f);
+        expect(curried.length).to.equal(0);
+      });
+
+
+      it('Currying a function of length 1 to 1 returns a function of length 1', function() {
+        var f = function(x) {};
+        var curried = curryWithArity(1, f);
+        expect(curried.length).to.equal(1);
+      });
+
 
       it('curryWithArity returns a function of length 1 when a function of length 0 is curried to a length > 0', function() {
         var f = function() {};
@@ -142,11 +178,25 @@
         curried(args[0])(args[1])(args[2])(args[3])(args[4]);
         expect(f.args).to.deep.equal(args);
       });
+
+
+      it('Previously curried function not recurried (1)', function() {
+        var f = curryWithArity(2, function(a, b) {});
+        expect(curryWithArity(2, f)).to.equal(f);
+      });
+
+
+      it('Previously curried function not recurried (2)', function() {
+        var f = curryWithArity(1, function(a, b) {});
+        expect(curryWithArity(1, f)).to.equal(f);
+      });
     });
 
 
     describe('compose', function() {
       var compose = base.compose;
+      var curry = base.curry;
+
 
       it('composition throws if the first function has arity 0', function() {
         var f = function() {return 3;};
@@ -228,7 +278,7 @@
       });
 
 
-      it('composition partially applies first function correctly if it has arity > 1', function() {
+      it('composition partially applies first function correctly if it has arity > 1 (1)', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
@@ -238,13 +288,33 @@
       });
 
 
-      it('composition applies first function when all arguments supplied and first function has arity > 1', function() {
+      it('composition partially applies first function correctly if it has arity > 1 (2)', function() {
+        var f = curry(function(a, b) {return a + b;});
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+
+        var composition = compose(f, g);
+        expect(composition(1)(1)).to.equal(expected);
+      });
+
+
+      it('composition applies first function when all arguments supplied and first function has arity > 1 (1)', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
 
         var composition = compose(f, g);
-        expect(composition(1,1)).to.equal(expected);
+        expect(composition(1, 1)).to.equal(expected);
+      });
+
+
+      it('composition applies first function when all arguments supplied and first function has arity > 1 (2)', function() {
+        var f = curry(function(a, b) {return a + b;});
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+
+        var composition = compose(f, g);
+        expect(composition(1, 1)).to.equal(expected);
       });
 
 
@@ -336,6 +406,7 @@
     describe('constant', function() {
       var constant = base.constant;
 
+
       it('constant has arity 1', function() {
         expect(constant.length).to.equal(1);
       });
@@ -385,6 +456,7 @@
 
     describe('constant0', function() {
       var constant0 = base.constant0;
+
 
       it('constant0 has arity 1', function() {
         expect(constant0.length).to.equal(1);

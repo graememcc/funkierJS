@@ -4,6 +4,10 @@
 
   var makeModule = function(require, exports) {
 
+    // property that will be installed on all curried functions reflecting 'real' arity
+    var arityProp = '_trueArity';
+
+
     /*
      * curry: take a function fn, and curry up to the function's arity, as defined by the
      *        function's length property. The curried function returned will have length 1,
@@ -30,7 +34,8 @@
      */
 
     var curry = function(fn) {
-      return curryWithArity(fn.length, fn);
+      var desiredLength = fn.hasOwnProperty(arityProp) ? fn[arityProp] : fn.length;
+      return curryWithArity(desiredLength, fn);
     };
 
 
@@ -57,13 +62,16 @@
      */
 
     var curryWithArity = function(length, fn) {
+      if (fn.hasOwnProperty(arityProp) && fn[arityProp] === length)
+        return fn;
+
       // Handle the special case of length 0
       if (length === 0) {
         var result = function() {
           // Don't simply return fn: need to discard any arguments
           return fn();
         };
-        result['_trueArity'] = 0;
+        result[arityProp] = 0;
         return result;
       }
 
@@ -92,11 +100,11 @@
         var trivial = function(b) {
           return newFn(b);
         };
-        trivial['_trueArity'] = 1;
+        trivial[arityProp] = 1;
         return trivial;
       };
 
-      curried['_trueArity'] = length;
+      curried[arityProp] = length;
       return curried;
     };
 
@@ -122,8 +130,8 @@
      */
 
     var compose = curry(function(f, g) {
-      var gLen = g.hasOwnProperty('_trueArity') ? g['_trueArity'] : g.length;
-      var fLen = f.hasOwnProperty('_trueArity') ? f['_trueArity'] : f.length;
+      var gLen = g.hasOwnProperty(arityProp) ? g[arityProp] : g.length;
+      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
 
       if (fLen === 0)
         throw new TypeError('compose called with function of arity 0');
@@ -195,7 +203,7 @@
      */
 
     var flip = function(f) {
-      var fLen = f.hasOwnProperty('_trueArity') ? f['_trueArity'] : f.length;
+      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
 
       if (fLen < 2)
         return curry(f);
