@@ -106,6 +106,12 @@
     });
 
 
+    /*
+     * xorPred: takes two unary predicate functions, and returns a new unary function that returns true
+     *          if exactly one of the supplied predicates return true for the given argument.
+     *
+     */
+
     var xorPred = curry(function(pred1, pred2) {
       var predLen1 = getRealArity(pred1);
       var predLen2 = getRealArity(pred2);

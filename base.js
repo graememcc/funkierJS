@@ -4,7 +4,10 @@
 
   var makeModule = function(require, exports) {
 
-    // property that will be installed on all curried functions reflecting 'real' arity
+    // Property that will be installed on all curried functions reflecting 'real' arity.
+    // When we attach this property to the curried functions, we will use Object.defineProperty.
+    // This is a minor hack to prevent the property showing up when the functions are logged
+    // to the console (enumerable will be false).
     var arityProp = '_trueArity';
 
 
@@ -260,6 +263,7 @@
       if (fnArray.length === 1)
         return curry(fnArray[0]);
 
+      // We don't use foldr to avoid creating a circular dependency
       return fnArray.reduceRight(flip(compose));
     };
 
