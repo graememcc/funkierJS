@@ -40,10 +40,21 @@
     });
 
 
+    /*
+     * xor: returns logical xor of the given arguments.
+     *
+     */
+
+    var xor = curry(function(x, y) {
+      return x == y ? false : true;
+    });
+
+
     var exported = {
       and: and,
       not: not,
-      or: or
+      or: or,
+      xor: xor
     };
 
 

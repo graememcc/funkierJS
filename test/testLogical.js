@@ -17,7 +17,7 @@
 
 
     describe('Logical exports', function() {
-      var expectedFunctions = ['not', 'and', 'or'];
+      var expectedFunctions = ['not', 'and', 'or', 'xor'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -85,6 +85,18 @@
       ];
 
       makeBinaryBooleanTestFixture('or', truthTable);
+    });
+
+
+    describe('xor', function() {
+      var truthTable = [
+        {val1: false, val2: false, expected: false},
+        {val1: false, val2: true, expected: true},
+        {val1: true, val2: false, expected: true},
+        {val1: true, val2: true, expected: false}
+      ];
+
+      makeBinaryBooleanTestFixture('xor', truthTable);
     });
   };
 
