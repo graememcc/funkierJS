@@ -29,10 +29,12 @@
     });
 
 
+    // Many of the tests use curry and id: let's pull them out for convenience
+    var curry = base.curry;
+    var id = base.id;
+
+
     describe('curry', function() {
-      var curry = base.curry;
-
-
       // We shall test curry with binary, ternary, and quarternary functions
       var testFuncs = [
         {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
@@ -214,7 +216,6 @@
 
     describe('compose', function() {
       var compose = base.compose;
-      var curry = base.curry;
 
 
       it('composition throws if the first function has arity 0', function() {
@@ -534,8 +535,6 @@
 
     describe('composeMany', function() {
       var composeMany = base.composeMany;
-      var curry = base.curry;
-      var id = base.id;
 
 
       it('composeMany throws if called with empty array', function() {
@@ -740,7 +739,6 @@
 
     describe('flip', function() {
       var flip = base.flip;
-      var curry = base.curry;
 
 
       it('flip has arity 1', function() {
@@ -843,8 +841,6 @@
 
     describe('applyFunc', function() {
       var applyFunc = base.applyFunc;
-      var curry = base.curry;
-      var id = base.id;
 
 
       it('Calls f with x (1)', function() {
@@ -928,8 +924,6 @@
 
     describe('sectionRight', function() {
       var sectionRight = base.sectionRight;
-      var curry = base.curry;
-      var id = base.id;
 
 
       it('Throws if f is not binary (1)', function() {
@@ -1100,7 +1094,6 @@
 
     describe('getRealArity', function() {
       var getRealArity = base.getRealArity;
-      var curry = base.curry;
       var curryWithArity = base.curryWithArity;
 
 
