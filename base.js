@@ -285,6 +285,16 @@
     });
 
 
+    /*
+     * strictEquals: tests strict equality (===) on its two arguments
+     *
+     */
+
+    var strictEquals = curry(function(x, y) {
+      return x === y;
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -297,7 +307,8 @@
       flip: flip,
       id: id,
       sectionLeft: sectionLeft,
-      sectionRight: sectionRight
+      sectionRight: sectionRight,
+      strictEquals: strictEquals
     };
 
 

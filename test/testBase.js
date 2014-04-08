@@ -18,7 +18,8 @@
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
                                'constant', 'constant0', 'composeMany', 'flip',
-                               'applyFunc', 'sectionLeft', 'sectionRight', 'equals'];
+                               'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
+                               'strictEquals'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1062,6 +1063,37 @@
 
         // equals should be curried
         testCurriedFunction('equals', equals, [val, val]);
+      });
+    });
+
+
+    describe('strictEquals', function() {
+      var strictEquals = base.strictEquals;
+
+
+      equalityTests.forEach(function(test) {
+        var val = test.value;
+        var type = val !== null ? typeof(val) : 'null';
+
+        it('strictEquals is correct for value of type ' + type + ' when testing value with itself',
+           makeEqualityTest(strictEquals, true, val, val));
+
+        var coercible = test.coercible;
+        coercible.forEach(function(cVal) {
+          var cType = cVal !== null ? typeof(cVal) : 'null';
+          it('strictEquals is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+             makeEqualityTest(strictEquals, false, val, cVal));
+        });
+
+        var notEqual = test.notEqual;
+        notEqual.forEach(function(nVal) {
+          var nType = nVal !== null ? typeof(nVal) : 'null';
+          it('strictEquals is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+             makeEqualityTest(strictEquals, false, val, nVal));
+        });
+
+        // strictEquals should be curried
+        testCurriedFunction('strictEquals', strictEquals, [val, val]);
       });
     });
   };
