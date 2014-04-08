@@ -65,37 +65,32 @@
     };
 
 
-    describe('and', function() {
-      var truthTable = [
-        {val1: false, val2: false, expected: false},
-        {val1: false, val2: true, expected: false},
-        {val1: true, val2: false, expected: false},
-        {val1: true, val2: true, expected: true}
+    var makeTruthTable = function(ff, ft, tf, tt) {
+      return [
+        {val1: false, val2: false, expected: ff},
+        {val1: false, val2: true, expected: ft},
+        {val1: true, val2: false, expected: tf},
+        {val1: true, val2: true, expected: tt}
       ];
+    };
+
+
+    describe('and', function() {
+      var truthTable = makeTruthTable(false, false, false, true);
 
       makeBinaryBooleanTestFixture('and', truthTable);
     });
 
 
     describe('or', function() {
-      var truthTable = [
-        {val1: false, val2: false, expected: false},
-        {val1: false, val2: true, expected: true},
-        {val1: true, val2: false, expected: true},
-        {val1: true, val2: true, expected: true}
-      ];
+      var truthTable = makeTruthTable(false, true, true, true);
 
       makeBinaryBooleanTestFixture('or', truthTable);
     });
 
 
     describe('xor', function() {
-      var truthTable = [
-        {val1: false, val2: false, expected: false},
-        {val1: false, val2: true, expected: true},
-        {val1: true, val2: false, expected: true},
-        {val1: true, val2: true, expected: false}
-      ];
+      var truthTable = makeTruthTable(false, true, true, false);
 
       makeBinaryBooleanTestFixture('xor', truthTable);
     });
@@ -244,37 +239,35 @@
     };
 
 
-    describe('andPred', function() {
-      var truthTable = [
-        {pred1: constantFalse, pred2: constantFalse, expected: false, shortCircuits: true},
-        {pred1: constantFalse, pred2: constantTrue, expected: false, shortCircuits: true},
-        {pred1: constantTrue, pred2: constantFalse, expected: false, shortCircuits: false},
-        {pred1: constantTrue, pred2: constantTrue, expected: true, shortCircuits: false}
+    var makePredTruthTable = function(ff, ft, tf, tt) {
+      return [
+        {pred1: constantFalse, pred2: constantFalse, expected: ff.expected, shortCircuits: ff.shortCircuits},
+        {pred1: constantFalse, pred2: constantTrue, expected: ft.expected, shortCircuits: ft.shortCircuits},
+        {pred1: constantTrue, pred2: constantFalse, expected: tf.expected, shortCircuits: tf.shortCircuits},
+        {pred1: constantTrue, pred2: constantTrue, expected: tt.expected, shortCircuits: tt.shortCircuits}
       ];
+    };
+
+
+    describe('andPred', function() {
+      var truthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
+                                          {expected: false, shortCircuits: false}, {expected: true, shortCircuits: false});
 
       makeBinaryPredicateTestFixture('andPred', truthTable);
     });
 
 
     describe('orPred', function() {
-      var truthTable = [
-        {pred1: constantFalse, pred2: constantFalse, expected: false, shortCircuits: false},
-        {pred1: constantFalse, pred2: constantTrue, expected: true, shortCircuits: false},
-        {pred1: constantTrue, pred2: constantFalse, expected: true, shortCircuits: true},
-        {pred1: constantTrue, pred2: constantTrue, expected: true, shortCircuits: true}
-      ];
+      var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+                                          {expected: true, shortCircuits: true}, {expected: true, shortCircuits: true});
 
       makeBinaryPredicateTestFixture('orPred', truthTable);
     });
 
 
     describe('xorPred', function() {
-      var truthTable = [
-        {pred1: constantFalse, pred2: constantFalse, expected: false, shortCircuits: false},
-        {pred1: constantFalse, pred2: constantTrue, expected: true, shortCircuits: false},
-        {pred1: constantTrue, pred2: constantFalse, expected: true, shortCircuits: false},
-        {pred1: constantTrue, pred2: constantTrue, expected: false, shortCircuits: false}
-      ];
+      var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+                                          {expected: true, shortCircuits: false}, {expected: false, shortCircuits: false});
 
       makeBinaryPredicateTestFixture('xorPred', truthTable);
     });
