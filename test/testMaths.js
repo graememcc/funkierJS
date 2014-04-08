@@ -18,7 +18,7 @@
 
     describe('Maths exports', function() {
       var expectedFunctions = ['add', 'subtract', 'multiply', 'divide', 'exp',
-                               'log', 'div'];
+                               'log', 'div', 'rem'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -43,7 +43,9 @@
       {func: 'log', test1: {val1: 2, val2: 8, result: 3},
        test2: {val1: 10, val2: 100, result: 2}},
       {func: 'div', test1: {val1: 4, val2: 2, result: 2},
-       test2: {val1: 85, val2: 2, result: 42}}
+       test2: {val1: 85, val2: 2, result: 42}},
+      {func: 'rem', test1: {val1: 4, val2: 2, result: 0},
+       test2: {val1: 42, val2: 43, result: 42}}
     ];
 
 

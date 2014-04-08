@@ -80,6 +80,16 @@
     });
 
 
+    /*
+     * rem: a wrapper around the remainder operator
+     *
+     */
+
+    var rem = curry(function(x, y) {
+      return x % y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
@@ -87,6 +97,7 @@
       exp: exp,
       log: log,
       multiply: multiply,
+      rem: rem,
       subtract: subtract
     };
 
