@@ -17,7 +17,7 @@
 
 
     describe('Logical exports', function() {
-      var expectedFunctions = ['not', 'and'];
+      var expectedFunctions = ['not', 'and', 'or'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -50,10 +50,21 @@
     };
 
 
+    // All the boolean operator tests have the same template
+    var makeBinaryBooleanTestFixture = function(prop, truthTable) {
+      var functionUnderTest = logical[prop];
+
+      truthTable.forEach(function(test, i) {
+        var indexString = ' (' + (i + 1) + ')';
+        it(prop + ' works as expected' + indexString,
+            makeBinaryBooleanTest(functionUnderTest, test.val1, test.val2, test.expected));
+
+        testCurriedFunction(prop + ' is curried' + indexString, functionUnderTest, [test.val1, test.val2]);
+      });
+    };
+
+
     describe('and', function() {
-      var and = logical.and;
-
-
       var truthTable = [
         {val1: false, val2: false, expected: false},
         {val1: false, val2: true, expected: false},
@@ -61,13 +72,19 @@
         {val1: true, val2: true, expected: true}
       ];
 
-      truthTable.forEach(function(test, i) {
-        var indexString = ' (' + (i + 1) + ')';
-        it('and works as expected' + indexString,
-            makeBinaryBooleanTest(and, test.val1, test.val2, test.expected));
+      makeBinaryBooleanTestFixture('and', truthTable);
+    });
 
-        testCurriedFunction('and is curried' + indexString, and, [test.val1, test.val2]);
-      });
+
+    describe('or', function() {
+      var truthTable = [
+        {val1: false, val2: false, expected: false},
+        {val1: false, val2: true, expected: true},
+        {val1: true, val2: false, expected: true},
+        {val1: true, val2: true, expected: true}
+      ];
+
+      makeBinaryBooleanTestFixture('or', truthTable);
     });
   };
 

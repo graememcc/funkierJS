@@ -29,9 +29,21 @@
     });
 
 
+    /*
+     * or: returns or (||) applied to the given arguments.
+     *     Note: due to eager evaluation, this will not short-circuit.
+     *
+     */
+
+    var or = curry(function(x, y) {
+      return x || y;
+    });
+
+
     var exported = {
       and: and,
-      not: not
+      not: not,
+      or: or
     };
 
 
