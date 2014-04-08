@@ -28,8 +28,19 @@
     });
 
 
+    /*
+     * multiply: a wrapper around binary multiplication
+     *
+     */
+
+    var multiply = curry(function(x, y) {
+      return x * y;
+    });
+
+
     var exported = {
       add: add,
+      multiply: multiply,
       subtract: subtract
     };
 
