@@ -6,6 +6,7 @@
 
     var base = require('./base');
     var curry = base.curry;
+    var getRealArity = base.getRealArity;
 
 
     /*
@@ -50,9 +51,27 @@
     });
 
 
+    /*
+     * notPred: takes an unary predicate function, and returns a new unary function that calls
+     *          the original function with the given argument, and returns the negation of the result
+     *
+     */
+
+    var notPred = function(pred) {
+      var predLen = getRealArity(pred);
+      if (predLen !== 1)
+        throw new TypeError('notPred called with function of arity ' + predLen);
+
+      return curry(function(x) {
+        return !pred(x);
+      });
+    };
+
+
     var exported = {
       and: and,
       not: not,
+      notPred: notPred,
       or: or,
       xor: xor
     };

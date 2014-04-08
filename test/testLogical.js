@@ -17,7 +17,8 @@
 
 
     describe('Logical exports', function() {
-      var expectedFunctions = ['not', 'and', 'or', 'xor'];
+      var expectedFunctions = ['not', 'and', 'or', 'xor',
+                               'notPred'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -97,6 +98,71 @@
       ];
 
       makeBinaryBooleanTestFixture('xor', truthTable);
+    });
+
+
+    // The following predicate functions require the following definitions
+    var constant = base.constant;
+    var curry = base.curry;
+    var constantFalse = constant(false);
+    var constantTrue = constant(true);
+
+
+    describe('notPred', function() {
+      var notPred = logical.notPred;
+
+
+      it('notPred has arity 1', function() {
+        expect(notPred.length).to.equal(1);
+      });
+
+
+      it('notPred throws when called with a function of arity 0', function() {
+        var predicate = function() {};
+        var fn = function() {
+          notPred(predicate);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('notPred throws when called with a function of arity > 1', function() {
+        var predicate = function(x, y) {};
+        var fn = function() {
+          notPred(predicate);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('notPred throws when called with a curried function of arity > 1', function() {
+        var predicate = curry(function(x, y) {});
+        var fn = function() {
+          notPred(predicate);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('notPred works as expected (1)', function() {
+        var negated = notPred(constantTrue);
+
+        expect(negated).to.be.a('function');
+        expect(negated.length).to.equal(1);
+        expect(negated('a')).to.equal(false);
+      });
+
+
+      it('notPred works as expected (2)', function() {
+        var negated = notPred(constantFalse);
+
+        expect(negated).to.be.a('function');
+        expect(negated.length).to.equal(1);
+        expect(negated('a')).to.equal(true);
+      });
     });
   };
 
