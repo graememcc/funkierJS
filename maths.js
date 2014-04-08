@@ -140,6 +140,16 @@
     });
 
 
+    /*
+     * rightShift: a wrapper around the right shift (>>) operator
+     *
+     */
+
+    var rightShift = curry(function(x, y) {
+      return x >> y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
@@ -153,6 +163,7 @@
       log: log,
       multiply: multiply,
       rem: rem,
+      rightShift: rightShift,
       subtract: subtract
     };
 

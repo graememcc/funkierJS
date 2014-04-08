@@ -19,7 +19,8 @@
     describe('Maths exports', function() {
       var expectedFunctions = ['add', 'subtract', 'multiply', 'divide', 'exp',
                                'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
-                               'greaterThan', 'greaterThanEqual', 'leftShift'];
+                               'greaterThan', 'greaterThanEqual', 'leftShift',
+                               'rightShift'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -56,7 +57,9 @@
       {func: 'greaterThanEqual', test1: {val1: 2, val2: 3, result: 2 >= 3},
        test2: {val1: 42, val2: 42, result: 42 >= 42}},
       {func: 'leftShift', test1: {val1: 1, val2: 2, result: 1 << 2},
-       test2: {val1: 21, val2: 1, result: 21 << 1}}
+       test2: {val1: 21, val2: 1, result: 21 << 1}},
+      {func: 'rightShift', test1: {val1: 2, val2: 1, result: 2 >> 1},
+       test2: {val1: 168, val2: 2, result: 168 >> 2}}
     ];
 
 
