@@ -58,10 +58,23 @@
     });
 
 
+    /*
+     * log: log(x, y) returns the log of y in the base x. Note: this uses
+     *      the change of base formula, so may be subject to rounding errors
+     *      caused by the vagaries of Javascript division.
+     *
+     */
+
+    var log = curry(function(x, y) {
+      return Math.log(y) / Math.log(x);
+    });
+
+
     var exported = {
       add: add,
       divide: divide,
       exp: exp,
+      log: log,
       multiply: multiply,
       subtract: subtract
     };
