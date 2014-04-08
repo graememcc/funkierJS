@@ -100,12 +100,23 @@
     });
 
 
+    /*
+     * lessThanEqual: a wrapper around the less than or equal (<=) operator
+     *
+     */
+
+    var lessThanEqual = curry(function(x, y) {
+      return x <= y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
       divide: divide,
       exp: exp,
       lessThan: lessThan,
+      lessThanEqual: lessThanEqual,
       log: log,
       multiply: multiply,
       rem: rem,
