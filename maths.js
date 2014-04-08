@@ -90,11 +90,22 @@
     });
 
 
+    /*
+     * lessThan: a wrapper around the less than (<) operator
+     *
+     */
+
+    var lessThan = curry(function(x, y) {
+      return x < y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
       divide: divide,
       exp: exp,
+      lessThan: lessThan,
       log: log,
       multiply: multiply,
       rem: rem,
