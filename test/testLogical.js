@@ -18,7 +18,7 @@
 
     describe('Logical exports', function() {
       var expectedFunctions = ['not', 'and', 'or', 'xor',
-                               'notPred', 'andPred'];
+                               'notPred', 'andPred', 'orPred'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -253,6 +253,18 @@
       ];
 
       makeBinaryPredicateTestFixture('andPred', truthTable);
+    });
+
+
+    describe('orPred', function() {
+      var truthTable = [
+        {pred1: constantFalse, pred2: constantFalse, expected: false, shortCircuits: false},
+        {pred1: constantFalse, pred2: constantTrue, expected: true, shortCircuits: false},
+        {pred1: constantTrue, pred2: constantFalse, expected: true, shortCircuits: true},
+        {pred1: constantTrue, pred2: constantTrue, expected: true, shortCircuits: true}
+      ];
+
+      makeBinaryPredicateTestFixture('orPred', truthTable);
     });
   };
 
