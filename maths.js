@@ -130,6 +130,16 @@
     });
 
 
+    /*
+     * leftShift: a wrapper around the left shift (<<) operator
+     *
+     */
+
+    var leftShift = curry(function(x, y) {
+      return x << y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
@@ -137,6 +147,7 @@
       exp: exp,
       greaterThan: greaterThan,
       greaterThanEqual: greaterThanEqual,
+      leftShift: leftShift,
       lessThan: lessThan,
       lessThanEqual: lessThanEqual,
       log: log,
