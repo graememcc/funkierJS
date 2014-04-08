@@ -258,6 +258,23 @@
     var sectionLeft = applyFunc;
 
 
+    /*
+     * sectionRight: partially applies the binary function f with the given argument x, with x being supplied as
+     *               the second argument to f. Throws if f is not a binary function.
+     *
+     * sectionRight satisfies the equation sectionRight(f, x) = applyFunc(flip(f), x);
+     *
+     */
+
+    var sectionRight = curry(function(f, x) {
+      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
+      if (fLen !== 2)
+        throw new TypeError('sectionRight called with function of arity ' + fLen);
+
+      return sectionLeft(flip(f), x);
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -268,7 +285,8 @@
       curryWithArity: curryWithArity,
       flip: flip,
       id: id,
-      sectionLeft: sectionLeft
+      sectionLeft: sectionLeft,
+      sectionRight: sectionRight
     };
 
 

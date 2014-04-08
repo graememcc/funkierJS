@@ -18,7 +18,7 @@
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
                                'constant', 'constant0', 'composeMany', 'flip',
-                               'applyFunc', 'sectionLeft'];
+                               'applyFunc', 'sectionLeft', 'sectionRight'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -922,6 +922,92 @@
       it('sectionLeft is a synonym for applyFunc', function() {
         expect(sectionLeft).to.equal(applyFunc);
       });
+    });
+
+
+    describe('sectionRight', function() {
+      var sectionRight = base.sectionRight;
+      var curry = base.curry;
+      var id = base.id;
+
+
+      it('Throws if f is not binary (1)', function() {
+        var fn = function() {
+          sectionRight(id, 1);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if f is not binary (2)', function() {
+        var fn = function() {
+          sectionRight(function() {}, 1);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if f is not binary (3)', function() {
+        var fn = function() {
+          sectionRight(function(x, y, z) {}, 1);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if f is not binary (4)', function() {
+        var fn = function() {
+          sectionRight(curry(function(x, y, z) {}), 1);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Partially applies to the right (1)', function() {
+        var f = curry(function(a, b) {return [].slice.call(arguments);});
+        var val1 = 32;
+        var val2 = 10;
+        var sectioned = sectionRight(f, val1);
+
+        expect(sectioned).to.be.a('function');
+        expect(sectioned.length).to.equal(1);
+        expect(sectioned(val2)).to.deep.equal([val2, val1]);
+      });
+
+
+      it('Partially applies to the right (2)', function() {
+        var f = curry(function(a, b) {return a - b;});
+        var val1 = 10;
+        var val2 = 52;
+        var sectioned = sectionRight(f, val1);
+
+        expect(sectioned).to.be.a('function');
+        expect(sectioned.length).to.equal(1);
+        expect(sectioned(val2)).to.deep.equal(f(val2, val1));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var f = function(a, b) {return [].slice.call(arguments);};
+        var val1 = 32;
+        var val2 = 10;
+        var sectioned = sectionRight(f, val1);
+
+        expect(sectioned).to.be.a('function');
+        expect(sectioned.length).to.equal(1);
+        expect(sectioned(val2)).to.deep.equal([val2, val1]);
+      });
+
+
+      // sectionRight should be curried
+      (function() {
+        var fn = function(x, y) {return x + y;};
+        testCurriedFunction('sectionRight', sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
+      })();
     });
   };
 
