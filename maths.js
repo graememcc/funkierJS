@@ -70,8 +70,19 @@
     });
 
 
+    /*
+     * div: returns the quotient on dividing x by y
+     *
+     */
+
+    var div = curry(function(x, y) {
+      return Math.floor(x / y);
+    });
+
+
     var exported = {
       add: add,
+      div: div,
       divide: divide,
       exp: exp,
       log: log,
