@@ -48,9 +48,20 @@
     });
 
 
+    /*
+     * exp: a wrapper around Math.pow
+     *
+     */
+
+    var exp = curry(function(x, y) {
+      return Math.pow(x, y);
+    });
+
+
     var exported = {
       add: add,
       divide: divide,
+      exp: exp,
       multiply: multiply,
       subtract: subtract
     };
