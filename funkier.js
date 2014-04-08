@@ -11,13 +11,9 @@
 
     // Export our imports
     imports.forEach(function(importedModule) {
-      // Can't use Object.keys in some versions of node
-      for (var k in importedModule) {
-        if (!importedModule.hasOwnProperty(k))
-          continue;
-
+      Object.keys(importedModule).forEach(function(k) {
         exportedFns[k] = importedModule[k];
-      }
+      });
     });
 
 
