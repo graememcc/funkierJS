@@ -106,6 +106,18 @@
     });
 
 
+    var xorPred = curry(function(pred1, pred2) {
+      var predLen1 = getRealArity(pred1);
+      var predLen2 = getRealArity(pred2);
+      if (predLen1 !== 1 || predLen2 !== 1)
+         throw new TypeError('orPred called with function of arity ' + (predLen1 !== 1 ? predLen1 : predLen2));
+
+      return curry(function(x) {
+        return xor(pred1(x), pred2(x));
+      });
+    });
+
+
     var exported = {
       and: and,
       andPred: andPred,
@@ -113,7 +125,8 @@
       notPred: notPred,
       or: or,
       orPred: orPred,
-      xor: xor
+      xor: xor,
+      xorPred: xorPred
     };
 
 
