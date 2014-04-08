@@ -170,9 +170,20 @@
     });
 
 
+    /*
+     * bitwiseOr: a wrapper around the bitwise or (|) operator
+     *
+     */
+
+    var bitwiseOr = curry(function(x, y) {
+      return x | y;
+    });
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
+      bitwiseOr: bitwiseOr,
       div: div,
       divide: divide,
       exp: exp,
