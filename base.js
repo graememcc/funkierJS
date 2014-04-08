@@ -275,6 +275,16 @@
     });
 
 
+    /*
+     * equals: tests non-strict equality (==) on its two arguments
+     *
+     */
+
+    var equals = curry(function(x, y) {
+      return x == y;
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -283,6 +293,7 @@
       constant0: constant0,
       curry: curry,
       curryWithArity: curryWithArity,
+      equals: equals,
       flip: flip,
       id: id,
       sectionLeft: sectionLeft,

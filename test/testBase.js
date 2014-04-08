@@ -18,7 +18,7 @@
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
                                'constant', 'constant0', 'composeMany', 'flip',
-                               'applyFunc', 'sectionLeft', 'sectionRight'];
+                               'applyFunc', 'sectionLeft', 'sectionRight', 'equals'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1008,6 +1008,61 @@
         var fn = function(x, y) {return x + y;};
         testCurriedFunction('sectionRight', sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
       })();
+    });
+
+
+    // The following array is used for generating tests for both equality and strictEquality
+    // They are not an exhaustive check of all possible type coercions.
+    var equalityTests = [
+      {value: 1, coercible: ['1', true, {valueOf: function() {return 1;}}],
+                 notEqual: [0, NaN, false, undefined, null, function() {}, '2', {valueOf: function() {return 2;}}]},
+      {value: '1', coercible: [true, {toString: function() {return '1';}}],
+                 notEqual: [0, NaN, '0', undefined, null, function() {}, 'false', {toString: function() {return '0'}}]},
+      {value: false, coercible: [0, '0', {valueOf: function() {return 0;}}],
+                 notEqual: [NaN, true, undefined, null, function() {}, 'false', {valueOf: function() {return 1;}}]},
+      {value: undefined, coercible: [null],
+                 notEqual: [NaN, 'undefined', true, function() {}, 'false', {valueOf: function() {return 1;}}]},
+      {value: null, coercible: [], // we've already tried permissible coercions in earlier tests
+                 notEqual: [NaN, true, function() {}, 'false', {valueOf: function() {return 1;}}]},
+      {value: {}, coercible: [], // we've already tried permissible coercions in earlier tests
+                 notEqual: [NaN, true, function() {}, 'false', {}]}];
+
+
+    var makeEqualityTest = function(equalityFn, expectedResult, val1, val2) {
+      return function() {
+        expect(equalityFn(val1, val2)).to.equal(expectedResult);
+      };
+    };
+
+
+    describe('equals', function() {
+      var equals = base.equals;
+
+
+      equalityTests.forEach(function(test) {
+        var val = test.value;
+        var type = val !== null ? typeof(val) : 'null';
+
+        it('equals is correct for value of type ' + type + ' when testing value with itself',
+           makeEqualityTest(equals, true, val, val));
+
+        var coercible = test.coercible;
+        coercible.forEach(function(cVal) {
+          var cType = cVal !== null ? typeof(cVal) : 'null';
+          it('equals is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+             makeEqualityTest(equals, true, val, cVal));
+        });
+
+        var notEqual = test.notEqual;
+        notEqual.forEach(function(nVal) {
+          var nType = nVal !== null ? typeof(nVal) : 'null';
+          it('equals is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+             makeEqualityTest(equals, false, val, nVal));
+        });
+
+        // equals should be curried
+        testCurriedFunction('equals', equals, [val, val]);
+      });
     });
   };
 
