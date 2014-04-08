@@ -38,8 +38,19 @@
     });
 
 
+    /*
+     * divide: a wrapper around binary division
+     *
+     */
+
+    var divide = curry(function(x, y) {
+      return x / y;
+    });
+
+
     var exported = {
       add: add,
+      divide: divide,
       multiply: multiply,
       subtract: subtract
     };
