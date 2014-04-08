@@ -73,7 +73,8 @@
           // Don't simply return fn: need to discard any arguments
           return fn();
         };
-        result[arityProp] = 0;
+
+        Object.defineProperty(result, arityProp, {value: 0});
         return result;
       }
 
@@ -102,16 +103,41 @@
         var trivial = function(b) {
           return newFn(b);
         };
-        trivial[arityProp] = 1;
+
+        Object.defineProperty(trivial, arityProp, {value: 1});
         return trivial;
       };
 
-      curried[arityProp] = length;
+      Object.defineProperty(curried, arityProp, {value: length});
       return curried;
     };
 
     // curryWithArity should itself be curried
     curryWithArity = curry(curryWithArity);
+
+
+    /*
+     * getRealArity: reports the real arity of a function. If the function has not been curried by funkier.js
+     *               this simply returns the function's length property. For a function that has been curried,
+     *               the arity of the original function will be reported (the function's length property will
+     *               always be 0 or 1 in this case). For a partially applied function, the amount of arguments
+     *               not yet supplied will be returned.
+     *
+     * For example:
+     *   function(x) {}.length == 1;
+     *   getRealArity(function(x) {}) == 1;
+     *   function(x, y) {}.length == 2;
+     *   getRealArity(function(x, y) {}) == 2;
+     *   curry(function(x, y) {}).length == 1;
+     *   getRealArity(curry(function(x, y) {})) == 2;
+     *   getRealArity(curry(function(x, y, z) {})) == 3;
+     *   getRealArity(curry(function(x, y, z) {})(1)) == 2;
+     *
+     */
+
+    var getRealArity = function(f) {
+      return f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
+    };
 
 
     /*
@@ -307,6 +333,7 @@
       curryWithArity: curryWithArity,
       equals: equals,
       flip: flip,
+      getRealArity: getRealArity,
       id: id,
       sectionLeft: sectionLeft,
       sectionRight: sectionRight,

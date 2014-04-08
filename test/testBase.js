@@ -19,7 +19,7 @@
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
                                'constant', 'constant0', 'composeMany', 'flip',
                                'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
-                               'strictEquals'];
+                               'strictEquals', 'getRealArity'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1094,6 +1094,68 @@
 
         // strictEquals should be curried
         testCurriedFunction('strictEquals', strictEquals, [val, val]);
+      });
+    });
+
+
+    describe('getRealArity', function() {
+      var getRealArity = base.getRealArity;
+      var curry = base.curry;
+      var curryWithArity = base.curryWithArity;
+
+
+      it('getRealArity works correctly for an uncurried function (1)', function() {
+        var fn = function() {};
+
+        expect(getRealArity(fn)).to.equal(fn.length);
+      });
+
+
+      it('getRealArity works correctly for an uncurried function (2)', function() {
+        var fn = function(x, y) {};
+
+        expect(getRealArity(fn)).to.equal(fn.length);
+      });
+
+
+      it('getRealArity works correctly for a curried function (1)', function() {
+        var fn = function(x, y) {};
+        var curried = curry(fn);
+
+        expect(getRealArity(curried)).to.equal(fn.length);
+      });
+
+
+      it('getRealArity works correctly for a curried function (2)', function() {
+        var fn = function(x, y) {};
+        var curryTo = 0;
+        var curried = curryWithArity(curryTo, fn);
+
+        expect(getRealArity(curried)).to.equal(curryTo);
+      });
+
+
+      it('getRealArity reports arguments outstanding for partially applied function (1)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(getRealArity(curried(1))).to.equal(fn.length - 1);
+      });
+
+
+      it('getRealArity reports arguments outstanding for partially applied function (2)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(getRealArity(curried(1)(1))).to.equal(fn.length - 2);
+      });
+
+
+      it('getRealArity reports arguments outstanding for partially applied function (3)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(getRealArity(curried(1, 1))).to.equal(fn.length - 2);
       });
     });
   };
