@@ -53,7 +53,9 @@
         f.args = null;
         var curried = curry(f);
         var args = [1, 2, 4, 'a'];
+        // Lack of assignment here is deliberate: we are interested in the side effect
         curried(args[0], args[1], args[2], args[3]);
+
         expect(f.args).to.deep.equal(args.slice(0, f.length));
       });
 
@@ -61,6 +63,7 @@
       it('Currying a function of length 0 returns a function of length 0', function() {
         var f = function() {};
         var curried = curry(f);
+
         expect(curried.length).to.equal(0);
       });
 
@@ -68,12 +71,14 @@
       it('Currying a function of length 1 returns a function of length 1', function() {
         var f = function(x) {};
         var curried = curry(f);
+
         expect(curried.length).to.equal(1);
       });
 
 
       it('Previously curried function not recurried', function() {
         var f = curry(function(a, b) {});
+
         expect(curry(f)).to.equal(f);
       });
     });
@@ -87,6 +92,7 @@
       it('Currying a function of length 0 to 0 returns a function of length 0', function() {
         var f = function() {};
         var curried = curryWithArity(0, f);
+
         expect(curried.length).to.equal(0);
       });
 
@@ -94,6 +100,7 @@
       it('Currying a function of length 1 to 1 returns a function of length 1', function() {
         var f = function(x) {};
         var curried = curryWithArity(1, f);
+
         expect(curried.length).to.equal(1);
       });
 
@@ -101,6 +108,7 @@
       it('curryWithArity returns a function of length 1 when a function of length 0 is curried to a length > 0', function() {
         var f = function() {};
         var curried = curryWithArity(1, f);
+
         expect(curried.length).to.equal(1);
       });
 
@@ -108,6 +116,7 @@
       it('curryWithArity returns a function of length 0 when a function of length > 0 is curried to length 0', function() {
         var f = function(a, b, c) {};
         var curried = curryWithArity(0, f);
+
         expect(curried.length).to.equal(0);
       });
 
@@ -129,6 +138,7 @@
         var fn = function() {
           return fromCharCodes(code);
         };
+
         expect(fn).to.not.throw(Error);
         expect(fn()).to.equal(String.fromCharCode(code));
       });
@@ -144,8 +154,8 @@
         var fn = testData.f;
         var args = testData.args;
         var message = testData.message;
-
         var curried = curryWithArity(args.length, fn);
+
         testCurriedFunction(message, curried, args, fn);
       });
 
@@ -156,6 +166,7 @@
         var fn = function(a, b) {return a + b;};
         var args = {firstArgs: [fn.length, fn], thenArgs: [41, 1]};
         var message = 'curryWithArity';
+
         testCurriedFunction(message, curryWithArity, args);
       }());
 
@@ -165,7 +176,9 @@
         f.args = null;
         var curried = curryWithArity(2, f);
         var args = [1, 2, 4, 'a'];
+        // Lack of assignment here is deliberate: we are interested in the side effect
         curried(args[0], args[1], args[2], args[3]);
+
         expect(f.args).to.deep.equal(args.slice(0, f.length));
       });
 
@@ -175,19 +188,23 @@
         f.args = null;
         var curried = curryWithArity(5, f);
         var args = [1, 2, 4, 'a', null];
+        // Lack of assignment here is deliberate: we are interested in the side effect
         curried(args[0])(args[1])(args[2])(args[3])(args[4]);
+
         expect(f.args).to.deep.equal(args);
       });
 
 
       it('Previously curried function not recurried (1)', function() {
         var f = curryWithArity(2, function(a, b) {});
+
         expect(curryWithArity(2, f)).to.equal(f);
       });
 
 
       it('Previously curried function not recurried (2)', function() {
         var f = curryWithArity(1, function(a, b) {});
+
         expect(curryWithArity(1, f)).to.equal(f);
       });
     });
@@ -214,6 +231,7 @@
         var f = function(x) {return x + 2;};
         var g = function(x) {return x + 1;};
         var composition = compose(f, g);
+
         expect(composition(1)).to.equal(f(g(1)));
       });
 
@@ -222,6 +240,7 @@
         var f = function(x) {return x + 3;};
         var g = function(x) {return x + 2;};
         var composition = compose(f, g);
+
         expect(composition(1)).to.equal(f(g(1)));
       });
 
@@ -230,6 +249,7 @@
         var f = function(x) {return x * 2;};
         var g = function(x) {return x + 1;};
         var composition = compose(f, g);
+
         expect(composition(1)).to.not.equal(g(f(1)));
         expect(composition(1)).to.equal(f(g(1)));
       });
@@ -239,6 +259,7 @@
         var f = function(x) {return x + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
+
         expect(composition.length).to.equal(0);
       });
 
@@ -247,6 +268,7 @@
         var f = function(x, y) {return x + y + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
+
         expect(composition.length).to.equal(1);
       });
 
@@ -255,6 +277,7 @@
         var f = function(x) {return x + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
+
         expect(composition()).to.equal(f(g()));
       });
 
@@ -263,6 +286,7 @@
         var f = function(x, y) {return x + y + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
+
         expect(composition.length).to.equal(1);
         expect(composition(1)).to.equal(f(g(), 1));
       });
@@ -271,8 +295,8 @@
       it('composition curries first function if it has arity > 1', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
-
         var composition = compose(f, g);
+
         expect(composition(1)).to.be.a('function');
         expect(composition(1).length).to.equal(1);
       });
@@ -282,8 +306,8 @@
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
-
         var composition = compose(f, g);
+
         expect(composition(1)(1)).to.equal(expected);
       });
 
@@ -292,8 +316,8 @@
         var f = curry(function(a, b) {return a + b;});
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
-
         var composition = compose(f, g);
+
         expect(composition(1)(1)).to.equal(expected);
       });
 
@@ -302,8 +326,8 @@
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
-
         var composition = compose(f, g);
+
         expect(composition(1, 1)).to.equal(expected);
       });
 
@@ -312,8 +336,8 @@
         var f = curry(function(a, b) {return a + b;});
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
-
         var composition = compose(f, g);
+
         expect(composition(1, 1)).to.equal(expected);
       });
 
@@ -321,8 +345,8 @@
       it('composition curries second function if it has arity > 1', function() {
         var id = function(x) {return x;};
         var g = function(x, y) {return x + 1;};
-
         var composition = compose(id, g);
+
         expect(composition(1)).to.be.a('function');
         expect(composition(1).length).to.equal(1);
       });
@@ -331,8 +355,8 @@
       it('composition partially applies second function correctly if it has arity > 1', function() {
         var id = function(x) {return x;};
         var g = function(x, y) {return x + 1;};
-
         var composition = compose(id, g);
+
         expect(composition(1)(2)).to.equal(g(1, 2));
       });
 
@@ -340,8 +364,8 @@
       it('When both functions have arity > 1 and multiple arguments given to composition, only first argument passed to second function', function() {
         var f = function(x, y, z) {return [].slice.call(arguments, 1);};
         var g = function(x, y) {return x + 1;};
-
         var composition = compose(f, g);
+
         expect(composition(1, 2, 3)).to.deep.equal([2, 3]);
         expect(composition(3, 10, 17)).to.deep.equal([10, 17]);
       });
@@ -353,6 +377,7 @@
         var fn = function(a) {return a + 1;};
         var args = {firstArgs: [fn, fn], thenArgs: [1]};
         var message = 'compose';
+
         testCurriedFunction(message, compose, args);
       }());
 
@@ -364,6 +389,7 @@
         var composed = compose(fn, fn2);
         var args = [1];
         var message = 'Composed function';
+
         testCurriedFunction(message, composed, args);
       }());
     });
@@ -506,6 +532,7 @@
 
     describe('composeMany', function() {
       var composeMany = base.composeMany;
+      var curry = base.curry;
       var id = base.id;
 
 
@@ -540,16 +567,36 @@
       it('composeMany returns curried original function if supplied one function of arity 0', function() {
         var f = function() {return [].slice.call(arguments);};
         var g = composeMany([f]);
+
+        expect(g.length).to.equal(0);
         expect(g()).to.deep.equal(f());
         expect(g(42)).to.deep.equal([]);
+      });
+
+
+      it('composeMany returns original function if supplied curried function of arity 0', function() {
+        var f = curry(function() {return [].slice.call(arguments);});
+        var g = composeMany([f]);
+
+        expect(g).to.equal(f);
       });
 
 
       it('composeMany returns curried original function if supplied one function of arity 1', function() {
         var f = function(x) {return [].slice.call(arguments);};
         var g = composeMany([f]);
+
+        expect(g.length).to.equal(1);
         expect(g(42)).to.deep.equal(f(42));
         expect(g(42, 'x')).to.deep.equal([42]);
+      });
+
+
+      it('composeMany returns original function if supplied curried function of arity 1', function() {
+        var f = curry(function(x) {return [].slice.call(arguments);});
+        var g = composeMany([f]);
+
+        expect(g).to.equal(f);
       });
 
 
@@ -592,6 +639,7 @@
 
       it('composeMany works correctly (1)', function() {
         var composed = composeMany([id, id, id]);
+
         expect(composed.length).to.equal(1);
         expect(composed(1)).to.equal(id(id(id(1))));
       });
@@ -603,8 +651,8 @@
           function(x) {return x + 2},
           function(x) {return x + 1}
         ];
-
         var composed = composeMany(args);
+
         expect(composed.length).to.equal(1);
         expect(composed(1)).to.equal(args[0](args[1](args[2](1))));
       });
@@ -616,8 +664,8 @@
           function(x) {return x + 'two';},
           function() {return 'one';}
         ];
-
         var composed = composeMany(args);
+
         expect(composed()).to.equal('onetwothree');
       });
 
@@ -628,8 +676,8 @@
           function(x) {return x.concat([2]);},
           function(x) {return [x].concat([1]);}
         ];
-
         var composed = composeMany(args);
+
         expect(composed(0)).to.deep.equal([0, 1, 2, 3]);
       });
 
@@ -640,8 +688,8 @@
           id,
           function() {return 3;}
         ];
-
         var composed = composeMany(args);
+
         expect(composed.length).to.equal(0);
       });
 
@@ -652,8 +700,8 @@
           id,
           function() {return 3;}
         ];
-
         var composed = composeMany(args);
+
         expect(composed.length).to.equal(1);
         expect(composed(1).length).to.equal(1);
       });
@@ -665,8 +713,8 @@
           id,
           function(x) {return x;}
         ];
-
         var composed = composeMany(args);
+
         expect(composed(1, 2, 3)).to.deep.equal([2, 3]);
       });
 
@@ -680,6 +728,7 @@
 
         var composed = composeMany(args);
         var result = composed(1, 2, 3);
+
         expect(result).to.be.a('function');
         expect(result(2)).to.be.a('function');
         expect(result(2)(3)).to.deep.equal([1, 2, 3]);
@@ -700,18 +749,36 @@
       it('Returns a curried version of original function when called with function of length 0', function() {
         var f = function() {return [].slice.call(arguments);};
         var flipped = flip(f);
+
         expect(flipped.length).to.equal(0);
         expect(flipped()).to.deep.equal([]);
         expect(flipped(42)).to.deep.equal([]);
       });
 
 
+      it('Returns original function when called with curried function of length 0', function() {
+        var f = curry(function() {return [].slice.call(arguments);});
+        var flipped = flip(f);
+
+        expect(flipped).to.equal(f);
+      });
+
+
       it('Returns a curried version of original function when called with function of length 1', function() {
         var f = function(x) {return [].slice.call(arguments);};
         var flipped = flip(f);
+
         expect(flipped.length).to.equal(1);
         expect(flipped(42)).to.deep.equal(f(42));
         expect(flipped(42, 'x')).to.deep.equal([42]);
+      });
+
+
+      it('Returns original function when called with curried function of length 1', function() {
+        var f = curry(function(x) {return [].slice.call(arguments);});
+        var flipped = flip(f);
+
+        expect(flipped).to.equal(f);
       });
 
 
@@ -738,6 +805,7 @@
       it('Returns a curried function (1)', function() {
         var f = function(x, y) {};
         var flipped = flip(f);
+
         expect(flipped.length).to.equal(1);
         expect(flipped(1).length).to.equal(1);
       });
@@ -746,6 +814,7 @@
       it('Returns a curried function (2)', function() {
         var f = curry(function(x, y) {});
         var flipped = flip(f);
+
         expect(flipped.length).to.equal(1);
         expect(flipped(1).length).to.equal(1);
       });
@@ -754,6 +823,7 @@
       it('flip works correctly (1)', function() {
         var f = function(x, y) {return [].slice.call(arguments);};
         var flipped = flip(f);
+
         expect(flipped(1, 2)).to.deep.equal(f(2, 1));
         expect(flipped('a', 'b')).to.deep.equal(f('b', 'a'));
       });
@@ -762,6 +832,7 @@
       it('flip works correctly (2)', function() {
         var f = curry(function(x, y) {return [].slice.call(arguments);});
         var flipped = flip(f);
+
         expect(flipped(1)(2)).to.deep.equal(f(2)(1));
         expect(flipped('a')('b')).to.deep.equal(f('b')('a'));
       });
