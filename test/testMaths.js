@@ -21,7 +21,7 @@
                                'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
                                'greaterThan', 'greaterThanEqual', 'leftShift',
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
-                               'bitwiseOr', 'bitwiseXor'];
+                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -89,6 +89,21 @@
 
 
         testCurriedFunction(test.func, funcUnderTest, [3, 4]);
+      });
+    });
+
+
+    describe('bitwiseNot', function() {
+      var bitwiseNot = maths.bitwiseNot;
+
+
+      it('bitwiseNot works as expected (1)', function() {
+        expect(bitwiseNot(1)).to.equal(~1);
+      });
+
+
+      it('bitwiseNot works as expected (2)', function() {
+        expect(bitwiseNot(-43)).to.equal(~(-43));
       });
     });
   };

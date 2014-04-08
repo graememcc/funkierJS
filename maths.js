@@ -190,9 +190,20 @@
     });
 
 
+    /*
+     * bitwiseNot: a wrapper around the bitwise not (~) operator
+     *
+     */
+
+    var bitwiseNot = curry(function(x) {
+      return ~x;
+    });
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
+      bitwiseNot: bitwiseNot,
       bitwiseOr: bitwiseOr,
       bitwiseXor: bitwiseXor,
       div: div,
