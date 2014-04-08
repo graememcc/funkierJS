@@ -120,12 +120,23 @@
     });
 
 
+    /*
+     * greaterThanEqual: a wrapper around the greater than or equal (>=) operator
+     *
+     */
+
+    var greaterThanEqual = curry(function(x, y) {
+      return x >= y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
       divide: divide,
       exp: exp,
       greaterThan: greaterThan,
+      greaterThanEqual: greaterThanEqual,
       lessThan: lessThan,
       lessThanEqual: lessThanEqual,
       log: log,
