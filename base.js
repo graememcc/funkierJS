@@ -250,6 +250,14 @@
     });
 
 
+    /*
+     * sectionLeft: sectionLeft is a synonym for applyFunc.
+     *
+     */
+
+    var sectionLeft = applyFunc;
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -259,7 +267,8 @@
       curry: curry,
       curryWithArity: curryWithArity,
       flip: flip,
-      id: id
+      id: id,
+      sectionLeft: sectionLeft
     };
 
 

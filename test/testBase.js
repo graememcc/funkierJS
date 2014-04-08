@@ -18,7 +18,7 @@
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
                                'constant', 'constant0', 'composeMany', 'flip',
-                               'applyFunc'];
+                               'applyFunc', 'sectionLeft'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -911,6 +911,17 @@
       (function() {
         testCurriedFunction('applyFunc', applyFunc, [id, 42]);
       })();
+    });
+
+
+    describe('sectionLeft', function() {
+      var sectionLeft = base.sectionLeft;
+      var applyFunc = base.applyFunc;
+
+
+      it('sectionLeft is a synonym for applyFunc', function() {
+        expect(sectionLeft).to.equal(applyFunc);
+      });
     });
   };
 
