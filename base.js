@@ -31,6 +31,7 @@
      *
      * If you need a function to accept a specific number of arguments, where that number is different
      * from the function's length property, use curryWithArity instead.
+     *
      */
 
     var curry = function(fn) {
@@ -59,6 +60,7 @@
      * This avoids unexpected behaviour triggered by supplying optional arguments. Functions accepting
      * optional arguments effectively represent a family of functions with different type-signatures,
      * so each variant should be treated seperately.
+     *
      */
 
     var curryWithArity = function(length, fn) {
