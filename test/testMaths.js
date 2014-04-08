@@ -20,7 +20,7 @@
       var expectedFunctions = ['add', 'subtract', 'multiply', 'divide', 'exp',
                                'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
                                'greaterThan', 'greaterThanEqual', 'leftShift',
-                               'rightShift', 'rightShiftZero'];
+                               'rightShift', 'rightShiftZero', 'bitwiseAnd'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -61,7 +61,9 @@
       {func: 'rightShift', test1: {val1: 2, val2: 1, result: 2 >> 1},
        test2: {val1: 168, val2: 2, result: 168 >> 2}},
       {func: 'rightShiftZero', test1: {val1: 168, val2: 2, result: 168 >>> 2},
-       test2: {val1: -15, val2: 1, result: -15 >>> 1}}
+       test2: {val1: -15, val2: 1, result: -15 >>> 1}},
+      {func: 'bitwiseAnd', test1: {val1: 1, val2: 0, result: 1 & 0},
+       test2: {val1: 0x3a, val2: 0x4b, result: 0x3a & 0x4b}}
     ];
 
 

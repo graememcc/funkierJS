@@ -160,8 +160,19 @@
     });
 
 
+    /*
+     * bitwiseAnd: a wrapper around the bitwise and (&) operator
+     *
+     */
+
+    var bitwiseAnd = curry(function(x, y) {
+      return x & y;
+    });
+
+
     var exported = {
       add: add,
+      bitwiseAnd: bitwiseAnd,
       div: div,
       divide: divide,
       exp: exp,
