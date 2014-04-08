@@ -329,6 +329,16 @@
     });
 
 
+    /*
+     * notEqual: tests non-identity (!=) on its two arguments
+     *
+     */
+
+    var notEqual = curry(function(x, y) {
+      return x != y;
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -341,6 +351,7 @@
       flip: flip,
       getRealArity: getRealArity,
       id: id,
+      notEqual: notEqual,
       sectionLeft: sectionLeft,
       sectionRight: sectionRight,
       strictEquals: strictEquals
