@@ -4,8 +4,9 @@
 
   var makeModule = function(require, exports) {
     var base = require('./base');
+    var logical = require('./logical');
 
-    var imports = [base];
+    var imports = [base, logical];
     var exportedFns = {};
 
     // Export our imports

@@ -15,9 +15,11 @@
 
     // Import submodules
     var base = require('../base');
+    var logical = require('../logical');
 
 
-    var imports = [{name: 'base', val: base}];
+    var imports = [{name: 'base', val: base},
+                   {name: 'logical', val: logical}];
 
 
     describe('Funkier exports', function() {
