@@ -200,6 +200,9 @@
     });
 
 
+    // XXX Do we want a notion of Orderable like Haskell, and so have
+    // min and max accept non-numeric types?
+
     /*
      * min: a wrapper around Math.min
      *
@@ -207,6 +210,15 @@
 
     // min has a spec mandated length of 2, so we can simply...
     var min = curry(Math.min);
+
+
+    /*
+     * max: a wrapper around Math.max
+     *
+     */
+
+    // max has a spec mandated length of 2, so we can simply...
+    var max = curry(Math.max);
 
 
     var exported = {
@@ -225,6 +237,7 @@
       lessThanEqual: lessThanEqual,
       log: log,
       min: min,
+      max: max,
       multiply: multiply,
       rem: rem,
       rightShift: rightShift,
