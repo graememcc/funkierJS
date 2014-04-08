@@ -44,7 +44,7 @@
         var message = testData.message;
 
         var curried = curry(fn);
-        testCurriedFunction(curried, args, fn, args, message);
+        testCurriedFunction(message, curried, args, fn);
       });
 
 
@@ -146,7 +146,7 @@
         var message = testData.message;
 
         var curried = curryWithArity(args.length, fn);
-        testCurriedFunction(curried, args, fn, args, message);
+        testCurriedFunction(message, curried, args, fn);
       });
 
 
@@ -156,7 +156,7 @@
         var fn = function(a, b) {return a + b;};
         var args = {firstArgs: [fn.length, fn], thenArgs: [41, 1]};
         var message = 'curryWithArity';
-        testCurriedFunction(curryWithArity, [fn.length, fn], curryWithArity, args, message);
+        testCurriedFunction(message, curryWithArity, args);
       }());
 
 
@@ -353,7 +353,7 @@
         var fn = function(a) {return a + 1;};
         var args = {firstArgs: [fn, fn], thenArgs: [1]};
         var message = 'compose';
-        testCurriedFunction(compose, [fn, fn], compose, args, message);
+        testCurriedFunction(message, compose, args);
       }());
 
 
@@ -364,7 +364,7 @@
         var composed = compose(fn, fn2);
         var args = [1];
         var message = 'Composed function';
-        testCurriedFunction(composed, args, composed, args, message);
+        testCurriedFunction(message, composed, args);
       }());
     });
 
@@ -435,10 +435,8 @@
         var value = test.value;
 
         it('constant works correctly for value of type ' + name, function() {
-          var fn = constant(value);
-
           tests.forEach(function(test) {
-            expect(fn(test.value)).to.equal(value);
+            expect(constant(value, test.value)).to.equal(value);
           });
         });
 
@@ -449,6 +447,11 @@
 
         it('constant returns value immediately when called with two arguments, with first of type ' + name, function() {
           expect(constant(value, 'x')).to.equal(value);
+        });
+
+        tests.forEach(function(test) {
+          testCurriedFunction('constant of type ' + name + ' called with type ' + test.name, constant,
+                              [value, test.value]);
         });
       });
     });
@@ -542,7 +545,7 @@
       });
 
 
-      it('composeMany returns original function if supplied one function of arity 1', function() {
+      it('composeMany returns curried original function if supplied one function of arity 1', function() {
         var f = function(x) {return [].slice.call(arguments);};
         var g = composeMany([f]);
         expect(g(42)).to.deep.equal(f(42));
@@ -550,7 +553,7 @@
       });
 
 
-      it('composeMany returns original function curried, if supplied one function of arity > 1', function() {
+      it('composeMany returns curried original function if supplied one function of arity > 1', function() {
         var f = function(x, y) {return x + y;};
         var g = composeMany([f]);
 
@@ -565,7 +568,7 @@
         var compose = base.compose;
         var f = function(x) {return x + 1;};
         var g = function(x) {return x * 2;};
-        var composeM= composeMany([f, g]);
+        var composeM = composeMany([f, g]);
         var composed = compose(f, g);
 
         expect(composeM.length).to.equal(composed.length);

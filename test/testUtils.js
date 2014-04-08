@@ -54,7 +54,8 @@
     // There are a number of checks we want to perform on curried functions when testing
     // the 'curry' function. The same checks apply when testing other library functions that we expect
     // to be curried. We generate these tests automatically.
-    var testCurriedFunction = function(curried, curriedArgs, original, originalArgs, message) {
+    var testCurriedFunction = function(message, curried, originalArgs, original) {
+
       // Many of the functions being tested will themselves return functions. This means we generally
       // won't be able to test equality of return values. If originalArgs is an array, then we assume
       // that the function under test does indeed return a primitive value. Otherwise, we assume it is
@@ -62,6 +63,12 @@
       // 'thenArgs': the args to apply to the resulting function. (Yes, we assume that the returned function
       // itself returns primitive values)
 
+      // I chose to make original optional. There are really two use cases: check this curried function behaves
+      // like this uncurried function, and check this curried function—which I have verified works when called with
+      // all args—behaves correctly when partially applied.
+      // Initially, I thought original would be mandatory, but realised this will often result in having to
+      // reimplement the function under test.
+      original = original || curried;
       var args = Array.isArray(originalArgs) ? originalArgs : originalArgs.firstArgs;
       var thenArgs = Array.isArray(originalArgs) ? null : originalArgs.thenArgs;
       var expected = thenArgs === null ? original.apply(null, args) : original.apply(null, args).apply(null, thenArgs);
@@ -74,18 +81,22 @@
         it(message + ' has length 1', checkLength(curried));
 
         // Called with outstanding arg === original result
-        var length = curriedArgs.length;
-        if (length === 1) {
-          it(message + ' final curried function returns correct value',
+        // Note: if curried === original then these tests should be redundant, the caller should
+        // have already tested the function with all arguments supplied
+        if (curried !== original) {
+          var length = curriedArgs.length;
+          if (length === 1) {
+            it(message + ' final curried function returns correct value',
+                callWithRemaining(curried, curriedArgs, expected, thenArgs));
+            return;
+          }
+
+          // Can call with all remaining values and get final value?
+          it(message + ' called with all remaining arguments returns correct value',
               callWithRemaining(curried, curriedArgs, expected, thenArgs));
-          return;
         }
 
-        // Can call with all remaining values and get final value?
-        it(message + ' called with all remaining arguments returns correct value',
-            callWithRemaining(curried, curriedArgs, expected, thenArgs));
-
-        // Carry out these tests again with various numbers of arguments applied
+        // Perform these tests again with various numbers of arguments applied
         for (var i = 0, l = curriedArgs.length - 1; i < l; i++) {
           var newCurried = curried.apply(null, curriedArgs.slice(0, i + 1));
           var newRemaining = curriedArgs.slice(i + 1);
@@ -94,7 +105,7 @@
         }
       };
 
-      performTests(curried, curriedArgs, message);
+      performTests(curried, args, message);
     };
 
 
