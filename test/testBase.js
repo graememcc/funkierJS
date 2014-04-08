@@ -17,7 +17,8 @@
 
     describe('Base exports', function() {
       var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
-                               'constant', 'constant0', 'composeMany', 'flip'];
+                               'constant', 'constant0', 'composeMany', 'flip',
+                               'applyFunc'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -836,6 +837,80 @@
         expect(flipped(1)(2)).to.deep.equal(f(2)(1));
         expect(flipped('a')('b')).to.deep.equal(f('b')('a'));
       });
+    });
+
+
+    describe('applyFunc', function() {
+      var applyFunc = base.applyFunc;
+      var curry = base.curry;
+      var id = base.id;
+
+
+      it('Calls f with x (1)', function() {
+        var f = function(x) {f.args = [].slice.call(arguments);};
+        f.args = null;
+        // Lack of assignment here is deliberate: we are interested in the side effect
+        var val = 42;
+        applyFunc(f, val);
+
+        expect(f.args).to.deep.equal([val]);
+      });
+
+
+      it('Calls f with x (2)', function() {
+        var f = function(x) {f.args = [].slice.call(arguments);};
+        f.args = null;
+        // Lack of assignment here is deliberate: we are interested in the side effect
+        var val = 'mozilla';
+        applyFunc(f, val);
+
+        expect(f.args).to.deep.equal([val]);
+      });
+
+
+      it('Returns f(x) (1)', function() {
+        var val = 42;
+        var result = applyFunc(id, val);
+
+        expect(result).to.equal(id(val));
+      });
+
+
+      it('Returns f(x) (2)', function() {
+        var val = 42;
+        var f = function(x) {return x + 1;};
+        var result = applyFunc(f, val);
+
+        expect(result).to.equal(f(val));
+      });
+
+
+      it('Returns f(x) (3)', function() {
+        var val = 42;
+        var f = curry(function(x, y) {return x + y;});
+        var result = applyFunc(f, val);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(val, 10));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var val = 42;
+        var f = function(x, y) {return x + y;};
+        var result = applyFunc(f, val);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(val, 10));
+      });
+
+
+      // applyFunc should be curried
+      (function() {
+        testCurriedFunction('applyFunc', applyFunc, [id, 42]);
+      })();
     });
   };
 

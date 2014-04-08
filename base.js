@@ -236,7 +236,22 @@
     };
 
 
+    /*
+     * applyFunc: apply the given function f with the given argument x, returning the result.
+     *            The given function will be curried if it has arity > 1
+     *
+     * Thus, applyFunc(f, x) = f(x)
+     *
+     */
+
+    var applyFunc = curry(function(f, x) {
+      f = curry(f);
+      return f(x);
+    });
+
+
     var exported = {
+      applyFunc: applyFunc,
       compose: compose,
       composeMany: composeMany,
       constant: constant,
