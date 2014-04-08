@@ -200,6 +200,15 @@
     });
 
 
+    /*
+     * min: a wrapper around Math.min
+     *
+     */
+
+    // min has a spec mandated length of 2, so we can simply...
+    var min = curry(Math.min);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -215,6 +224,7 @@
       lessThan: lessThan,
       lessThanEqual: lessThanEqual,
       log: log,
+      min: min,
       multiply: multiply,
       rem: rem,
       rightShift: rightShift,

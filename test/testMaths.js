@@ -21,7 +21,7 @@
                                'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
                                'greaterThan', 'greaterThanEqual', 'leftShift',
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
-                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot'];
+                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -105,6 +105,35 @@
       it('bitwiseNot works as expected (2)', function() {
         expect(bitwiseNot(-43)).to.equal(~(-43));
       });
+    });
+
+
+    describe('min', function() {
+      var min = maths.min;
+      var getRealArity = base.getRealArity;
+
+
+      it('min has arity of 2', function() {
+        expect(getRealArity(min)).to.equal(2);
+      });
+
+
+      it('min works as expected (1)', function() {
+        expect(min(1, 2)).to.equal(Math.min(1, 2));
+      });
+
+
+      it('min works as expected (2)', function() {
+        expect(min(42, 210)).to.equal(Math.min(42, 210));
+      });
+
+
+      it('min discards excess arguments', function() {
+        expect(min(42, 45, 1)).to.equal(Math.min(42, 45));
+      });
+
+
+      testCurriedFunction('min', min, [5, 4]);
     });
   };
 
