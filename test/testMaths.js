@@ -17,7 +17,7 @@
 
 
     describe('Maths exports', function() {
-      var expectedFunctions = ['add'];
+      var expectedFunctions = ['add', 'subtract'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -27,21 +27,33 @@
     });
 
 
-    describe('add', function() {
-      var add = maths.add;
+    // The binary tests will have a similar structure. Generate them automatically.
+    var binaryTests = [
+      {func: 'add', test1: {val1: 1, val2: 2, result: 1 + 2},
+       test2: {val1: 32, val2: 10, result: 32 + 10}},
+      {func: 'subtract', test1: {val1: 1, val2: 2, result: 1 - 2},
+       test2: {val1: 52, val2: 10, result: 52 - 10}}
+    ];
 
 
-      it('add works as expected (1)', function() {
-        expect(add(1, 2)).to.equal(1 + 2);
+    binaryTests.forEach(function(test) {
+      describe(test.func, function() {
+        var funcUnderTest = maths[test.func];
+        var test1 = test.test1;
+        var test2 = test.test2;
+
+        it(test.func + ' works as expected (1)', function() {
+          expect(funcUnderTest(test1.val1, test1.val2)).to.equal(test1.result);
+        });
+
+
+        it(test.func + ' works as expected (2)', function() {
+          expect(funcUnderTest(test2.val1, test2.val2)).to.equal(test2.result);
+        });
+
+
+        testCurriedFunction(test.func, funcUnderTest, [3, 4]);
       });
-
-
-      it('add works as expected (2)', function() {
-        expect(add(32, 10)).to.equal(32 + 10);
-      });
-
-
-      testCurriedFunction('add', add, [3, 4]);
     });
   };
 

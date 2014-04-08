@@ -18,8 +18,19 @@
     });
 
 
+    /*
+     * subtract: a wrapper around binary subtraction
+     *
+     */
+
+    var subtract = curry(function(x, y) {
+      return x - y;
+    });
+
+
     var exported = {
-      add: add
+      add: add,
+      subtract: subtract
     };
 
 
