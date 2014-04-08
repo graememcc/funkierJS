@@ -256,6 +256,8 @@
      *
      */
 
+    // XXX should we supply a vararg variant of composeMany?
+
     var composeMany = function(fnArray) {
       if (fnArray.length === 0)
         throw new TypeError('composeMany called with empty array');
