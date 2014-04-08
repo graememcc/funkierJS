@@ -180,10 +180,21 @@
     });
 
 
+    /*
+     * bitwiseXor: a wrapper around the bitwise xor (^) operator
+     *
+     */
+
+    var bitwiseXor = curry(function(x, y) {
+      return x ^ y;
+    });
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
       bitwiseOr: bitwiseOr,
+      bitwiseXor: bitwiseXor,
       div: div,
       divide: divide,
       exp: exp,
