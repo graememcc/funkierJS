@@ -339,6 +339,16 @@
     });
 
 
+    /*
+     * strictNotEqual: tests strict non-identity (!==) on its two arguments
+     *
+     */
+
+    var strictNotEqual = curry(function(x, y) {
+      return x !== y;
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -354,7 +364,8 @@
       notEqual: notEqual,
       sectionLeft: sectionLeft,
       sectionRight: sectionRight,
-      strictEquals: strictEquals
+      strictEquals: strictEquals,
+      strictNotEqual: strictNotEqual
     };
 
 
