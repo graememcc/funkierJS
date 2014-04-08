@@ -150,6 +150,16 @@
     });
 
 
+    /*
+     * rightShiftZero: a wrapper around the zero-fill right shift (>>>) operator
+     *
+     */
+
+    var rightShiftZero = curry(function(x, y) {
+      return x >>> y;
+    });
+
+
     var exported = {
       add: add,
       div: div,
@@ -164,6 +174,7 @@
       multiply: multiply,
       rem: rem,
       rightShift: rightShift,
+      rightShiftZero: rightShiftZero,
       subtract: subtract
     };
 
