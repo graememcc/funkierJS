@@ -16,10 +16,12 @@
     // Import submodules
     var base = require('../base');
     var logical = require('../logical');
+    var maths = require('../maths');
 
 
     var imports = [{name: 'base', val: base},
-                   {name: 'logical', val: logical}];
+                   {name: 'logical', val: logical},
+                   {name: 'maths', val: maths}];
 
 
     describe('Funkier exports', function() {
