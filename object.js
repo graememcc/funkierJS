@@ -98,12 +98,27 @@
     });
 
 
+    /*
+     * isPrototypeOf: a curried wrapper around Object.prototype.isPrototypeOf.
+     *                Takes two objects: the prototype object, and the object whose
+     *                prototype chain you wish to check.
+     *
+     * var Constructor = function() {};
+     * isPrototypeOf(Constructor.prototype, new Constructor()); // true
+     * isPrototypeOf(Function.prototype, {}); // false
+     *
+     */
+
+    var isPrototypeOf = flip(callPropWithArity('isPrototypeOf', 1));
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
-      instanceOf: instanceOf
+      instanceOf: instanceOf,
+      isPrototypeOf: isPrototypeOf
     };
 
 

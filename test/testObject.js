@@ -20,7 +20,7 @@
 
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-                               'hasProperty', 'instanceOf'];
+                               'hasProperty', 'instanceOf', 'isPrototypeOf'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -276,6 +276,80 @@
 
 
       testCurriedFunction('instanceOf', instanceOf, [Object, {}]);
+    });
+
+
+    describe('isPrototypeOf', function() {
+      var isPrototypeOf = object.isPrototypeOf;
+
+
+      it('isPrototypeOf has correct arity', function() {
+        expect(getRealArity(isPrototypeOf)).to.equal(2);
+      });
+
+
+      it('Wraps Object.prototype.isPrototypeOf', function() {
+        // Temporary monkey-patch
+        var original = Object.prototype.isPrototypeOf;
+        var fn = function() {fn.called = true;};
+        fn.called = false;
+        Object.prototype.isPrototypeOf = fn;
+        var obj = {funkier: 1};
+        isPrototypeOf({}, obj);
+
+        expect(fn.called).to.be.true;
+        Object.prototype.isPrototypeOf = original;
+      });
+
+
+      it('Calls Object.prototype.isPrototypeOf on correct object', function() {
+        // Temporary monkey-patch
+        var original = Object.prototype.isPrototypeOf;
+        var fn = function() {fn.thisObj = this;};
+        fn.thisObj = null;
+        Object.prototype.isPrototypeOf = fn;
+        var protoCheck = {};
+        var obj = {funkier: 1};
+        isPrototypeOf(protoCheck, obj);
+
+        expect(fn.thisObj).to.equal(protoCheck);
+        Object.prototype.isPrototypeOf = original;
+      });
+
+
+      it('Works correctly (1)', function() {
+        expect(isPrototypeOf(Object.prototype, {})).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Constructor.prototype, obj)).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        Constructor.prototype = new Proto();
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Proto.prototype, obj)).to.be.true;
+      });
+
+
+      it('Works correctly (4)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Proto.prototype, obj)).to.be.false;
+      });
+
+
+      testCurriedFunction('isPrototypeOf', isPrototypeOf, [Object.prototype, {}]);
     });
   };
 
