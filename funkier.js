@@ -6,8 +6,9 @@
     var base = require('./base');
     var logical = require('./logical');
     var maths = require('./maths');
+    var object = require('./object');
 
-    var imports = [base, logical, maths];
+    var imports = [base, logical, maths, object];
     var exportedFns = {};
 
     // Export our imports
