@@ -10,37 +10,61 @@
 
     // Deeply check two objects for equality (ignoring functions)
     var checkObjectEquality = function(obj1, obj2) {
-      if (typeof(obj1) !== 'object' || typeof(obj2) !== 'object')
+      var obj1Keys = Object.keys(obj1);
+      var obj2Keys = Object.keys(obj2);
+
+      if (obj1Keys.length !== obj2Keys.length)
         return false;
 
-      var lhsKeys = Object.keys(obj1);
-      var rhsKeys = Object.keys(obj2);
-
-      if (lhsKeys.length !== rhsKeys.length)
-        return false;
-
-      return lhsKeys.every(function(k) {
-        var equality = false;
-        switch (typeof(lhs[k])) {
-          case 'object':
-            equality = checkObjectEquality(obj1[k], obj2[k]);
-            break;
-
-          case 'function':
-            // We can't check function equality, so just wing it
-            equality = true;
-            break;
-
-          default:
-            equality = obj1[k] === obj2[k];
-        }
-
-        return equality;
+      return obj1Keys.every(function(k, i) {
+        return checkEquality(obj1[k], obj2[k], true);
       });
     };
 
 
-    // Utility functions to generate common tests
+    // Deeply check two arrays for equality (ignoring functions)
+    var checkArrayEquality = function(arr1, arr2) {
+      if (arr1.length !== arr2.length)
+        return false;
+
+      return arr1.every(function(val, i) {
+        return checkEquality(val, arr2[i], true);
+      });
+    };
+
+
+    // Deeply check two values for equality. If acceptFunctions is true,
+    // then two functions will blindly be assumed to be equal.
+    var checkEquality = function(obj1, obj2, acceptFunctions) {
+      acceptFunctions = acceptFunctions || false;
+
+      if (typeof(obj1) !== typeof(obj2))
+        return false;
+
+      var objType = typeof(obj1);
+
+      // If the initial result is a function, then we've written
+      // the test incorrectly
+      if (objType === 'function' && !acceptFunctions)
+        throw new Error('Test error: trying to compare functions!');
+
+      if (objType === 'object') {
+        if (Array.isArray(obj1)) {
+          if (!Array.isArray(obj2))
+            return false;
+          return checkArrayEquality(obj1, obj2);
+        } else {
+          return checkObjectEquality(obj1, obj2);
+        }
+      } else if (objType === 'function') {
+        // We can't check functions, so just wing it
+        return true;
+      } else {
+        return obj1 === obj2;
+      }
+    };
+
+
     var exportsProperty = function(obj, prop) {
       return function() {
         expect(obj).to.have.property(prop);
@@ -142,6 +166,8 @@
 
 
     module.exports = {
+      checkArrayEquality: checkArrayEquality,
+      checkEquality: checkEquality,
       checkObjectEquality: checkObjectEquality,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
