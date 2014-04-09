@@ -58,7 +58,7 @@
 
 
     /*
-     * hasOwnProperty: a curried wrapper around Object.prototype.hasOwnProperty. Takes an
+     * hasOwnProperty: a curried wrapper around Object.prototype.hasOwnProperty. Takes a
      *                 string containing a property name and an object.
      *
      * hasOwnProperty('funkier', {funkier: 1}); // true
@@ -69,10 +69,25 @@
     var hasOwnProperty = callPropWithArity('hasOwnProperty', 1);
 
 
+    /*
+     * hasProperty: a curried wrapper around the 'in' operator. Takes a
+     *              string containing a property name and an object.
+     *
+     * hasProperty('funkier', {funkier: 1}); // true
+     * hasProperty('toString', {funkier: 1}); // true
+     *
+     */
+
+    var hasProperty = curry(function(prop, object) {
+      return prop in object;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
-      hasOwnProperty: hasOwnProperty
+      hasOwnProperty: hasOwnProperty,
+      hasProperty: hasProperty
     };
 
 

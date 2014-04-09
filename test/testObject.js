@@ -19,7 +19,8 @@
 
 
     describe('Object exports', function() {
-      var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty'];
+      var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
+                               'hasProperty'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -199,6 +200,37 @@
 
 
       testCurriedFunction('hasOwnProperty', hasOwnProperty, ['funkier', {funkier: 1}]);
+    });
+
+
+    describe('hasProperty', function() {
+      var hasProperty = object.hasProperty;
+
+
+      it('hasProperty has correct arity', function() {
+        expect(getRealArity(hasProperty)).to.equal(2);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {funkier: 1};
+        var result = hasProperty('funkier', obj);
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.funkier = 1;
+        var obj = new Constructor();
+        var result = hasProperty('funkier', obj);
+
+        expect(result).to.be.true;
+      });
+
+
+      testCurriedFunction('hasProperty', hasProperty, ['funkier', {funkier: 1}]);
     });
   };
 
