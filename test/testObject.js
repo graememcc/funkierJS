@@ -16,12 +16,13 @@
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var checkEquality = testUtils.checkEquality;
 
 
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
-                               'createObjectWithProps'];
+                               'createObjectWithProps', 'defineProperty'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -446,6 +447,57 @@
 
 
       testCurriedFunction('createObjectWithProps', createObjectWithProps, [{}, descriptor]);
+    });
+
+
+    describe('defineProperty', function() {
+      var defineProperty = object.defineProperty;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(defineProperty)).to.equal(3);
+      });
+
+
+      it('Returns the object', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        var result = defineProperty('prop', descriptor, obj);
+
+        expect(result).to.equal(obj);
+      });
+
+
+      it('Objects have the relevant property after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+
+        expect(obj.hasOwnProperty('prop')).to.be.true;
+      });
+
+
+      it('Objects have the property with the correct value after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+
+        expect(checkEquality(obj.prop, descriptor.value)).to.be.true;
+      });
+
+
+      it('The new property has the correct descriptor after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+        var actualDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
+
+        expect(checkEquality(actualDescriptor, descriptor)).to.be.true;
+      });
+
+
+      // defineProperty should be curried
+      testCurriedFunction('defineProperty', defineProperty, ['p', {value: 7}, {}]);
     });
   };
 

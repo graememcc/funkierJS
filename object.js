@@ -8,6 +8,7 @@
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;
     var flip = base.flip;
+    var permuteLeft = base.permuteLeft;
 
     /*
      * callPropWithArity: takes a property name, and an arity. Returns a curried function
@@ -146,11 +147,21 @@
     });
 
 
+    /*
+     * defineProperty: a curried wrapper around Object.defineProperty. Takes a property name,
+     *                 a property descriptor, and an object. Returns the object.
+     *
+     */
+
+    var defineProperty = permuteLeft(Object.defineProperty);
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       createObject: createObject,
       createObjectWithProps: createObjectWithProps,
+      defineProperty: defineProperty,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
