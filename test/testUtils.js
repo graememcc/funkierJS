@@ -41,6 +41,10 @@
       if (typeof(obj1) !== typeof(obj2))
         return false;
 
+      // Short-circuit if we can (needed for the 'constant' tests)
+      if (obj1 === obj2)
+        return true;
+
       var objType = typeof(obj1);
 
       // If the initial result is a function, then we've written
@@ -52,7 +56,10 @@
         if (Array.isArray(obj1)) {
           if (!Array.isArray(obj2))
             return false;
+
           return checkArrayEquality(obj1, obj2);
+        } else if (obj1 === null || obj2 === null) {
+          return obj1 === obj2;
         } else {
           return checkObjectEquality(obj1, obj2);
         }
@@ -60,7 +67,8 @@
         // We can't check functions, so just wing it
         return true;
       } else {
-        return obj1 === obj2;
+        // We already know obj1 !== obj2
+        return false;
       }
     };
 
@@ -96,11 +104,15 @@
 
     var callWithRemaining = function(curried, curriedArgs, expected, thenArgs) {
       var testPrimitive = function() {
-        expect(curried.apply(null, curriedArgs)).to.equal(expected);
+        var result = curried.apply(null, curriedArgs);
+
+        expect(checkEquality(result, expected)).to.be.true;
       };
 
       var testFunc = function() {
-        expect(curried.apply(null, curriedArgs).apply(null, thenArgs)).to.equal(expected);
+        var result = curried.apply(null, curriedArgs).apply(null, thenArgs);
+
+        expect(checkEquality(result, expected)).to.be.true;
       };
 
       return thenArgs === null ? testPrimitive : testFunc;
