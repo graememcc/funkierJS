@@ -20,7 +20,8 @@
 
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-                               'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject'];
+                               'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
+                               'createObjectWithProps'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -383,9 +384,115 @@
       it('Ignores superfluous parameters', function() {
         var obj = {funkier: 1};
         var result = createObject(obj,
-                      {prop1: {configurable: false, enumerable: false, writeable: false, value: 42}});
+                      {prop1: {configurable: false, enumerable: false, writable: false, value: 42}});
 
         expect(hasOwnProperty('prop1', result)).to.be.false;
+      });
+    });
+
+
+    describe('createObjectWithProps', function() {
+      var createObjectWithProps = object.createObjectWithProps;
+      var isPrototypeOf = object.isPrototypeOf;
+      var hasOwnProperty = object.hasOwnProperty;
+      var descriptor = {prop1: {configurable: false, enumerable: false, writable: false, value: 42}};
+
+
+      it('createObjectWithProps has correct arity', function() {
+        expect(getRealArity(createObjectWithProps)).to.equal(2);
+      });
+
+
+      it('Returns an object', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj, descriptor);
+
+        expect(result).to.be.a('object');
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj, descriptor);
+
+        expect(isPrototypeOf(obj, result)).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj, descriptor);
+
+        expect(hasOwnProperty('prop1', result)).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj, descriptor);
+
+        var descriptorProps = Object.keys(descriptor.prop1);
+        var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
+        var leftComparison = descriptorProps.every(function(p) {
+          return (p in actualDescriptor) && descriptor.prop1[p] === actualDescriptor[p];
+        });
+        var actualDescriptorProps = Object.keys(actualDescriptor);
+        var rightComparison = actualDescriptorProps.every(function(p) {
+          return (p in descriptor.prop1) && descriptor.prop1[p] === actualDescriptor[p];
+        });
+
+        expect(leftComparison && rightComparison).to.be.true;
+      });
+
+
+      // We cannot use testCurriedFunction, as createObjectWithProps produces an object, which
+      // will cause the equality check to fail
+
+
+      it('createObjectWithProps is curried (1)', function() {
+        expect(getRealArity(createObjectWithProps({}))).to.equal(1);
+      });
+
+
+      it('createObjectWithProps is curried (2)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj)(descriptor);
+
+        expect(result).to.be.a('object');
+      });
+
+
+      it('createObjectWithProps is curried (3)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj)(descriptor);
+
+        expect(isPrototypeOf(obj, result)).to.be.true;
+      });
+
+
+      it('createObjectWithProps is curried (4)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj)(descriptor);
+
+        expect(hasOwnProperty('prop1', result)).to.be.true;
+      });
+
+
+      it('createObjectWithProps is curried (5)', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj)(descriptor);
+
+        var descriptorProps = Object.keys(descriptor.prop1);
+        var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
+        var leftComparison = descriptorProps.every(function(p) {
+          return (p in actualDescriptor) && descriptor.prop1[p] === actualDescriptor[p];
+        });
+        var actualDescriptorProps = Object.keys(actualDescriptor);
+        var rightComparison = actualDescriptorProps.every(function(p) {
+          return (p in descriptor.prop1) && descriptor.prop1[p] === actualDescriptor[p];
+        });
+
+        expect(leftComparison && rightComparison).to.be.true;
       });
     });
   };

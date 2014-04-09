@@ -119,6 +119,8 @@
      * var newObj = createObject(obj);
      * isPrototypeOf(obj, newObj); // true
      *
+     * Note: this is an unary function that discards excess arguments. If you need to add new
+     * properties, use createObjectWithProps.
      */
 
     var createObject = curry(function(obj) {
@@ -126,10 +128,29 @@
     });
 
 
+    /*
+     * createObjectWithProps: creates an object whose internal prototype property is the given object,
+     *                        and which has the additional properties described in the given property
+     *                        descriptor object. The property descriptor object is of the form accepted
+     *                        by Object.create, Object.defineProperties etc.
+     *
+     * var obj = {};
+     * var newObj = createObjectWithProps(obj, {prop: configurable: false, enumerable: false, writeable: true, value: 1}});
+     * isPrototypeOf(obj, newObj); // true
+     * hasOwnProperty('prop', newObj); // true
+     *
+     */
+
+    var createObjectWithProps = curry(function(obj, descriptor) {
+      return Object.create(obj, descriptor);
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       createObject: createObject,
+      createObjectWithProps: createObjectWithProps,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
