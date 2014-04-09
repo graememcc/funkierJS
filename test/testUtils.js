@@ -8,6 +8,38 @@
     var expect = chai.expect;
 
 
+    // Deeply check two objects for equality (ignoring functions)
+    var checkObjectEquality = function(obj1, obj2) {
+      if (typeof(obj1) !== 'object' || typeof(obj2) !== 'object')
+        return false;
+
+      var lhsKeys = Object.keys(obj1);
+      var rhsKeys = Object.keys(obj2);
+
+      if (lhsKeys.length !== rhsKeys.length)
+        return false;
+
+      return lhsKeys.every(function(k) {
+        var equality = false;
+        switch (typeof(lhs[k])) {
+          case 'object':
+            equality = checkObjectEquality(obj1[k], obj2[k]);
+            break;
+
+          case 'function':
+            // We can't check function equality, so just wing it
+            equality = true;
+            break;
+
+          default:
+            equality = obj1[k] === obj2[k];
+        }
+
+        return equality;
+      });
+    };
+
+
     // Utility functions to generate common tests
     var exportsProperty = function(obj, prop) {
       return function() {
@@ -110,6 +142,7 @@
 
 
     module.exports = {
+      checkObjectEquality: checkObjectEquality,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
       testCurriedFunction: testCurriedFunction
