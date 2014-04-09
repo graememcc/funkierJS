@@ -22,7 +22,8 @@
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
-                               'createObjectWithProps', 'defineProperty', 'defineProperties'];
+                               'createObjectWithProps', 'defineProperty', 'defineProperties',
+                               'getOwnPropertyDescriptor'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -565,6 +566,55 @@
 
       // defineProperties should be curried
       testCurriedFunction('defineProperties', defineProperties, [descriptors, {}]);
+    });
+
+
+    describe('getOwnPropertyDescriptor', function() {
+      var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(getOwnPropertyDescriptor)).to.equal(2);
+      });
+
+
+      it('Returns undefined if property not present', function() {
+        expect(getOwnPropertyDescriptor('prop', {})).to.equal(undefined);
+      });
+
+
+      it('Returns undefined if property exists only on prototype', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+
+        expect(getOwnPropertyDescriptor('prop', obj)).to.equal(undefined);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var realDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
+        var descriptor = getOwnPropertyDescriptor('prop', obj);
+
+        expect(checkEquality(descriptor, realDescriptor)).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        // Let's use object itself as a reasonably complex object
+        var keys = Object.keys(object);
+        var allCorrect = keys.every(function(k) {
+          var realDescriptor = Object.getOwnPropertyDescriptor(object, k);
+          var descriptor = getOwnPropertyDescriptor(k, object);
+          return checkEquality(descriptor, realDescriptor);
+        });
+
+        expect(allCorrect).to.be.true;
+      });
+
+
+      testCurriedFunction('getOwnPropertyDescriptor', getOwnPropertyDescriptor, ['p', {p: 10}]);
     });
   };
 

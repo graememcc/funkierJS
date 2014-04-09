@@ -165,6 +165,17 @@
     var defineProperties = permuteLeft(Object.defineProperties);
 
 
+    /*
+     * getOwnPropertyDescriptor: a curried wrapper around Object.getOwnPropertyDescriptor.
+     *                           Takes the name of a property and an object. Returns the property
+     *                           descriptor only if the object itself has the given property, and
+     *                           undefined otherwise.
+     *
+     */
+
+    var getOwnPropertyDescriptor = flip(Object.getOwnPropertyDescriptor);
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -172,6 +183,7 @@
       createObjectWithProps: createObjectWithProps,
       defineProperty: defineProperty,
       defineProperties: defineProperties,
+      getOwnPropertyDescriptor: getOwnPropertyDescriptor,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
