@@ -57,9 +57,22 @@
     var callProp = flip(callPropWithArity)(0);
 
 
+    /*
+     * hasOwnProperty: a curried wrapper around Object.prototype.hasOwnProperty. Takes an
+     *                 string containing a property name and an object.
+     *
+     * hasOwnProperty('funkier', {funkier: 1}); // true
+     * hasOwnProperty('toString', {funkier: 1}); // false
+     *
+     */
+
+    var hasOwnProperty = callPropWithArity('hasOwnProperty', 1);
+
+
     var exported = {
       callProp: callProp,
-      callPropWithArity: callPropWithArity
+      callPropWithArity: callPropWithArity,
+      hasOwnProperty: hasOwnProperty
     };
 
 
