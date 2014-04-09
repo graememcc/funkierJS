@@ -20,7 +20,7 @@
 
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-                               'hasProperty', 'instanceOf', 'isPrototypeOf'];
+                               'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -350,6 +350,43 @@
 
 
       testCurriedFunction('isPrototypeOf', isPrototypeOf, [Object.prototype, {}]);
+    });
+
+
+    describe('createObject', function() {
+      var createObject = object.createObject;
+      var isPrototypeOf = object.isPrototypeOf;
+      var hasOwnProperty = object.hasOwnProperty;
+
+
+      it('createObject has correct arity', function() {
+        expect(getRealArity(createObject)).to.equal(1);
+      });
+
+
+      it('Returns an object', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj);
+
+        expect(result).to.be.a('object');
+      });
+
+
+      it('Works correctly', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj);
+
+        expect(isPrototypeOf(obj, result)).to.be.true;
+      });
+
+
+      it('Ignores superfluous parameters', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj,
+                      {prop1: {configurable: false, enumerable: false, writeable: false, value: 42}});
+
+        expect(hasOwnProperty('prop1', result)).to.be.false;
+      });
     });
   };
 

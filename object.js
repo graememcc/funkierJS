@@ -112,9 +112,24 @@
     var isPrototypeOf = flip(callPropWithArity('isPrototypeOf', 1));
 
 
+    /*
+     * createObject: creates an object whose internal prototype property is the given object.
+     *
+     * var obj = {};
+     * var newObj = createObject(obj);
+     * isPrototypeOf(obj, newObj); // true
+     *
+     */
+
+    var createObject = curry(function(obj) {
+      return Object.create(obj);
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
+      createObject: createObject,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
