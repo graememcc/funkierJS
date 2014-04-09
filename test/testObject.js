@@ -22,7 +22,7 @@
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
-                               'createObjectWithProps', 'defineProperty'];
+                               'createObjectWithProps', 'defineProperty', 'defineProperties'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -498,6 +498,73 @@
 
       // defineProperty should be curried
       testCurriedFunction('defineProperty', defineProperty, ['p', {value: 7}, {}]);
+    });
+
+
+    describe('defineProperties', function() {
+      var defineProperties = object.defineProperties;
+
+
+      // Test data
+      // Note: don't omit any optional properties, or we'll fail the equality check
+      var descriptors = {
+        prop1: {configurable: true, writable: false, enumerable: true, value: 42},
+        prop2: {configurable: false, writable: true, enumerable: false, value: 'funkier'},
+        prop3: {configurable: true, enumerable: true, get: function() {return false;}, set: undefined}
+      };
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(defineProperties)).to.equal(2);
+      });
+
+
+      it('Returns the object', function() {
+        var obj = {};
+        var result = defineProperties(descriptors, obj);
+
+        expect(result).to.equal(obj);
+      });
+
+
+      it('Objects have the relevant properties after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+        var allThere = newProps.every(function(p) {
+          return obj.hasOwnProperty(p);
+        });
+
+        expect(allThere).to.be.true;
+      });
+
+
+      it('Objects have the properties with the correct value after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+        var allCorrect = newProps.every(function(p) {
+          return checkEquality(obj[p], 'get' in descriptors[p] ? descriptors[p].get() : descriptors[p].value);
+        });
+
+        expect(allCorrect).to.be.true;
+      });
+
+
+      it('The new properties have the correct descriptors after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+        var allDescriptorsCorrect = newProps.every(function(p) {
+          return checkEquality(Object.getOwnPropertyDescriptor(obj, p), descriptors[p]);
+        });
+
+        expect(allDescriptorsCorrect).to.be.true;
+      });
+
+
+      // defineProperties should be curried
+      testCurriedFunction('defineProperties', defineProperties, [descriptors, {}]);
     });
   };
 

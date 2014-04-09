@@ -156,12 +156,22 @@
     var defineProperty = permuteLeft(Object.defineProperty);
 
 
+    /*
+     * defineProperties: a curried wrapper around Object.defineProperties. Takes an object whose
+     *                   properties are property descriptors, and an object. Returns the object.
+     *
+     */
+
+    var defineProperties = permuteLeft(Object.defineProperties);
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       createObject: createObject,
       createObjectWithProps: createObjectWithProps,
       defineProperty: defineProperty,
+      defineProperties: defineProperties,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
