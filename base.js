@@ -379,6 +379,36 @@
     });
 
 
+    /*
+     * permuteRight: takes a function, returns a curried function of the same arity
+     *               which takes the same parameters, except in a different position.
+     *               The last parameter of the original function will be the first parameter
+     *               of the new function, the first parameter of the original will be the second
+     *               parameter of the new function and so on. This function is essentially a no-op
+     *               for functions of arity 0 and 1, and equivalent to flip for functions of arity 2.
+     *
+     * For example, if:
+     *  f = function(x, y, z) {...};
+     *  g = permuteLeft(f);
+     * then f(a, b, c) and g(c, a, b) are equivalent.
+     *
+     */
+
+    var permuteRight = curry(function(f) {
+      var fLen = getRealArity(f);
+      f = curry(f);
+
+      if (fLen < 2)
+        return f;
+
+      return curryWithArity(fLen, function() {
+        var args = [].slice.call(arguments);
+        var newArgs = args.slice(1).concat([args[0]]);
+        return f.apply(null, newArgs);
+      });
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -393,6 +423,7 @@
       id: id,
       notEqual: notEqual,
       permuteLeft: permuteLeft,
+      permuteRight: permuteRight,
       sectionLeft: sectionLeft,
       sectionRight: sectionRight,
       strictEquals: strictEquals,
