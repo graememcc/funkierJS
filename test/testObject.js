@@ -7,6 +7,8 @@
     var expect = chai.expect;
 
     var base = require('../base');
+    var getRealArity = base.getRealArity;
+
     var object = require('../object');
 
     // Import utility functions
@@ -17,7 +19,7 @@
 
 
     describe('Object exports', function() {
-      var expectedFunctions = ['callPropWithArity'];
+      var expectedFunctions = ['callPropWithArity', 'callProp'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -29,7 +31,6 @@
 
     describe('callPropWithArity', function() {
       var callPropWithArity = object.callPropWithArity;
-      var getRealArity = base.getRealArity;
 
 
       it('callPropWithArity has correct \'real\' arity', function() {
@@ -41,6 +42,7 @@
       var makeReturnedCurriedArityTest = function(i) {
         return function() {
           var fn = callPropWithArity('prop', i);
+
           expect(fn.length).to.equal(1);
         };
       };
@@ -49,6 +51,7 @@
       var makeReturnedArityTest = function(i) {
         return function() {
           var fn = callPropWithArity('prop', i);
+
           expect(getRealArity(fn)).to.equal(i + 1);
         };
       };
@@ -106,6 +109,51 @@
       var testObj = {property: function() {return 42;}};
       var args = {firstArgs: ['property', 0], thenArgs: [testObj]};
       testCurriedFunction('callPropWithArity', callPropWithArity, args);
+    });
+
+
+    describe('callProp', function() {
+      var callProp = object.callProp;
+
+
+      it('callProp has correct arity', function() {
+        expect(getRealArity(callProp)).to.equal(1);
+      });
+
+
+      it('Returned function has correct arity', function() {
+        var fn = callProp('prop');
+
+        expect(fn.length).to.equal(1);
+      });
+
+
+      it('Returned function has correct \'real\' arity', function() {
+        var fn = callProp('prop');
+
+        expect(getRealArity(fn)).to.equal(1);
+      });
+
+
+      it('Returned function calls prop on given object', function() {
+        var obj = {called: false, calledProp: function() {this.called = true;}};
+        var caller = callProp('calledProp');
+        var result = caller(obj);
+
+        expect(obj.called).to.be.true;
+      });
+
+
+      it('Returned function returns correct result when called', function() {
+        var obj = {calledProp: function() {return [].slice.call(arguments);}};
+        var obj2 = {calledProp: function() {return 42;}};
+        var caller = callProp('calledProp');
+        var result = caller.call(null, obj);
+        var result2 = caller.call(null, obj2);
+
+        expect(result).to.deep.equal([]);
+        expect(result2).to.equal(42);
+      });
     });
   };
 

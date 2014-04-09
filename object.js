@@ -7,6 +7,7 @@
     var base = require('./base');
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;
+    var flip = base.flip;
 
     /*
      * callPropWithArity: takes a property name, and an arity. Returns a curried function
@@ -40,7 +41,24 @@
     });
 
 
+    /*
+     * callProp: A shorthand for callPropWithArity(prop, 0). Returns a function that takes an object
+     *           and calls the given property on the object.
+     *
+     * For example:
+     *   var myConstructor = function() {};
+     *   myConstructor.prototype.return42 = function() {return 42;};
+     *   var myObj = new myConstructor();
+     *   var call42 = callProp('return42');
+     *   call42(myObj);  // calls myObj.return42();
+     *
+     */
+
+    var callProp = flip(callPropWithArity)(0);
+
+
     var exported = {
+      callProp: callProp,
       callPropWithArity: callPropWithArity
     };
 
