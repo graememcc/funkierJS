@@ -20,7 +20,7 @@
 
     describe('Object exports', function() {
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-                               'hasProperty'];
+                               'hasProperty', 'instanceOf'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -231,6 +231,51 @@
 
 
       testCurriedFunction('hasProperty', hasProperty, ['funkier', {funkier: 1}]);
+    });
+
+
+    describe('instanceOf', function() {
+      var instanceOf = object.instanceOf;
+
+
+      it('instanceOf has correct arity', function() {
+        expect(getRealArity(instanceOf)).to.equal(2);
+      });
+
+
+      it('Works correctly (1)', function() {
+        expect(instanceOf(Object, {})).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        var obj = new Constructor();
+
+        expect(instanceOf(Constructor, obj)).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        Constructor.prototype = new Proto();
+        var obj = new Constructor();
+
+        expect(instanceOf(Proto, obj)).to.be.true;
+      });
+
+
+      it('Works correctly (4)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        var obj = new Constructor();
+
+        expect(instanceOf(Proto, obj)).to.be.false;
+      });
+
+
+      testCurriedFunction('instanceOf', instanceOf, [Object, {}]);
     });
   };
 

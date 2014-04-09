@@ -83,11 +83,27 @@
     });
 
 
+    /*
+     * instanceOf: a curried wrapper around the 'instanceof' operator. Takes a
+     *             constructor function and an object.
+     *
+     * var Constructor = function() {};
+     * instanceOf(Constructor, new Constructor()); // true
+     * instanceOf(Function, {}); // false
+     *
+     */
+
+    var instanceOf = curry(function(constructor, object) {
+      return object instanceof constructor;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       hasOwnProperty: hasOwnProperty,
-      hasProperty: hasProperty
+      hasProperty: hasProperty,
+      instanceOf: instanceOf
     };
 
 
