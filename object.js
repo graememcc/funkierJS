@@ -176,6 +176,16 @@
     var getOwnPropertyDescriptor = flip(Object.getOwnPropertyDescriptor);
 
 
+    /*
+     * extract: extract the given property from the given object. Equivalent to evaluating obj[prop].
+     *
+     */
+
+    var extract = curry(function(prop, obj) {
+      return obj[prop];
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -183,6 +193,7 @@
       createObjectWithProps: createObjectWithProps,
       defineProperty: defineProperty,
       defineProperties: defineProperties,
+      extract: extract,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,

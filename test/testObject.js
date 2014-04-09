@@ -23,7 +23,7 @@
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
-                               'getOwnPropertyDescriptor'];
+                               'getOwnPropertyDescriptor', 'extract'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -615,6 +615,50 @@
 
 
       testCurriedFunction('getOwnPropertyDescriptor', getOwnPropertyDescriptor, ['p', {p: 10}]);
+    });
+
+
+    describe('extract', function() {
+      var extract = object.extract;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(extract)).to.equal(2);
+      });
+
+
+      it('Returns undefined if property not present', function() {
+        expect(extract('prop', {})).to.equal(undefined);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var result = extract('prop', obj);
+
+        expect(checkEquality(obj.prop, result)).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: function() {}};
+        var result = extract('funkier', obj);
+
+        expect(checkEquality(obj.funkier, result)).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+        var result = extract('prop', obj);
+
+        expect(checkEquality(obj.prop, result)).to.be.true;
+      });
+
+
+      testCurriedFunction('extract', extract, ['p', {p: 10}]);
     });
   };
 
