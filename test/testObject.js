@@ -733,6 +733,7 @@
             setter('foo', val, b);
           };
 
+
           if (shouldThrow)
             expect(fn).to.throw(Error);
           else
@@ -753,6 +754,7 @@
           var fn = function() {
             setter('foo', val, a);
           };
+
 
           if (shouldThrow)
             expect(fn).to.throw(Error);
@@ -777,6 +779,7 @@
             setter('foo', val, a);
           };
 
+
           if (shouldThrow)
             expect(fn).to.throw(Error);
           else
@@ -784,7 +787,7 @@
         });
 
 
-        it('Behaves correctly if preventExtensions has been called', function() {
+        it('Behaves correctly if preventExtensions has been called (1)', function() {
           var a = {};
           Object.preventExtensions(a);
           var val = 42;
@@ -792,7 +795,6 @@
             setter('foo', val, a);
           };
 
-
           if (shouldThrow)
             expect(fn).to.throw(Error);
           else
@@ -800,7 +802,20 @@
         });
 
 
-        it('Behaves correctly if seal has been called', function() {
+        it('Behaves correctly if preventExtensions has been called (2)', function() {
+          var a = {foo: 1};
+          Object.preventExtensions(a);
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+          expect(fn).to.not.throw(Error);
+          expect(a.foo).to.equal(val);
+        });
+
+
+        it('Behaves correctly if seal has been called (1)', function() {
           var a = {};
           Object.seal(a);
           var val = 42;
@@ -812,6 +827,19 @@
             expect(fn).to.throw(Error);
           else
             expect(fn).to.not.throw(Error);
+        });
+
+
+        it('Behaves correctly if seal has been called (2)', function() {
+          var a = {foo: 1};
+          Object.seal(a);
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+          expect(fn).to.not.throw(Error);
+          expect(a.foo).to.equal(val);
         });
 
 
@@ -837,6 +865,7 @@
           var fn = function() {
             setter('foo', val, a);
           };
+
 
           if (shouldThrow)
             expect(fn).to.throw(Error);

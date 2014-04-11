@@ -256,7 +256,7 @@
       // might throw
       var writable = checkIfWritable(prop, obj);
 
-      if (writable && (Object.isSealed(obj) || Object.isFrozen(obj) || !Object.isExtensible(obj)))
+      if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
         writable = false;
 
       if (writable)
