@@ -186,14 +186,33 @@
     });
 
 
-    /*
-     * set: set the given property to the given value on the given object, returning the object.
-     *      Equivalent to evaluating obj[prop] = val. The property will be created if it doesn't
-     *      exist on the object. This function will not throw when the property is not writable,
-     *      when it has no setter function, or when the object is frozen. Likewise, if the property
-     *      must be created, it will not throw if the object is sealed, frozen, or Object.preventExtensions
-     *      has been called. It will fail silently in all these cases.
-     */
+    // A thousand curses!
+    // Per the ECMAScript spec, when setting a property on an object, the property descriptor - if it exists -
+    // should be checked. Setting should fail when writable=false or there is no setter in the descriptor.
+    // If the property descriptor doesn't exist on the property, then walk up the prototype chain making the
+    // same check.
+    //
+    // Versions of V8 up to 3.11.9 fail to walk up the prototype chain. Further, when it was fixed, the fix
+    // was gated behind a flag, which defaulted to false until 3.13.6, when the flag was flipped and V8 became
+    // spec-compliant. The flag was removed in 3.25.4.
+    //
+    // Nevertheless, despite the flag being flipped in 3.13.6, node continues by default to set the flag to
+    // spec-incompliant.
+    var engineHandlesProtosCorrectly = (function() {
+      var a = function(){};
+      Object.defineProperty(a.prototype, 'foo', {writable: false});
+      var compliant = false;
+      var b = new a();
+
+      try {
+        b.foo = 1;
+      } catch (e) {
+        compliant = true;
+      }
+
+      return compliant;
+    })();
+
 
     // Utility function for set: work backwards to Object.prototype, looking for a property descriptor
     var findPropertyDescriptor = function(prop, obj) {
@@ -215,7 +234,7 @@
     };
 
 
-    var set = curry(function(prop, val, obj) {
+    var checkIfWritable = function(prop, obj) {
       var writable = true;
       var descriptor = findPropertyDescriptor(prop, obj);
 
@@ -227,11 +246,51 @@
       if (descriptor && writable && 'set' in descriptor && descriptor.set === undefined)
         writable = false;
 
+      return writable;
+    };
+
+
+    var set = curry(function(prop, val, obj) {
+      // We manually emulate the operation of [[CanPut]], rather than just setting in a
+      // try-catch. We don't want to suppress other errors: for example the set function
+      // might throw
+      var writable = checkIfWritable(prop, obj);
+
       if (writable && (Object.isSealed(obj) || Object.isFrozen(obj) || !Object.isExtensible(obj)))
         writable = false;
 
       if (writable)
         obj[prop] = val;
+      return obj;
+    });
+
+
+    /*
+     * setOrThrow: set the given property to the given value on the given object, returning the object.
+     *             Equivalent to evaluating obj[prop] = val. The property will be created if it doesn't
+     *             exist on the object. This function will throw when the property is not writable,
+     *             when it has no setter function, or when the object is frozen. Likewise, if the property
+     *             must be created, it will throw if the object is sealed, frozen, or not extensible.
+     *
+     */
+
+    var setOrThrow = curry(function(prop, val, obj) {
+      // We *should* be able to just set the property, and trust the JS
+      // engine to throw. Sadly, this is untrue; see the comments for
+      // engineHandlesProtosCorrectly.
+
+      // Take the fast path if we can
+      if (engineHandlesProtosCorrectly) {
+        obj[prop] = val;
+      } else {
+        if (checkIfWritable(prop, Object.getPrototypeOf(obj))) {
+          obj[prop] = val;
+        } else {
+          // Spec says throw a TypeError
+          throw new TypeError('Setting property disallowed by prototype');
+        }
+      }
+
       return obj;
     });
 
@@ -249,7 +308,8 @@
       hasProperty: hasProperty,
       instanceOf: instanceOf,
       isPrototypeOf: isPrototypeOf,
-      set: set
+      set: set,
+      setOrThrow: setOrThrow
     };
 
 
