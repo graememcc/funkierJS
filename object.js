@@ -272,6 +272,8 @@
      *             when it has no setter function, or when the object is frozen. Likewise, if the property
      *             must be created, it will throw if the object is sealed, frozen, or not extensible.
      *
+     * If you don't want to throw when setting, use set.
+     *
      */
 
     var setOrThrow = curry(function(prop, val, obj) {
@@ -295,6 +297,26 @@
     });
 
 
+    /*
+     * modify: set the given property to the given value on the given object, returning the object.
+     *         Equivalent to evaluating obj[prop] = val. The property will *not* be created when the object
+     *         does not have the property, and will instead silently fail. In particular, the property will
+     *         not be created if it exists only in the prototype chain: hasOwnProperty(prop, obj) must be true.
+     *
+     *         This function will also not throw when the property is not writable, when it has no setter function,
+     *         or when the object is frozen. Again, it will silently fail.
+     *
+     */
+
+    var modify = curry(function(prop, val, obj) {
+      // Return straight away if the property doesn't exist
+      if (!hasOwnProperty(prop, obj))
+        return obj;
+
+      return set(prop, val, obj);
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -308,6 +330,7 @@
       hasProperty: hasProperty,
       instanceOf: instanceOf,
       isPrototypeOf: isPrototypeOf,
+      modify: modify,
       set: set,
       setOrThrow: setOrThrow
     };
