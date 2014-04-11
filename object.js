@@ -412,6 +412,25 @@
     });
 
 
+    /*
+     * deleteProp: deletes the given property from the given object, returning the object. Equivalent to
+     *             delete obj.prop. The function will silently fail when the property does not exist.
+     *             It also silently fails when deletion is disallowed by the 'configurable' property
+     *             of the property descriptor, or when the object is sealed or frozen.
+     *
+     */
+
+    var deleteProp = curry(function(prop, obj) {
+      // Deleting is considerably simpler than the "setting" cases! There's no need
+      // to walk the prototype chain, and there are no other errors to propagate. Thus...
+      try {
+        delete obj[prop];
+      } catch (e) {}
+
+      return obj;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -421,6 +440,7 @@
       createPropOrThrow: createPropOrThrow,
       defineProperty: defineProperty,
       defineProperties: defineProperties,
+      deleteProp: deleteProp,
       extract: extract,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
       hasOwnProperty: hasOwnProperty,

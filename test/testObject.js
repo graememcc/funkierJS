@@ -24,7 +24,8 @@
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
-                               'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow'];
+                               'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
+                               'deleteProp'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1100,6 +1101,189 @@
 
     makeCreatorTests('createProp', object.createProp, false);
     makeCreatorTests('createPropOrThrow', object.createPropOrThrow, true);
+
+
+    // The delete functions also have a similar structure
+    var makeDeleterTests = function(desc, deleter, shouldThrow) {
+      describe(desc, function() {
+        var hasOwnProperty = object.hasOwnProperty;
+        var defineProperty = object.defineProperty;
+
+
+        it('Has correct arity', function() {
+          expect(getRealArity(deleter)).to.equal(2);
+        });
+
+
+        it('Object does not have property afterwards', function() {
+          var a = {foo: 1};
+          deleter('foo', a);
+
+          expect(hasOwnProperty('foo', a)).to.be.false;
+        });
+
+
+        it('Behaves correctly if object does not have property', function() {
+          var a = {bar: 1};
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Behaves correctly if object does not have property but prototype does', function() {
+          var a = function() {};
+          a.prototype.foo = 1;
+          var b = new a();
+          var fn = function() {
+            deleter('foo', b);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+
+          expect(hasOwnProperty('foo', Object.getPrototypeOf(b))).to.be.true;
+        });
+
+
+        it('Behaves correctly if configurable false', function() {
+          var a = {};
+          defineProperty('foo', {configurable: false, value: 1}, a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (shouldThrow)
+            expect(fn).to.throw(Error);
+          else
+            expect(fn).to.not.throw(Error);
+
+          expect(a).to.have.property('foo');
+          expect(a.foo).to.equal(1);
+        });
+
+
+        it('Behaves if preventExtensions called (1)', function() {
+          var a = {foo: 1};
+          Object.preventExtensions(a);
+          deleter('foo', a);
+
+          expect(hasOwnProperty('foo', a)).to.be.false;
+        });
+
+
+        it('Behaves correctly if preventExtensions called (2)', function() {
+          var a = {};
+          Object.preventExtensions(a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Behaves if seal called (1)', function() {
+          var a = {};
+          Object.seal(a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Behaves correctly if seal called (2)', function() {
+          var a = {foo: 1};
+          Object.seal(a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+
+          expect(a).to.have.property('foo');
+        });
+
+
+        it('Behaves if freeze called (1)', function() {
+          var a = {};
+          Object.freeze(a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Behaves correctly if freeze called (2)', function() {
+          var a = {foo: 1};
+          Object.freeze(a);
+          var fn = function() {
+            deleter('foo', a);
+          };
+
+          if (!shouldThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+
+          expect(a).to.have.property('foo');
+        });
+
+
+        // We can't test the curried nature of deleter in the normal fashion, due to the stateful
+        // nature of the operation. Thus, we test manually
+        it('Returns a function when partially applied', function() {
+          var a = {foo: 1};
+          var partial = deleter('foo');
+
+          expect(partial).to.be.a('function');
+        });
+
+
+        it('Returns a function of length 1', function() {
+          var a = {foo: 1};
+          var partial = deleter('foo');
+
+          expect(partial.length).to.equal(1);
+        });
+
+
+        it('Partially applying then supplying remaining arguments applies function', function() {
+          var a = {foo: 1};
+          var partial = deleter('foo');
+          var result = partial(a);
+
+          expect(result).to.equal(a);
+          expect(hasOwnProperty('foo', a)).to.be.false;
+        });
+      });
+    };
+
+
+    makeDeleterTests('deleteProp', object.deleteProp, false);
   };
 
 
