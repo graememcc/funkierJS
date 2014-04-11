@@ -258,8 +258,8 @@
      *      must be created, it will not throw if the object is sealed, frozen, or Object.preventExtensions
      *      has been called. It will fail silently in all these cases.
      *
-     * Use setOrThrow if you require a function which throws in such circumstances.
-     * Use modify if you require a function that will only modify existing properties.
+     * Use setOrThrow if you require a function that throws in such circumstances.
+     * Use modify/modifyOrThrow if you require a function that will only modify existing properties.
      */
 
     var set = curry(function(prop, val, obj) {
@@ -285,6 +285,7 @@
      *             must be created, it will throw if the object is sealed, frozen, or not extensible.
      *
      * Use set if you require a function which will not throw in such circumstances.
+     * Use modify/modifyOrThrow if you require a function that will only modify existing properties.
      *
      */
 
@@ -312,11 +313,14 @@
     /*
      * modify: set the given property to the given value on the given object, returning the object.
      *         Equivalent to evaluating obj[prop] = val. The property will *not* be created when the object
-     *         does not have the property, and will instead silently fail. In particular, the property will
+     *         does not have the property; the function will silently fail. In particular, the property will
      *         not be created if it exists only in the prototype chain: hasOwnProperty(prop, obj) must be true.
      *
      *         This function will also not throw when the property is not writable, when it has no setter function,
      *         or when the object is frozen. Again, it will silently fail.
+     *
+     * Use modifyOrThrow if you need a version that will throw rather than silently fail.
+     * Use set/setOrThrow if you require a function that will create the property if it does not exist.
      *
      */
 
@@ -326,6 +330,30 @@
         return obj;
 
       return set(prop, val, obj);
+    });
+
+
+    /*
+     * modifyOrThrow: set the given property to the given value on the given object, returning the object.
+     *                Equivalent to evaluating obj[prop] = val. The property will *not* be created when the object
+     *                does not have the property: instead the function will throw a TypError. In particular, the
+     *                property will not be created if it exists only in the prototype chain: hasOwnProperty(prop, obj)
+     *                must be true.
+     *
+     *                This function will also throw when the property is not writable, when it has no setter function,
+     *                or when the object is frozen.
+     *
+     * Use modify if you need a version that will silently fail rather than throw.
+     * Use set/setOrThrow if you require a function that will create the property if it does not exist.
+     *
+     */
+
+    var modifyOrThrow = curry(function(prop, val, obj) {
+      // Return straight away if the property doesn't exist
+      if (!hasOwnProperty(prop, obj))
+        throw new TypeError('Attempt to modify non-existant property');
+
+      return setOrThrow(prop, val, obj);
     });
 
 
@@ -343,6 +371,7 @@
       instanceOf: instanceOf,
       isPrototypeOf: isPrototypeOf,
       modify: modify,
+      modifyOrThrow: modifyOrThrow,
       set: set,
       setOrThrow: setOrThrow
     };

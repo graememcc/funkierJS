@@ -24,7 +24,7 @@
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
-                               'modify'];
+                               'modify', 'modifyOrThrow'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1001,6 +1001,10 @@
           };
 
           if (!shouldThrow) {
+            expect(fn).to.not.throw(TypeError);
+            expect(a).to.not.have.property('foo');
+          } else {
+            expect(fn).to.throw(TypeError);
             expect(a).to.not.have.property('foo');
           }
         });
@@ -1014,6 +1018,7 @@
 
 
     makeModifierTests('modify', object.modify, false);
+    makeModifierTests('modifyOrThrow', object.modifyOrThrow, true);
   };
 
 
