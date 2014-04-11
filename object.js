@@ -286,6 +286,8 @@
      *
      * Use set if you require a function which will not throw in such circumstances.
      * Use modify/modifyOrThrow if you require a function that will only modify existing properties.
+     * Use createProp if you need a version that will only create a new property, and not modify any existing
+     * property.
      *
      */
 
@@ -321,6 +323,8 @@
      *
      * Use modifyOrThrow if you need a version that will throw rather than silently fail.
      * Use set/setOrThrow if you require a function that will create the property if it does not exist.
+     * Use createProp if you need a version that will only create a new property, and not modify any existing
+     * property.
      *
      */
 
@@ -345,6 +349,8 @@
      *
      * Use modify if you need a version that will silently fail rather than throw.
      * Use set/setOrThrow if you require a function that will create the property if it does not exist.
+     * Use createProp if you need a version that will only create a new property, and not modify any existing
+     * property.
      *
      */
 
@@ -357,11 +363,36 @@
     });
 
 
+    /*
+     * createProp: create the given property with the given value on the given object, returning the object.
+     *             Equivalent to evaluating obj[prop] = val. The property will *not* be modified when the object
+     *             has the property; the function will silently fail. In particular, the property will be created
+     *             if it exists only in the prototype chain: hasOwnProperty(prop, obj) must be false.
+     *
+     *             This function will also not throw when the property is not writable (through the prototype),
+     *             when it has no setter function (again through the prototype), or when the object is frozen.
+     *             Again, it will silently fail.
+     *
+     * Use set/setOrThrow if you require a function that will create or modify the property.
+     * Use modify/modifyOrThrow if you need a version that will only modify existing properties.
+     *
+     */
+
+    var createProp = curry(function(prop, val, obj) {
+      // Return straight away if the property exists
+      if (hasOwnProperty(prop, obj))
+        return obj;
+
+      return set(prop, val, obj);
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
       createObject: createObject,
       createObjectWithProps: createObjectWithProps,
+      createProp: createProp,
       defineProperty: defineProperty,
       defineProperties: defineProperties,
       extract: extract,

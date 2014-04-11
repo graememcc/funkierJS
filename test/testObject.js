@@ -24,7 +24,7 @@
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
-                               'modify', 'modifyOrThrow'];
+                               'modify', 'modifyOrThrow', 'createProp'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -851,18 +851,17 @@
       });
 
 
-      it('Behaves correctly if seal has been called (1)', function() {
-        var a = {};
+      it('Behaves correctly if seal has been called (2)', function() {
+        var a = {foo: 1};
         Object.seal(a);
         var val = 42;
         var fn = function() {
           setter('foo', val, a);
         };
 
-        if (shouldThrow)
-          expect(fn).to.throw(Error);
-        else
-          expect(fn).to.not.throw(Error);
+
+        expect(fn).to.not.throw(Error);
+        expect(a.foo).to.equal(val);
       });
 
 
@@ -918,6 +917,18 @@
         setter('foo', val, a);
 
         expect(hasOwnProperty('foo', a)).to.be.true;
+      });
+
+
+      it('Creates the property if it only exists on the prototype', function() {
+        var a = function() {};
+        a.prototype.foo = 1;
+        var b = new a();
+        var val = 42;
+        setter('foo', val, b);
+
+        expect(hasOwnProperty('foo', b)).to.be.true;
+        expect(b.foo).to.equal(val);
       });
     };
 
@@ -1019,6 +1030,67 @@
 
     makeModifierTests('modify', object.modify, false);
     makeModifierTests('modifyOrThrow', object.modifyOrThrow, true);
+
+
+    var makeCreatorTests = function(desc, setter, shouldThrow) {
+      describe(desc, function() {
+        makeCommonTests(setter, shouldThrow);
+        makeCommonCreationTests(setter, shouldThrow);
+
+
+        it('Doesn\'t modify the property if it exists', function() {
+          var a = {foo: 1};
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+          if (!shouldThrow) {
+            expect(fn).to.not.throw(TypeError);
+          }
+          expect(a.foo).to.equal(1);
+        });
+
+
+        it('Behaves correctly if preventExtensions has been called (3)', function() {
+          var a = {foo: 1};
+          Object.preventExtensions(a);
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+          if (!shouldThrow) {
+            expect(fn).to.not.throw(Error);
+          }
+          expect(a.foo).to.equal(1);
+        });
+
+
+        it('Behaves correctly if seal has been called (3)', function() {
+          var a = {foo: 1};
+          Object.seal(a);
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+
+          if (!shouldThrow) {
+            expect(fn).to.not.throw(Error);
+          }
+          expect(a.foo).to.equal(1);
+        });
+
+
+        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument', ['foo'], [42], 42);
+        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument then another', [['foo'], [42]], [], 42);
+        makePartialTests(setter, function() {return {}}, 'Supplying 2 arguments', ['foo', 42], [], 42);
+      });
+    };
+
+
+    makeCreatorTests('createProp', object.createProp, false);
   };
 
 
