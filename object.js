@@ -250,6 +250,18 @@
     };
 
 
+    /*
+     * set: set the given property to the given value on the given object, returning the object.
+     *      Equivalent to evaluating obj[prop] = val. The property will be created if it doesn't
+     *      exist on the object. This function will not throw when the property is not writable,
+     *      when it has no setter function, or when the object is frozen. Likewise, if the property
+     *      must be created, it will not throw if the object is sealed, frozen, or Object.preventExtensions
+     *      has been called. It will fail silently in all these cases.
+     *
+     * Use setOrThrow if you require a function which throws in such circumstances.
+     * Use modify if you require a function that will only modify existing properties.
+     */
+
     var set = curry(function(prop, val, obj) {
       // We manually emulate the operation of [[CanPut]], rather than just setting in a
       // try-catch. We don't want to suppress other errors: for example the set function
@@ -272,7 +284,7 @@
      *             when it has no setter function, or when the object is frozen. Likewise, if the property
      *             must be created, it will throw if the object is sealed, frozen, or not extensible.
      *
-     * If you don't want to throw when setting, use set.
+     * Use set if you require a function which will not throw in such circumstances.
      *
      */
 
