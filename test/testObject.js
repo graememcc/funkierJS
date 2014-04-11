@@ -23,7 +23,7 @@
       var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
                                'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
-                               'getOwnPropertyDescriptor', 'extract'];
+                               'getOwnPropertyDescriptor', 'extract', 'set'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -659,6 +659,250 @@
 
 
       testCurriedFunction('extract', extract, ['p', {p: 10}]);
+    });
+
+
+    describe('set', function() {
+      var set = object.set;
+      var defineProperty = object.defineProperty;
+      var hasOwnProperty = object.hasOwnProperty;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(set)).to.equal(3);
+      });
+
+
+      it('Object has property afterwards', function() {
+        var a = {foo: 1};
+        set('foo', 42, a);
+
+        expect(hasOwnProperty('foo', a)).to.be.true;
+      });
+
+
+      it('Object has property afterwards', function() {
+        var a = {foo: 1};
+        var val = 42;
+        set('foo', val, a);
+
+        expect(a.foo).to.equal(val);
+      });
+
+
+      it('Returns the object', function() {
+        var a = {foo: 1};
+        var val = 42;
+        var result = set('foo', val, a);
+
+        expect(result).to.equal(a);
+      });
+
+
+      it('Creates the property if it doesn\'t exist', function() {
+        var a = {};
+        var val = 42;
+        set('foo', val, a);
+
+        expect(hasOwnProperty('foo', a)).to.be.true;
+      });
+
+
+      it('Does not throw if writable false (1)', function() {
+        var a = {};
+        defineProperty('foo', {writable: false, value: 1}, a);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if writable false (2)', function() {
+        var a = {};
+        a.prototype = {};
+        defineProperty('foo', {writable: false, value: 1}, a.prototype);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if no setter (1)', function() {
+        var a = (function() {
+          var a = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          defineProperty('foo', {get: getter}, a);
+          return a;
+        })();
+
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if no setter (2)', function() {
+        var a = (function() {
+          var a = {};
+          a.prototype = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          defineProperty('foo', {get: getter}, a.prototype);
+          return a;
+        })();
+
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if preventExtensions has been called', function() {
+        var a = {};
+        Object.preventExtensions(a);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if seal has been called', function() {
+        var a = {};
+        Object.seal(a);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if freeze has been called (1)', function() {
+        var a = {};
+        Object.freeze(a);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Does not throw if freeze has been called (2)', function() {
+        var a = {foo: 1};
+        Object.freeze(a);
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.not.throw(Error);
+      });
+
+
+      it('Propagates other errors', function() {
+        var a = (function() {
+          var a = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          var setter = function() {throw new ReferenceError();};
+          defineProperty('foo', {get: getter, set: setter}, a);
+          return a;
+        })();
+
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.throw(ReferenceError);
+      });
+
+
+      it('Propagates TypeErrors from causes other than the ones we suppress', function() {
+        var a = (function() {
+          var a = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          var setter = function() {throw new TypeError();};
+          defineProperty('foo', {get: getter, set: setter}, a);
+          return a;
+        })();
+
+        var val = 42;
+        var fn = function() {
+          set('foo', val, a);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      // We can't test the curried nature of set in the normal fashion, due to the stateful
+      // nature of the operation. Thus, we test manually
+      var makePartialTests = function(message, parArgs, remainingArgs, val) {
+        var makePartial = function() {
+          var partial;
+
+          // We know set has arity 3, so can partially apply at most 2 args.
+          // We want to test partially applying with f(a, b) and f(a)(b) forms.
+          if (!Array.isArray(parArgs[0]))
+            partial = set.apply(null, parArgs);
+          else
+            partial = set.apply(null, parArgs[0]).apply(null, parArgs[1]);
+
+          return partial;
+        };
+
+
+        it(message + ' returns a function', function() {
+          var a = {};
+          var partial = makePartial();
+
+          expect(partial).to.be.a('function');
+        });
+
+
+        it(message + ' returns a function of length 1', function() {
+          var a = {};
+          var partial = makePartial();
+
+          expect(partial.length).to.equal(1);
+        });
+
+
+        it(message + ' and supplying remaining arguments applies function', function() {
+          var a = {};
+          var partial = makePartial();
+          var result = partial.apply(null, remainingArgs.concat([a]));
+
+          expect(result).to.equal(a);
+          expect(hasOwnProperty('foo', a)).to.be.true;
+          expect(a.foo).to.equal(val);
+        });
+      };
+
+      makePartialTests('Supplying 1 argument', ['foo'], [42], 42);
+      makePartialTests('Supplying 1 argument then another', [['foo'], [42]], [], 42);
+      makePartialTests('Supplying 2 arguments', ['foo', 42], [], 42);
     });
   };
 

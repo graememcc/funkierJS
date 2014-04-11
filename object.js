@@ -186,6 +186,56 @@
     });
 
 
+    /*
+     * set: set the given property to the given value on the given object, returning the object.
+     *      Equivalent to evaluating obj[prop] = val. The property will be created if it doesn't
+     *      exist on the object. This function will not throw when the property is not writable,
+     *      when it has no setter function, or when the object is frozen. Likewise, if the property
+     *      must be created, it will not throw if the object is sealed, frozen, or Object.preventExtensions
+     *      has been called. It will fail silently in all these cases.
+     */
+
+    // Utility function for set: work backwards to Object.prototype, looking for a property descriptor
+    var findPropertyDescriptor = function(prop, obj) {
+      var descriptor = undefined;
+      var toppedOut = false;
+
+      while (descriptor === undefined && !toppedOut) {
+        descriptor = getOwnPropertyDescriptor(prop, obj);
+        if (descriptor === undefined) {
+          if (obj === Object.prototype) {
+            toppedOut = true;
+          } else {
+            obj = Object.getPrototypeOf(obj);
+          }
+        }
+      }
+
+      return descriptor;
+    };
+
+
+    var set = curry(function(prop, val, obj) {
+      var writable = true;
+      var descriptor = findPropertyDescriptor(prop, obj);
+
+      // Don't modify writable false properties
+      if (descriptor && 'writable' in descriptor && descriptor.writable === false)
+        writable = false;
+
+      // Don't modify no setter properties
+      if (descriptor && writable && 'set' in descriptor && descriptor.set === undefined)
+        writable = false;
+
+      if (writable && (Object.isSealed(obj) || Object.isFrozen(obj) || !Object.isExtensible(obj)))
+        writable = false;
+
+      if (writable)
+        obj[prop] = val;
+      return obj;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -198,7 +248,8 @@
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
-      isPrototypeOf: isPrototypeOf
+      isPrototypeOf: isPrototypeOf,
+      set: set
     };
 
 
