@@ -449,6 +449,23 @@
     });
 
 
+    /*
+     * keys: a wrapper around Object.keys. Takes an object, returns an array containing the names
+     *       of the object's own properties. Returns an empty array for non-objects.
+     *
+     * keys({foo: 1, bar: 2});  // ['foo', 'bar'];
+     * keys(undefined);         // []
+     *
+     */
+
+    var keys = function(obj) {
+      if (typeof(obj) !== 'object' || obj === null)
+        return [];
+
+      return Object.keys(obj);
+    };
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -466,6 +483,7 @@
       hasProperty: hasProperty,
       instanceOf: instanceOf,
       isPrototypeOf: isPrototypeOf,
+      keys: keys,
       modify: modify,
       modifyOrThrow: modifyOrThrow,
       set: set,

@@ -17,6 +17,7 @@
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var checkEquality = testUtils.checkEquality;
+    var checkArrayContent = testUtils.checkArrayContent;
 
 
     describe('Object exports', function() {
@@ -25,7 +26,7 @@
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-                               'deleteProp', 'deletePropOrThrow'];
+                               'deleteProp', 'deletePropOrThrow', 'keys'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1285,6 +1286,99 @@
 
     makeDeleterTests('deleteProp', object.deleteProp, false);
     makeDeleterTests('deletePropOrThrow', object.deletePropOrThrow, true);
+
+
+    describe('keys', function() {
+      var keys = object.keys;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(keys)).to.equal(1);
+      });
+
+
+      var makeNonObjectTest = function(val) {
+        return function() {
+          var result = keys(val);
+
+          expect(Array.isArray(result)).to.be.true;
+          expect(checkArrayContent(result, [])).to.be.true;
+        };
+      };
+
+
+      var nonObjects = [
+        {name: 'number', val: 1},
+        {name: 'boolean', val: true},
+        {name: 'string', val: 'a'},
+        {name: 'undefined', val: undefined},
+        {name: 'null', val: null}];
+
+
+      nonObjects.forEach(function(test) {
+        it('Returns empty array for value of type ' + test.name,
+           makeNonObjectTest(test.val));
+      });
+
+
+      it('Returns empty array for empty object', function() {
+        var result = keys({});
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, [])).to.be.true;
+      });
+
+
+      it('Returns correct value for object (1)', function() {
+        var a = {foo: 1, bar: 2, baz: 3};
+        var expected = Object.keys(a);
+        var result = keys(a);
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, expected)).to.be.true;
+      });
+
+
+      it('Returns correct value for object (2)', function() {
+        var expected = Object.keys(object);
+        var result = keys(object);
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, expected)).to.be.true;
+      });
+
+
+      it('Returns correct value for array (1)', function() {
+        var a = [];
+        var expected = Object.keys(a);
+        var result = keys(a);
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, expected)).to.be.true;
+      });
+
+
+      it('Returns correct value for object (2)', function() {
+        var a = [1, 2, 3];
+        var expected = Object.keys(a);
+        var result = keys(a);
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, expected)).to.be.true;
+      });
+
+
+      it('Only returns own properties', function() {
+        var f = function() {this.baz = 42};
+        f.prototype = {foo: 1, bar: 2};
+        var a = new f();
+        var expected = Object.keys(a);
+        var result = keys(a);
+
+        expect(Array.isArray(result)).to.be.true;
+        expect(checkArrayContent(result, expected)).to.be.true;
+      });
+    });
   };
 
 
