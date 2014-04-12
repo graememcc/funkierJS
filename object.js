@@ -483,6 +483,25 @@
     };
 
 
+    /*
+     * keyValues: Takes an object, and returns an array containing 2-element arrays. The first element of each
+     *            sub-array is the name of a property from the object, and the second element is the value of
+     *            the property. This function only returns key-value pairs for the object's own properties.
+     *            Returns an empty array for non-objects. The order of the values is not defined.
+     *
+     * values({foo: 1, bar: 2});  // [['foo': 1], ['bar': 2]] or [['bar': 2], ['foo': 1]]
+     * values(undefined);         // []
+     *
+     */
+
+    var keyValues = function(obj) {
+      if (typeof(obj) !== 'object' || obj === null)
+        return [];
+
+      return keys(obj).map(function(k) {return [k, obj[k]];});
+    };
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -501,6 +520,7 @@
       instanceOf: instanceOf,
       isPrototypeOf: isPrototypeOf,
       keys: keys,
+      keyValues: keyValues,
       modify: modify,
       modifyOrThrow: modifyOrThrow,
       set: set,

@@ -26,7 +26,7 @@
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-                               'deleteProp', 'deletePropOrThrow', 'keys', 'values'];
+                               'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1386,6 +1386,160 @@
     makeKeyBasedTests('values', object.values, function(obj) {
       return Object.keys(obj).map(function(k) {return obj[k];});
     });
+
+
+    var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+
+
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(1);
+        });
+
+
+        var makeNonObjectTest = function(val) {
+          return function() {
+            var result = fnUnderTest(val);
+
+            expect(Array.isArray(result)).to.be.true;
+            expect(checkArrayContent(result, [])).to.be.true;
+          };
+        };
+
+
+        var nonObjects = [
+          {name: 'number', val: 1},
+          {name: 'boolean', val: true},
+          {name: 'string', val: 'a'},
+          {name: 'undefined', val: undefined},
+          {name: 'null', val: null}];
+
+
+        nonObjects.forEach(function(test) {
+          it('Returns empty array for value of type ' + test.name,
+             makeNonObjectTest(test.val));
+        });
+
+
+        it('Returns empty array for empty object', function() {
+          var result = fnUnderTest({});
+
+          expect(Array.isArray(result)).to.be.true;
+          expect(checkArrayContent(result, [])).to.be.true;
+        });
+
+
+        var verifyKeys = function(obj, result) {
+          var keys = result.map(function(r) {return r[0];});
+          var expected = Object.keys(obj);
+
+          expect(Array.isArray(result)).to.be.true;
+          expect(result.every(function(val) {
+            return Array.isArray(val) && val.length === 2;
+          })).to.be.true;
+          expect(checkArrayContent(keys, expected)).to.be.true;
+        };
+
+
+        var verifyValues = function(obj, result) {
+          var keys = result.map(function(r) {return r[0];});
+          var values = result.map(function(r) {return r[1];});
+          return values.every(function(val, i) {
+            var key = keys[i];
+            return verifier(val, key, obj[key]);
+          });
+        };
+
+
+        it('Returns correct keys for object (1)', function() {
+          var a = {foo: 1, bar: 2, baz: 3};
+          var result = fnUnderTest(a);
+
+          verifyKeys(a, result);
+        });
+
+
+        it('Returns correct keys for object (2)', function() {
+          var expected = verifier(object);
+          var result = fnUnderTest(object);
+
+          verifyKeys(object, result);
+        });
+
+
+        it('Returns correct keys for array (1)', function() {
+          var a = [];
+          var expected = verifier(a);
+          var result = fnUnderTest(a);
+
+          verifyKeys(a, result);
+        });
+
+
+        it('Returns correct keys for array (2)', function() {
+          var a = [1, 2, 3];
+          var expected = verifier(a);
+          var result = fnUnderTest(a);
+
+          verifyKeys(a, result);
+        });
+
+
+        it('Only returns keys for own properties', function() {
+          var f = function() {this.baz = 42};
+          f.prototype = {foo: 1, bar: 2};
+          var a = new f();
+          var expected = verifier(a);
+          var result = fnUnderTest(a);
+
+          verifyKeys(a, result);
+        });
+
+
+        it('Returns correct values for object (1)', function() {
+          var a = {foo: 1, bar: 2, baz: 3};
+          var result = fnUnderTest(a);
+
+          verifyValues(a, result);
+        });
+
+
+        it('Returns correct values for object (2)', function() {
+          var result = fnUnderTest(object);
+
+          verifyValues(object, result);
+        });
+
+
+        it('Returns correct values for array (1)', function() {
+          var a = [];
+          var result = fnUnderTest(a);
+
+          verifyValues(a, result);
+        });
+
+
+        it('Returns correct values for array (2)', function() {
+          var a = [1, 2, 3];
+          var result = fnUnderTest(a);
+
+          verifyValues(a, result);
+        });
+
+
+        it('Only returns values for own properties', function() {
+          var f = function() {this.baz = 42};
+          f.prototype = {foo: 1, bar: 2};
+          var a = new f();
+          var result = fnUnderTest(a);
+
+          verifyValues(a, result);
+        });
+      });
+    };
+
+
+    makeKeyPairBasedTests('keyValues', object.keyValues, function(val, _, objKey) {return val === objKey;});
   };
 
 
