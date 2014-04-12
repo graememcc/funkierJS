@@ -466,6 +466,23 @@
     };
 
 
+    /*
+     * values: Takes an object, and returns an array containing the values of the object's own properties.
+     *         Returns an empty array for non-objects. The order of the values is not defined.
+     *
+     * values({foo: 1, bar: 2});  // [1, 2] or [2, 1];
+     * values(undefined);         // []
+     *
+     */
+
+    var values = function(obj) {
+      if (typeof(obj) !== 'object' || obj === null)
+        return [];
+
+      return keys(obj).map(function(k) {return obj[k];});
+    };
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -487,7 +504,8 @@
       modify: modify,
       modifyOrThrow: modifyOrThrow,
       set: set,
-      setOrThrow: setOrThrow
+      setOrThrow: setOrThrow,
+      values: values
     };
 
 
