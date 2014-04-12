@@ -33,6 +33,23 @@
     };
 
 
+    // Check two arrays for identity of contents, ignoring order
+    var checkArrayContent = function(arr1, arr2, sortFn) {
+      var sortArgs = [];
+      if (typeof(sortFn) === 'function')
+        sortArgs.push(sortFn);
+
+      var a1 = arr1.slice();
+      var a2 = arr2.slice();
+
+      a1.sort.apply(a1, sortArgs);
+      a2.sort.apply(a2, sortArgs);
+      return a1.every(function(val, i) {
+        return val === a2[i];
+      });
+    };
+
+
     // Deeply check two values for equality. If acceptFunctions is true,
     // then two functions will blindly be assumed to be equal.
     var checkEquality = function(obj1, obj2, acceptFunctions) {
@@ -178,6 +195,7 @@
 
 
     module.exports = {
+      checkArrayContent: checkArrayContent,
       checkArrayEquality: checkArrayEquality,
       checkEquality: checkEquality,
       checkObjectEquality: checkObjectEquality,
