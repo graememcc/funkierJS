@@ -186,6 +186,21 @@
     });
 
 
+    /*
+     * extractOrDefault: Takes the name of a property, a default value, and an object. Attempts to
+     *                   read the object's value of the property, and returns it if present. Returns
+     *                   the given default value if the property is not present, or cannot be read.
+     *
+     */
+
+    var extractOrDefault = curry(function(prop, defaultVal, obj) {
+      if (!(prop in obj))
+        return defaultVal;
+
+      return obj[prop];
+    });
+
+
     // A thousand curses!
     // Per the ECMAScript spec, when setting a property on an object, the property descriptor - if it exists -
     // should be checked. Setting should fail when writable=false or there is no setter in the descriptor.
@@ -534,6 +549,7 @@
       deleteProp: deleteProp,
       deletePropOrThrow: deletePropOrThrow,
       extract: extract,
+      extractOrDefault: extractOrDefault,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,

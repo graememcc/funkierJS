@@ -27,7 +27,7 @@
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
                                'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
-                               'descriptors'];
+                               'descriptors', 'extractOrDefault'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -631,8 +631,17 @@
       });
 
 
-      it('Returns undefined if property not present', function() {
+      it('Returns undefined if property not present (1)', function() {
         expect(extract('prop', {})).to.equal(undefined);
+      });
+
+
+      it('Returns undefined if property not present (2)', function() {
+        var obj = {};
+        // Define a property with no getter
+        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
+
+        expect(extract('foo', obj)).to.equal(undefined);
       });
 
 
@@ -663,6 +672,65 @@
 
 
       testCurriedFunction('extract', extract, ['p', {p: 10}]);
+    });
+
+
+    describe('extractOrDefault', function() {
+      var extractOrDefault = object.extractOrDefault;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(extractOrDefault)).to.equal(3);
+      });
+
+
+      it('Returns default if property not present (1)', function() {
+        var defaultVal = 42;
+
+        expect(extractOrDefault('prop', defaultVal, {})).to.equal(defaultVal);
+      });
+
+
+      it('Returns default if property not present (2)', function() {
+        var defaultVal = 42;
+        var obj = {};
+        // Define a property with no getter
+        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
+
+        expect(extractOrDefault('foo', defaultVal, obj)).to.equal(defaultVal);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var defaultVal = 'default';
+        var result = extractOrDefault('prop', defaultVal, obj);
+
+        expect(checkEquality(obj.prop, result)).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: function() {}};
+        var defaultVal = 'default';
+        var result = extractOrDefault('funkier', defaultVal, obj);
+
+        expect(checkEquality(obj.funkier, result)).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+        var defaultVal = 'default';
+        var result = extractOrDefault('prop', defaultVal, obj);
+
+        expect(checkEquality(obj.prop, result)).to.be.true;
+      });
+
+
+      testCurriedFunction('extractOrDefault', extractOrDefault, ['p', 42, {p: 10}]);
     });
 
 
