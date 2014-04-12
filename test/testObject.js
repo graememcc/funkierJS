@@ -26,7 +26,8 @@
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-                               'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues'];
+                               'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
+                               'descriptors'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1446,7 +1447,7 @@
           var values = result.map(function(r) {return r[1];});
           return values.every(function(val, i) {
             var key = keys[i];
-            return verifier(val, key, obj[key]);
+            return verifier(val, key, obj);
           });
         };
 
@@ -1460,7 +1461,6 @@
 
 
         it('Returns correct keys for object (2)', function() {
-          var expected = verifier(object);
           var result = fnUnderTest(object);
 
           verifyKeys(object, result);
@@ -1469,7 +1469,6 @@
 
         it('Returns correct keys for array (1)', function() {
           var a = [];
-          var expected = verifier(a);
           var result = fnUnderTest(a);
 
           verifyKeys(a, result);
@@ -1478,7 +1477,6 @@
 
         it('Returns correct keys for array (2)', function() {
           var a = [1, 2, 3];
-          var expected = verifier(a);
           var result = fnUnderTest(a);
 
           verifyKeys(a, result);
@@ -1489,7 +1487,6 @@
           var f = function() {this.baz = 42};
           f.prototype = {foo: 1, bar: 2};
           var a = new f();
-          var expected = verifier(a);
           var result = fnUnderTest(a);
 
           verifyKeys(a, result);
@@ -1539,7 +1536,12 @@
     };
 
 
-    makeKeyPairBasedTests('keyValues', object.keyValues, function(val, _, objKey) {return val === objKey;});
+    makeKeyPairBasedTests('keyValues', object.keyValues, function(val, key, obj) {return val === obj[key];});
+
+    var propVerifier = function(val, key, obj) {
+      return checkEquality(val, object.getOwnPropertyDescriptor(key, obj));
+    };
+    makeKeyPairBasedTests('descriptors', object.descriptors, propVerifier);
   };
 
 
