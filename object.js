@@ -431,6 +431,24 @@
     });
 
 
+    /*
+     * deletePropOrThrow: deletes the given property from the given object, returning the object.
+     *                    Equivalent to delete obj.prop. The function will throw when the property
+     *                    does not exist, when deletion is disallowed by the 'configurable' property
+     *                    of the property descriptor, or when the object is sealed or frozen.
+     *
+     */
+
+    var deletePropOrThrow = curry(function(prop, obj) {
+      // Even simpler still!
+      if (!hasOwnProperty(prop, obj))
+        throw new TypeError('Attempt to delete non-existant property');
+
+      delete obj[prop];
+      return obj;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -441,6 +459,7 @@
       defineProperty: defineProperty,
       defineProperties: defineProperties,
       deleteProp: deleteProp,
+      deletePropOrThrow: deletePropOrThrow,
       extract: extract,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
       hasOwnProperty: hasOwnProperty,

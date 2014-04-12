@@ -25,7 +25,7 @@
                                'createObjectWithProps', 'defineProperty', 'defineProperties',
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-                               'deleteProp'];
+                               'deleteProp', 'deletePropOrThrow'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1284,6 +1284,7 @@
 
 
     makeDeleterTests('deleteProp', object.deleteProp, false);
+    makeDeleterTests('deletePropOrThrow', object.deletePropOrThrow, true);
   };
 
 
