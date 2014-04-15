@@ -27,7 +27,7 @@
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
                                'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
-                               'descriptors', 'extractOrDefault'];
+                               'descriptors', 'extractOrDefault', 'getOwnPropertyNames'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1357,7 +1357,10 @@
     makeDeleterTests('deletePropOrThrow', object.deletePropOrThrow, true);
 
 
-    var makeKeyBasedTests = function(desc, fnUnderTest, verifier) {
+    var makeKeyBasedTests = function(desc, fnUnderTest, verifier, expectNonEnumerable) {
+      var defineProperty = object.defineProperty;
+
+
       describe(desc, function() {
 
 
@@ -1447,14 +1450,24 @@
           expect(Array.isArray(result)).to.be.true;
           expect(checkArrayContent(result, expected)).to.be.true;
         });
+
+
+        it('Behaves correctly with non-enumerable properties', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 1}, a);
+          var result = fnUnderTest(a).indexOf('baz');
+
+          expect(result !== -1).to.equal(expectNonEnumerable);
+        });
       });
     };
 
 
-    makeKeyBasedTests('keys', object.keys, Object.keys);
+    makeKeyBasedTests('keys', object.keys, Object.keys, false);
     makeKeyBasedTests('values', object.values, function(obj) {
       return Object.keys(obj).map(function(k) {return obj[k];});
-    });
+    }, false);
+    makeKeyBasedTests('getOwnPropertyNames', object.getOwnPropertyNames, Object.getOwnPropertyNames, true);
 
 
     var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {

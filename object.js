@@ -499,6 +499,23 @@
 
 
     /*
+     * getOwnPropertyNames: a wrapper around Object.getOwnPropertyNames. Takes an object, returns an array
+     *                      containing the names of the object's own properties, including non-enumerable
+     *                      properties. Returns an empty array for non-objects. The order of the property
+     *                      names is not defined.
+     *
+     *
+     */
+
+    var getOwnPropertyNames = function(obj) {
+      if (typeof(obj) !== 'object' || obj === null)
+        return [];
+
+      return Object.getOwnPropertyNames(obj);
+    };
+
+
+    /*
      * keyValues: Takes an object, and returns an array containing 2-element arrays. The first element of each
      *            sub-array is the name of a property from the object, and the second element is the value of
      *            the property. This function only returns key-value pairs for the object's own properties.
@@ -551,6 +568,7 @@
       extract: extract,
       extractOrDefault: extractOrDefault,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
+      getOwnPropertyNames: getOwnPropertyNames,
       hasOwnProperty: hasOwnProperty,
       hasProperty: hasProperty,
       instanceOf: instanceOf,
