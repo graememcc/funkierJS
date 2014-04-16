@@ -18,7 +18,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['toString'];
+      var expectedFunctions = ['toString', 'toCharCode'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -64,6 +64,35 @@
 
         expect(toString(a)).to.equal(a.toString());
       });
+    });
+
+
+    describe('toCharCode', function() {
+      var toCharCode = string.toCharCode;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(toCharCode)).to.equal(2);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var a = 'abc';
+        var l = a.length;
+
+        for (var i = 0; i < l; i++)
+          expect(toCharCode(i, a)).to.equal(a.charCodeAt(i));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var a = 'abc';
+
+        expect(isNaN(toCharCode(10, a))).to.be.true;
+      });
+
+
+      testCurriedFunction('toCharCode', toCharCode, [1, 'abc']);
     });
   };
 

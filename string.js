@@ -20,7 +20,19 @@
     };
 
 
+    /*
+     * toCharCode: A curried wrapper around String.charCodeAt. Takes an index,
+     *             and a string, and returns the Unicode value of the character.
+     *
+     */
+
+    var toCharCode = curry(function(i, s) {
+      return s.charCodeAt(i);
+    });
+
+
     var exported = {
+      toCharCode: toCharCode,
       toString: toString
     };
 
