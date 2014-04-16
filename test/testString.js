@@ -14,12 +14,14 @@
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
 
 
     describe('String exports', function() {
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
-                               'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase'];
+                               'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
+                               'split'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -211,6 +213,87 @@
     makeStringCaseTest('toLocaleLowerCase', string.toLocaleLowerCase, 'toLocaleLowerCase');
     makeStringCaseTest('toUpperCase', string.toUpperCase, 'toUpperCase');
     makeStringCaseTest('toLocaleUpperCase', string.toLocaleUpperCase, 'toLocaleUpperCase');
+
+
+    describe('split', function() {
+      var split = string.split;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(split)).to.equal(2);
+      });
+
+
+      it('Returns an array (1)', function() {
+        var s = 'a-b-c';
+        var result = split('-', s);
+
+        expect(base.isArray(result)).to.be.true;
+      });
+
+
+      it('Returns an array (2)', function() {
+        var s = 'a-b-c';
+        var result = split('*', s);
+
+        expect(base.isArray(result)).to.be.true;
+      });
+
+
+      it('Splitting string not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = split('-', s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Splitting string not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = split('-', s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly (1)', function() {
+        var s = 'd-e-f-g';
+        var result = split('-', s);
+
+        expect(checkArrayEquality(result, s.split('-'))).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var s = 'd-e-f-g';
+        var result = split('*', s);
+
+        expect(checkArrayEquality(result, s.split('*'))).to.be.true;
+      });
+
+
+      it('Works correctly (3)', function() {
+        var s = 'd--e--f--g';
+        var result = split('--', s);
+
+        expect(checkArrayEquality(result, s.split('--'))).to.be.true;
+      });
+
+
+      it('Works correctly (4)', function() {
+        var s = 'defg';
+        var result = split('', s);
+
+        expect(checkArrayEquality(result, s.split(''))).to.be.true;
+      });
+
+
+      testCurriedFunction('split', split, ['*', 'a*b']);
+    });
   };
 
 
