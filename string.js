@@ -31,7 +31,17 @@
     });
 
 
+    /*
+     * ord: Equivalent to toCharCode(0, s). Returns the Unicode value of the first
+     *      character in the given string s.
+     *
+     */
+
+    var ord = toCharCode(0);
+
+
     var exported = {
+      ord: ord,
       toCharCode: toCharCode,
       toString: toString
     };

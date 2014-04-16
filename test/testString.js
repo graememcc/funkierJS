@@ -18,7 +18,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['toString', 'toCharCode'];
+      var expectedFunctions = ['toString', 'toCharCode', 'ord'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -93,6 +93,44 @@
 
 
       testCurriedFunction('toCharCode', toCharCode, [1, 'abc']);
+    });
+
+
+    describe('ord', function() {
+      var ord = string.ord;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(ord)).to.equal(1);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var a = 'a';
+
+        expect(ord(a)).to.equal(a.charCodeAt(0));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var a = 'F';
+
+        expect(ord(a)).to.equal(a.charCodeAt(0));
+      });
+
+
+      it('Works correctly (3)', function() {
+        var a = 'funkier';
+
+        expect(ord(a)).to.equal(a.charCodeAt(0));
+      });
+
+
+      it('Works correctly (4)', function() {
+        var a = '';
+
+        expect(isNaN(ord(a))).to.be.true;
+      });
     });
   };
 
