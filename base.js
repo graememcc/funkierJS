@@ -423,6 +423,14 @@
     });
 
 
+    /*
+     * isNumber: Returns true if typeof the given object returns 'number'.
+     *
+     */
+
+    var isNumber = is('number');
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -436,6 +444,7 @@
       getRealArity: getRealArity,
       id: id,
       is: is,
+      isNumber: isNumber,
       notEqual: notEqual,
       permuteLeft: permuteLeft,
       permuteRight: permuteRight,

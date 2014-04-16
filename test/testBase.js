@@ -20,7 +20,7 @@
                                'constant', 'constant0', 'composeMany', 'flip',
                                'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
                                'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
-                               'permuteLeft', 'permuteRight', 'is'];
+                               'permuteLeft', 'permuteRight', 'is', 'isNumber'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1616,6 +1616,41 @@
 
       testCurriedFunction('is', is, ['object', {}]);
     });
+
+
+    var makeSpecialisedIsCheck = function(fnUnderTest, test, accepts) {
+      return function() {
+        var result = fnUnderTest(test.value);
+        var expected = test.types.indexOf(accepts) !== -1;
+
+        expect(result).to.equal(expected);
+      };
+    };
+
+
+    var makeSpecialisedIsTest = function(desc, fnUnderTest, accepts) {
+      describe(desc, function() {
+
+
+        it('Has correct arity', function() {
+          expect(base.getRealArity(fnUnderTest)).to.equal(1);
+        });
+
+
+        isTestData.forEach(function(test) {
+          var name = test.name;
+
+          it('Works correctly for type ' + name,
+            makeSpecialisedIsCheck(fnUnderTest, test, accepts));
+        });
+
+
+        testCurriedFunction(desc, fnUnderTest, [1]);
+      });
+    };
+
+
+    makeSpecialisedIsTest('isNumber', base.isNumber, 'number');
   };
 
 
