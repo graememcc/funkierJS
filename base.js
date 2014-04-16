@@ -463,6 +463,16 @@
     var isObject = is('object');
 
 
+    /*
+     * isArray: Returns true if the given object is an array
+     *
+     */
+
+    var isArray = function(obj) {
+      return Array.isArray(obj);
+    };
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -476,6 +486,7 @@
       getRealArity: getRealArity,
       id: id,
       is: is,
+      isArray: isArray,
       isBoolean: isBoolean,
       isNumber: isNumber,
       isObject: isObject,

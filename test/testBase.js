@@ -21,7 +21,7 @@
                                'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
                                'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
                                'permuteLeft', 'permuteRight', 'is', 'isNumber', 'isString',
-                               'isBoolean', 'isUndefined', 'isObject'];
+                               'isBoolean', 'isUndefined', 'isObject', 'isArray'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1656,6 +1656,7 @@
     makeSpecialisedIsTest('isBoolean', base.isBoolean, 'boolean');
     makeSpecialisedIsTest('isUndefined', base.isUndefined, 'undefined');
     makeSpecialisedIsTest('isObject', base.isObject, 'object');
+    makeSpecialisedIsTest('isArray', base.isArray, 'array');
   };
 
 
