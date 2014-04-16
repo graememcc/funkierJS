@@ -431,6 +431,14 @@
     var isNumber = is('number');
 
 
+    /*
+     * isString: Returns true if typeof the given object returns 'string'.
+     *
+     */
+
+    var isString = is('string');
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -445,6 +453,7 @@
       id: id,
       is: is,
       isNumber: isNumber,
+      isString: isString,
       notEqual: notEqual,
       permuteLeft: permuteLeft,
       permuteRight: permuteRight,
