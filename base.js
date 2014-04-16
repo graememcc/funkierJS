@@ -409,6 +409,20 @@
     });
 
 
+    /*
+     * is: a curried wrapper around typeof. Takes a string that could be returned by the typeof operator,
+     *     and an object. Returns true if the type of the given object equals the given string.
+     *
+     * For example,
+     *   is('object', {}); // true
+     *
+     */
+
+    var is = curry(function(s, obj) {
+      return typeof(obj) === s;
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -421,6 +435,7 @@
       flip: flip,
       getRealArity: getRealArity,
       id: id,
+      is: is,
       notEqual: notEqual,
       permuteLeft: permuteLeft,
       permuteRight: permuteRight,

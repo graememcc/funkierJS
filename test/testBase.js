@@ -20,7 +20,7 @@
                                'constant', 'constant0', 'composeMany', 'flip',
                                'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
                                'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
-                               'permuteLeft', 'permuteRight'];
+                               'permuteLeft', 'permuteRight', 'is'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1567,6 +1567,54 @@
         var curried = curryWithArity(i, baseFunc);
         testCurriedFunction(message + ' (curried)', permuteRight(curried), params.slice(0, i));
       }
+    });
+
+
+    var isTestData = [
+      {name: 'number', base: true, types: ['number'], value: 1},
+      {name: 'string', base: true, types: ['string'], value: 'a'},
+      {name: 'undefined', base: true, types: ['undefined'], value: undefined},
+      {name: 'boolean', base: true, types: ['boolean'], value: true},
+      {name: 'function', base: true, types: ['function'], value: function() {}},
+      {name: 'object', base: true, types: ['object'], value: {}},
+      {name: 'null', base: false, types: ['object', 'null'], value: null},
+      {name: 'array', base: false, types: ['object', 'array'], value: [1]},
+    ];
+
+
+    var baseIsTests = isTestData.filter(function(o) {return o.base;});
+
+
+    var makeIsCheck = function(fnUnderTest, test1, test2) {
+      return function() {
+        var result = fnUnderTest(test1.name, test2.value);
+        var expected = test2.types.indexOf(test1.name) !== -1;
+
+        expect(result).to.equal(expected);
+      };
+    };
+
+
+    describe('is', function() {
+      var is = base.is;
+
+
+      it('Has correct arity', function() {
+        expect(base.getRealArity(is)).to.equal(2);
+      });
+
+
+      baseIsTests.forEach(function(bTest) {
+        var name = bTest.name;
+
+        isTestData.forEach(function(test2) {
+          it('Works correctly for type ' + name + ' and value ' + test2.name,
+            makeIsCheck(is, bTest, test2));
+        });
+      });
+
+
+      testCurriedFunction('is', is, ['object', {}]);
     });
   };
 
