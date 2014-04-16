@@ -18,7 +18,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase'];
+      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase', 'toLocaleLowerCase'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -207,6 +207,7 @@
 
 
     makeStringCaseTest('toLowerCase', string.toLowerCase, 'toLowerCase');
+    makeStringCaseTest('toLocaleLowerCase', string.toLocaleLowerCase, 'toLocaleLowerCase');
   };
 
 

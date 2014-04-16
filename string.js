@@ -53,11 +53,21 @@
 
 
     /*
-     * toLowerCase: Equivalent to String.prototype.toLowerCase.
+     * toLowerCase: Equivalent to String.prototype.toLowerCase. Takes a string, and converts
+     *              it to lower case.
      *
      */
 
     var toLowerCase = callProp('toLowerCase');
+
+
+    /*
+     * toLocaleLowerCase: Equivalent to String.prototype.toLocaleLowerCase. Takes a string, and converts
+     *                    it to lower case, following locale conventions.
+     *
+     */
+
+    var toLocaleLowerCase = callProp('toLocaleLowerCase');
 
 
     var exported = {
@@ -65,6 +75,7 @@
       ord: ord,
       toCharCode: toCharCode,
       toLowerCase: toLowerCase,
+      toLocaleLowerCase: toLocaleLowerCase,
       toString: toString
     };
 
