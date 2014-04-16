@@ -18,7 +18,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['toString', 'toCharCode', 'ord'];
+      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -130,6 +130,43 @@
         var a = '';
 
         expect(isNaN(ord(a))).to.be.true;
+      });
+    });
+
+
+    describe('chr', function() {
+      var chr = string.chr;
+      var ord = string.ord;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(chr)).to.equal(1);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var a = 'a';
+        var aCode = ord(a);
+
+        expect(chr(aCode)).to.equal(a);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var f = 'F';
+        var fCode = ord(f);
+
+        expect(chr(fCode)).to.equal(f);
+      });
+
+
+      it('Discards superfluous arguments', function() {
+        var a = 'a';
+        var aCode = ord(a);
+        var bCode = ord('b');
+        var cCode = ord('c');
+
+        expect(chr(aCode, bCode, cCode)).to.equal(a);
       });
     });
   };

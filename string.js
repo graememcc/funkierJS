@@ -40,7 +40,19 @@
     var ord = toCharCode(0);
 
 
+    /*
+     * chr: Equivalent to String.fromCharCode. Returns the character represented by the
+     *      given Unicode character.
+     *
+     */
+
+    var chr = function(c) {
+      return String.fromCharCode(c);
+    };
+
+
     var exported = {
+      chr: chr,
       ord: ord,
       toCharCode: toCharCode,
       toString: toString
