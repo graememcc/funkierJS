@@ -439,6 +439,14 @@
     var isString = is('string');
 
 
+    /*
+     * isBoolean: Returns true if typeof the given object returns 'boolean'.
+     *
+     */
+
+    var isBoolean = is('boolean');
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -452,6 +460,7 @@
       getRealArity: getRealArity,
       id: id,
       is: is,
+      isBoolean: isBoolean,
       isNumber: isNumber,
       isString: isString,
       notEqual: notEqual,
