@@ -455,6 +455,14 @@
     var isUndefined = is('undefined');
 
 
+    /*
+     * isObject: Returns true if typeof the given object returns 'object'.
+     *
+     */
+
+    var isObject = is('object');
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -470,6 +478,7 @@
       is: is,
       isBoolean: isBoolean,
       isNumber: isNumber,
+      isObject: isObject,
       isString: isString,
       isUndefined: isUndefined,
       notEqual: notEqual,
