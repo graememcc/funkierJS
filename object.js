@@ -565,6 +565,10 @@
      *
      * A TypeError will be thrown if called with some non-object type.
      *
+     * Exercise caution when cloning properties that have get/set functions defined in the descriptor: the
+     * cloned object will have these same functions using the same scope. Getting/setting such a property in
+     * the clone may affect the corresponding property in the original.
+     *
      */
 
     var shallowClone = function(obj) {
@@ -591,6 +595,61 @@
     };
 
 
+    var deepCopyArray = function(arr) {
+      var result = [];
+      arr.forEach(function(a) {
+        if (typeof(a) !== 'object' || a === null)
+          result.push(a);
+        else
+          result.push(deepClone(a));
+      });
+
+      return result;
+    };
+
+
+    /*
+     * deepClone: returns a deep clone of the given object. That is to say, the object
+     *               returned will have have the same properties as the original (both enumerable
+     *               and non-enumerable), except the prototype will be Object.prototype. The original
+     *               object's constructor will not be called. The values of the properties in the new
+     *               object will be exactly the same as the values in the original object, unless those
+     *               properties are arrays or objects, in which case they will themselves be deep clones.
+     *
+     * A TypeError will be thrown if called with some non-object type.
+     *
+     * Exercise caution when cloning properties that have get/set functions defined in the descriptor: the
+     * cloned object will have these same functions using the same scope. Getting/setting such a property in
+     * the clone may affect the corresponding property in the original.
+     *
+     */
+
+    var deepClone = function(obj) {
+      if (typeof(obj) !== 'object')
+        throw new TypeError('deepClone called on non-object');
+
+      if (obj === null)
+        return obj;
+
+      if (Array.isArray(obj))
+        return deepCopyArray(obj);
+
+      var clone = {};
+      while (obj !== Object.prototype) {
+        var props = getOwnPropertyNames(obj);
+        props.forEach(function(p) {
+          var descriptor = getOwnPropertyDescriptor(p, obj);
+          if ('value' in descriptor && typeof(descriptor.value) === 'object')
+            descriptor.value = deepClone(descriptor.value);
+          defineProperty(p, descriptor, clone);
+        });
+        obj = Object.getPrototypeOf(obj);
+      }
+
+      return clone;
+    };
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -598,6 +657,7 @@
       createObjectWithProps: createObjectWithProps,
       createProp: createProp,
       createPropOrThrow: createPropOrThrow,
+      deepClone: deepClone,
       descriptors: descriptors,
       defineProperty: defineProperty,
       defineProperties: defineProperties,

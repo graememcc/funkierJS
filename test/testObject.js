@@ -27,7 +27,8 @@
                                'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
                                'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
-                               'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone'];
+                               'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone',
+                               'deepClone'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1625,195 +1626,234 @@
     makeKeyPairBasedTests('descriptors', object.descriptors, propVerifier);
 
 
-    describe('shallowClone', function() {
-      var shallowClone = object.shallowClone;
-      var isPrototypeOf = object.isPrototypeOf;
-      var keys = object.keys;
-      var defineProperty = object.defineProperty;
-      var getOwnPropertyNames = object.getOwnPropertyNames;
-      var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
+    var makeCloneTests = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+        var isPrototypeOf = object.isPrototypeOf;
+        var keys = object.keys;
+        var defineProperty = object.defineProperty;
+        var getOwnPropertyNames = object.getOwnPropertyNames;
+        var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(shallowClone)).to.equal(1);
-      });
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(1);
+        });
 
 
-      var makeNonObjectTest = function(val) {
-        return function() {
-          var fn = function() {
-            shallowClone(val);
+        var makeNonObjectTest = function(val) {
+          return function() {
+            var fn = function() {
+              fnUnderTest(val);
+            };
+
+            expect(fn).to.throw(TypeError);
           };
-
-          expect(fn).to.throw(TypeError);
         };
+
+
+        var nonObjects = [
+          {name: 'number', val: 1},
+          {name: 'boolean', val: true},
+          {name: 'string', val: 'a'},
+          {name: 'undefined', val: undefined},
+          {name: 'function', val: function() {}}];
+
+
+        nonObjects.forEach(function(test) {
+          it('Throws type error for value of type ' + test.name,
+             makeNonObjectTest(test.val));
+        });
+
+
+        it('New object has does not have same prototype', function() {
+          var f = function() {};
+          var a = new f();
+          var clone = fnUnderTest(a);
+
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.false;
+        });
+
+
+        it('New array has does have same prototype', function() {
+          var a = [1, 2, 3];
+          var clone = fnUnderTest(a);
+
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.true;
+        });
+
+
+        it('New object has same own keys as original', function() {
+          var a = {foo: 1, bar: 2, baz: 3};
+          var clone = fnUnderTest(a);
+          var origKeys = keys(a);
+          var cloneKeys = keys(clone);
+
+          expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
+        });
+
+
+        it('New array has same length as original', function() {
+          var a = [1, 2, 3];
+          var clone = fnUnderTest(a);
+
+          expect(clone.length).to.equal(a.length);
+        });
+
+
+        it('New object has same non-enumerable keys as original', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 42}, a);
+          var clone = fnUnderTest(a);
+          var origKeys = getOwnPropertyNames(a);
+          var cloneKeys = getOwnPropertyNames(clone);
+
+          expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
+        });
+
+
+        it('Enumerable properties are enumerable on clone', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 42}, a);
+          var clone = fnUnderTest(a);
+          var bazDescriptor = getOwnPropertyDescriptor('foo', clone);
+
+          expect(bazDescriptor.enumerable).to.be.true;
+        });
+
+
+        it('Non-enumerable properties are non-enumerable on clone', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 42}, a);
+          var clone = fnUnderTest(a);
+          var bazDescriptor = getOwnPropertyDescriptor('baz', clone);
+
+          expect(bazDescriptor.enumerable).to.be.false;
+        });
+
+
+        it('New array has same values as original', function() {
+          var a = [1, 2, 3, function() {}, {foo: 7, bar: 42}];
+          var clone = fnUnderTest(a);
+          var result = clone.every(function(val, i) {
+            return verifier(val, a[i]);
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('New object has same values as original', function() {
+          var a = {
+            foo: 42,
+            bar: function() {},
+            baz: [1, 2, 3],
+            other: {v1: true, v2: {foo: 7, bar: 9}, v3: null}
+          };
+          defineProperty('nonenum', {enumerable: false, value: 'a'}, a);
+
+          var clone = fnUnderTest(a);
+          var result = getOwnPropertyNames(clone).every(function(k) {
+            return verifier(clone[k], a[k]);
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Cloning copies properties all the way up the prototype chain', function() {
+          var a = {};
+          defineProperty('foo', {enumerable: true, value: 'a'}, a);
+          defineProperty('bar', {enumerable: false, value: 1}, a);
+          var f = function() {};
+          f.prototype = Object.create(a);
+          defineProperty('fizz', {enumerable: true, value: 'b'}, a);
+          defineProperty('buzz', {enumerable: false, value: 2}, a);
+          var b = new f();
+          var clone = fnUnderTest(b);
+          var cloneProps = getOwnPropertyNames(clone);
+          var hasProp = function(p) {return cloneProps.indexOf(p) !== -1;};
+          var expectedProps = ['foo', 'bar', 'fizz', 'buzz'];
+          var result = expectedProps.every(hasProp);
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Cloning doesn\'t copy Object.prototype values', function() {
+          var a = {};
+          var clone = fnUnderTest(a);
+          var objProto = getOwnPropertyNames(Object.prototype);
+          var cloneProps = getOwnPropertyNames(clone);
+          var result = objProto.every(function(k) {
+            return cloneProps.indexOf(k) === -1;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Cloning doesn\'t copy Array.prototype values', function() {
+          var a = [];
+          var clone = fnUnderTest(a);
+          var arrProto = getOwnPropertyNames(Array.prototype);
+          var cloneProps = getOwnPropertyNames(clone);
+          var result = arrProto.every(function(k) {
+            // Array.prototype does have a length property!
+            if (k === 'length') return true;
+
+            return cloneProps.indexOf(k) === -1;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Handles null correctly', function() {
+          var a = null;
+          var clone = fnUnderTest(a);
+
+          expect(a === clone).to.be.true;
+        });
+      });
+    };
+
+
+    var shallowCheck = function(val, cloneVal) {
+      return val === cloneVal;
+    };
+
+    makeCloneTests('shallowClone', object.shallowClone, shallowCheck);
+
+
+    var deepCheck = function(val, cloneVal) {
+      if (Array.isArray(val)) {
+        return val.every(function(newVal, i) {
+          return deepCheck(newVal, cloneVal[i]);
+        });
       };
 
+      if (typeof(val) !== 'object' || val === null)
+        return val === cloneVal;
 
-      var nonObjects = [
-        {name: 'number', val: 1},
-        {name: 'boolean', val: true},
-        {name: 'string', val: 'a'},
-        {name: 'undefined', val: undefined},
-        {name: 'function', val: function() {}}];
+      if (typeof(cloneVal) !== 'object')
+        return false;
 
+      if (val === cloneVal)
+        return false;
 
-      nonObjects.forEach(function(test) {
-        it('Throws type error for value of type ' + test.name,
-           makeNonObjectTest(test.val));
-      });
+      while (val !== Object.prototype) {
+        var props = object.getOwnPropertyNames(val);
+        if (!props.every(function(p) {
+          return deepCheck(val[p], cloneVal[p]);
+        }))
+          return false;
+        val = Object.getPrototypeOf(val);
+      }
 
+      return true;
+    };
 
-      it('New object has does not have same prototype', function() {
-        var f = function() {};
-        var a = new f();
-        var clone = shallowClone(a);
-
-        expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.false;
-      });
-
-
-      it('New array has does have same prototype', function() {
-        var a = [1, 2, 3];
-        var clone = shallowClone(a);
-
-        expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.true;
-      });
-
-
-      it('New object has same own keys as original', function() {
-        var a = {foo: 1, bar: 2, baz: 3};
-        var clone = shallowClone(a);
-        var origKeys = keys(a);
-        var cloneKeys = keys(clone);
-
-        expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
-      });
-
-
-      it('New array has same length as original', function() {
-        var a = [1, 2, 3];
-        var clone = shallowClone(a);
-
-        expect(clone.length).to.equal(a.length);
-      });
-
-
-      it('New object has same non-enumerable keys as original', function() {
-        var a = {foo: 1, bar: 2};
-        defineProperty('baz', {enumerable: false, value: 42}, a);
-        var clone = shallowClone(a);
-        var origKeys = getOwnPropertyNames(a);
-        var cloneKeys = getOwnPropertyNames(clone);
-
-        expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
-      });
-
-
-      it('Enumerable properties are enumerable on clone', function() {
-        var a = {foo: 1, bar: 2};
-        defineProperty('baz', {enumerable: false, value: 42}, a);
-        var clone = shallowClone(a);
-        var bazDescriptor = getOwnPropertyDescriptor('foo', clone);
-
-        expect(bazDescriptor.enumerable).to.be.true;
-      });
-
-
-      it('Non-enumerable properties are non-enumerable on clone', function() {
-        var a = {foo: 1, bar: 2};
-        defineProperty('baz', {enumerable: false, value: 42}, a);
-        var clone = shallowClone(a);
-        var bazDescriptor = getOwnPropertyDescriptor('baz', clone);
-
-        expect(bazDescriptor.enumerable).to.be.false;
-      });
-
-
-      it('New array has same values as original', function() {
-        var a = [1, 2, 3, function() {}, {foo: 7, bar: 42}];
-        var clone = shallowClone(a);
-        var result = clone.every(function(val, i) {
-          return val === a[i];
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('New object has same values as original', function() {
-        var a = {
-          foo: 42,
-          bar: function() {},
-          baz: [1, 2, 3],
-          other: {v1: true, v2: {foo: 7, bar: 9}, v3: null}
-        };
-        defineProperty('nonenum', {enumerable: false, value: 'a'}, a);
-
-        var clone = shallowClone(a);
-        var result = getOwnPropertyNames(clone).every(function(k) {
-          return clone[k] === a[k];
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Cloning copies properties all the way up the prototype chain', function() {
-        var a = {};
-        defineProperty('foo', {enumerable: true, value: 'a'}, a);
-        defineProperty('bar', {enumerable: false, value: 1}, a);
-        var f = function() {};
-        f.prototype = Object.create(a);
-        defineProperty('fizz', {enumerable: true, value: 'b'}, a);
-        defineProperty('buzz', {enumerable: false, value: 2}, a);
-        var b = new f();
-        var clone = shallowClone(b);
-        var cloneProps = getOwnPropertyNames(clone);
-        var hasProp = function(p) {return cloneProps.indexOf(p) !== -1;};
-        var expectedProps = ['foo', 'bar', 'fizz', 'buzz'];
-        var result = expectedProps.every(hasProp);
-
-        expect(result).to.equal(true);
-      });
-
-
-      it('Cloning doesn\'t copy Object.prototype values', function() {
-        var a = {};
-        var clone = shallowClone(a);
-        var objProto = getOwnPropertyNames(Object.prototype);
-        var cloneProps = getOwnPropertyNames(clone);
-        var result = objProto.every(function(k) {
-          return cloneProps.indexOf(k) === -1;
-        });
-
-        expect(result).to.equal(true);
-      });
-
-
-      it('Cloning doesn\'t copy Array.prototype values', function() {
-        var a = [];
-        var clone = shallowClone(a);
-        var arrProto = getOwnPropertyNames(Array.prototype);
-        var cloneProps = getOwnPropertyNames(clone);
-        var result = arrProto.every(function(k) {
-          // Array.prototype does have a length property!
-          if (k === 'length') return true;
-
-          return cloneProps.indexOf(k) === -1;
-        });
-
-        expect(result).to.equal(true);
-      });
-
-
-      it('Handles null correctly', function() {
-        var a = null;
-        var clone = shallowClone(a);
-
-        expect(a === clone).to.be.true;
-      });
-    });
+    makeCloneTests('deepClone', object.deepClone, deepCheck);
   };
 
 
