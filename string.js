@@ -5,8 +5,11 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
+    var object = require('./object');
     var curry = base.curry;
     var getRealArity = base.getRealArity;
+    var callProp = object.callProp;
+    var callPropWithArity = object.callPropWithArity;
 
 
     /*
@@ -26,9 +29,7 @@
      *
      */
 
-    var toCharCode = curry(function(i, s) {
-      return s.charCodeAt(i);
-    });
+    var toCharCode = callPropWithArity('charCodeAt', 1);
 
 
     /*
@@ -51,10 +52,19 @@
     };
 
 
+    /*
+     * toLowerCase: Equivalent to String.prototype.toLowerCase.
+     *
+     */
+
+    var toLowerCase = callProp('toLowerCase');
+
+
     var exported = {
       chr: chr,
       ord: ord,
       toCharCode: toCharCode,
+      toLowerCase: toLowerCase,
       toString: toString
     };
 

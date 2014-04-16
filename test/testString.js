@@ -18,7 +18,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr'];
+      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -169,6 +169,44 @@
         expect(chr(aCode, bCode, cCode)).to.equal(a);
       });
     });
+
+
+    var makeStringCaseTest = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+
+
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(1);
+        });
+
+
+        it('Works correctly (1)', function() {
+          var s = 'abc';
+          var result = fnUnderTest(s);
+
+          expect(result).to.equal(s[verifier]());
+        });
+
+
+        it('Works correctly (2)', function() {
+          var s = 'ABC';
+          var result = fnUnderTest(s);
+
+          expect(result).to.equal(s[verifier]());
+        });
+
+
+        it('Works correctly (3)', function() {
+          var s = 'AbC';
+          var result = fnUnderTest(s);
+
+          expect(result).to.equal(s[verifier]());
+        });
+      });
+    };
+
+
+    makeStringCaseTest('toLowerCase', string.toLowerCase, 'toLowerCase');
   };
 
 
