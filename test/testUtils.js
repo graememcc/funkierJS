@@ -10,8 +10,8 @@
 
     // Deeply check two objects for equality (ignoring functions)
     var checkObjectEquality = function(obj1, obj2) {
-      var obj1Keys = Object.keys(obj1);
-      var obj2Keys = Object.keys(obj2);
+      var obj1Keys = Object.getOwnPropertyNames(obj1);
+      var obj2Keys = Object.getOwnPropertyNames(obj2);
 
       if (obj1Keys.length !== obj2Keys.length)
         return false;
@@ -35,6 +35,9 @@
 
     // Check two arrays for identity of contents, ignoring order
     var checkArrayContent = function(arr1, arr2, sortFn) {
+      if (!Array.isArray(arr1) || !Array.isArray(arr2) || arr1.length !== arr2.length)
+        return false;
+
       var sortArgs = [];
       if (typeof(sortFn) === 'function')
         sortArgs.push(sortFn);

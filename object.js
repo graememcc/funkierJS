@@ -553,6 +553,44 @@
     };
 
 
+    /*
+     * shallowClone: returns a shallow clone of the given object. That is to say, the object
+     *               returned will have have the same properties as the original (both enumerable
+     *               and non-enumerable), except the prototype will be Object.prototype. The original
+     *               object's constructor will not be called. The values of the properties in the new
+     *               object will be exactly the same as the corresponding properties in the original
+     *               object. In particular, if the original has a property whose value is an object or
+     *               function, then the new object's property will refer to the same object; the value
+     *               will not be cloned.
+     *
+     * A TypeError will be thrown if called with some non-object type.
+     *
+     */
+
+    var shallowClone = function(obj) {
+      if (typeof(obj) !== 'object')
+        throw new TypeError('shallowClone called on non-object');
+
+      if (obj === null)
+        return obj;
+
+      if (Array.isArray(obj))
+        return obj.slice();
+
+      var clone = {};
+      while (obj !== Object.prototype) {
+        var props = getOwnPropertyNames(obj);
+        props.forEach(function(p) {
+          var descriptor = getOwnPropertyDescriptor(p, obj);
+          defineProperty(p, descriptor, clone);
+        });
+        obj = Object.getPrototypeOf(obj);
+      }
+
+      return clone;
+    };
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -579,6 +617,7 @@
       modifyOrThrow: modifyOrThrow,
       set: set,
       setOrThrow: setOrThrow,
+      shallowClone: shallowClone,
       values: values
     };
 
