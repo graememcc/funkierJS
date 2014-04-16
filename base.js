@@ -447,6 +447,14 @@
     var isBoolean = is('boolean');
 
 
+    /*
+     * isUndefined: Returns true if typeof the given object returns 'undefined'.
+     *
+     */
+
+    var isUndefined = is('undefined');
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -463,6 +471,7 @@
       isBoolean: isBoolean,
       isNumber: isNumber,
       isString: isString,
+      isUndefined: isUndefined,
       notEqual: notEqual,
       permuteLeft: permuteLeft,
       permuteRight: permuteRight,
