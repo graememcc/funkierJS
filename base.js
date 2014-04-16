@@ -483,6 +483,17 @@
     };
 
 
+    /*
+     * isRealObject: Returns true if the given object is a 'real' object, i.e. an
+     *               typeof(obj) === 'object', and obj !== null and isArray(obj) === false
+     *
+     */
+
+    var isRealObject = function(obj) {
+      return isObject(obj) && !(isArray(obj) || isNull(obj));
+    };
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -501,6 +512,7 @@
       isNumber: isNumber,
       isNull: isNull,
       isObject: isObject,
+      isRealObject: isRealObject,
       isString: isString,
       isUndefined: isUndefined,
       notEqual: notEqual,
