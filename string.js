@@ -79,12 +79,22 @@
     var toUpperCase = callProp('toUpperCase');
 
 
+    /*
+     * toLocaleUpperCase: Equivalent to String.prototype.toLocaleUpperCase. Takes a string, and converts
+     *                    it to upper case, following locale conventions.
+     *
+     */
+
+    var toLocaleUpperCase = callProp('toLocaleUpperCase');
+
+
     var exported = {
       chr: chr,
       ord: ord,
       toCharCode: toCharCode,
-      toLowerCase: toLowerCase,
       toLocaleLowerCase: toLocaleLowerCase,
+      toLocaleUpperCase: toLocaleUpperCase,
+      toLowerCase: toLowerCase,
       toUpperCase: toUpperCase,
       toString: toString
     };
