@@ -473,6 +473,16 @@
     };
 
 
+    /*
+     * isNull: Returns true if the given object is the value null
+     *
+     */
+
+    var isNull = function(obj) {
+      return obj === null;
+    };
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -489,6 +499,7 @@
       isArray: isArray,
       isBoolean: isBoolean,
       isNumber: isNumber,
+      isNull: isNull,
       isObject: isObject,
       isString: isString,
       isUndefined: isUndefined,
