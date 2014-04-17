@@ -19,13 +19,15 @@
     var maths = require('../maths');
     var object = require('../object');
     var string = require('../string');
+    var fn = require('../fn');
 
 
     var imports = [{name: 'base', val: base},
                    {name: 'logical', val: logical},
                    {name: 'maths', val: maths},
                    {name: 'object', val: object},
-                   {name: 'string', val: string}];
+                   {name: 'string', val: string},
+                   {name: 'fn', val: fn}];
 
 
     describe('Funkier exports', function() {
