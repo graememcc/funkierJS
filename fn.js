@@ -27,8 +27,26 @@
     });
 
 
+    /*
+     * bindWithContext: A curried version of Function.prototype.bind.
+     *                  Takes an execution context object, an arity and a
+     *                  function. Binds the given object as the execution
+     *                  context for the given function, returning a curried
+     *                  function accepting arity arguments.
+     *
+     */
+
+    var bindWithContextAndArity = curry(function(obj, arity, f) {
+      return curryWithArity(arity, function() {
+        var args = [].slice.call(arguments);
+        return f.apply(obj, arguments);
+      });
+    });
+
+
     var exported = {
-      bindWithContext: bindWithContext
+      bindWithContext: bindWithContext,
+      bindWithContextAndArity: bindWithContextAndArity
     };
 
 

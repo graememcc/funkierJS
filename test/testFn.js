@@ -19,7 +19,7 @@
 
 
     describe('String exports', function() {
-      var expectedFunctions = ['bindWithContext'];
+      var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -85,6 +85,80 @@
       var f2 = function(x) {return x + this.foo};
       var obj2 = {foo: 5};
       testCurriedFunction('bindWithContext', bindWithContext, {firstArgs: [obj2, f2], thenArgs: [2]});
+    });
+
+
+    describe('bindWithContextAndArity', function() {
+      var bindWithContextAndArity = fn.bindWithContextAndArity;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(bindWithContextAndArity)).to.equal(3);
+      });
+
+
+      it('Returns a function', function() {
+        var f = function() {};
+        var obj = {};
+        var result = bindWithContextAndArity(obj, 0, f);
+
+        expect(result).to.be.a('function');
+      });
+
+
+      it('Returned function has correct arity (1)', function() {
+        var f = function() {};
+        var obj = {};
+        var arity = 0;
+        var result = bindWithContextAndArity(obj, arity, f);
+
+        expect(getRealArity(result)).to.equal(arity);
+      });
+
+
+      it('Returned function has correct arity (2)', function() {
+        var f = function() {};
+        var obj = {};
+        var arity = 1;
+        var result = bindWithContextAndArity(obj, arity, f);
+
+        expect(getRealArity(result)).to.equal(arity);
+      });
+
+
+      it('Returned function has correct arity (3)', function() {
+        var f = function(x, y) {};
+        var obj = {};
+        var arity = 3;
+        var result = bindWithContextAndArity(obj, arity, f);
+
+        expect(getRealArity(result)).to.equal(arity);
+      });
+
+
+      it('Binds to context', function() {
+        var f = function() {return this;};
+        var obj = {};
+        var arity = 0;
+        var result = bindWithContextAndArity(obj, arity, f)();
+
+        expect(result).to.equal(obj);
+      });
+
+
+      // If necessary, the returned function should be curried
+      var f1 = function(x, y, z) {return x + y + this.foo};
+      var obj1 = {foo: 6};
+      var arity1 = 2;
+      var result = bindWithContextAndArity(obj1, arity1, f1);
+      testCurriedFunction('bindWithContextAndArity bound function', result, [1, 2]);
+
+
+      // bindWithContextAndArity should be curried
+      var f2 = function(x) {return x + this.foo};
+      var obj2 = {foo: 5};
+      var arity2 = 1;
+      testCurriedFunction('bindWithContextAndArity', bindWithContextAndArity, {firstArgs: [obj2, arity2, f2], thenArgs: [2]});
     });
   };
 
