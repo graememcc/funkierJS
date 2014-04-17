@@ -23,7 +23,7 @@
                                'greaterThan', 'greaterThanEqual', 'leftShift',
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
                                'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
-                               'toFixed'];
+                               'toFixed', 'toExponential'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -166,61 +166,45 @@
     });
 
 
-    describe('toFixed', function() {
-      var toFixed = maths.toFixed;
+    var makeNumStringTest = function(desc, fnUnderTest, verifier, testData) {
+      describe(desc, function() {
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(toFixed)).to.equal(2);
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(2);
+        });
+
+
+        it('Returns a string', function() {
+          var n = 17;
+          var result = fnUnderTest(2, n);
+
+          expect(result).to.be.a('string');
+        });
+
+
+        testData.forEach(function(test, i) {
+          it('Works correctly (' + (i + 1) + ')', function() {
+            var n = test[0];
+            var param = test[1];
+            var result = fnUnderTest(param, n);
+
+            expect(result).to.equal(n[verifier](param));
+          });
+        });
+
+
+        testCurriedFunction(desc, fnUnderTest, [testData[0][1], testData[0][0]]);
       });
+    };
 
 
-      it('Returns a string', function() {
-        var n = 17;
-        var result = toFixed(2, n);
-
-        expect(result).to.be.a('string');
-      });
+    var fixTests = [[17.051, 2], [17.051, 0], [17.051, 4], [17, 2]];
+    makeNumStringTest('toFixed', maths.toFixed, 'toFixed', fixTests);
 
 
-      it('Works correctly (1)', function() {
-        var n = 17.051;
-        var fix = 2;
-        var result = toFixed(fix, n);
-
-        expect(result).to.equal(n.toFixed(fix));
-      });
-
-
-      it('Works correctly (2)', function() {
-        var n = 17.051;
-        var fix = 0;
-        var result = toFixed(fix, n);
-
-        expect(result).to.equal(n.toFixed(fix));
-      });
-
-
-      it('Works correctly (3)', function() {
-        var n = 17.051;
-        var fix = 4;
-        var result = toFixed(fix, n);
-
-        expect(result).to.equal(n.toFixed(fix));
-      });
-
-
-      it('Works correctly (4)', function() {
-        var n = 17;
-        var fix = 2;
-        var result = toFixed(fix, n);
-
-        expect(result).to.equal(n.toFixed(fix));
-      });
-
-
-      testCurriedFunction('toFixed', toFixed, [2, 17]);
-    });
+    var expTests = [[123.456, 1], [123.456, 2], [123.456, 0], [1, 4], [0.1, 2]];
+    makeNumStringTest('toExponential', maths.toExponential, 'toExponential', expTests);
   };
 
 

@@ -233,6 +233,17 @@
     var toFixed = callPropWithArity('toFixed', 1);
 
 
+    /*
+     * toExponential: a curried wrapper around Number.prototype.toExponential. Takes the number
+     *                of digits between 0 and 20, and a number. Returns a string representing
+     *                that number in exponential form, with digits number of digits after the
+     *                decimal point.
+     *
+     */
+
+    var toExponential = callPropWithArity('toExponential', 1);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -255,6 +266,7 @@
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,
       subtract: subtract,
+      toExponential: toExponential,
       toFixed: toFixed
     };
 
