@@ -244,6 +244,17 @@
     var toExponential = callPropWithArity('toExponential', 1);
 
 
+    /*
+     * toPrecision: a curried wrapper around Number.prototype.toExponential. Takes the number
+     *              of digits between 1 and 21, and a number. Returns a string representing
+     *              that number in exponential form, with digits significant number of digits.
+     *              The string will be in fixed or exponential form as appropriate.
+     *
+     */
+
+    var toPrecision = callPropWithArity('toPrecision', 1);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -267,7 +278,8 @@
       rightShiftZero: rightShiftZero,
       subtract: subtract,
       toExponential: toExponential,
-      toFixed: toFixed
+      toFixed: toFixed,
+      toPrecision: toPrecision
     };
 
 
