@@ -8,6 +8,7 @@
     var object = require('./object');
     var curry = base.curry;
     var flip = base.flip;
+    var callProp = object.callProp;
     var callPropWithArity = object.callPropWithArity;
 
 
@@ -276,6 +277,15 @@
     var stringToInt = flip(parseInt);
 
 
+    /*
+     * numToLocaleString: a wrapper around Number.prototype.toLocaleString. Takes a number, and returns
+     *                    a string representation of the number, formatted according to locale conventions.
+     *
+     */
+
+    var numToLocaleString = callProp('toLocaleString');
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -294,6 +304,7 @@
       min: min,
       max: max,
       multiply: multiply,
+      numToLocaleString: numToLocaleString,
       rem: rem,
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,

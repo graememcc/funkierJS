@@ -24,7 +24,7 @@
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
                                'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
                                'toFixed', 'toExponential', 'toPrecision',
-                               'toBaseAndString', 'stringToInt'];
+                               'toBaseAndString', 'stringToInt', 'numToLocaleString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -270,6 +270,32 @@
 
 
       testCurriedFunction('stringToInt', stringToInt, [2, '11']);
+    });
+
+
+    describe('numToLocaleString', function() {
+      var numToLocaleString = maths.numToLocaleString;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(numToLocaleString)).to.equal(1);
+      });
+
+
+      it('Returns a string', function() {
+        var n = 1;
+        var result = numToLocaleString(n);
+
+        expect(result).to.be.a('string');
+      });
+
+
+      it('Returns a string', function() {
+        var n = 1000;
+        var result = numToLocaleString(n);
+
+        expect(result).to.equal(n.toLocaleString());
+      });
     });
   };
 
