@@ -93,11 +93,29 @@
     });
 
 
+    /*
+     * wrap: takes 3 functions, before, after and f. Returns a new function with the same arity
+     *       as f. When called, the following will happen in sequence:
+     *       - before will be called with the given arguments
+     *       - f will be called with the given arguments, and a null execution context
+     *       - after will be called with 2 arguments: an array containing the given arguments, and
+     *           f's result
+     *       - f's result will be returned
+     *
+     * This function is equivalent to calling post and pre on some function.
+     *
+     */
+    var wrap = curry(function(before, after, f) {
+      return post(after, pre(before, f));
+    });
+
+
     var exported = {
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
       pre: pre,
-      post: post
+      post: post,
+      wrap: wrap
     };
 
 
