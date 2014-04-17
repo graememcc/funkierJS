@@ -5,7 +5,9 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
+    var object = require('./object');
     var curry = base.curry;
+    var callPropWithArity = object.callPropWithArity;
 
 
     /*
@@ -221,6 +223,16 @@
     var max = curry(Math.max);
 
 
+    /*
+     * toFixed: a curried wrapper around Number.prototype.toFixed. Takes the number
+     *          of digits between 0 and 20, and a number. Returns a string representing
+     *          that number with the given number of digits.
+     *
+     */
+
+    var toFixed = callPropWithArity('toFixed', 1);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -242,7 +254,8 @@
       rem: rem,
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,
-      subtract: subtract
+      subtract: subtract,
+      toFixed: toFixed
     };
 
 

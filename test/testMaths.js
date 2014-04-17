@@ -14,6 +14,7 @@
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var getRealArity = base.getRealArity;
 
 
     describe('Maths exports', function() {
@@ -21,7 +22,8 @@
                                'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
                                'greaterThan', 'greaterThanEqual', 'leftShift',
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
-                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max'];
+                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
+                               'toFixed'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -110,7 +112,6 @@
 
     describe('min', function() {
       var min = maths.min;
-      var getRealArity = base.getRealArity;
 
 
       it('min has arity of 2', function() {
@@ -139,7 +140,6 @@
 
     describe('max', function() {
       var max = maths.max;
-      var getRealArity = base.getRealArity;
 
 
       it('max has arity of 2', function() {
@@ -163,6 +163,63 @@
 
 
       testCurriedFunction('max', max, [5, 4]);
+    });
+
+
+    describe('toFixed', function() {
+      var toFixed = maths.toFixed;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(toFixed)).to.equal(2);
+      });
+
+
+      it('Returns a string', function() {
+        var n = 17;
+        var result = toFixed(2, n);
+
+        expect(result).to.be.a('string');
+      });
+
+
+      it('Works correctly (1)', function() {
+        var n = 17.051;
+        var fix = 2;
+        var result = toFixed(fix, n);
+
+        expect(result).to.equal(n.toFixed(fix));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var n = 17.051;
+        var fix = 0;
+        var result = toFixed(fix, n);
+
+        expect(result).to.equal(n.toFixed(fix));
+      });
+
+
+      it('Works correctly (3)', function() {
+        var n = 17.051;
+        var fix = 4;
+        var result = toFixed(fix, n);
+
+        expect(result).to.equal(n.toFixed(fix));
+      });
+
+
+      it('Works correctly (4)', function() {
+        var n = 17;
+        var fix = 2;
+        var result = toFixed(fix, n);
+
+        expect(result).to.equal(n.toFixed(fix));
+      });
+
+
+      testCurriedFunction('toFixed', toFixed, [2, 17]);
     });
   };
 
