@@ -23,7 +23,8 @@
                                'greaterThan', 'greaterThanEqual', 'leftShift',
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
                                'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
-                               'toFixed', 'toExponential', 'toPrecision'];
+                               'toFixed', 'toExponential', 'toPrecision',
+                               'toBaseAndString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -209,6 +210,10 @@
 
     var precisionTests = [[1, 1], [1, 2], [123.45, 2]];
     makeNumStringTest('toPrecision', maths.toPrecision, 'toPrecision', precisionTests);
+
+
+    var baseTests = [[3, 2], [11, 10], [35, 36]];
+    makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
   };
 
 

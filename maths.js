@@ -255,6 +255,16 @@
     var toPrecision = callPropWithArity('toPrecision', 1);
 
 
+    /*
+     * toBaseAndString: a curried wrapper around Number.prototype.toString. Takes a base between
+     *                  2 and 36, and a number. Returns a string representing the given number in
+     *                  the given base.
+     *
+     */
+
+    var toBaseAndString = callPropWithArity('toString', 1);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -277,6 +287,7 @@
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,
       subtract: subtract,
+      toBaseAndString: toBaseAndString,
       toExponential: toExponential,
       toFixed: toFixed,
       toPrecision: toPrecision
