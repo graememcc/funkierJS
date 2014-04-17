@@ -44,9 +44,34 @@
     });
 
 
+    /*
+     * pre: takes two functions g, and f, and returns a new function
+     *      with the same arity as f. When this new function is called, it will first
+     *      call g with a single argument: an array containing all the arguments the
+     *      function was called with. When g finishes executing, f will be called with
+     *      those arguments, and the returned function's execution context. f's return
+     *      value will be returned.
+     *
+     * For example, you might log function calls as follows:
+     * var logger = function(args) {console.log('plus called with ', args.join(', '));};
+     * var loggedPlus = pre(logger, plus);
+     * loggedPlus(2, 2); // outputs 'plus called with 2, 2' to console
+     *
+     */
+
+    var pre = curry(function(g, f) {
+      return curryWithArity(getRealArity(f), function() {
+        var args = [].slice.call(arguments);
+        g(args);
+        return f.apply(this, args);
+      });
+    });
+
+
     var exported = {
       bindWithContext: bindWithContext,
-      bindWithContextAndArity: bindWithContextAndArity
+      bindWithContextAndArity: bindWithContextAndArity,
+      pre: pre
     };
 
 
