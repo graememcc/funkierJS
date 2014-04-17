@@ -7,6 +7,7 @@
     var base = require('./base');
     var object = require('./object');
     var curry = base.curry;
+    var flip = base.flip;
     var callPropWithArity = object.callPropWithArity;
 
 
@@ -265,6 +266,16 @@
     var toBaseAndString = callPropWithArity('toString', 1);
 
 
+    /*
+     * stringToInt: a curried wrapper around parseInt. Takes a base, and a string, and attempts to
+     *              treat the string as representing a number in the given base, and convert it.
+     *              Returns NaN if the string does not represent a valid number.
+     *
+     */
+
+    var stringToInt = flip(parseInt);
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -286,6 +297,7 @@
       rem: rem,
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,
+      stringToInt: stringToInt,
       subtract: subtract,
       toBaseAndString: toBaseAndString,
       toExponential: toExponential,

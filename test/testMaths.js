@@ -24,7 +24,7 @@
                                'rightShift', 'rightShiftZero', 'bitwiseAnd',
                                'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
                                'toFixed', 'toExponential', 'toPrecision',
-                               'toBaseAndString'];
+                               'toBaseAndString', 'stringToInt'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -214,6 +214,63 @@
 
     var baseTests = [[3, 2], [11, 10], [35, 36]];
     makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
+
+
+    describe('stringToInt', function() {
+      var stringToInt = maths.stringToInt;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(stringToInt)).to.equal(2);
+      });
+
+
+      it('Returns a number', function() {
+        var s = '17';
+        var result = stringToInt(10, s);
+
+        expect(result).to.be.a('number');
+      });
+
+
+      it('Works correctly (1)', function() {
+        var s = '10';
+        var base = 10;
+        var result = stringToInt(base, s);
+
+        expect(result).to.equal(parseInt(s, base));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var s = '10';
+        var base = 2;
+        var result = stringToInt(base, s);
+
+        expect(result).to.equal(parseInt(s, base));
+      });
+
+
+      it('Works correctly (3)', function() {
+        var s = '1z';
+        var base = 36;
+        var result = stringToInt(base, s);
+
+        expect(result).to.equal(parseInt(s, base));
+      });
+
+
+      it('Works correctly (4)', function() {
+        var s = 'abc';
+        var base = 2;
+        var result = stringToInt(base, s);
+
+        expect(isNaN(result)).to.be.true;
+      });
+
+
+      testCurriedFunction('stringToInt', stringToInt, [2, '11']);
+    });
   };
 
 
