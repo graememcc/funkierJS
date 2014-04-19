@@ -35,7 +35,7 @@
     });
 
 
-    var makeUnaryDateTest = function(desc, fnUnderTest, testDate, verifier) {
+    var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
       describe(desc, function() {
         it('Has correct arity', function() {
           expect(getRealArity(fnUnderTest)).to.equal(1);
@@ -43,6 +43,7 @@
 
 
         it('Works correctly (1)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
           var result = fnUnderTest(testDate);
 
           expect(result).to.equal(testDate[verifier]());
@@ -59,32 +60,31 @@
     };
 
 
-    var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-    makeUnaryDateTest('getDayOfMonth', date.getDayOfMonth, testDate, 'getDate');
-    makeUnaryDateTest('getDayOfWeek', date.getDayOfWeek, testDate, 'getDay');
-    makeUnaryDateTest('getFullYear', date.getFullYear, testDate, 'getFullYear');
-    makeUnaryDateTest('getHours', date.getHours, testDate, 'getHours');
-    makeUnaryDateTest('getMilliseconds', date.getMilliseconds, testDate, 'getMilliseconds');
-    makeUnaryDateTest('getMinutes', date.getMinutes, testDate, 'getMinutes');
-    makeUnaryDateTest('getMonth', date.getMonth, testDate, 'getMonth');
-    makeUnaryDateTest('getSeconds', date.getSeconds, testDate, 'getSeconds');
-    makeUnaryDateTest('toEpochMilliseconds', date.toEpochMilliseconds, testDate, 'getTime');
-    makeUnaryDateTest('getTimezoneOffset', date.getTimezoneOffset, testDate, 'getTimezoneOffset');
-    makeUnaryDateTest('getUTCDayOfMonth', date.getUTCDayOfMonth, testDate, 'getUTCDate');
-    makeUnaryDateTest('getUTCDayOfWeek', date.getUTCDayOfWeek, testDate, 'getUTCDay');
-    makeUnaryDateTest('getUTCFullYear', date.getUTCFullYear, testDate, 'getUTCFullYear');
-    makeUnaryDateTest('getUTCHours', date.getUTCHours, testDate, 'getUTCHours');
-    makeUnaryDateTest('getUTCMilliseconds', date.getUTCMilliseconds, testDate, 'getUTCMilliseconds');
-    makeUnaryDateTest('getUTCMinutes', date.getUTCMinutes, testDate, 'getUTCMinutes');
-    makeUnaryDateTest('getUTCMonth', date.getUTCMonth, testDate, 'getUTCMonth');
-    makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, testDate, 'getUTCSeconds');
-    makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, testDate, 'toLocaleDateString');
-    makeUnaryDateTest('toLocaleString', date.toLocaleString, testDate, 'toLocaleString');
-    makeUnaryDateTest('toLocaleTimeString', date.toLocaleTimeString, testDate, 'toLocaleTimeString');
-    makeUnaryDateTest('toDateString', date.toDateString, testDate, 'toDateString');
-    makeUnaryDateTest('toTimeString', date.toTimeString, testDate, 'toTimeString');
-    makeUnaryDateTest('toISOString', date.toISOString, testDate, 'toISOString');
-    makeUnaryDateTest('toUTCString', date.toUTCString, testDate, 'toUTCString');
+    makeUnaryDateTest('getDayOfMonth', date.getDayOfMonth, 'getDate');
+    makeUnaryDateTest('getDayOfWeek', date.getDayOfWeek, 'getDay');
+    makeUnaryDateTest('getFullYear', date.getFullYear, 'getFullYear');
+    makeUnaryDateTest('getHours', date.getHours, 'getHours');
+    makeUnaryDateTest('getMilliseconds', date.getMilliseconds, 'getMilliseconds');
+    makeUnaryDateTest('getMinutes', date.getMinutes, 'getMinutes');
+    makeUnaryDateTest('getMonth', date.getMonth, 'getMonth');
+    makeUnaryDateTest('getSeconds', date.getSeconds, 'getSeconds');
+    makeUnaryDateTest('toEpochMilliseconds', date.toEpochMilliseconds, 'getTime');
+    makeUnaryDateTest('getTimezoneOffset', date.getTimezoneOffset, 'getTimezoneOffset');
+    makeUnaryDateTest('getUTCDayOfMonth', date.getUTCDayOfMonth, 'getUTCDate');
+    makeUnaryDateTest('getUTCDayOfWeek', date.getUTCDayOfWeek, 'getUTCDay');
+    makeUnaryDateTest('getUTCFullYear', date.getUTCFullYear, 'getUTCFullYear');
+    makeUnaryDateTest('getUTCHours', date.getUTCHours, 'getUTCHours');
+    makeUnaryDateTest('getUTCMilliseconds', date.getUTCMilliseconds, 'getUTCMilliseconds');
+    makeUnaryDateTest('getUTCMinutes', date.getUTCMinutes, 'getUTCMinutes');
+    makeUnaryDateTest('getUTCMonth', date.getUTCMonth, 'getUTCMonth');
+    makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, 'getUTCSeconds');
+    makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, 'toLocaleDateString');
+    makeUnaryDateTest('toLocaleString', date.toLocaleString, 'toLocaleString');
+    makeUnaryDateTest('toLocaleTimeString', date.toLocaleTimeString, 'toLocaleTimeString');
+    makeUnaryDateTest('toDateString', date.toDateString, 'toDateString');
+    makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
+    makeUnaryDateTest('toISOString', date.toISOString, 'toISOString');
+    makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
   };
 
 
