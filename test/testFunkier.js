@@ -20,6 +20,7 @@
     var object = require('../object');
     var string = require('../string');
     var fn = require('../fn');
+    var date = require('../date');
 
 
     var imports = [{name: 'base', val: base},
@@ -27,7 +28,8 @@
                    {name: 'maths', val: maths},
                    {name: 'object', val: object},
                    {name: 'string', val: string},
-                   {name: 'fn', val: fn}];
+                   {name: 'fn', val: fn},
+                   {name: 'date', val: date}];
 
 
     describe('Funkier exports', function() {

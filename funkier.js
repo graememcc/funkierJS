@@ -9,8 +9,9 @@
     var object = require('./object');
     var string = require('./string');
     var fn = require('./fn');
+    var date = require('./date');
 
-    var imports = [base, logical, maths, object, string, fn];
+    var imports = [base, logical, maths, object, string, fn, date];
     var exportedFns = {};
 
     // Export our imports
