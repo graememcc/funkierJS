@@ -84,6 +84,14 @@
 
     var getSeconds = callProp('getSeconds');
 
+    /*
+     * toEpochMilliseconds: A wrapper around Date.prototype.getTime. Takes a date object, and returns
+     *                      the number of milliseconds elapsed since midnight, January 1 1970.
+     *
+     */
+
+    var toEpochMilliseconds = callProp('getTime');
+
 
     var exported = {
       getDayOfMonth: getDayOfMonth,
@@ -93,7 +101,8 @@
       getMilliseconds: getMilliseconds,
       getMinutes: getMinutes,
       getMonth: getMonth,
-      getSeconds: getSeconds
+      getSeconds: getSeconds,
+      toEpochMilliseconds: toEpochMilliseconds
     };
 
 
