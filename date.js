@@ -310,6 +310,22 @@
     });
 
 
+    /*
+     * setMinutes: A wrapper around Date.prototype.setMinutes. Takes a value between 0-59
+     *             representing the minutes, and sets the given date's minutes to the
+     *             that value. Invalid values will cause a change in other fields: if the
+     *             given minutes > 60, then the hours will be incremented by minutes div 60.
+     *             This in turn may cause a cascade of increments to other fields.
+     *             Returns the given date.
+     *
+     */
+
+    var setMinutes = curry(function(val, d) {
+      d.setMinutes(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -332,6 +348,7 @@
       setFullYear: setFullYear,
       setHours: setHours,
       setMilliseconds: setMilliseconds,
+      setMinutes: setMinutes,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,

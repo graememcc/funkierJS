@@ -26,7 +26,7 @@
                                'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
                                'toLocaleString', 'toLocaleTimeString', 'toDateString', 'toTimeString',
                                'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
-                               'setMilliseconds'];
+                               'setMilliseconds', 'setMinutes'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -133,6 +133,7 @@
     makeDateSetterTests('setFullYear', date.setFullYear, date.getFullYear);
     makeDateSetterTests('setHours', date.setHours, date.getHours);
     makeDateSetterTests('setMilliseconds', date.setMilliseconds, date.getMilliseconds);
+    makeDateSetterTests('setMinutes', date.setMinutes, date.getMinutes);
   };
 
 
