@@ -19,8 +19,18 @@
     var getDayOfMonth = callProp('getDate');
 
 
+    /*
+     * getDayOfWeek: A wrapper around Date.prototype.getDay. Takes a date object,
+     *               and returns an integer representing the day of the week (0-6).
+     *
+     */
+
+    var getDayOfWeek = callProp('getDay');
+
+
     var exported = {
-      getDayOfMonth: getDayOfMonth
+      getDayOfMonth: getDayOfMonth,
+      getDayOfWeek: getDayOfWeek
     };
 
 

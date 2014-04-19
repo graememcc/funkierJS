@@ -19,7 +19,7 @@
 
 
     describe('Date exports', function() {
-      var expectedFunctions = ['getDayOfMonth'];
+      var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -55,6 +55,7 @@
 
     var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
     makeDateGetterTest('getDayOfMonth', date.getDayOfMonth, testDate, 'getDate');
+    makeDateGetterTest('getDayOfWeek', date.getDayOfWeek, testDate, 'getDay');
   };
 
 
