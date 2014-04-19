@@ -24,7 +24,7 @@
                                'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
                                'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
                                'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
-                               'toLocaleString', 'toLocaleTimeString'];
+                               'toLocaleString', 'toLocaleTimeString', 'toDateString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -80,6 +80,7 @@
     makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, testDate, 'toLocaleDateString');
     makeUnaryDateTest('toLocaleString', date.toLocaleString, testDate, 'toLocaleString');
     makeUnaryDateTest('toLocaleTimeString', date.toLocaleTimeString, testDate, 'toLocaleTimeString');
+    makeUnaryDateTest('toDateString', date.toDateString, testDate, 'toDateString');
   };
 
 

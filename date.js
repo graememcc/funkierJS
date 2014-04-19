@@ -210,6 +210,16 @@
     var toLocaleTimeString = callProp('toLocaleTimeString');
 
 
+    /*
+     *
+     * toDateString: A wrapper around Date.prototype.toDateString. Takes a date object, and returns
+     *              and returns a string representing the date portion of the object.
+     *
+     */
+
+    var toDateString = callProp('toDateString');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -228,6 +238,7 @@
       getUTCMinutes: getUTCMinutes,
       getUTCMonth: getUTCMonth,
       getUTCSeconds: getUTCSeconds,
+      toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toLocaleDateString: toLocaleDateString,
       toLocaleTimeString: toLocaleTimeString,
