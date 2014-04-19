@@ -341,6 +341,22 @@
     });
 
 
+    /*
+     * setSeconds: A wrapper around Date.prototype.setSeconds. Takes a value between 0-59
+     *             representing the seconds, and sets the given date's seconds to the
+     *             that value. Invalid values will cause a change in other fields: if the
+     *             given seconds > 59, then the minutes will be incremented by seconds div 60.
+     *             This in turn may cause a cascade of increments to other fields.
+     *             Returns the given date.
+     *
+     */
+
+    var setSeconds = curry(function(val, d) {
+      d.setSeconds(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -365,6 +381,7 @@
       setMilliseconds: setMilliseconds,
       setMinutes: setMinutes,
       setMonth: setMonth,
+      setSeconds: setSeconds,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
