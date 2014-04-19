@@ -64,13 +64,23 @@
     var getMinutes = callProp('getMinutes');
 
 
+    /*
+     * getMonth: A wrapper around Date.prototype.getMonth. Takes a date object, and returns
+     *           an integer representing the current month. (0-11).
+     *
+     */
+
+    var getMonth = callProp('getMonth');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
       getFullYear: getFullYear,
       getHours: getHours,
       getMilliseconds: getMilliseconds,
-      getMinutes: getMinutes
+      getMinutes: getMinutes,
+      getMonth: getMonth
     };
 
 
