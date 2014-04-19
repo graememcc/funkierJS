@@ -37,10 +37,20 @@
     var getFullYear = callProp('getFullYear');
 
 
+    /*
+     * getHours: A wrapper around Date.prototype.getHours. Takes a date object, and returns
+     *           an integer representing the current hour (0-23).
+     *
+     */
+
+    var getHours = callProp('getHours');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
-      getFullYear: getFullYear
+      getFullYear: getFullYear,
+      getHours: getHours
     };
 
 
