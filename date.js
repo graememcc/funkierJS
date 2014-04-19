@@ -357,6 +357,21 @@
     });
 
 
+    /*
+     * setTimeSinceEpoch: A wrapper around Date.prototype.setTime. Takes a value representing
+     *                    the number of milliseconds since midnight, January 1, 1970, and a
+     *                    date. Simultaneously sets all the fields of the given date to represent
+     *                    the date and time that is that many milliseconds since the epoch.
+     *                    Returns the given date.
+     *
+     */
+
+    var setTimeSinceEpoch = curry(function(val, d) {
+      d.setTime(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -382,6 +397,7 @@
       setMinutes: setMinutes,
       setMonth: setMonth,
       setSeconds: setSeconds,
+      setTimeSinceEpoch: setTimeSinceEpoch,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
