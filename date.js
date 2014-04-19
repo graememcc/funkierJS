@@ -295,6 +295,21 @@
     });
 
 
+    /*
+     * setMilliseconds: A wrapper around Date.prototype.setMilliseconds. Takes a value
+     *                  representing the milliseconds, and sets the milliseconds to the
+     *                  given value, adjusting if necessary (values > 999 may increment
+     *                  the seconds field, which may in turn cause an increment of minutes,
+     *                  and so on). Returns the given date.
+     *
+     */
+
+    var setMilliseconds = curry(function(val, d) {
+      d.setMilliseconds(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -316,6 +331,7 @@
       setDayOfMonth: setDayOfMonth,
       setFullYear: setFullYear,
       setHours: setHours,
+      setMilliseconds: setMilliseconds,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
