@@ -42,7 +42,7 @@
 
     /*
      * getHours: A wrapper around Date.prototype.getHours. Takes a date object, and returns
-     *           an integer representing the hour field of the given date (0-23).
+     *           an integer representing the hour field (0-23) of the given date.
      *
      */
 
@@ -51,7 +51,7 @@
 
     /*
      * getMilliseconds: A wrapper around Date.prototype.getMilliseconds. Takes a date object, and
-     *                  returns an integer representing the milliseconds field of the given date (0-999).
+     *                  returns an integer representing the milliseconds field (0-999) of the given date.
      *
      */
 
@@ -60,7 +60,7 @@
 
     /*
      * getMinutes: A wrapper around Date.prototype.getMinutes. Takes a date object, and returns
-     *             an integer representing the minutes field of the given date. (0-59).
+     *             an integer representing the minutes field (0-59) of the given date.
      *
      */
 
@@ -69,7 +69,7 @@
 
     /*
      * getMonth: A wrapper around Date.prototype.getMonth. Takes a date object, and returns
-     *           an integer representing the month field of the given date. (0-11).
+     *           an integer representing the month field (0-11) of the given date.
      *
      */
 
@@ -78,7 +78,7 @@
 
     /*
      * getSeconds: A wrapper around Date.prototype.getSeconds. Takes a date object, and returns
-     *             an integer representing the seconds field of the given date. (0-59).
+     *             an integer representing the seconds field (0-59) of the given date.
      *
      */
 
@@ -103,6 +103,82 @@
     var getTimezoneOffset = callProp('getTimezoneOffset');
 
 
+    /*
+     * getUTCDayOfMonth: A wrapper around Date.prototype.getUTCDate. Takes a date object,
+     *                   and returns an integer representing the day of the month (1-31)
+     *                   of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCDayOfMonth = callProp('getUTCDate');
+
+
+    /*
+     * getUTCDayOfWeek: A wrapper around Date.prototype.getUTCDay. Takes a date object,
+     *                  and returns an integer representing the day of the week (0-6)
+     *                  of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCDayOfWeek = callProp('getUTCDay');
+
+
+    /*
+     * getUTCFullYear: A wrapper around Date.prototype.getUTCFullYear. Takes a date object,
+     *                 and returns an—at time of writing—4 digit number representing the year
+     *                 of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCFullYear = callProp('getUTCFullYear');
+
+
+    /*
+     * getUTCHours: A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns
+     *              an integer representing the hour field of the given date (0-23) adjusted for UTC.
+     *
+     */
+
+    var getUTCHours = callProp('getUTCHours');
+
+
+    /*
+     * getUTCMilliseconds: A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and
+     *                     returns an integer representing the milliseconds field (0-999) of the given
+     *                     date adjusted for UTC.
+     *
+     */
+
+    var getUTCMilliseconds = callProp('getUTCMilliseconds');
+
+
+    /*
+     * getUTCMinutes: A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns
+     *                an integer representing the minutes field (0-59) of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCMinutes = callProp('getUTCMinutes');
+
+
+    /*
+     * getUTCMonth: A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns
+     *              an integer representing the month field (0-11) of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCMonth = callProp('getUTCMonth');
+
+
+    /*
+     * getUTCSeconds: A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns
+     *                an integer representing the seconds field (0-59) of the given date adjusted for UTC.
+     *
+     */
+
+    var getUTCSeconds = callProp('getUTCSeconds');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -113,6 +189,14 @@
       getMonth: getMonth,
       getSeconds: getSeconds,
       getTimezoneOffset: getTimezoneOffset,
+      getUTCDayOfMonth: getUTCDayOfMonth,
+      getUTCDayOfWeek: getUTCDayOfWeek,
+      getUTCFullYear: getUTCFullYear,
+      getUTCHours: getUTCHours,
+      getUTCMilliseconds: getUTCMilliseconds,
+      getUTCMinutes: getUTCMinutes,
+      getUTCMonth: getUTCMonth,
+      getUTCSeconds: getUTCSeconds,
       toEpochMilliseconds: toEpochMilliseconds
     };
 
