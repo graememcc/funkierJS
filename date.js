@@ -251,11 +251,11 @@
 
 
     /*
-     * setDayOfMonth: A wrapper around Date.prototype.setDate. Takes a value between
-     *                1 and 31, and a Date object, and sets the day of the month of
-     *                to the given value, adjusting if necessary (for example, setting
-     *                the day to 31 in a Date whose month is April will set the day to 1
-     *                and the month to May). Returns the given date.
+     * setDayOfMonth: A wrapper around Date.prototype.setDate. Takes a value between 1 and 31,
+     *                and a Date object, and sets the day of the month to the given value.
+     *                Invalid values will cause a change in other fields: for example, changing
+     *                the day to 31 in a month with 30 days will increment the month, which
+     *                may in turn increment the year. Returns the given date.
      *
      */
 
@@ -282,10 +282,11 @@
 
 
     /*
-     * setHours: A wrapper around Date.prototype.setHours. Takes a value representing
-     *           the hour of the day, and sets the hour to the given value, adjusting
-     *           if necessary (all values > 23 will move the day forward by hours div 24
-     *           days). Returns the given date.
+     * setHours: A wrapper around Date.prototype.setHours. Takes a value between 0-23
+     *           representing the hour of the day, and sets the hour to the given value.
+     *           Invalid values will cause a change in other fields: if the value > 23,
+     *           then the day will be incremented by hours div 24. This may in turn cause
+     *           a cascade of increments to other fields. Returns the given date.
      *
      */
 
@@ -296,11 +297,12 @@
 
 
     /*
-     * setMilliseconds: A wrapper around Date.prototype.setMilliseconds. Takes a value
-     *                  representing the milliseconds, and sets the milliseconds to the
-     *                  given value, adjusting if necessary (values > 999 may increment
-     *                  the seconds field, which may in turn cause an increment of minutes,
-     *                  and so on). Returns the given date.
+     * setMilliseconds: A wrapper around Date.prototype.setMilliseconds. Takes a value between
+     *                  0-999 representing the milliseconds, and sets the milliseconds to the
+     *                  given value. Invalud values will cause a change in other fields: if the
+     *                  value > 999, then the seconds will be incremented by milliseconds div 1000.
+     *                  This may in turn cause a cascade of increments to other fields.
+     *                  Returns the given date.
      *
      */
 
