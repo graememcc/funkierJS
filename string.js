@@ -7,7 +7,6 @@
     var base = require('./base');
     var object = require('./object');
     var curry = base.curry;
-    var getRealArity = base.getRealArity;
     var callProp = object.callProp;
     var callPropWithArity = object.callPropWithArity;
 
