@@ -20,7 +20,7 @@
 
     describe('Date exports', function() {
       var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
-                               'getMilliseconds', 'getMinutes', 'getMonth'];
+                               'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -62,6 +62,7 @@
     makeDateGetterTest('getMilliseconds', date.getMilliseconds, testDate, 'getMilliseconds');
     makeDateGetterTest('getMinutes', date.getMinutes, testDate, 'getMinutes');
     makeDateGetterTest('getMonth', date.getMonth, testDate, 'getMonth');
+    makeDateGetterTest('getSeconds', date.getSeconds, testDate, 'getSeconds');
   };
 
 
