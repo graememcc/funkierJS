@@ -372,6 +372,113 @@
     });
 
 
+    /*
+     * setUTCDayOfMonth: A wrapper around Date.prototype.setUTCDate. Takes a value between
+     *                   1 and 31, and a Date object, and sets the day of the month to the
+     *                   local equivalent of the given value. Invalid values will cause a change
+     *                   in other fields: for example, changing the day to 31 in a month with 30
+     *                   days will increment the month, which may in turn increment the year.
+     *                   Returns the given date.
+     *
+     */
+
+    var setUTCDayOfMonth = curry(function(val, d) {
+      d.setUTCDate(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCFullYear: A wrapper around Date.prototype.setUTCFullYear. Takes a value representing
+     *                 the year, and a Date object, and sets the year to the local equivalent of
+     *                 the given value. Returns the given date.
+     *
+     */
+
+    var setUTCFullYear = curry(function(val, d) {
+      d.setUTCFullYear(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCHours: A wrapper around Date.prototype.setUTCHours. Takes a value between 0-23
+     *              representing the hour of the day, and sets the hour to the local equivalent
+     *              of the given value. Invalid values will cause a change in other fields: if
+     *              the value > 23, then the day will be incremented by hours div 24. This may in
+     *              turn cause a cascade of increments to other fields. Returns the given date.
+     *
+     */
+
+    var setUTCHours = curry(function(val, d) {
+      d.setUTCHours(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCMilliseconds: A wrapper around Date.prototype.setUTCMilliseconds. Takes a value
+     *                     between 0-999 representing the milliseconds, and sets the milliseconds
+     *                     to the local equivalent of the given value. Invalud values will cause
+     *                     a change in other fields: if the value > 999, then the seconds will be
+     *                     incremented by milliseconds div 1000. This may in turn cause a cascade
+     *                     of increments to other fields. Returns the given date.
+     *
+     */
+
+    var setUTCMilliseconds = curry(function(val, d) {
+      d.setUTCMilliseconds(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCMinutes: A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0-59
+     *                representing the minutes, and sets the given date's minutes to the local
+     *                equivalent of that value. Invalid values will cause a change in other fields:
+     *                if the given minutes > 59, then the hours will be incremented by minutes div 60.
+     *                This in turn may cause a cascade of increments to other fields.
+     *                Returns the given date.
+     *
+     */
+
+    var setUTCMinutes = curry(function(val, d) {
+      d.setUTCMinutes(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCMonth: A wrapper around Date.prototype.setUTCMonth. Takes a value between 0-11
+     *              representing the month, and sets the given date's month to the local
+     *              equivalent of that value. Invalid values will cause a change in other fields
+     *              if the given month > 11, then the year will be incremented by month div 12.
+     *              Returns the given date.
+     *
+     */
+
+    var setUTCMonth = curry(function(val, d) {
+      d.setUTCMonth(val);
+      return d;
+    });
+
+
+    /*
+     * setUTCSeconds: A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0-59
+     *                representing the seconds, and sets the given date's seconds to the local
+     *                equivalent of that value. Invalid values will cause a change in other fields:
+     *                if the given seconds > 59, then the minutes will be incremented by seconds div 60.
+     *                This in turn may cause a cascade of increments to other fields.
+     *                Returns the given date.
+     *
+     */
+
+    var setUTCSeconds = curry(function(val, d) {
+      d.setUTCSeconds(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -398,6 +505,13 @@
       setMonth: setMonth,
       setSeconds: setSeconds,
       setTimeSinceEpoch: setTimeSinceEpoch,
+      setUTCDayOfMonth: setUTCDayOfMonth,
+      setUTCFullYear: setUTCFullYear,
+      setUTCHours: setUTCHours,
+      setUTCMilliseconds: setUTCMilliseconds,
+      setUTCMinutes: setUTCMinutes,
+      setUTCMonth: setUTCMonth,
+      setUTCSeconds: setUTCSeconds,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
