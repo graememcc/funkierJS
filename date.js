@@ -314,7 +314,7 @@
      * setMinutes: A wrapper around Date.prototype.setMinutes. Takes a value between 0-59
      *             representing the minutes, and sets the given date's minutes to the
      *             that value. Invalid values will cause a change in other fields: if the
-     *             given minutes > 60, then the hours will be incremented by minutes div 60.
+     *             given minutes > 59, then the hours will be incremented by minutes div 60.
      *             This in turn may cause a cascade of increments to other fields.
      *             Returns the given date.
      *
@@ -322,6 +322,21 @@
 
     var setMinutes = curry(function(val, d) {
       d.setMinutes(val);
+      return d;
+    });
+
+
+    /*
+     * setMonth: A wrapper around Date.prototype.setMonth. Takes a value between 0-11
+     *           representing the month, and sets the given date's month to the
+     *           that value. Invalid values will cause a change in other fields: if the
+     *           given month > 11, then the year will be incremented by month div 12.
+     *           Returns the given date.
+     *
+     */
+
+    var setMonth = curry(function(val, d) {
+      d.setMonth(val);
       return d;
     });
 
@@ -349,6 +364,7 @@
       setHours: setHours,
       setMilliseconds: setMilliseconds,
       setMinutes: setMinutes,
+      setMonth: setMonth,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
