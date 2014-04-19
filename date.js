@@ -46,11 +46,31 @@
     var getHours = callProp('getHours');
 
 
+    /*
+     * getMilliseconds: A wrapper around Date.prototype.getMilliseconds. Takes a date object,
+     *                  and returns an integer representing the current milliseconds (0-999).
+     *
+     */
+
+    var getMilliseconds = callProp('getMilliseconds');
+
+
+    /*
+     * getMinutes: A wrapper around Date.prototype.getMinutes. Takes a date object, and returns
+     *             an integer representing the current minutes. (0-59).
+     *
+     */
+
+    var getMinutes = callProp('getMinutes');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
       getFullYear: getFullYear,
-      getHours: getHours
+      getHours: getHours,
+      getMilliseconds: getMilliseconds,
+      getMinutes: getMinutes
     };
 
 
