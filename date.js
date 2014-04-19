@@ -281,6 +281,20 @@
     });
 
 
+    /*
+     * setHours: A wrapper around Date.prototype.setHours. Takes a value representing
+     *           the hour of the day, and sets the hour to the given value, adjusting
+     *           if necessary (all values > 23 will move the day forward by hours div 24
+     *           days). Returns the given date.
+     *
+     */
+
+    var setHours = curry(function(val, d) {
+      d.setHours(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -301,6 +315,7 @@
       getUTCSeconds: getUTCSeconds,
       setDayOfMonth: setDayOfMonth,
       setFullYear: setFullYear,
+      setHours: setHours,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
