@@ -494,6 +494,19 @@
     };
 
 
+    /*
+     * getType: a function wrapper around the typeof operator. Takes
+     *          any Javascript value, and returns a string representing
+     *          the object's type: one of 'number', 'boolean', 'string',
+     *          'undefined', 'function' or 'object'.
+     *
+     */
+
+    var getType = curry(function(val) {
+      return typeof(val);
+    });
+
+
     var exported = {
       applyFunc: applyFunc,
       compose: compose,
@@ -505,6 +518,7 @@
       equals: equals,
       flip: flip,
       getRealArity: getRealArity,
+      getType: getType,
       id: id,
       is: is,
       isArray: isArray,

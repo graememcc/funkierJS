@@ -22,7 +22,7 @@
                                'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
                                'permuteLeft', 'permuteRight', 'is', 'isNumber', 'isString',
                                'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
-                               'isRealObject'];
+                               'isRealObject', 'getType'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1660,6 +1660,36 @@
     makeSpecialisedIsTest('isArray', base.isArray, 'array');
     makeSpecialisedIsTest('isNull', base.isNull, 'null');
     makeSpecialisedIsTest('isRealObject', base.isRealObject, 'realObject');
+
+
+    describe('getType', function() {
+      var getType = base.getType;
+
+
+      it('Has correct arity', function() {
+        expect(base.getRealArity(getType)).to.equal(1);
+      });
+
+
+      var typeTests = [
+        {name: 'number', val: 1},
+        {name: 'boolean', val: true},
+        {name: 'string', val: 'a'},
+        {name: 'undefined', val: undefined},
+        {name: 'null', val: null},
+        {name: 'array', val: []},
+        {name: 'function', val: function() {}},
+        {name: 'object', val: {}}];
+
+      typeTests.forEach(function(tt) {
+        var name = tt.name;
+        var val = tt.val;
+
+        it('Works correctly for value of type ' + name, function() {
+          expect(getType(val)).to.equal(typeof(val));
+        });
+      });
+    });
   };
 
 
