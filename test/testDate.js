@@ -21,7 +21,7 @@
     describe('Date exports', function() {
       var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
                                'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds',
-                               'toEpochMilliseconds'];
+                               'toEpochMilliseconds', 'getTimezoneOffset'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -65,6 +65,7 @@
     makeDateGetterTest('getMonth', date.getMonth, testDate, 'getMonth');
     makeDateGetterTest('getSeconds', date.getSeconds, testDate, 'getSeconds');
     makeDateGetterTest('toEpochMilliseconds', date.toEpochMilliseconds, testDate, 'getTime');
+    makeDateGetterTest('getTimezoneOffset', date.getTimezoneOffset, testDate, 'getTimezoneOffset');
   };
 
 

@@ -84,6 +84,7 @@
 
     var getSeconds = callProp('getSeconds');
 
+
     /*
      * toEpochMilliseconds: A wrapper around Date.prototype.getTime. Takes a date object, and returns
      *                      the number of milliseconds elapsed since midnight, January 1 1970.
@@ -91,6 +92,15 @@
      */
 
     var toEpochMilliseconds = callProp('getTime');
+
+
+    /*
+     * getTimezoneOffset: A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and
+     *                    returns the delta in minutes between the Javascript environment and UTC.
+     *
+     */
+
+    var getTimezoneOffset = callProp('getTimezoneOffset');
 
 
     var exported = {
@@ -102,6 +112,7 @@
       getMinutes: getMinutes,
       getMonth: getMonth,
       getSeconds: getSeconds,
+      getTimezoneOffset: getTimezoneOffset,
       toEpochMilliseconds: toEpochMilliseconds
     };
 
