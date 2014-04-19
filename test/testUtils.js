@@ -123,19 +123,35 @@
 
 
     var callWithRemaining = function(curried, curriedArgs, expected, thenArgs) {
+      var args = getRealArgs(curriedArgs);
+
       var testPrimitive = function() {
-        var result = curried.apply(null, curriedArgs);
+        var result = curried.apply(null, args);
 
         expect(checkEquality(result, expected)).to.be.true;
       };
 
       var testFunc = function() {
-        var result = curried.apply(null, curriedArgs).apply(null, thenArgs);
+        var result = curried.apply(null, args).apply(null, thenArgs);
 
         expect(checkEquality(result, expected)).to.be.true;
       };
 
       return thenArgs === null ? testPrimitive : testFunc;
+    };
+
+
+    // Helper function for testing stateful functions
+    var getRealArgs = function(args) {
+      var result = args.slice();
+      var last = result[result.length - 1];
+
+      // If the last argument is an object with a "reset" property, then assume we are testing a state-changing
+      // function, and the property contains the function to be called to generate a new object
+      if (typeof(last) === 'object' && last !== null && 'reset' in last)
+        result[result.length - 1] = last.reset();
+
+      return result;
     };
 
 
@@ -159,7 +175,10 @@
       original = original || curried;
       var args = Array.isArray(originalArgs) ? originalArgs : originalArgs.firstArgs;
       var thenArgs = Array.isArray(originalArgs) ? null : originalArgs.thenArgs;
-      var expected = thenArgs === null ? original.apply(null, args) : original.apply(null, args).apply(null, thenArgs);
+
+      var expectedArgs = getRealArgs(args);
+
+      var expected = thenArgs === null ? original.apply(null, expectedArgs) : original.apply(null, expectedArgs).apply(null, thenArgs);
 
       var performTests = function(curried, curriedArgs, message) {
         // Function?
