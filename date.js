@@ -230,6 +230,16 @@
     var toTimeString = callProp('toTimeString');
 
 
+    /*
+     *
+     * toISOString: A wrapper around Date.prototype.toISOString. Takes a date object, and returns
+     *              a representation of the date in ISO format.
+     *
+     */
+
+    var toISOString = callProp('toISOString');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -250,6 +260,7 @@
       getUTCSeconds: getUTCSeconds,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
+      toISOString: toISOString,
       toLocaleDateString: toLocaleDateString,
       toLocaleString: toLocaleString,
       toLocaleTimeString: toLocaleTimeString,
