@@ -240,6 +240,16 @@
     var toISOString = callProp('toISOString');
 
 
+    /*
+     *
+     * toUTCString: A wrapper around Date.prototype.toUTCString. Takes a date object, and returns
+     *              a representation of the equivalent date in UTC.
+     *
+     */
+
+    var toUTCString = callProp('toUTCString');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -264,7 +274,8 @@
       toLocaleDateString: toLocaleDateString,
       toLocaleString: toLocaleString,
       toLocaleTimeString: toLocaleTimeString,
-      toTimeString: toTimeString
+      toTimeString: toTimeString,
+      toUTCString: toUTCString
     };
 
 
