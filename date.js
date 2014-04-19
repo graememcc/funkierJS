@@ -268,6 +268,19 @@
     });
 
 
+    /*
+     * setFullYear: A wrapper around Date.prototype.setFullYear. Takes a value representing
+     *              the year, and a Date object, and sets the year to the given value.
+     *              Returns the given date.
+     *
+     */
+
+    var setFullYear = curry(function(val, d) {
+      d.setFullYear(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -287,6 +300,7 @@
       getUTCMonth: getUTCMonth,
       getUTCSeconds: getUTCSeconds,
       setDayOfMonth: setDayOfMonth,
+      setFullYear: setFullYear,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
