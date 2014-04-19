@@ -250,6 +250,24 @@
     var toUTCString = callProp('toUTCString');
 
 
+    /*
+     * setDayOfMonth: A wrapper around Date.prototype.setDate. Takes a value between
+     *                1 and 31, and a Date object, and sets the day of the month of
+     *                to the given value, adjusting if necessary (for example, setting
+     *                the day to 31 in a Date whose month is April will set the day to 1
+     *                and the month to May). Returns the given date.
+     *
+     */
+
+    // We cannot use callProp for the setters due to the need to return
+    // the given date
+
+    var setDayOfMonth = curry(function(val, d) {
+      d.setDate(val);
+      return d;
+    });
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -268,6 +286,7 @@
       getUTCMinutes: getUTCMinutes,
       getUTCMonth: getUTCMonth,
       getUTCSeconds: getUTCSeconds,
+      setDayOfMonth: setDayOfMonth,
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,

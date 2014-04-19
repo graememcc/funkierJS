@@ -25,7 +25,7 @@
                                'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
                                'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
                                'toLocaleString', 'toLocaleTimeString', 'toDateString', 'toTimeString',
-                               'toISOString', 'toUTCString'];
+                               'toISOString', 'toUTCString', 'setDayOfMonth'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -85,6 +85,50 @@
     makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
     makeUnaryDateTest('toISOString', date.toISOString, 'toISOString');
     makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
+
+
+    var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(2);
+        });
+
+
+        it('Returns the date', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var result = fnUnderTest(2, testDate);
+
+          expect(result).to.equal(testDate);
+        });
+
+
+        it('Works correctly (1)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var newVal = 2;
+          var result = fnUnderTest(2, testDate);
+
+          expect(verifier(result)).to.equal(newVal);
+        });
+
+
+        it('Works correctly (2)', function() {
+          var d = new Date();
+          var current = verifier(d);
+          var newVal = current > 0 ? current - 1 : 1;
+          var result = fnUnderTest(newVal, d);
+
+          expect(verifier(result)).to.equal(newVal);
+        });
+
+
+        // fnUnderTest should have arity 2, so should be curried
+        var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0)};
+        testCurriedFunction(desc, fnUnderTest, [2, {reset: makeDate}]);
+      });
+    };
+
+
+    makeDateSetterTests('setDayOfMonth', date.setDayOfMonth, date.getDayOfMonth);
   };
 
 
