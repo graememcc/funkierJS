@@ -28,9 +28,19 @@
     var getDayOfWeek = callProp('getDay');
 
 
+    /*
+     * getFullYear: A wrapper around Date.prototype.getFullYear. Takes a date object,
+     *               and returns an—at time of writing—4 digit number representing the year.
+     *
+     */
+
+    var getFullYear = callProp('getFullYear');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
-      getDayOfWeek: getDayOfWeek
+      getDayOfWeek: getDayOfWeek,
+      getFullYear: getFullYear
     };
 
 
