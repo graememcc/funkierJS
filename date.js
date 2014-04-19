@@ -12,7 +12,8 @@
 
     /*
      * getDayOfMonth: A wrapper around Date.prototype.getDate. Takes a date object,
-     *                and returns an integer representing the day of the month (1-31).
+     *                and returns an integer representing the day of the month (1-31)
+     *                of the given date.
      *
      */
 
@@ -21,7 +22,8 @@
 
     /*
      * getDayOfWeek: A wrapper around Date.prototype.getDay. Takes a date object,
-     *               and returns an integer representing the day of the week (0-6).
+     *               and returns an integer representing the day of the week (0-6)
+     *               of the given date.
      *
      */
 
@@ -30,7 +32,8 @@
 
     /*
      * getFullYear: A wrapper around Date.prototype.getFullYear. Takes a date object,
-     *               and returns an—at time of writing—4 digit number representing the year.
+     *              and returns an—at time of writing—4 digit number representing the year
+     *              of the given date.
      *
      */
 
@@ -39,7 +42,7 @@
 
     /*
      * getHours: A wrapper around Date.prototype.getHours. Takes a date object, and returns
-     *           an integer representing the current hour (0-23).
+     *           an integer representing the hour field of the given date (0-23).
      *
      */
 
@@ -47,8 +50,8 @@
 
 
     /*
-     * getMilliseconds: A wrapper around Date.prototype.getMilliseconds. Takes a date object,
-     *                  and returns an integer representing the current milliseconds (0-999).
+     * getMilliseconds: A wrapper around Date.prototype.getMilliseconds. Takes a date object, and
+     *                  returns an integer representing the milliseconds field of the given date (0-999).
      *
      */
 
@@ -57,7 +60,7 @@
 
     /*
      * getMinutes: A wrapper around Date.prototype.getMinutes. Takes a date object, and returns
-     *             an integer representing the current minutes. (0-59).
+     *             an integer representing the minutes field of the given date. (0-59).
      *
      */
 
@@ -66,7 +69,7 @@
 
     /*
      * getMonth: A wrapper around Date.prototype.getMonth. Takes a date object, and returns
-     *           an integer representing the current month. (0-11).
+     *           an integer representing the month field of the given date. (0-11).
      *
      */
 
@@ -75,7 +78,7 @@
 
     /*
      * getSeconds: A wrapper around Date.prototype.getSeconds. Takes a date object, and returns
-     *             an integer representing the current seconds. (0-59).
+     *             an integer representing the seconds field of the given date. (0-59).
      *
      */
 
