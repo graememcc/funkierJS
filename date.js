@@ -220,6 +220,16 @@
     var toDateString = callProp('toDateString');
 
 
+    /*
+     *
+     * toTimeString: A wrapper around Date.prototype.toTimeString. Takes a date object, and returns
+     *               a string representing the time portion of the object.
+     *
+     */
+
+    var toTimeString = callProp('toTimeString');
+
+
     var exported = {
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
@@ -241,8 +251,9 @@
       toDateString: toDateString,
       toEpochMilliseconds: toEpochMilliseconds,
       toLocaleDateString: toLocaleDateString,
+      toLocaleString: toLocaleString,
       toLocaleTimeString: toLocaleTimeString,
-      toLocaleString: toLocaleString
+      toTimeString: toTimeString
     };
 
 
