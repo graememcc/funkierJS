@@ -665,6 +665,24 @@
     });
 
 
+    /*
+     * extendOwn: Takes two objects, source and dest, and copies all enumerable
+     *            properties of source into dest. Properties of the prototype are
+     *            not copied. Returns the modified dest object.
+     *
+     */
+
+    var extendOwn = curry(function(source, dest) {
+      var keys = Object.keys(source);
+
+      keys.forEach(function(k) {
+        dest[k] = source[k];
+      });
+
+      return dest;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -679,6 +697,7 @@
       deleteProp: deleteProp,
       deletePropOrThrow: deletePropOrThrow,
       extend: extend,
+      extendOwn: extendOwn,
       extract: extract,
       extractOrDefault: extractOrDefault,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,
