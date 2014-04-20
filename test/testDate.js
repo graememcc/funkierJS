@@ -31,7 +31,8 @@
                                'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
                                'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
                                'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
-                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString'];
+                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString',
+                               'makeDateFromMilliseconds'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -322,6 +323,67 @@
       it('Throws for unparsable string', function() {
         var fn = function() {
           makeDateFromString('a');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    });
+
+
+    describe('makeDateFromMilliseconds', function() {
+      var makeDateFromMilliseconds = date.makeDateFromMilliseconds;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(makeDateFromMilliseconds)).to.equal(1);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+        var result = makeDateFromMilliseconds(testDate.getTime());
+
+        expect(result).to.be.an.instanceOf(Date);
+        expect(result).to.deep.equal(testDate);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var testDate = new Date();
+        var result = makeDateFromMilliseconds(testDate.getTime());
+
+        expect(result).to.be.an.instanceOf(Date);
+        expect(result).to.deep.equal(testDate);
+      });
+
+
+      var nonStrings = [
+       {name: 'string', value: 's'},
+       {name: 'boolean', value: true},
+       {name: 'undefined', value: undefined},
+       {name: 'null', value: null},
+       {name: 'function', value: function() {}},
+       {name: 'array', value: []},
+       {name: 'object', value: {}}];
+
+
+      nonStrings.forEach(function(non) {
+        var name = non.name;
+        var value = non.value;
+
+        it('Throws for value of type: ' + name, function() {
+          var fn = function() {
+            makeDateFromMilliseconds(value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      it('Throws for invalid value', function() {
+        var fn = function() {
+          makeDateFromMilliseconds(Number.POSITIVE_INFINITY);
         };
 
         expect(fn).to.throw(TypeError);

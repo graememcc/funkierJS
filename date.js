@@ -739,7 +739,7 @@
      * makeDateFromString: a wrapper around calling the Date constructor with
      *                     a single string argument. Throws a TypeError when
      *                     called with a non-string argument, or a string that
-     *                     cannot be parsed.
+     *                     cannot be parsed. Returns the new date.
      *
      */
 
@@ -752,6 +752,28 @@
       // If the string is not parsable, Date will still create a date!
       if (isNaN(d.getHours()))
         throw new TypeError('Attempt to make Date from unparsable string');
+
+      return d;
+    });
+
+
+    /*
+     * makeDateFromMilliseconds: a wrapper around calling the Date constructor with
+     *                           a single numeric argument. Throws a TypeError when
+     *                           called with a non-numeric argument. Returns the new
+     *                           date.
+     *
+     */
+
+    var makeDateFromMilliseconds = curry(function(n) {
+      if (typeof(n) !== 'number')
+        throw new TypeError('Attempt to make Date from milliseconds with incorrect type');
+
+      var d = new Date(n);
+
+      // If the number isn't valid, a date will still be created!
+      if (isNaN(d.getHours()))
+        throw new TypeError('Attempt to make Date from invalid value');
 
       return d;
     });
@@ -776,6 +798,7 @@
       getUTCMinutes: getUTCMinutes,
       getUTCMonth: getUTCMonth,
       getUTCSeconds: getUTCSeconds,
+      makeDateFromMilliseconds: makeDateFromMilliseconds,
       makeDateFromString: makeDateFromString,
       safeSetDayOfMonth: safeSetDayOfMonth,
       safeSetHours: safeSetHours,
