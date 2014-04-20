@@ -721,7 +721,22 @@
     });
 
 
+    // Now we delve into the madness that is the Date constructor...
+
+    /*
+     * getCurrentTimeString: A wrapper around calling the Date constructor
+     *                       without the 'new' operator. Returns a string
+     *                       representing the current date and time.
+     *
+     */
+
+    var getCurrentTimeString = curry(function() {
+      return Date();
+    });
+
+
     var exported = {
+      getCurrentTimeString: getCurrentTimeString,
       getDayOfMonth: getDayOfMonth,
       getDayOfWeek: getDayOfWeek,
       getFullYear: getFullYear,

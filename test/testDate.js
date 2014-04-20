@@ -31,7 +31,7 @@
                                'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
                                'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
                                'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
-                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth'];
+                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -256,6 +256,16 @@
       date.safeSetMonth, date.getDayOfMonth);
     makeSafeDayOfMonthTests('safeSetUTCDayOfMonth', date.safeSetUTCDayOfMonth,
       date.safeSetUTCMonth, date.getUTCDayOfMonth);
+
+
+    describe('getCurrentTimeString', function() {
+      var getCurrentTimeString = date.getCurrentTimeString;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(getCurrentTimeString)).to.equal(0);
+      });
+    });
   };
 
 
