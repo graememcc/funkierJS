@@ -650,6 +650,21 @@
     };
 
 
+    /*
+     * extend: Takes two objects, source and dest, and walks the prototype chain
+     *         of source, copying all enumerable properties into dest. Any extant
+     *         properties with the same name are overwritten. Returns the modified
+     *         dest object.
+     */
+
+    var extend = curry(function(source, dest) {
+      for (var k in source)
+        dest[k] = source[k];
+
+      return dest;
+    });
+
+
     var exported = {
       callProp: callProp,
       callPropWithArity: callPropWithArity,
@@ -663,6 +678,7 @@
       defineProperties: defineProperties,
       deleteProp: deleteProp,
       deletePropOrThrow: deletePropOrThrow,
+      extend: extend,
       extract: extract,
       extractOrDefault: extractOrDefault,
       getOwnPropertyDescriptor: getOwnPropertyDescriptor,

@@ -28,7 +28,7 @@
                                'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
                                'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
                                'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone',
-                               'deepClone'];
+                               'deepClone', 'extend'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1854,6 +1854,87 @@
     };
 
     makeCloneTests('deepClone', object.deepClone, deepCheck);
+
+
+    describe('extend', function() {
+      var extend = object.extend;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(extend)).to.equal(2);
+      });
+
+
+      it('Returns the destination object', function() {
+        var dest = {};
+
+        expect(extend({}, dest) === dest).to.be.true;
+      });
+
+
+      it('Every enumerable property in object afterwards', function() {
+        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in source)
+          expect(dest).to.have.ownProperty(key);
+      });
+
+
+      it('Every enumerable property has correct value afterwards', function() {
+        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in source)
+          expect(dest[key]).to.equal(source[key]);
+      });
+
+
+      it('Every enumerable property from prototype chain in object afterwards', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in proto)
+          expect(dest).to.have.ownProperty(key);
+      });
+
+
+      it('Every enumerable property has correct value afterwards', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in proto)
+          expect(dest[key]).to.equal(proto[key]);
+      });
+
+
+      it('Non-enumerable properties not copied', function() {
+        var source = {};
+        object.defineProperty('foo', {enumerable: false, value: 1}, source);
+        var dest = {};
+        extend(source, dest);
+
+        expect(dest).to.not.have.property('foo');
+      });
+
+
+      it('Existing values overwritten', function() {
+        var source = {foo: 2};
+        var dest = {foo: 1};
+        extend(source, dest);
+
+        expect(dest.foo).to.equal(source.foo);
+      });
+
+
+      testCurriedFunction('extend', extend, [{foo: 1}, {reset: function() {return {};}}]);
+    });
   };
 
 
