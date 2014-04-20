@@ -31,7 +31,7 @@
                                'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
                                'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
                                'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
-                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString'];
+                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -264,6 +264,67 @@
 
       it('Has correct arity', function() {
         expect(getRealArity(getCurrentTimeString)).to.equal(0);
+      });
+    });
+
+
+    describe('makeDateFromString', function() {
+      var makeDateFromString = date.makeDateFromString;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(makeDateFromString)).to.equal(1);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+        var result = makeDateFromString(testDate.toString());
+
+        expect(result).to.be.an.instanceOf(Date);
+        expect(result).to.deep.equal(testDate);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var testDate = new Date();
+        var result = makeDateFromString(testDate.toISOString());
+
+        expect(result).to.be.an.instanceOf(Date);
+        expect(result).to.deep.equal(testDate);
+      });
+
+
+      var nonStrings = [
+       {name: 'number', value: 1},
+       {name: 'boolean', value: true},
+       {name: 'undefined', value: undefined},
+       {name: 'null', value: null},
+       {name: 'function', value: function() {}},
+       {name: 'array', value: []},
+       {name: 'object', value: {}}];
+
+
+      nonStrings.forEach(function(non) {
+        var name = non.name;
+        var value = non.value;
+
+        it('Throws for value of type: ' + name, function() {
+          var fn = function() {
+            makeDateFromString(value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      it('Throws for unparsable string', function() {
+        var fn = function() {
+          makeDateFromString('a');
+        };
+
+        expect(fn).to.throw(TypeError);
       });
     });
   };

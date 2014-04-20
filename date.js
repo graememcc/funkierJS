@@ -735,6 +735,28 @@
     });
 
 
+    /*
+     * makeDateFromString: a wrapper around calling the Date constructor with
+     *                     a single string argument. Throws a TypeError when
+     *                     called with a non-string argument, or a string that
+     *                     cannot be parsed.
+     *
+     */
+
+    var makeDateFromString = curry(function(s) {
+      if (typeof(s) !== 'string')
+        throw new TypeError('Attempt to make Date from string with incorrect type');
+
+      var d = new Date(s);
+
+      // If the string is not parsable, Date will still create a date!
+      if (isNaN(d.getHours()))
+        throw new TypeError('Attempt to make Date from unparsable string');
+
+      return d;
+    });
+
+
     var exported = {
       getCurrentTimeString: getCurrentTimeString,
       getDayOfMonth: getDayOfMonth,
@@ -754,6 +776,7 @@
       getUTCMinutes: getUTCMinutes,
       getUTCMonth: getUTCMonth,
       getUTCSeconds: getUTCSeconds,
+      makeDateFromString: makeDateFromString,
       safeSetDayOfMonth: safeSetDayOfMonth,
       safeSetHours: safeSetHours,
       safeSetMilliseconds: safeSetMilliseconds,
