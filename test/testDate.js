@@ -32,7 +32,8 @@
                                'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
                                'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
                                'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString',
-                               'makeDateFromMilliseconds'];
+                               'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
+                               'makeSecondDate', 'makeMillisecondDate'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -388,6 +389,82 @@
 
         expect(fn).to.throw(TypeError);
       });
+    });
+
+
+    var testDates = [[2000, 0, 1, 0, 0, 0, 0], [2014, 11, 31, 23, 59, 59, 999]];
+    var fields = ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'];
+    var verifiers = [date.getFullYear, date.getMonth, date.getDayOfMonth, date.getHours,
+                     date.getMinutes, date.getSeconds, date.getMilliseconds];
+
+    var makeDateConstructorTests = function(desc, fnUnderTest, arity) {
+      describe(desc, function() {
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(arity);
+        });
+
+
+        testDates.forEach(function(testDate, i) {
+          var message = ' (' + (i + 1) + ')';
+          var args = testDate.slice(0, arity);
+
+
+          it('Returns a date' + message, function() {
+            var result = fnUnderTest.apply(null, args);
+
+            expect(result).to.be.an.instanceOf(Date);
+          });
+
+
+          verifiers.forEach(function(verifier, i) {
+            it('Returned Date has correct ' + fields[i] + message, function() {
+              var expected = i < arity ? args[i] : i === 2 ? 1 : 0;
+              var result = fnUnderTest.apply(null, args);
+
+              expect(verifier(result)).to.equal(expected);
+            });
+          });
+
+
+          var makeDiscardTest = function(i) {
+            return function() {
+              var args = testDate.slice(0, i);
+              var d = fnUnderTest.apply(null, args);
+              var result = verifiers.every(function(v, j) {
+                // We're not concerned about the values that aren't ignored here
+                if (j < arity) return true;
+
+                // If the arity is 2, the day will default to 1
+                if (j === 2)
+                  return v(d) === 1;
+
+                // If the argument was ignored, the field should be zero
+                return v(d) === 0;
+              });
+
+              expect(result).to.be.true;
+            };
+          };
+
+
+          for (var k = arity; k < fields.length; k++) {
+            var m = ' (' + (k - arity + 1) + ')';
+            it('Ignores superfluous arguments' + message + m,
+                makeDiscardTest(k));
+          }
+        });
+
+
+        // The constructor function should be curried
+        testCurriedFunction(desc, fnUnderTest, testDates[0].slice(0, arity));
+      });
+    };
+
+
+    var dateConstructors = ['makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
+                            'makeSecondDate', 'makeMillisecondDate'];
+    dateConstructors.forEach(function(c, i) {
+      makeDateConstructorTests(c, date[c], i + 2);
     });
   };
 

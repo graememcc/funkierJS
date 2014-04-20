@@ -779,6 +779,90 @@
     });
 
 
+    /*
+     * makeMonthDate: a curried wrapper around calling the Date constructor with
+     *                two arguments: the year and the month. No validation or
+     *                type checking occurs on the parameters. Excess arguments are
+     *                ignored. All other fields in the Date are initialised to zero,
+     *                with the exception of the day, which will be 1. Returns the new Date.
+     *
+     */
+
+    var makeMonthDate = curry(function(y, m) {
+      return new Date(y, m);
+    });
+
+
+    /*
+     * makeDayDate: a curried wrapper around calling the Date constructor with
+     *              three arguments: the year, the month, and the day. No validation
+     *              or type checking occurs on the parameters. Excess arguments are
+     *              ignored. All other fields in the Date are initialised to zero.
+     *              Returns the new Date.
+     *
+     */
+
+    var makeDayDate = curry(function(y, m, d) {
+      return new Date(y, m, d);
+    });
+
+
+    /*
+     * makeHourDate: a curried wrapper around calling the Date constructor with
+     *               four arguments: the year, the month, the day, and the hour.
+     *               No validation or type checking occurs on the parameters. Excess
+     *               arguments are ignored. All other fields in the Date are initialised
+     *               to zero. Returns the new Date.
+     *
+     */
+
+    var makeHourDate = curry(function(y, m, d, h) {
+      return new Date(y, m, d, h);
+    });
+
+
+    /*
+     * makeMinuteDate: a curried wrapper around calling the Date constructor with
+     *                 five arguments: the year, the month, the day, the hour and the
+     *                 minute. No validation or type checking occurs on the parameters.
+     *                 Excess arguments are ignored. All other fields in the Date are
+     *                 initialised to zero. Returns the new Date.
+     *
+     */
+
+    var makeMinuteDate = curry(function(y, m, d, h, min) {
+      return new Date(y, m, d, h, min);
+    });
+
+
+    /*
+     * makeSecondDate: a curried wrapper around calling the Date constructor with
+     *                 six arguments: the year, the month, the day, the hour, minute,
+     *                 and second. No validation or type checking occurs on the
+     *                 parameters. Excess arguments are ignored. All other fields
+     *                 in the Date are initialised to zero. Returns the new Date.
+     *
+     */
+
+    var makeSecondDate = curry(function(y, m, d, h, min, s) {
+      return new Date(y, m, d, h, min, s);
+    });
+
+
+    /*
+     * makeMillisecondDate: a curried wrapper around calling the Date constructor with
+     *                      seven arguments: the year, the month, the day, the hour,
+     *                      minute, second and millisecond. No validation or type checking
+     *                      occurs on the parameters. Excess arguments are ignored. All other
+     *                      fields in the Date are initialised to zero.Returns the new Date.
+     *
+     */
+
+    var makeMillisecondDate = curry(function(y, m, d, h, min, s, ms) {
+      return new Date(y, m, d, h, min, s, ms);
+    });
+
+
     var exported = {
       getCurrentTimeString: getCurrentTimeString,
       getDayOfMonth: getDayOfMonth,
@@ -800,6 +884,12 @@
       getUTCSeconds: getUTCSeconds,
       makeDateFromMilliseconds: makeDateFromMilliseconds,
       makeDateFromString: makeDateFromString,
+      makeDayDate: makeDayDate,
+      makeHourDate: makeHourDate,
+      makeMinuteDate: makeMinuteDate,
+      makeMillisecondDate: makeMillisecondDate,
+      makeMonthDate: makeMonthDate,
+      makeSecondDate: makeSecondDate,
       safeSetDayOfMonth: safeSetDayOfMonth,
       safeSetHours: safeSetHours,
       safeSetMilliseconds: safeSetMilliseconds,
