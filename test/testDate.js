@@ -28,7 +28,10 @@
                                'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
                                'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setTimeSinceEpoch',
                                'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
-                               'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds'];
+                               'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
+                               'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
+                               'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
+                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -90,43 +93,48 @@
     makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
 
 
+    var makeBasicSetterTests = function(desc, fnUnderTest, verifier) {
+      it('Has correct arity', function() {
+        expect(getRealArity(fnUnderTest)).to.equal(2);
+      });
+
+
+      it('Returns the date', function() {
+        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+        var result = fnUnderTest(2, testDate);
+
+        expect(result).to.equal(testDate);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+        var newVal = 2;
+        var result = fnUnderTest(2, testDate);
+
+        expect(verifier(result)).to.equal(newVal);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var d = new Date();
+        var current = verifier(d);
+        var newVal = current > 0 ? current - 1 : 1;
+        var result = fnUnderTest(newVal, d);
+
+        expect(verifier(result)).to.equal(newVal);
+      });
+
+
+      // fnUnderTest should have arity 2, so should be curried
+      var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0)};
+      testCurriedFunction(desc, fnUnderTest, [2, {reset: makeDate}]);
+    };
+
+
     var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
       describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(2);
-        });
-
-
-        it('Returns the date', function() {
-          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-          var result = fnUnderTest(2, testDate);
-
-          expect(result).to.equal(testDate);
-        });
-
-
-        it('Works correctly (1)', function() {
-          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-          var newVal = 2;
-          var result = fnUnderTest(2, testDate);
-
-          expect(verifier(result)).to.equal(newVal);
-        });
-
-
-        it('Works correctly (2)', function() {
-          var d = new Date();
-          var current = verifier(d);
-          var newVal = current > 0 ? current - 1 : 1;
-          var result = fnUnderTest(newVal, d);
-
-          expect(verifier(result)).to.equal(newVal);
-        });
-
-
-        // fnUnderTest should have arity 2, so should be curried
-        var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0)};
-        testCurriedFunction(desc, fnUnderTest, [2, {reset: makeDate}]);
+        makeBasicSetterTests(desc, fnUnderTest, verifier);
       });
     };
 
@@ -146,6 +154,108 @@
     makeDateSetterTests('setUTCMinutes', date.setUTCMinutes, date.getUTCMinutes);
     makeDateSetterTests('setUTCMonth', date.setUTCMonth, date.getUTCMonth);
     makeDateSetterTests('setUTCSeconds', date.setUTCSeconds, date.getUTCSeconds);
+
+
+    var makeDateSafeSetterTests = function(desc, fnUnderTest, verifier, bounds) {
+      describe(desc, function() {
+        makeBasicSetterTests(desc, fnUnderTest, verifier);
+
+
+        bounds.forEach(function(bound, i) {
+          it('Throws for invalid values (' + (i + 1) + ')', function() {
+            var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+            var fn = function() {
+              fnUnderTest(bound, testDate);
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        });
+      });
+    };
+
+
+    makeDateSafeSetterTests('safeSetHours', date.safeSetHours, date.getHours, [-1, 60]);
+    makeDateSafeSetterTests('safeSetMilliseconds', date.safeSetMilliseconds, date.getMilliseconds, [-1, 1000]);
+    makeDateSafeSetterTests('safeSetMinutes', date.safeSetMinutes, date.getMinutes, [-1, 60]);
+    makeDateSafeSetterTests('safeSetSeconds', date.safeSetSeconds, date.getSeconds, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCHours', date.safeSetUTCHours, date.getUTCHours, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCMilliseconds', date.safeSetUTCMilliseconds, date.getUTCMilliseconds, [-1, 1000]);
+    makeDateSafeSetterTests('safeSetUTCMinutes', date.safeSetUTCMinutes, date.getUTCMinutes, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCSeconds', date.safeSetUTCSeconds, date.getUTCSeconds, [-1, 60]);
+
+
+    // day of month is trickier, so we break it out separately
+    var makeSafeDayOfMonthTests = function(desc, fnUnderTest, monthSetter, verifier) {
+      describe(desc, function() {
+
+
+        makeBasicSetterTests(desc, fnUnderTest, verifier);
+
+
+        // Tackle some obvious invalid values first
+        it('Throws for invalid values (1)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var fn = function() {
+            fnUnderTest(-1, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws for invalid values (2)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var fn = function() {
+            fnUnderTest(32, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // Set day to 31 in a 30 day month
+        it('Throws for invalid values (3)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          monthSetter(3, testDate);
+          var fn = function() {
+            fnUnderTest(31, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // Set day to 29 in a non leap-year...
+        it('Throws for invalid values (4)', function() {
+          var testDate = new Date(2014, 0, 1, 0, 0, 0, 0);
+          monthSetter(2, testDate);
+          var fn = function() {
+            fnUnderTest(29, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // ... and a real leap year
+        it('Throws for invalid values (5)', function() {
+          var testDate = new Date(2012, 0, 1, 0, 0, 0, 0);
+          monthSetter(2, testDate);
+          var fn = function() {
+            fnUnderTest(29, testDate);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+      });
+    };
+
+
+    makeSafeDayOfMonthTests('safeSetDayOfMonth', date.safeSetDayOfMonth,
+      date.safeSetMonth, date.getDayOfMonth);
+    makeSafeDayOfMonthTests('safeSetUTCDayOfMonth', date.safeSetUTCDayOfMonth,
+      date.safeSetUTCMonth, date.getUTCDayOfMonth);
   };
 
 
