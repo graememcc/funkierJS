@@ -9,6 +9,7 @@
     var curry = base.curry;
     var callProp = object.callProp;
     var callPropWithArity = object.callPropWithArity;
+    var flip = base.flip;
 
 
     /*
@@ -264,6 +265,16 @@
     });
 
 
+    /*
+     * test: A curried wrapper around RegExp.prototype.test. Takes a RegExp and a string, and returns true if
+     *       the string contains a substring matching the given pattern, and false otherwise. Throws a ReferenceError
+     *       if the first parameter is not a RegExp.
+     *
+     */
+
+    var test = flip(callPropWithArity('test', 1));
+
+
     var exported = {
       chr: chr,
       ord: ord,
@@ -276,6 +287,7 @@
       replaceString: replaceString,
       replaceStringWith: replaceStringWith,
       split: split,
+      test: test,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,
       toLocaleUpperCase: toLocaleUpperCase,

@@ -23,7 +23,7 @@
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                                'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
-                               'replaceRegExpWith', 'replaceOneRegExpWith'];
+                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -515,6 +515,56 @@
     makeReplaceTest('replaceRegExp', string.replaceRegExp, true, false, false);
     makeReplaceTest('replaceOneRegExpWith', string.replaceOneRegExpWith, true, true, true);
     makeReplaceTest('replaceRegExpWith', string.replaceRegExpWith, true, true, false);
+
+
+    describe('test', function() {
+      var test = string.test;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(test)).to.equal(2);
+      });
+
+
+      it('Throws if first parameter not a RegExp', function() {
+        var fn = function() {
+          test('a', 'b');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Returns a boolean (1)', function() {
+        var result = test(/a/, 'b');
+
+        expect(result).to.be.a('boolean');
+      });
+
+
+      it('Returns a boolean (2)', function() {
+        var result = test(/a/, 'a');
+
+        expect(result).to.be.a('boolean');
+      });
+
+
+      it('Works correctly (1)', function() {
+        var result = test(/a/, 'b');
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var result = test(/a/, 'a');
+
+        expect(result).to.be.true;
+      });
+
+
+      testCurriedFunction('test', test, [/na/, 'na']);
+    });
   };
 
 
