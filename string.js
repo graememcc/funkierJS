@@ -225,6 +225,25 @@
 
 
     /*
+     * replaceOneRegExpWith: A curried wrapper around String.prototype.replace. Takes three arguments:
+     *                         - from: a regular expression matching the pattern to be replaced
+     *                         - to: a function that will be called with the matched string, and which returns a string
+     *                         - s: the string to be searched
+     *                       Replaces the first instance of from with to. Throws if from is not a RegExp or to is not
+     *                       a function. Returns the modified string.
+     *
+     */
+
+    var replaceOneRegExpWith = curry(function(from, to, s) {
+      if (!(from instanceof RegExp) || !(to instanceof Function))
+        throw new TypeError('replaceOneRegExpWith called with invalid types');
+
+      var r = new RegExp(from.source);
+      return s.replace(r, to);
+    });
+
+
+    /*
      * replaceRegExpWith: A curried wrapper around String.prototype.replace. Takes three arguments:
      *                      - from: a regular expression matching the pattern to be replaced
      *                      - to: a function that will be called with the matched string, and which returns a string
@@ -247,6 +266,7 @@
       chr: chr,
       ord: ord,
       replaceOneRegExp: replaceOneRegExp,
+      replaceOneRegExpWith: replaceOneRegExpWith,
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
       replaceRegExp: replaceRegExp,
