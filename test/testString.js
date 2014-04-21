@@ -21,7 +21,7 @@
     describe('String exports', function() {
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
-                               'split', 'replaceOneString', 'replaceString'];
+                               'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -499,6 +499,7 @@
 
     makeReplaceTest('replaceOneString', string.replaceOneString, false, false, true);
     makeReplaceTest('replaceString', string.replaceString, false, false, false);
+    makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, false, true, true);
   };
 
 
