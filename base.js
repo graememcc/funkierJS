@@ -349,6 +349,74 @@
     });
 
 
+    // Helper function for deepEqual. Assumes both objects are arrays.
+    var deepEqualArr = function(a, b) {
+      if (a.length !== b.length)
+        return false;
+
+      return a.every(function(val, i) {
+        return deepEqual(val, b[i]);
+      });
+    };
+
+
+    // Helper function for deepEqual. Assumes identity has already been checked, and
+    // that a check has been made for both objects being arrays.
+    var deepEqualObj = function(a, b) {
+      // Identity should have already been checked (ie a ==== b === null)
+      if (a === null || b === null)
+        return false;
+
+      // Likewise, we should already have checked for arrays
+      if (Array.isArray(a) || Array.isArray(b))
+        return false;
+
+      if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
+        return false;
+
+      var aKeys = Object.keys(a);
+      var bKeys = Object.keys(b);
+      aKeys.sort();
+      bKeys.sort();
+
+      if (!deepEqualArr(aKeys, bKeys))
+        return false;
+
+      return aKeys.every(function(k) {
+        return deepEqual(a[k], b[k]);
+      });
+    };
+
+
+    /*
+     * deepEqual: check two values for deep equality. Deep equality holds if any
+     *            of the following hold:
+     *            - strictEquals(a, b) is true i.e. identity.
+     *            - Both values are objects with the same prototype, same enumerable
+     *              properties, and those properties are deepEqual. Non-enumerable properties
+     *              are not checked.
+     *            - Both values are arrays with the same length, and the items at each
+     *              index are themselves deepEqual.
+     *
+     */
+
+    var deepEqual = curry(function(a, b) {
+      if (strictEquals(a, b))
+        return true;
+
+      if (typeof(a) !== typeof(b))
+        return false;
+
+      if (typeof(a) !== 'object')
+        return false;
+
+      if (Array.isArray(a) && Array.isArray(b))
+        return deepEqualArr(a, b);
+
+      return deepEqualObj(a, b);
+    });
+
+
     /*
      * permuteLeft: takes a function, returns a curried function of the same arity
      *              which takes the same parameters, except in a different position.
@@ -515,6 +583,7 @@
       constant0: constant0,
       curry: curry,
       curryWithArity: curryWithArity,
+      deepEqual: deepEqual,
       equals: equals,
       flip: flip,
       getRealArity: getRealArity,

@@ -22,7 +22,7 @@
                                'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
                                'permuteLeft', 'permuteRight', 'is', 'isNumber', 'isString',
                                'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
-                               'isRealObject', 'getType'];
+                               'isRealObject', 'getType', 'deepEqual'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -1154,6 +1154,199 @@
         // strictNotEqual should be curried
         testCurriedFunction('strictNotEqual', strictNotEqual, [val, val]);
       });
+    });
+
+
+    describe('deepEqual', function() {
+      var deepEqual = base.deepEqual;
+
+
+      it('Has correct arity', function() {
+        expect(base.getRealArity(deepEqual)).to.equal(2);
+      });
+
+
+      var deTests = [
+        {name: 'number', value: 1},
+        {name: 'string', value: 'a'},
+        {name: 'boolean', value: true},
+        {name: 'undefined', value: undefined},
+        {name: 'function', value: function() {}},
+        {name: 'null', value: null},
+        {name: 'array', value: []},
+        {name: 'object', value: {}}];
+
+
+      deTests.forEach(function(deTest, i) {
+        var name = deTest.name;
+        var value = deTest.value;
+
+        deTests.forEach(function(deTest2, j) {
+          var name2 = deTest2.name;
+          var value2 = deTest2.value;
+
+          var expected = (i === j);
+
+          it('Works correctly for values of type ' + name + ' and ' + name2, function() {
+            expect(deepEqual(value, value2)).to.equal(expected);
+          });
+        });
+      });
+
+
+      it('Works correctly for objects with non-identical prototypes (1)', function() {
+        var F = function() {this.foo = 1;};
+        F.prototype = {};
+        var G = function() {this.foo = 1;};
+        G.prototype = {};
+        var f = new F();
+        var g = new G();
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects with non-identical prototypes (2)', function() {
+        // The object literals here will not be identical
+        var f = Object.create({foo: 1});
+        var g = Object.create({foo: 1});
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects with different keys', function() {
+        var f = {foo: 5};
+        var g = {baz: 1};
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects with different property values', function() {
+        var f = {foo: 5};
+        var g = {foo: 1};
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects when property values not deep equal (1)', function() {
+        var f = {foo: {bar: 1}};
+        var g = {foo: {bar: 2}};
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects when property values not deep equal (2)', function() {
+        var f = {foo: [1, 2]};
+        var g = {foo: [1, 2, 3]};
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for objects with same prototypes', function() {
+        var F = function() {this.foo = 1;};
+        F.prototype = {};
+        var f = new F();
+        var g = new F();
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for objects with same keys and values', function() {
+        var f = {foo: 5};
+        var g = {foo: 5};
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for objects when property values deep equal (1)', function() {
+        var f = {foo: {bar: 1}};
+        var g = {foo: {bar: 1}};
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for objects when property values deep equal (2)', function() {
+        var f = {foo: [1, 2], bar: 'a'};
+        var g = {foo: [1, 2], bar: 'a'};
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Non-enumerable properties do not affect deep equality', function() {
+        var f = {buzz: 42};
+        var g = {buzz: 42};
+        Object.defineProperty(f, 'foo', {enumerable: false, value: 'a'});
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for arrays of different lengths', function() {
+        var f = [1];
+        var g = [];
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for arrays with different values', function() {
+        var f = [1, 2];
+        var g = [1, 3];
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for arrays when values not deep equal (1)', function() {
+        var f = [1, {foo: 5}];
+        var g = [1, {foo: 6}];
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for arrays when values not deep equal (2)', function() {
+        var f = [1, [1]];
+        var g = [1, [2]];
+
+        expect(deepEqual(f, g)).to.be.false;
+      });
+
+
+      it('Works correctly for arrays with same length and values', function() {
+        var f = [1, 2];
+        var g = [1, 2];
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for arrays when values deep equal (1)', function() {
+        var f = [1, {foo: 5}];
+        var g = [1, {foo: 5}];
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      it('Works correctly for arrays when values deep equal (2)', function() {
+        var f = [1, [1]];
+        var g = [1, [1]];
+
+        expect(deepEqual(f, g)).to.be.true;
+      });
+
+
+      testCurriedFunction('deepEqual', deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
     });
 
 
