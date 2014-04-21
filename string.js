@@ -88,9 +88,11 @@
 
 
     /*
-     * split: A curried wrapper around String.prototype.split. Takes a string to split on,
+     * split: A curried wrapper around String.prototype.split. Takes a string or RegExp to split on,
      *        and a target string, and returns an array, containing all of the substrings that
      *        were separated by the given split string.
+     *
+     * Note this does not accept the limit parameter.
      *
      */
 

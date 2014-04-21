@@ -294,6 +294,14 @@
       });
 
 
+      it('Works correctly (5)', function() {
+        var s = 'd--e--f--g';
+        var result = split(/--/, s);
+
+        expect(checkArrayEquality(result, s.split(/--/))).to.be.true;
+      });
+
+
       testCurriedFunction('split', split, ['*', 'a*b']);
     });
 
