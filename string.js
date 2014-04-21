@@ -97,9 +97,26 @@
     var split = callPropWithArity('split', 1);
 
 
+    /*
+     * replaceOneString: A curried wrapper around String.prototype.replace. Takes three strings:
+     *                   from, the substring to be replaced, to, the value that will replace from,
+     *                   and s, the string to be modified. Replaces the first instance of from with
+     *                   to. Throws if from is a RegExp or to is a function. Returns the modified string.
+     *
+     */
+
+    var replaceOneString = curry(function(from, to, s) {
+      if ((from instanceof RegExp) || (to instanceof Function))
+        throw new TypeError('replaceOneString called with invalid types');
+
+      return s.replace(from, to);
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
+      replaceOneString: replaceOneString,
       split: split,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,

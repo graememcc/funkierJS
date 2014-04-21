@@ -21,7 +21,7 @@
     describe('String exports', function() {
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
-                               'split'];
+                               'split', 'replaceOneString'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -294,6 +294,210 @@
 
       testCurriedFunction('split', split, ['*', 'a*b']);
     });
+
+
+    var makeReplaceTest = function(desc, fnUnderTest, regexp, fn, once) {
+      describe(desc, function() {
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(3);
+        });
+
+
+        if (!regexp) {
+          it('Throws if from is a regular expression', function() {
+            var s = 'funkier';
+            var from = /g/;
+            var to = fn ? function(s) {return 'h';} : 'h';
+            var fn = function() {
+              fnUnderTest(from, to, s);
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        } else {
+          it('Does not throw if from is a regular expression', function() {
+            var s = 'funkier';
+            var from = /g/;
+            var to = fn ? function(s) {return 'h';} : 'h';
+            var fn = function() {
+              fnUnderTest(from, to, s);
+            };
+
+            expect(fn).to.not.throw(TypeError);
+          });
+
+
+          if (!fn) {
+            it('Respects meaning of $1 in replacement', function() {
+              var s = 'bana';
+              var from = /(na)/;
+              var to = 'ba$1$1\''
+              var result = fnUnderTest(from, to, s);
+
+              expect(result).to.equal('banana');
+            });
+          } else {
+            it('Calls replacement function with matched groups', function() {
+              var s = 'a111b222c';
+              var from = /(\d+)b(\d+)/;
+              var to = function(s, a, b) {to.arg1 = a; to.arg2 = b; return '';};
+              to.arg1 = null;
+              to.arg2 = null;
+              var result = fnUnderTest(from, to, s);
+
+              expect(to.arg1).to.equal('111');
+              expect(to.arg2).to.equal('222');
+            });
+          }
+        }
+
+
+        if (!fn) {
+          it('Throws if to is a function', function() {
+            var s = 'funkier';
+            var from = regexp ? /g/ : 'g';
+            var to = function(s) {};
+            var fn = function() {
+              fnUnderTest(from, to, s);
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+
+
+          // If argument 2 isn't a function, then it's a string. Test the various
+          //  special characters.
+
+          it('Respects meaning of $& in replacement', function() {
+            var s = 'ba';
+            var from = regexp ? /ba/ : 'ba';
+            var to = 'ab$&';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('abba');
+          });
+
+
+          it('Respects meaning of $` in replacement', function() {
+            var s = 'can-';
+            var from = regexp ? /-/ : '-';
+            var to = '-$`';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('can-can');
+          });
+
+
+          it('Respects meaning of $\' in replacement', function() {
+            var s = 'bana';
+            var from = regexp ? /ba/ : 'ba';
+            var to = 'ba$\''
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('banana');
+          });
+
+
+          it('Respects meaning of $$ in replacement', function() {
+            var s = 'let\'s make some dollar';
+            var from = regexp ? /dollar/ : 'dollar';
+            var to = '$$'
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('let\'s make some $');
+          });
+        } else {
+          it('Calls replacement function with matched substring', function() {
+            var s = 'funkier';
+            var from = regexp ? /f/ : 'f';
+            var to = function(s) {to.s = s; return 'g';};
+            to.s = null;
+            var result = fnUnderTest(from, to, s);
+
+            expect(to.s).to.equal('f');
+          });
+        }
+
+
+        it('Returns original string when no matches found', function() {
+          var s = 'funkier';
+          var from = regexp ? /g/ : 'g';
+          var to = fn ? function(s) {return 'h';} : 'h';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal(s);
+        });
+
+
+        it('Works correctly', function() {
+          var s = 'funkier';
+          var from = regexp ? /f/ : 'f';
+          var to = fn ? function(s) {return 'g';} : 'g';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('gunkier');
+        });
+
+
+        it('Replaces leftmost', function() {
+          var s = 'bannna';
+          var from = regexp ? /nn/ : 'nn';
+          var to = fn ? function(s) {return 'na';} : 'na';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('banana');
+        });
+
+
+        it('Deletes if replacement is empty', function() {
+          var s = 'funkier';
+          var from = regexp ? /u/ : 'u';
+          var to = fn ? function(s) {return '';} : '';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('fnkier');
+        });
+
+
+        if (once) {
+          it('Replaces exactly one instance when found', function() {
+            var s = 'banana';
+            var from = regexp ? /a/ : 'a';
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binana');
+          });
+
+
+          if (regexp) {
+            it('Ignores global flag on regexp', function() {
+              var s = 'banana';
+              var from = /a/g;
+              var to = fn ? function(s) {return 'i';} : 'i';
+              var result = fnUnderTest(from, to, s);
+
+              expect(result).to.equal('binana');
+            });
+          }
+        } else {
+          it('Replaces all instances found', function() {
+            var s = 'banana';
+            var from = regexp ? /a/ : 'a';
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binini');
+          });
+        }
+
+        var from = regexp ? /a/ : 'a';
+        var to = fn ? function(s) {return 'i';} : 'i';
+        testCurriedFunction(desc, fnUnderTest, [from, to, 'banana']);
+      });
+    };
+
+    makeReplaceTest('replaceOneString', string.replaceOneString, false, false, true);
   };
 
 
