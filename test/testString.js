@@ -22,7 +22,7 @@
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                               'replaceStringWith', 'replaceOneRegExp'];
+                               'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -503,6 +503,7 @@
     makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, false, true, true);
     makeReplaceTest('replaceStringWith', string.replaceStringWith, false, true, false);
     makeReplaceTest('replaceOneRegExp', string.replaceOneRegExp, true, false, true);
+    makeReplaceTest('replaceRegExp', string.replaceRegExp, true, false, false);
   };
 
 

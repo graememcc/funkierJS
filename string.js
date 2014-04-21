@@ -148,7 +148,7 @@
      *                        - to: a function that will be called with the matched string, and which returns a string
      *                        - s: the string to be searched
      *                       Replaces the first instance of from with to. Throws if from is a RegExp or to is
-     *                       a function. Returns the modified string.
+     *                       not a function. Returns the modified string.
      *
      */
 
@@ -165,7 +165,7 @@
      *                     - from: the substring to be replaced
      *                     - to: a function that will be called with the matched string, and which returns a string
      *                     - s: the string to be searched
-     *                    Replaces all instances of from with to. Throws if from is a RegExp or to is
+     *                    Replaces all instances of from with to. Throws if from is a RegExp or to is not
      *                    a function. Returns the modified string.
      *
      */
@@ -191,8 +191,8 @@
      *                     - from: a regular expression matching the pattern to be replaced
      *                     - to: the string to replace the pattern matched by from with
      *                     - s: the string to be searched
-     *                    Replaces the first instance of from with to. Throws if from is a RegExp or to is
-     *                    a function. Returns the modified string.
+     *                   Replaces the first instance of from with to. Throws if from is not a RegExp or to is
+     *                   a function. Returns the modified string.
      *
      */
 
@@ -205,12 +205,32 @@
     });
 
 
+    /*
+     * replaceRegExp: A curried wrapper around String.prototype.replace. Takes three arguments:
+     *                    - from: a regular expression matching the pattern to be replaced
+     *                    - to: the string to replace the pattern matched by from with
+     *                    - s: the string to be searched
+     *                Replaces all instances of from with to. Throws if from is not a RegExp or to is
+     *                a function. Returns the modified string.
+     *
+     */
+
+    var replaceRegExp = curry(function(from, to, s) {
+      if (!(from instanceof RegExp) || (to instanceof Function))
+        throw new TypeError('replaceRegExp called with invalid types');
+
+      var r = new RegExp(from.source, 'g');
+      return s.replace(r, to);
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
       replaceOneRegExp: replaceOneRegExp,
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
+      replaceRegExp: replaceRegExp,
       replaceString: replaceString,
       replaceStringWith: replaceStringWith,
       split: split,
