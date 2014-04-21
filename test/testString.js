@@ -22,7 +22,7 @@
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                               'replaceStringWith'];
+                               'replaceStringWith', 'replaceOneRegExp'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -332,7 +332,7 @@
             it('Respects meaning of $1 in replacement', function() {
               var s = 'bana';
               var from = /(na)/;
-              var to = 'ba$1$1\''
+              var to = '$1$1'
               var result = fnUnderTest(from, to, s);
 
               expect(result).to.equal('banana');
@@ -502,6 +502,7 @@
     makeReplaceTest('replaceString', string.replaceString, false, false, false);
     makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, false, true, true);
     makeReplaceTest('replaceStringWith', string.replaceStringWith, false, true, false);
+    makeReplaceTest('replaceOneRegExp', string.replaceOneRegExp, true, false, true);
   };
 
 

@@ -154,7 +154,7 @@
 
     var replaceOneStringWith = curry(function(from, to, s) {
       if ((from instanceof RegExp) || (!(to instanceof Function)))
-        throw new TypeError('replaceOneString called with invalid types');
+        throw new TypeError('replaceOneStringWith called with invalid types');
 
       return s.replace(from, to);
     });
@@ -171,8 +171,8 @@
      */
 
     var replaceStringWith = curry(function(from, to, s) {
-      if ((from instanceof RegExp) || (!(to instanceof Function)))
-        throw new TypeError('replaceOneString called with invalid types');
+      if ((from instanceof RegExp) || !(to instanceof Function))
+        throw new TypeError('replaceStringWith called with invalid types');
 
       var last = 0;
       var i;
@@ -186,9 +186,29 @@
     });
 
 
+    /*
+     * replaceOneRegExp: A curried wrapper around String.prototype.replace. Takes three arguments:
+     *                     - from: a regular expression matching the pattern to be replaced
+     *                     - to: the string to replace the pattern matched by from with
+     *                     - s: the string to be searched
+     *                    Replaces the first instance of from with to. Throws if from is a RegExp or to is
+     *                    a function. Returns the modified string.
+     *
+     */
+
+    var replaceOneRegExp = curry(function(from, to, s) {
+      if (!(from instanceof RegExp) || (to instanceof Function))
+        throw new TypeError('replaceOneRegExp called with invalid types');
+
+      var r = new RegExp(from.source);
+      return s.replace(r, to);
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
+      replaceOneRegExp: replaceOneRegExp,
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
       replaceString: replaceString,
