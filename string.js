@@ -99,9 +99,11 @@
 
     /*
      * replaceOneString: A curried wrapper around String.prototype.replace. Takes three strings:
-     *                   from, the substring to be replaced, to, the value that will replace from,
-     *                   and s, the string to be modified. Replaces the first instance of from with
-     *                   to. Throws if from is a RegExp or to is a function. Returns the modified string.
+     *                    - from: the substring to be replaced
+     *                    - to: the value to replace from with
+     *                    - s: the string to be searched
+     *                   Replaces all instances of from with to. Throws if from is a RegExp or to is
+     *                   a function. Returns the modified string.
      *
      */
 
@@ -113,10 +115,38 @@
     });
 
 
+    /*
+     * replaceString: Similar to replaceOneString. Takes three strings:
+     *                  - from: the substring to be replaced
+     *                  - to: the value to replace from with
+     *                  - s: the string to be searched
+     *                Replaces all instances of from with to. Throws if from is a RegExp or to is a function.
+     *                Returns the modified string.
+     *
+     */
+
+    var replaceString = curry(function(from, to, s) {
+      if ((from instanceof RegExp) || (to instanceof Function))
+        throw new TypeError('replaceString called with invalid types');
+
+      var last = 0;
+      var l = to.length;
+      var i;
+
+      while (i = s.indexOf(from, last) !== -1) {
+        last = i + to.length;
+        s = replaceOneString(from, to, s);
+      }
+
+      return s;
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
       replaceOneString: replaceOneString,
+      replaceString: replaceString,
       split: split,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,
