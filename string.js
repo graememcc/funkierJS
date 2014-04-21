@@ -224,6 +224,25 @@
     });
 
 
+    /*
+     * replaceRegExpWith: A curried wrapper around String.prototype.replace. Takes three arguments:
+     *                      - from: a regular expression matching the pattern to be replaced
+     *                      - to: a function that will be called with the matched string, and which returns a string
+     *                      - s: the string to be searched
+     *                    Replaces all instances of from with to. Throws if from is not a RegExp or to is not
+     *                    a function. Returns the modified string.
+     *
+     */
+
+    var replaceRegExpWith = curry(function(from, to, s) {
+      if (!(from instanceof RegExp) || !(to instanceof Function))
+        throw new TypeError('replaceRegExpWith called with invalid types');
+
+      var r = new RegExp(from.source, 'g');
+      return s.replace(r, to);
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
@@ -231,6 +250,7 @@
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
       replaceRegExp: replaceRegExp,
+      replaceRegExpWith: replaceRegExpWith,
       replaceString: replaceString,
       replaceStringWith: replaceStringWith,
       split: split,

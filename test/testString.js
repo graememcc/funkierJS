@@ -22,7 +22,8 @@
       var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                               'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp'];
+                               'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
+                               'replaceRegExpWith'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -309,22 +310,22 @@
             var s = 'funkier';
             var from = /g/;
             var to = fn ? function(s) {return 'h';} : 'h';
-            var fn = function() {
+            var f = function() {
               fnUnderTest(from, to, s);
             };
 
-            expect(fn).to.throw(TypeError);
+            expect(f).to.throw(TypeError);
           });
         } else {
           it('Does not throw if from is a regular expression', function() {
             var s = 'funkier';
             var from = /g/;
             var to = fn ? function(s) {return 'h';} : 'h';
-            var fn = function() {
+            var f = function() {
               fnUnderTest(from, to, s);
             };
 
-            expect(fn).to.not.throw(TypeError);
+            expect(f).to.not.throw(TypeError);
           });
 
 
@@ -358,11 +359,11 @@
             var s = 'funkier';
             var from = regexp ? /g/ : 'g';
             var to = function(s) {};
-            var fn = function() {
+            var f = function() {
               fnUnderTest(from, to, s);
             };
 
-            expect(fn).to.throw(TypeError);
+            expect(f).to.throw(TypeError);
           });
 
 
@@ -504,6 +505,7 @@
     makeReplaceTest('replaceStringWith', string.replaceStringWith, false, true, false);
     makeReplaceTest('replaceOneRegExp', string.replaceOneRegExp, true, false, true);
     makeReplaceTest('replaceRegExp', string.replaceRegExp, true, false, false);
+    makeReplaceTest('replaceRegExpWith', string.replaceRegExpWith, true, true, false);
   };
 
 
