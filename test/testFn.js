@@ -20,7 +20,7 @@
 
     describe('String exports', function() {
       var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity',
-                               'pre', 'post', 'wrap'];
+                               'pre', 'post', 'wrap', 'fixpoint'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -715,6 +715,172 @@
       var post = function() {};
       var f = function(x) {return x;};
       testCurriedFunction('wrap', wrap, {firstArgs: [pre, post, f], thenArgs: [1]});
+    });
+
+
+    describe('fixpoint', function() {
+      var fixpoint = fn.fixpoint;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(fixpoint)).to.equal(2);
+      });
+
+
+      it('Throws if function does not have arity 1 (1)', function() {
+        var f = function() {};
+        var fn = function() {
+          fixpoint(1, f);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if function does not have arity 1 (2)', function() {
+        var f = function(x, y) {};
+        var fn = function() {
+          fixpoint(1, f);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Does not throw if function has arity 1 (1)', function() {
+        var f = function(x) {return 1;};
+        var fn = function() {
+          fixpoint(1, f);
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Does not throw if function has arity 1 (2)', function() {
+        var f = base.curry(function(x, y) {return y;})(42);
+        var fn = function() {
+          fixpoint(1, f);
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Calls function', function() {
+        var f = function(a) {f.called = true; return 1;};
+        f.called = false;
+        fixpoint([], f);
+
+        expect(f.called).to.be.true;
+      });
+
+
+      it('Calls function with given arguments', function() {
+        var f = function(a) {f.args = [].slice.call(arguments); return 1;};
+        f.args = null;
+        var args = 1;
+        fixpoint(args, f);
+
+        expect(f.args).to.deep.equal([args]);
+      });
+
+
+      it('Throws after 1000 calls', function() {
+        var f = function(a) {return f.called++;};
+        f.called = 0;
+        var args = 1;
+        var fn = function() {
+          fixpoint(args, f);
+        };
+
+        expect(fn).to.throw(Error);
+        expect(f.called).to.equal(1000);
+      });
+
+
+      var makeReturnAfterThresholdTest = function(threshold, value1, value2) {
+        // The optional value2 parameter allows us to test by returning deep
+        // equal but not identical values
+        value2 = value2 || value1;
+
+        return function() {
+          var f = function(a) {
+            f.called++;
+
+            // Return the first object
+            if (f.called === threshold + 1)
+              return value1;
+
+            // This should trigger the end of the function
+            if (f.called === threshold + 2)
+              return value2;
+
+            // return something unique before threshold, and once we've returned
+            // the two similar objects. Hope Math.random() is random enough!
+            return Math.random();
+          };
+          f.called = 0;
+          var result = fixpoint('a', f);
+
+          expect(f.called).to.be.lessThan(1000);
+          expect(result).to.deep.equal(value2);
+        };
+      };
+
+
+      var simpleTests = [
+        {name: 'number', value: 1},
+        {name: 'string', value: 'a'},
+        {name: 'boolean', value: true},
+        {name: 'undefined', value: undefined},
+        {name: 'null', value: null},
+        {name: 'function', value: function() {}}];
+
+
+      simpleTests.forEach(function(test, i) {
+        var name = test.name;
+        var value = test.value;
+
+        it('Works correctly for return value of type ' + name,
+           makeReturnAfterThresholdTest(i + 1, value));
+      });
+
+
+      var obj1 = {foo: 1, bar: {baz: 2}};
+      var obj2 = {foo: 1, bar: {baz: 2}};
+      it('Works correctly for objects (1)', makeReturnAfterThresholdTest(3, obj1, obj1));
+      it('Works correctly for objects (2)', makeReturnAfterThresholdTest(3, obj1, obj2));
+
+      var arr1 = [1, [2]];
+      var arr2 = [1, [2]];
+      it('Works correctly for arrays (1)', makeReturnAfterThresholdTest(3, arr1, arr1));
+      it('Works correctly for arrays (2)', makeReturnAfterThresholdTest(3, arr2, arr2));
+
+
+      it('Not fooled by null followed by an object', function() {
+        var obj1 = {foo: 2};
+        var obj2 = {foo: 3};
+
+        var f = function(a) {
+          f.called++;
+
+          if (f.called === 1)
+            return null;
+
+          // We shouldn't get obj1
+          if (f.called === 2)
+            return obj1;
+
+          return obj2;
+        };
+        f.called = 0;
+        var result = fixpoint(42, f);
+
+        expect(f.called).to.be.lessThan(1000);
+        expect(result).to.not.equal(obj1);
+        expect(result).to.equal(obj2);
+      });
     });
   };
 

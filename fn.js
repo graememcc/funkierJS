@@ -110,9 +110,41 @@
     });
 
 
+    /*
+     * fixpoint: takes an argument a and a function f of arity 1. Repeatedly calls f, first with
+     *           the argument a, then with the result of the previous call until two sequential
+     *           results yield values that deep equal each other. Returns this value. Throws a
+     *           TypeError if f does not have arity 1. Throws an Error after 1000 calls if no
+     *           fixpoint has been found.
+     *
+     */
+
+    var fixpoint = function(a, f) {
+      if (getRealArity(f) !== 1)
+        throw new TypeError('Cannot compute fixpoint of function with arity !== 1');
+
+      var result = f(a);
+      var calls = 1;
+      var found = false;
+
+      while (calls < 1000 && !found) {
+        calls += 1;
+        var newResult = f(result);
+        found = base.deepEqual(result, newResult);
+        result = newResult;
+      }
+
+      if (calls === 1000)
+        throw new Error('Unable to find fixpoint in reasonable time');
+
+      return result;
+    };
+
+
     var exported = {
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
+      fixpoint: fixpoint,
       pre: pre,
       post: post,
       wrap: wrap
