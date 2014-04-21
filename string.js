@@ -147,7 +147,7 @@
      *                        - from: the substring to be replaced
      *                        - to: a function that will be called with the matched string, and which returns a string
      *                        - s: the string to be searched
-     *                       Replaces all instances of from with to. Throws if from is a RegExp or to is
+     *                       Replaces the first instance of from with to. Throws if from is a RegExp or to is
      *                       a function. Returns the modified string.
      *
      */
@@ -160,12 +160,39 @@
     });
 
 
+    /*
+     * replaceStringWith: A curried wrapper around String.prototype.replace. Takes three arguments:
+     *                     - from: the substring to be replaced
+     *                     - to: a function that will be called with the matched string, and which returns a string
+     *                     - s: the string to be searched
+     *                    Replaces all instances of from with to. Throws if from is a RegExp or to is
+     *                    a function. Returns the modified string.
+     *
+     */
+
+    var replaceStringWith = curry(function(from, to, s) {
+      if ((from instanceof RegExp) || (!(to instanceof Function)))
+        throw new TypeError('replaceOneString called with invalid types');
+
+      var last = 0;
+      var i;
+
+      while (i = s.indexOf(from, last) !== -1) {
+        last = i + 1;
+        s = replaceOneStringWith(from, to, s);
+      }
+
+      return s;
+    });
+
+
     var exported = {
       chr: chr,
       ord: ord,
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
       replaceString: replaceString,
+      replaceStringWith: replaceStringWith,
       split: split,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,
