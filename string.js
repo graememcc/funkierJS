@@ -275,8 +275,53 @@
     var test = flip(callPropWithArity('test', 1));
 
 
+    // Helper function for the various match functions
+    var makeMatchResult = function(reResult) {
+      return {
+        index: reResult.index,
+        matchedText: reResult[0],
+        subexpressions: reResult.slice(1)
+      };
+    };
+
+
+    /*
+     * matches: find all matches within a string for a given regular expression. Takes two parameters: a regular
+     *          expression and a string. Returns an array of objects, one object per match. Each object has the
+     *          following properties:
+     *            - index: the index in the original string where the match was found
+     *            - matchedText: the substring that matched the pattern
+     *            - subexpressions: an array of substrings that matched the parenthised expressions in the
+     *                              regular expressions. The substring matching the first parenthesised expression
+     *                              will be at position 0, the string matching the second at position 1, and so on.
+     *                              If the regular expression did not contain any parenthesised subexpressions, this
+     *                              array will be empty.
+     *          This function is not affected by the presence or absence of a global flag in the supplied regular
+     *          expression. It is not affected by, and nor does it change the lastIndex property of the regular
+     *          expression if it exists. Throws a TypeError if the first parameter is not a regular expression.
+    *
+    */
+
+    var matches = curry(function(r, s) {
+      if (!(r instanceof RegExp))
+        throw new TypeError('Pattern is not a regular expression');
+
+      r = new RegExp(r.source, 'g');
+      var result = [];
+      var next = r.exec(s);
+
+      while (next !== null) {
+        result.push(makeMatchResult(next));
+        next = r.exec(s);
+      }
+
+      return result;
+    });
+
+
     var exported = {
       chr: chr,
+      matches: matches,
       ord: ord,
       replaceOneRegExp: replaceOneRegExp,
       replaceOneRegExpWith: replaceOneRegExpWith,

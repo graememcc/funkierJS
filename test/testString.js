@@ -23,7 +23,7 @@
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                                'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
-                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test'];
+                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -565,6 +565,247 @@
 
       testCurriedFunction('test', test, [/na/, 'na']);
     });
+
+
+    // Helper for the various match tests
+    var resultIsCorrectShape = function(result) {
+      // The match functions don't return a constructed object,
+      // just a bare object with certain properties attached.
+
+      var keys = Object.keys(result);
+      var expectedKeys = ['index', 'matchedText', 'subexpressions'];
+
+      if (keys.length !== expectedKeys.length)
+        return false;
+
+      return keys.every(function(k) {
+        return expectedKeys.indexOf(k) !== -1;
+      });
+    };
+
+
+    var addCommonMatcherTests = function(fnUnderTest, isFrom) {
+      it('Has correct arity', function() {
+        var expectedArity = isFrom ? 3 : 2;
+        expect(getRealArity(fnUnderTest)).to.equal(expectedArity);
+      });
+
+
+      it('Throws a TypeError if first parameter not a RegExp', function() {
+        var args = isFrom ? ['a', 0, 'b'] : ['a', 'b'];
+        var fn = function() {
+          fnUnderTest.apply(null, args);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Returns an empty array when there are no results', function() {
+        var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.be.an('array');
+        expect(result.length).to.equal(0);
+      });
+    };
+
+
+    var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
+      describe(desc, function() {
+        addCommonMatcherTests(fnUnderTest, isFrom);
+
+
+        it('Returns an array of correct length (1)', function() {
+          var s = 'a cat hat mat';
+          // Our search string has 4 results: the from function should pick up 2 of them
+          // based on the start position
+          var expectedResults = isFrom ? 2 : 4;
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(expectedResults);
+        });
+
+
+        it('All results have correct form (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct matched text (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(obj) {
+            return obj.matchedText === 'a';
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct index (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var indices = [0, 3, 7, 11];
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
+            return obj.index === (isFrom ? indices[i + 2] : indices[i]);
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct subexpressions (1)', function() {
+          // This search has no subexpressions: the result should be an empty array
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(res) {
+            return Array.isArray(res.subexpressions) &&
+                   res.subexpressions.length === 0;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Returns an array of correct length (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          // Our search string has 4 results: the from function should pick up 2 of them
+          // based on the start position
+          var expectedResults = isFrom ? 2 : 4;
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(expectedResults);
+        });
+
+
+        it('All results have correct form (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct matched text (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var isDigit = function(c) {
+            return c.length === 1 && c >= '0' && c <= '9';
+          };
+          var result = fnUnderTest.apply(null, args).every(function(obj) {
+            return obj.matchedText.length === 4 &&
+                   obj.matchedText[0] === 'a' && isDigit(obj.matchedText[1]) &&
+                   isDigit(obj.matchedText[1]) && isDigit(obj.matchedText[2]);
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct index (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var indices = [0, 7, 15, 22];
+          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
+            return obj.index === (isFrom ? indices[i + 2] : indices[i]);
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('All results have correct subexpressions (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(res, i) {
+            var subs = res.subexpressions;
+            // Note == here: the results are strings, i + n is a number
+            return Array.isArray(subs) && subs.length === 3 && subs[0] == i &&
+                   subs[1] == i + 1 && subs[2] == i + 2;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Works correctly when RegExp has no global flag', function () {
+          var s = 'banana';
+          var r = /n/;
+          var args = isFrom ? [r, 0, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(2);
+        });
+
+
+        var args = isFrom ? [/a/, 0, 'banana'] : [/a/, 'banana'];
+        testCurriedFunction(desc, fnUnderTest, args);
+      });
+    };
+
+
+    var makeSingleMatcherTests = function(desc, fnUnderTest, isFrom, multiEquivalent) {
+      describe(desc, function() {
+        addCommonMatcherTests(fnUnderTest, isFrom);
+
+
+        it('Works correctly (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(1);
+          expect(result[0]).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+        });
+
+
+        it('Works correctly (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(1);
+          expect(result[0]).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+        });
+
+
+        it('Works correctly when RegExp has global flag', function () {
+          var s = 'banana';
+          var r = /n/g;
+          var args = isFrom ? [r, 0, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(1);
+        });
+
+
+        var args = isFrom ? [/a/, 4, 'banana'] : ['a', 'banana'];
+        testCurriedFunction(desc, fnUnderTest, args);
+      });
+    };
+
+
+    makeMultiMatcherTests('matches', string.matches, false);
   };
 
 
