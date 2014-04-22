@@ -24,7 +24,7 @@
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                                'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
                                'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
-                               'matchesFrom', 'firstMatch'];
+                               'matchesFrom', 'firstMatch', 'firstMatchFrom'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -818,6 +818,7 @@
     makeMultiMatcherTests('matches', string.matches, false);
     makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
     makeSingleMatcherTests('firstMatch', string.firstMatch, false, string.matches);
+    makeSingleMatcherTests('firstMatchFrom', string.firstMatchFrom, true, string.matchesFrom);
   };
 
 
