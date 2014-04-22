@@ -341,8 +341,35 @@
     });
 
 
+    /*
+     * firstMatch: finds the first match within a string for a given regular expression. Takes two parameters: a regular
+     *             expression and a string. Returns a single object or null. The object has the following properties:
+     *               - index: the index in the original string where the match was found
+     *               - matchedText: the substring that matched the pattern
+     *               - subexpressions: an array of substrings that matched the parenthised expressions in the
+     *                                 regular expressions. The substring matching the first parenthesised expression
+     *                                 will be at position 0, the string matching the second at position 1, and so on.
+     *                                 If the regular expression did not contain any parenthesised subexpressions, this
+     *                                 array will be empty.
+     *             This function is not affected by the presence or absence of a global flag in the supplied regular
+     *             expression. It is not affected by, and nor does it change the lastIndex property of the regular
+     *             expression if it exists. Throws a TypeError if the first parameter is not a regular expression.
+     *
+     */
+
+    var firstMatch = curry(function(r, s) {
+      if (!(r instanceof RegExp))
+        throw new TypeError('Pattern is not a regular expression');
+
+      r = new RegExp(r.source, 'g');
+      var result = r.exec(s);
+      return result === null ? result : makeMatchResult(result);
+    });
+
+
     var exported = {
       chr: chr,
+      firstMatch: firstMatch,
       matches: matches,
       matchesFrom: matchesFrom,
       ord: ord,

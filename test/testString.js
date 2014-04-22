@@ -24,7 +24,7 @@
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                                'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
                                'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
-                               'matchesFrom'];
+                               'matchesFrom', 'firstMatch'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -600,21 +600,21 @@
 
         expect(fn).to.throw(TypeError);
       });
-
-
-      it('Returns an empty array when there are no results', function() {
-        var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
-        var result = fnUnderTest.apply(null, args);
-
-        expect(result).to.be.an('array');
-        expect(result.length).to.equal(0);
-      });
     };
 
 
     var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
       describe(desc, function() {
         addCommonMatcherTests(fnUnderTest, isFrom);
+
+
+        it('Returns an empty array when there are no results', function() {
+          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.be.an('array');
+          expect(result.length).to.equal(0);
+        });
 
 
         it('Returns an array of correct length (1)', function() {
@@ -770,14 +770,21 @@
         addCommonMatcherTests(fnUnderTest, isFrom);
 
 
+        it('Returns null when there are no results', function() {
+          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result === null).to.be.true;
+        });
+
+
         it('Works correctly (1)', function() {
           var s = 'a cat hat mat';
           var r = /a/g;
           var args = isFrom ? [r, 5, s] : [r, s];
           var result = fnUnderTest.apply(null, args);
 
-          expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
         });
 
 
@@ -787,8 +794,7 @@
           var args = isFrom ? [r, 8, s] : [r, s];
           var result = fnUnderTest.apply(null, args);
 
-          expect(result.length).to.equal(1);
-          expect(result[0]).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
         });
 
 
@@ -798,11 +804,12 @@
           var args = isFrom ? [r, 0, s] : [r, s];
           var result = fnUnderTest.apply(null, args);
 
-          expect(result.length).to.equal(1);
+          expect(result === null).to.be.false;
+          expect(result.index === 2).to.be.true;
         });
 
 
-        var args = isFrom ? [/a/, 4, 'banana'] : ['a', 'banana'];
+        var args = isFrom ? [/a/, 4, 'banana'] : [/a/, 'banana'];
         testCurriedFunction(desc, fnUnderTest, args);
       });
     };
@@ -810,6 +817,7 @@
 
     makeMultiMatcherTests('matches', string.matches, false);
     makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
+    makeSingleMatcherTests('firstMatch', string.firstMatch, false, string.matches);
   };
 
 
