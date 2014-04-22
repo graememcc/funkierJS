@@ -299,8 +299,8 @@
      *          This function is not affected by the presence or absence of a global flag in the supplied regular
      *          expression. It is not affected by, and nor does it change the lastIndex property of the regular
      *          expression if it exists. Throws a TypeError if the first parameter is not a regular expression.
-    *
-    */
+     *
+     */
 
     var matches = curry(function(r, s) {
       if (!(r instanceof RegExp))
@@ -319,9 +319,32 @@
     });
 
 
+    /*
+     * matchesFrom: find all matches within a string from the given index for a given regular expression. Takes three
+     *              parameters: a regular expression, an index, and a string. Returns an array of objects, one object
+     *              per match. Each object has the following properties:
+     *                - index: the index in the original string where the match was found
+     *                - matchedText: the substring that matched the pattern
+     *                - subexpressions: an array of substrings that matched the parenthised expressions in the
+     *                                  regular expressions. The substring matching the first parenthesised expression
+     *                                  will be at position 0, the string matching the second at position 1, and so on.
+     *                                  If the regular expression did not contain any parenthesised subexpressions, this
+     *                                  array will be empty.
+     *              This function is not affected by the presence or absence of a global flag in the supplied regular
+     *              expression. It is not affected by, and nor does it change the lastIndex property of the regular
+     *              expression if it exists. Throws a TypeError if the first parameter is not a regular expression.
+     *
+     */
+
+    var matchesFrom = curry(function(r, i, s) {
+      return matches(r, s.slice(i));
+    });
+
+
     var exported = {
       chr: chr,
       matches: matches,
+      matchesFrom: matchesFrom,
       ord: ord,
       replaceOneRegExp: replaceOneRegExp,
       replaceOneRegExpWith: replaceOneRegExpWith,

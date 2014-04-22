@@ -23,7 +23,8 @@
                                'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                                'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                                'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
-                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches'];
+                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
+                               'matchesFrom'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -657,7 +658,7 @@
           var indices = [0, 3, 7, 11];
           var args = isFrom ? [r, 5, s] : [r, s];
           var result = fnUnderTest.apply(null, args).every(function(obj, i) {
-            return obj.index === (isFrom ? indices[i + 2] : indices[i]);
+            return obj.index === (isFrom ? indices[i + 2]  - 5 : indices[i]);
           });
 
           expect(result).to.be.true;
@@ -724,7 +725,7 @@
           var args = isFrom ? [r, 8, s] : [r, s];
           var indices = [0, 7, 15, 22];
           var result = fnUnderTest.apply(null, args).every(function(obj, i) {
-            return obj.index === (isFrom ? indices[i + 2] : indices[i]);
+            return obj.index === (isFrom ? indices[i + 2] - 8 : indices[i]);
           });
 
           expect(result).to.be.true;
@@ -737,9 +738,11 @@
           var args = isFrom ? [r, 8, s] : [r, s];
           var result = fnUnderTest.apply(null, args).every(function(res, i) {
             var subs = res.subexpressions;
-            // Note == here: the results are strings, i + n is a number
-            return Array.isArray(subs) && subs.length === 3 && subs[0] == i &&
-                   subs[1] == i + 1 && subs[2] == i + 2;
+            var sub0 = '' + (isFrom ? i + 2 : i);
+            var sub1 = '' + (isFrom ? i + 3 : i + 1);
+            var sub2 = '' + (isFrom ? i + 4 : i + 2);
+            return Array.isArray(subs) && subs.length === 3 && subs[0] === sub0 &&
+                   subs[1] === sub1 && subs[2] === sub2;
           });
 
           expect(result).to.be.true;
@@ -806,6 +809,7 @@
 
 
     makeMultiMatcherTests('matches', string.matches, false);
+    makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
   };
 
 
