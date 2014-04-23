@@ -23,6 +23,7 @@
     var date = require('../date');
     var pair = require('../pair');
     var maybe = require('../maybe');
+    var result = require('../result');
 
 
     var imports = [{name: 'base', val: base},
@@ -33,7 +34,8 @@
                    {name: 'fn', val: fn},
                    {name: 'date', val: date},
                    {name: 'pair', val: pair},
-                   {name: 'maybe', val: maybe}];
+                   {name: 'maybe', val: maybe},
+                   {name: 'result', val: result}];
 
 
     describe('Funkier exports', function() {

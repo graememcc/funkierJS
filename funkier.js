@@ -12,8 +12,9 @@
     var date = require('./date');
     var pair = require('./pair');
     var maybe = require('./maybe');
+    var result = require('./result');
 
-    var imports = [base, logical, maths, object, string, fn, date, pair, maybe];
+    var imports = [base, logical, maths, object, string, fn, date, pair, maybe, result];
     var exportedFns = {};
 
     // Export our imports
