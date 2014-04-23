@@ -19,7 +19,7 @@
 
 
     describe('Pair exports', function() {
-      var expectedFunctions = ['Pair', 'fst', 'snd', 'isPair'];
+      var expectedFunctions = ['Pair', 'fst', 'snd', 'isPair', 'asArray'];
 
       // Automatically generate existence tests for each expected function
       expectedFunctions.forEach(function(f) {
@@ -461,6 +461,56 @@
           var s = p.toString();
 
           expect(s).to.equal(['Pair (', valueStringifier(t[1]), ', ', valueStringifier(t[0]) + ')'].join(''));
+        });
+      });
+    });
+
+
+    describe('asArray', function() {
+      var asArray = pair.asArray;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(asArray)).to.equal(1);
+      });
+
+
+      tests.forEach(function(t, i) {
+        it('Throws if argument is not a pair (' + (2 * i + 1) + ')', function() {
+          var fn = function() {
+            asArray(t[0]);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws if argument is not a pair (' + (2 * i + 2) + ')', function() {
+          var fn = function() {
+            asArray(t[0]);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Works correctly (' + (2 * i + 1) + ')', function() {
+          var arr = asArray(Pair(t[0], t[1]));
+
+          expect(Array.isArray(arr)).to.be.true;
+          expect(arr.length).to.equal(2);
+          expect(arr[0] === t[0]).to.be.true;
+          expect(arr[1] === t[1]).to.be.true;
+        });
+
+
+        it('Works correctly (' + (2 * i + 2) + ')', function() {
+          var arr = asArray(Pair(t[1], t[0]));
+
+          expect(Array.isArray(arr)).to.be.true;
+          expect(arr.length).to.equal(2);
+          expect(arr[0] === t[1]).to.be.true;
+          expect(arr[1] === t[0]).to.be.true;
         });
       });
     });

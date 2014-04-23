@@ -94,8 +94,24 @@
     });
 
 
+    /*
+     * asArray: Takes a pair, and returns a 2-element array containing the values contained
+     *          in p. Specifically, if the resulting array is named arr, then we have
+     *          arr[0] === fst(p) and arr[1] === snd(p). Throws if p is not a pair.
+     *
+     */
+
+    var asArray = function(p) {
+      if (!(p instanceof Pair))
+        throw new TypeError('Not a pair');
+
+      return [fst(p), snd(p)];
+    };
+
+
     var exported = {
       Pair: Pair,
+      asArray: asArray,
       fst: fst,
       isPair: isPair,
       snd: snd
