@@ -8,14 +8,14 @@
 
     var base = require('../base');
     var pair = require('../pair');
+    var utils = require('../utils');
 
     // Import utility functions
     var testUtils = require('./testUtils');
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
-    var testCurriedFunction = testUtils.testCurriedFunction;
-    var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
+    var valueStringifier = utils.valueStringifier;
 
 
     describe('Pair exports', function() {
@@ -56,6 +56,8 @@
 
         expect(fn).to.throw(TypeError);
       });
+
+
       it('Returns an object when called with new operator', function() {
         var p = new Pair(1, 2);
 
@@ -331,6 +333,7 @@
           expect(fn).to.throw(TypeError);
         });
 
+
         it('Throws if called with non-Pair value (' + (i + 2) + ')', function() {
           var fn = function() {
             fst(t[1]);
@@ -339,11 +342,13 @@
           expect(fn).to.throw(TypeError);
         });
 
+
         it('Works correctly (' + (i + 1) + ')', function() {
           var p = Pair(t[0], t[1]);
 
           expect(fst(p)).to.equal(t[0]);
         });
+
 
         it('Works correctly (' + (i + 2) + ')', function() {
           var p = Pair(t[1], t[0]);
@@ -369,6 +374,7 @@
           expect(fn).to.throw(TypeError);
         });
 
+
         it('Throws if called with non-Pair value (' + (2 * i + 2) + ')', function() {
           var fn = function() {
             snd(t[1]);
@@ -377,11 +383,13 @@
           expect(fn).to.throw(TypeError);
         });
 
+
         it('Works correctly (' + (2 * i + 1) + ')', function() {
           var p = Pair(t[0], t[1]);
 
           expect(snd(p)).to.equal(t[1]);
         });
+
 
         it('Works correctly (' + (2 * i + 2) + ')', function() {
           var p = Pair(t[1], t[0]);
@@ -444,14 +452,15 @@
           var p = Pair(t[0], t[1]);
           var s = p.toString();
 
-          expect(s).to.equal(['Pair (', '' + t[0], ', ', '' + t[1] + ')'].join(''));
+          expect(s).to.equal(['Pair (', valueStringifier(t[0]), ', ', valueStringifier(t[1]) + ')'].join(''));
         });
+
 
         it('Works correctly (' + (2 * i + 2) + ')', function() {
           var p = Pair(t[1], t[0]);
           var s = p.toString();
 
-          expect(s).to.equal(['Pair (', '' + t[1], ', ', '' + t[0] + ')'].join(''));
+          expect(s).to.equal(['Pair (', valueStringifier(t[1]), ', ', valueStringifier(t[0]) + ')'].join(''));
         });
       });
     });

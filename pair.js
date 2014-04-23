@@ -5,7 +5,9 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
+    var utils = require('./utils');
     var curry = base.curry;
+    var valueStringifier = utils.valueStringifier;
 
 
     /*
@@ -37,7 +39,7 @@
       toString: function() {
         // We use coercion rather than an explicit toString call as it's permissible for the
         // values to be null or undefined
-        return ['Pair (', '' + this.first, ', ', '' + this.second, ')'].join('');
+        return ['Pair (', valueStringifier(this.first), ', ', valueStringifier(this.second), ')'].join('');
       }
     };
 
