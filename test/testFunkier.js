@@ -24,6 +24,7 @@
     var pair = require('../pair');
     var maybe = require('../maybe');
     var result = require('../result');
+    var combinators = require('../combinators');
 
 
     var imports = [{name: 'base', val: base},
@@ -35,7 +36,8 @@
                    {name: 'date', val: date},
                    {name: 'pair', val: pair},
                    {name: 'maybe', val: maybe},
-                   {name: 'result', val: result}];
+                   {name: 'result', val: result},
+                   {name: 'combinators', val: combinators}];
 
 
     describe('Funkier exports', function() {
