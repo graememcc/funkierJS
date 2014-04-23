@@ -8,6 +8,25 @@
     var expect = chai.expect;
 
 
+    // Generate test code that ensures all expected functions and objects are exported
+    var describeModule = function(name, module, expectedObjects, expectedFunctions) {
+      var desc = name[0].toUpperCase() + name.slice(1);
+
+      describe(desc + ' exports', function() {
+        // Generate existence tests for each expected object
+        expectedObjects.forEach(function(o) {
+          it(name + '.js exports \'' + o + '\' property', exportsProperty(module, o));
+        });
+
+        // ... and each expected function
+        expectedFunctions.forEach(function(f) {
+          it(name + '.js exports \'' + f + '\' property', exportsProperty(module, f));
+          it('\'' + f + '\' property of ' + name + '.js is a function', exportsFunction(module, f));
+        });
+      });
+    };
+
+
     // Deeply check two objects for equality (ignoring functions)
     var checkObjectEquality = function(obj1, obj2) {
       var obj1Keys = Object.getOwnPropertyNames(obj1);
@@ -221,6 +240,7 @@
       checkArrayEquality: checkArrayEquality,
       checkEquality: checkEquality,
       checkObjectEquality: checkObjectEquality,
+      describeModule: describeModule,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
       testCurriedFunction: testCurriedFunction

@@ -10,26 +10,19 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
 
 
-    describe('Base exports', function() {
-      var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
-                               'constant', 'constant0', 'composeMany', 'flip',
-                               'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
-                               'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
-                               'permuteLeft', 'permuteRight', 'is', 'isNumber', 'isString',
-                               'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
-                               'isRealObject', 'getType', 'deepEqual'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('base.js exports \'' + f + '\' property', exportsProperty(base, f));
-        it('\'' + f + '\' property of base.js is a function', exportsFunction(base, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['curry', 'curryWithArity', 'compose', 'id',
+                             'constant', 'constant0', 'composeMany', 'flip',
+                             'applyFunc', 'sectionLeft', 'sectionRight', 'equals',
+                             'strictEquals', 'getRealArity', 'notEqual', 'strictNotEqual',
+                             'permuteLeft', 'permuteRight', 'is', 'isNumber', 'isString',
+                             'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
+                             'isRealObject', 'getType', 'deepEqual'];
+    describeModule('base', base, expectedObjects, expectedFunctions);
 
 
     // Many of the tests use curry and id: let's pull them out for convenience

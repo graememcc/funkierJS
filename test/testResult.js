@@ -12,29 +12,16 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
 
 
-    describe('Result exports', function() {
-      var expectedObjects = ['Result'];
-      var expectedFunctions = ['Ok', 'Err', 'getOkValue', 'getErrValue', 'isResult', 'isOk', 'isErr',
-                               'makeResultReturner', 'makePredResultReturner', 'makeThrowResultReturner'];
-
-      expectedObjects.forEach(function(o) {
-        it('result.js exports \'' + o + '\' property', exportsProperty(result, o));
-      });
-
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('result.js exports \'' + f + '\' property', exportsProperty(result, f));
-        it('\'' + f + '\' property of result.js is a function', exportsFunction(result, f));
-      });
-    });
+    var expectedObjects = ['Result'];
+    var expectedFunctions = ['Ok', 'Err', 'getOkValue', 'getErrValue', 'isResult', 'isOk', 'isErr',
+                             'makeResultReturner', 'makePredResultReturner', 'makeThrowResultReturner'];
+    describeModule('result', result, expectedObjects, expectedFunctions);
 
 
     var Result = result.Result;

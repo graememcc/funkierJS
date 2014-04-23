@@ -301,7 +301,7 @@
      *
      * Use set if you require a function which will not throw in such circumstances.
      * Use modify/modifyOrThrow if you require a function that will only modify existing properties.
-     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify 
+     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify
      * an existing property.
      *
      */
@@ -338,7 +338,7 @@
      *
      * Use modifyOrThrow if you need a version that will throw rather than silently fail.
      * Use set/setOrThrow if you require a function that will create the property if it does not exist.
-     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify 
+     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify
      * an existing property.
      *
      */
@@ -364,7 +364,7 @@
      *
      * Use modify if you need a version that will silently fail rather than throw.
      * Use set/setOrThrow if you require a function that will create the property if it does not exist.
-     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify 
+     * Use createProp/createPropOrThrow if you need a version that will only create a new property, and not modify
      * an existing property.
      *
      */

@@ -60,7 +60,7 @@
       Ky: Ky,
       S: S
     };
-      
+
     var exported = {
       combinators: combinators
     };

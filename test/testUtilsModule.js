@@ -10,20 +10,13 @@
     var utils = require('../utils');
 
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var getRealArity = base.getRealArity;
 
 
-    describe('Utils exports', function() {
-      var expectedFunctions = ['valueStringifier'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('utils.js exports \'' + f + '\' property', exportsProperty(utils, f));
-        it('\'' + f + '\' property of utils.js is a function', exportsFunction(utils, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['valueStringifier'];
+    describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
     describe('valueStringifier', function() {

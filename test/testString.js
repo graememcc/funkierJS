@@ -11,27 +11,20 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
 
 
-    describe('String exports', function() {
-      var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
-                               'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
-                               'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                               'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
-                               'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
-                               'matchesFrom', 'firstMatch', 'firstMatchFrom'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('string.js exports \'' + f + '\' property', exportsProperty(string, f));
-        it('\'' + f + '\' property of string.js is a function', exportsFunction(string, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
+                             'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
+                             'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
+                             'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
+                             'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
+                             'matchesFrom', 'firstMatch', 'firstMatchFrom'];
+    describeModule('string', string, expectedObjects, expectedFunctions);
 
 
     describe('toString', function() {

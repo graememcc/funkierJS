@@ -11,19 +11,16 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
+    var describeModule = testUtils.describeModule;
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
 
 
-    describe('Combinators exports', function() {
-      var expectedObjects = ['combinators'];
-
-      expectedObjects.forEach(function(o) {
-        it('combinators.js exports \'' + o + '\' property', exportsProperty(combinators, o));
-      });
-    });
+    var expectedObjects = ['combinators'];
+    var expectedFunctions = [];
+    describeModule('combinators', combinators, expectedObjects, expectedFunctions);
 
 
     describe('Combinators.combinators properties', function() {
@@ -81,7 +78,7 @@
             expect(Ky(value, t2.value)).to.equal(t2.value);
           });
 
-        
+
           testCurriedFunction('Ky of type ' + name + ' and ' + t2.name, Ky, [value, t2.value]);
         });
       });
@@ -165,7 +162,7 @@
         };
 
         expect(fn).to.throw(TypeError);
-      }); 
+      });
 
 
       it('Calls result of first function with result of second function', function() {

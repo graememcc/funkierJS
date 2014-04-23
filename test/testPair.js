@@ -12,21 +12,14 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
 
 
-    describe('Pair exports', function() {
-      var expectedFunctions = ['Pair', 'fst', 'snd', 'isPair', 'asArray'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('pair.js exports \'' + f + '\' property', exportsProperty(pair, f));
-        it('\'' + f + '\' property of pair.js is a function', exportsFunction(pair, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['Pair', 'fst', 'snd', 'isPair', 'asArray'];
+    describeModule('pair', pair, expectedObjects, expectedFunctions);
 
 
     var Pair = pair.Pair;
@@ -420,9 +413,9 @@
 
         it('Works correctly (' + (i + 1) + ')', function() {
           expect(isPair(Pair(t[0], t[1]))).to.be.true;
-        }); 
-      }); 
-    }); 
+        });
+      });
+    });
 
 
     describe('toString', function() {

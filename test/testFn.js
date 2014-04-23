@@ -11,23 +11,15 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
 
 
-    describe('String exports', function() {
-      var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity',
-                               'pre', 'post', 'wrap', 'fixpoint'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('fn.js exports \'' + f + '\' property', exportsProperty(fn, f));
-        it('\'' + f + '\' property of fn.js is a function', exportsFunction(fn, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity',
+                             'pre', 'post', 'wrap', 'fixpoint'];
+    describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
     describe('bindWithContext', function() {

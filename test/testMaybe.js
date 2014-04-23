@@ -12,30 +12,16 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
 
 
-    describe('Maybe exports', function() {
-      var expectedObjects = ['Maybe', 'Nothing'];
-      var expectedFunctions = ['Just', 'getJustValue', 'isMaybe', 'isJust', 'isNothing', 'makeMaybeReturner',
-                               'makePredMaybeReturner', 'makeThrowMaybeReturner'];
-
-      expectedObjects.forEach(function(o) {
-        it('maybe.js exports \'' + o + '\' property', exportsProperty(maybe, o));
-      });
-
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('maybe.js exports \'' + f + '\' property', exportsProperty(maybe, f));
-        it('\'' + f + '\' property of maybe.js is a function', exportsFunction(maybe, f));
-      });
-    });
+    var expectedObjects = ['Maybe', 'Nothing'];
+    var expectedFunctions = ['Just', 'getJustValue', 'isMaybe', 'isJust', 'isNothing', 'makeMaybeReturner',
+                             'makePredMaybeReturner', 'makeThrowMaybeReturner'];
+    describeModule('maybe', maybe, expectedObjects, expectedFunctions);
 
 
     var Maybe = maybe.Maybe;

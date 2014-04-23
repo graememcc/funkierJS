@@ -11,36 +11,29 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var checkArrayEquality = testUtils.checkArrayEquality;
     var getRealArity = base.getRealArity;
 
 
-    describe('Date exports', function() {
-      var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
-                               'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds',
-                               'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
-                               'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
-                               'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
-                               'toLocaleString', 'toLocaleTimeString', 'toDateString', 'toTimeString',
-                               'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
-                               'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setTimeSinceEpoch',
-                               'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
-                               'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
-                               'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
-                               'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
-                               'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString',
-                               'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
-                               'makeSecondDate', 'makeMillisecondDate'];
+    var expectedObjects = [];
+    var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
+                             'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds',
+                             'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
+                             'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
+                             'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
+                             'toLocaleString', 'toLocaleTimeString', 'toDateString', 'toTimeString',
+                             'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
+                             'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setTimeSinceEpoch',
+                             'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
+                             'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
+                             'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
+                             'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
+                             'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString',
+                             'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
+                             'makeSecondDate', 'makeMillisecondDate'];
 
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('date.js exports \'' + f + '\' property', exportsProperty(date, f));
-        it('\'' + f + '\' property of date.js is a function', exportsFunction(date, f));
-      });
-    });
+    describeModule('date', date, expectedObjects, expectedFunctions);
 
 
     var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {

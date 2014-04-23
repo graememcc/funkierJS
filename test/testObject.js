@@ -13,29 +13,22 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var checkEquality = testUtils.checkEquality;
     var checkArrayContent = testUtils.checkArrayContent;
 
 
-    describe('Object exports', function() {
-      var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-                               'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
-                               'createObjectWithProps', 'defineProperty', 'defineProperties',
-                               'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
-                               'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-                               'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
-                               'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone',
-                               'deepClone', 'extend', 'extendOwn'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('object.js exports \'' + f + '\' property', exportsProperty(object, f));
-        it('\'' + f + '\' property of object.js is a function', exportsFunction(object, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
+                             'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
+                             'createObjectWithProps', 'defineProperty', 'defineProperties',
+                             'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
+                             'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
+                             'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
+                             'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone',
+                             'deepClone', 'extend', 'extendOwn'];
+    describeModule('object', object, expectedObjects, expectedFunctions);
 
 
     describe('callPropWithArity', function() {
@@ -73,7 +66,7 @@
           var obj = {called: false, calledProp: function() {this.called = true;}};
           var caller = callPropWithArity('calledProp', i);
           var result = caller.apply(null, args.concat([obj]));
-        
+
           expect(obj.called).to.be.true;
         }
       };
@@ -87,7 +80,7 @@
           var caller = callPropWithArity('calledProp', i);
           var result = caller.apply(null, expected.concat([obj]));
           var result2 = caller.apply(null, expected.concat([obj2]));
-        
+
           expect(result).to.deep.equal(expected);
           expect(result2).to.equal(42);
         };

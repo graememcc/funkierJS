@@ -11,21 +11,14 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
 
 
-    describe('Logical exports', function() {
-      var expectedFunctions = ['not', 'and', 'or', 'xor',
-                               'notPred', 'andPred', 'orPred', 'xorPred'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('logical.js exports \'' + f + '\' property', exportsProperty(logical, f));
-        it('\'' + f + '\' property of logical.js is a function', exportsFunction(logical, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['not', 'and', 'or', 'xor',
+                             'notPred', 'andPred', 'orPred', 'xorPred'];
+    describeModule('logical', logical, expectedObjects, expectedFunctions);
 
 
     describe('not', function() {

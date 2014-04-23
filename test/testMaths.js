@@ -11,27 +11,20 @@
 
     // Import utility functions
     var testUtils = require('./testUtils');
-    var exportsProperty = testUtils.exportsProperty;
-    var exportsFunction = testUtils.exportsFunction;
+    var describeModule = testUtils.describeModule;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
 
 
-    describe('Maths exports', function() {
-      var expectedFunctions = ['add', 'subtract', 'multiply', 'divide', 'exp',
-                               'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
-                               'greaterThan', 'greaterThanEqual', 'leftShift',
-                               'rightShift', 'rightShiftZero', 'bitwiseAnd',
-                               'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
-                               'toFixed', 'toExponential', 'toPrecision',
-                               'toBaseAndString', 'stringToInt', 'numToLocaleString'];
-
-      // Automatically generate existence tests for each expected function
-      expectedFunctions.forEach(function(f) {
-        it('maths.js exports \'' + f + '\' property', exportsProperty(maths, f));
-        it('\'' + f + '\' property of maths.js is a function', exportsFunction(maths, f));
-      });
-    });
+    var expectedObjects = [];
+    var expectedFunctions = ['add', 'subtract', 'multiply', 'divide', 'exp',
+                             'log', 'div', 'rem', 'lessThan', 'lessThanEqual',
+                             'greaterThan', 'greaterThanEqual', 'leftShift',
+                             'rightShift', 'rightShiftZero', 'bitwiseAnd',
+                             'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
+                             'toFixed', 'toExponential', 'toPrecision',
+                             'toBaseAndString', 'stringToInt', 'numToLocaleString'];
+    describeModule('maths', maths, expectedObjects, expectedFunctions);
 
 
     // The binary tests will have a similar structure. Generate them automatically.
