@@ -11,8 +11,9 @@
     var fn = require('./fn');
     var date = require('./date');
     var pair = require('./pair');
+    var maybe = require('./maybe');
 
-    var imports = [base, logical, maths, object, string, fn, date, pair];
+    var imports = [base, logical, maths, object, string, fn, date, pair, maybe];
     var exportedFns = {};
 
     // Export our imports
