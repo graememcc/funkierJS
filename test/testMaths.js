@@ -12,8 +12,8 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var getRealArity = base.getRealArity;
 
 
     var expectedObjects = [];
@@ -69,30 +69,26 @@
 
 
     binaryTests.forEach(function(test) {
-      describe(test.func, function() {
-        var funcUnderTest = maths[test.func];
+      describeFunction(test.func, maths[test.func], 2, function(fnUnderTest) {
         var test1 = test.test1;
         var test2 = test.test2;
 
         it(test.func + ' works as expected (1)', function() {
-          expect(funcUnderTest(test1.val1, test1.val2)).to.equal(test1.result);
+          expect(fnUnderTest(test1.val1, test1.val2)).to.equal(test1.result);
         });
 
 
         it(test.func + ' works as expected (2)', function() {
-          expect(funcUnderTest(test2.val1, test2.val2)).to.equal(test2.result);
+          expect(fnUnderTest(test2.val1, test2.val2)).to.equal(test2.result);
         });
 
 
-        testCurriedFunction(test.func, funcUnderTest, [3, 4]);
+        testCurriedFunction(test.func, fnUnderTest, [3, 4]);
       });
     });
 
 
-    describe('bitwiseNot', function() {
-      var bitwiseNot = maths.bitwiseNot;
-
-
+    describeFunction('bitwiseNot', maths.bitwiseNot, 1, function(bitwiseNot) {
       it('bitwiseNot works as expected (1)', function() {
         expect(bitwiseNot(1)).to.equal(~1);
       });
@@ -104,15 +100,7 @@
     });
 
 
-    describe('min', function() {
-      var min = maths.min;
-
-
-      it('min has arity of 2', function() {
-        expect(getRealArity(min)).to.equal(2);
-      });
-
-
+    describeFunction('min', maths.min, 2, function(min) {
       it('min works as expected (1)', function() {
         expect(min(1, 2)).to.equal(Math.min(1, 2));
       });
@@ -132,15 +120,7 @@
     });
 
 
-    describe('max', function() {
-      var max = maths.max;
-
-
-      it('max has arity of 2', function() {
-        expect(getRealArity(max)).to.equal(2);
-      });
-
-
+    describeFunction('max', maths.max, 2, function(max) {
       it('max works as expected (1)', function() {
         expect(max(1, 2)).to.equal(Math.max(1, 2));
       });
@@ -161,14 +141,7 @@
 
 
     var makeNumStringTest = function(desc, fnUnderTest, verifier, testData) {
-      describe(desc, function() {
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(2);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
         it('Returns a string', function() {
           var n = 17;
           var result = fnUnderTest(2, n);
@@ -209,15 +182,7 @@
     makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
 
 
-    describe('stringToInt', function() {
-      var stringToInt = maths.stringToInt;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(stringToInt)).to.equal(2);
-      });
-
-
+    describeFunction('stringToInt', maths.stringToInt, 2, function(stringToInt) {
       it('Returns a number', function() {
         var s = '17';
         var result = stringToInt(10, s);
@@ -266,15 +231,7 @@
     });
 
 
-    describe('numToLocaleString', function() {
-      var numToLocaleString = maths.numToLocaleString;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(numToLocaleString)).to.equal(1);
-      });
-
-
+    describeFunction('numToLocaleString', maths.numToLocaleString, 1, function(numToLocaleString) {
       it('Returns a string', function() {
         var n = 1;
         var result = numToLocaleString(n);

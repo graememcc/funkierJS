@@ -13,6 +13,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
@@ -70,12 +71,7 @@
 
 
     var makeConstructorTests = function(desc, constructorFunction, verifier, toStringText) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(constructorFunction)).to.equal(1);
-        });
-
-
+      describeFunction(desc, constructorFunction, 1, function(constructorFunction) {
         it('Throws when called with no arguments (1)', function() {
           var fn = function() {
             new constructorFunction();
@@ -227,12 +223,7 @@
 
 
     var makeCommonExtractorTests = function(desc, fnUnderTest, correct, correctName, opposite, oppositeName) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         it('Throws if called with Result', function() {
           var fn = function() {
             fnUnderTest(Result);
@@ -282,15 +273,7 @@
     makeCommonExtractorTests('getErrValue', getErrValue, Err, 'Err', Ok, 'Ok');
 
 
-    describe('isResult', function() {
-      var isResult = result.isResult;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(isResult)).to.equal(1);
-      });
-
-
+    describeFunction('isResult', result.isResult, 1, function(isResult) {
       it('Correct for Result', function() {
         expect(isResult(Result)).to.be.true;
       });
@@ -315,12 +298,7 @@
 
 
     var makeIsTests = function(desc, fnUnderTest, constructorFn, name, opposite, oppositeName) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         it('Correct for Result', function() {
           expect(fnUnderTest(Result)).to.be.false;
         });
@@ -349,12 +327,7 @@
     makeIsTests('isErr', result.isErr, Err, 'Err', Ok, 'Ok');
 
 
-    var addCommonResultMakerTests = function(fnUnderTest, arity, badArgs, goodArgs) {
-      it('Has correct arity', function() {
-        expect(getRealArity(fnUnderTest)).to.equal(arity);
-      });
-
-
+    var addCommonResultMakerTests = function(fnUnderTest, badArgs, goodArgs) {
       if (badArgs.length > 1)  {
         badArgs[0].vals.forEach(function(val, i) {
           it('Throws if first parameter not a ' + badArgs[0].type + ' (' + (i + 1) + ')', function() {
@@ -439,15 +412,12 @@
     };
 
 
-    describe('makeResultReturner', function() {
-      var makeResultReturner = result.makeResultReturner;
-
-
+    describeFunction('makeResultReturner', result.makeResultReturner, 2, function(makeResultReturner) {
       var notArrays = [1, true, 'a', undefined, null, {}, function() {}];
       var notFns = [1, true, 'a', undefined, null, {}, [1]];
       var goodArgs = [[1], function() {}];
       var bad = [{type: 'array', vals: notArrays}, {type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makeResultReturner, 2, bad, goodArgs);
+      addCommonResultMakerTests(makeResultReturner, bad, goodArgs);
 
 
       it('Returns Ok <value> when value not in bad arguments array (1)', function() {
@@ -554,14 +524,11 @@
     });
 
 
-    describe('makePredResultReturner', function() {
-      var makePredResultReturner = result.makePredResultReturner;
-
-
+    describeFunction('makePredResultReturner', result.makePredResultReturner, 2, function(makePredResultReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function(x) {}, function() {}];
       var bad = [{type: 'function', vals: notFns}, {type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makePredResultReturner, 2, bad, goodArgs);
+      addCommonResultMakerTests(makePredResultReturner, bad, goodArgs);
 
 
       it('Throws if predicate function doesn\'t have arity 1 (1)', function() {
@@ -669,14 +636,11 @@
     });
 
 
-    describe('makeThrowResultReturner', function() {
-      var makeThrowResultReturner = result.makeThrowResultReturner;
-
-
+    describeFunction('makeThrowResultReturner', result.makeThrowResultReturner, 1, function(makeThrowResultReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function() {}];
       var bad = [{type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makeThrowResultReturner, 1, bad, goodArgs);
+      addCommonResultMakerTests(makeThrowResultReturner, bad, goodArgs);
 
 
       it('Returns Ok <value> when function does not throw', function() {

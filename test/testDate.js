@@ -12,8 +12,8 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var getRealArity = base.getRealArity;
 
 
     var expectedObjects = [];
@@ -37,12 +37,7 @@
 
 
     var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         it('Works correctly (1)', function() {
           var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
           var result = fnUnderTest(testDate);
@@ -89,11 +84,6 @@
 
 
     var makeBasicSetterTests = function(desc, fnUnderTest, verifier) {
-      it('Has correct arity', function() {
-        expect(getRealArity(fnUnderTest)).to.equal(2);
-      });
-
-
       it('Returns the date', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = fnUnderTest(2, testDate);
@@ -128,7 +118,7 @@
 
 
     var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
         makeBasicSetterTests(desc, fnUnderTest, verifier);
       });
     };
@@ -152,7 +142,7 @@
 
 
     var makeDateSafeSetterTests = function(desc, fnUnderTest, verifier, bounds) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
         makeBasicSetterTests(desc, fnUnderTest, verifier);
 
 
@@ -182,7 +172,7 @@
 
     // day of month is trickier, so we break it out separately
     var makeSafeDayOfMonthTests = function(desc, fnUnderTest, monthSetter, verifier) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
 
 
         makeBasicSetterTests(desc, fnUnderTest, verifier);
@@ -253,25 +243,10 @@
       date.safeSetUTCMonth, date.getUTCDayOfMonth);
 
 
-    describe('getCurrentTimeString', function() {
-      var getCurrentTimeString = date.getCurrentTimeString;
+    describeFunction('getCurrentTimeString', date.getCurrentTimeString, 0, function() {});
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(getCurrentTimeString)).to.equal(0);
-      });
-    });
-
-
-    describe('makeDateFromString', function() {
-      var makeDateFromString = date.makeDateFromString;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(makeDateFromString)).to.equal(1);
-      });
-
-
+    describeFunction('makeDateFromString', date.makeDateFromString, 1, function(makeDateFromString) {
       it('Works correctly (1)', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = makeDateFromString(testDate.toString());
@@ -324,15 +299,7 @@
     });
 
 
-    describe('makeDateFromMilliseconds', function() {
-      var makeDateFromMilliseconds = date.makeDateFromMilliseconds;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(makeDateFromMilliseconds)).to.equal(1);
-      });
-
-
+    describeFunction('makeDateFromMilliseconds', date.makeDateFromMilliseconds, 1, function(makeDateFromMilliseconds) {
       it('Works correctly (1)', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = makeDateFromMilliseconds(testDate.getTime());
@@ -391,12 +358,7 @@
                      date.getMinutes, date.getSeconds, date.getMilliseconds];
 
     var makeDateConstructorTests = function(desc, fnUnderTest, arity) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(arity);
-        });
-
-
+      describeFunction(desc, fnUnderTest, arity, function(fnUnderTest) {
         testDates.forEach(function(testDate, i) {
           var message = ' (' + (i + 1) + ')';
           var args = testDate.slice(0, arity);

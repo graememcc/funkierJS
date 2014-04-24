@@ -13,6 +13,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
@@ -105,12 +106,7 @@
     var tests = [1, true, 'a', [], {}, function() {}, undefined, null];
 
 
-    describe('Just constructor', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(Just)).to.equal(1);
-      });
-
-
+    describeFunction('Just constructor', Just, 1, function(Just) {
       it('Throws when called with no arguments (1)', function() {
         var fn = function() {
           new Just();
@@ -256,12 +252,7 @@
     });
 
 
-    describe('getJustValue', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(getJustValue)).to.equal(1);
-      });
-
-
+    describeFunction('getJustValue', getJustValue, 1, function(getJustValue) {
       it('Throws if called with Maybe', function() {
         var fn = function() {
           getJustValue(Maybe);
@@ -306,15 +297,7 @@
     });
 
 
-    describe('isMaybe', function() {
-      var isMaybe = maybe.isMaybe;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(isMaybe)).to.equal(1);
-      });
-
-
+    describeFunction('isMaybe', maybe.isMaybe, 1, function(isMaybe) {
       it('Correct for Maybe', function() {
         expect(isMaybe(Maybe)).to.be.true;
       });
@@ -338,12 +321,7 @@
     });
 
 
-    describe('isNothing', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(isNothing)).to.equal(1);
-      });
-
-
+    describeFunction('isNothing', isNothing, 1, function(isNothing) {
       it('Correct for Maybe', function() {
         expect(isNothing(Maybe)).to.be.false;
       });
@@ -367,12 +345,7 @@
     });
 
 
-    describe('isJust', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(isJust)).to.equal(1);
-      });
-
-
+    describeFunction('isJust', isJust, 1, function(isJust) {
       it('Correct for Maybe', function() {
         expect(isJust(Maybe)).to.be.false;
       });
@@ -396,12 +369,7 @@
     });
 
 
-    var addCommonMaybeMakerTests = function(fnUnderTest, arity, badArgs, goodArgs) {
-      it('Has correct arity', function() {
-        expect(getRealArity(fnUnderTest)).to.equal(arity);
-      });
-
-
+    var addCommonMaybeMakerTests = function(fnUnderTest, badArgs, goodArgs) {
       if (badArgs.length > 1)  {
         badArgs[0].vals.forEach(function(val, i) {
           it('Throws if first parameter not a ' + badArgs[0].type + ' (' + (i + 1) + ')', function() {
@@ -486,15 +454,12 @@
     };
 
 
-    describe('makeMaybeReturner', function() {
-      var makeMaybeReturner = maybe.makeMaybeReturner;
-
-
+    describeFunction('makeMaybeReturner', maybe.makeMaybeReturner, 2, function(makeMaybeReturner) {
       var notArrays = [1, true, 'a', undefined, null, {}, function() {}];
       var notFns = [1, true, 'a', undefined, null, {}, [1]];
       var goodArgs = [[1], function() {}];
       var bad = [{type: 'array', vals: notArrays}, {type: 'function', vals: notFns}];
-      addCommonMaybeMakerTests(makeMaybeReturner, 2, bad, goodArgs);
+      addCommonMaybeMakerTests(makeMaybeReturner, bad, goodArgs);
 
 
       it('Returns Just <value> when value not in bad arguments array (1)', function() {
@@ -601,14 +566,11 @@
     });
 
 
-    describe('makePredMaybeReturner', function() {
-      var makePredMaybeReturner = maybe.makePredMaybeReturner;
-
-
+    describeFunction('makePredMaybeReturner', maybe.makePredMaybeReturner, 2, function(makePredMaybeReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function(x) {}, function() {}];
       var bad = [{type: 'function', vals: notFns}, {type: 'function', vals: notFns}];
-      addCommonMaybeMakerTests(makePredMaybeReturner, 2, bad, goodArgs);
+      addCommonMaybeMakerTests(makePredMaybeReturner, bad, goodArgs);
 
 
       it('Throws if predicate function doesn\'t have arity 1 (1)', function() {
@@ -716,14 +678,11 @@
     });
 
 
-    describe('makeThrowMaybeReturner', function() {
-      var makeThrowMaybeReturner = maybe.makeThrowMaybeReturner;
-
-
+    describeFunction('makeThrowMaybeReturner', maybe.makeThrowMaybeReturner, 1, function(makeThrowMaybeReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function() {}];
       var bad = [{type: 'function', vals: notFns}];
-      addCommonMaybeMakerTests(makeThrowMaybeReturner, 1, bad, goodArgs);
+      addCommonMaybeMakerTests(makeThrowMaybeReturner, bad, goodArgs);
 
 
       it('Returns Just <value> when function does not throw', function() {

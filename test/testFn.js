@@ -12,6 +12,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
 
@@ -22,15 +23,7 @@
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
-    describe('bindWithContext', function() {
-      var bindWithContext = fn.bindWithContext;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(bindWithContext)).to.equal(2);
-      });
-
-
+    describeFunction('bindWithContext', fn.bindWithContext, 2, function(bindWithContext) {
       it('Returns a function', function() {
         var f = function() {};
         var obj = {};
@@ -81,15 +74,7 @@
     });
 
 
-    describe('bindWithContextAndArity', function() {
-      var bindWithContextAndArity = fn.bindWithContextAndArity;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(bindWithContextAndArity)).to.equal(3);
-      });
-
-
+    describeFunction('bindWithContextAndArity', fn.bindWithContextAndArity, 3, function(bindWithContextAndArity) {
       it('Returns a function', function() {
         var f = function() {};
         var obj = {};
@@ -155,15 +140,7 @@
     });
 
 
-    describe('pre', function() {
-      var pre = fn.pre;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(pre)).to.equal(2);
-      });
-
-
+    describeFunction('pre', fn.pre, 2, function(pre) {
       it('Returns a function', function() {
         var f = function() {};
         var g = function() {};
@@ -315,15 +292,7 @@
     });
 
 
-    describe('post', function() {
-      var post = fn.post;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(post)).to.equal(2);
-      });
-
-
+    describeFunction('post', fn.post, 2, function(post) {
       it('Returns a function', function() {
         var f = function() {};
         var g = function() {};
@@ -479,15 +448,7 @@
     });
 
 
-    describe('wrap', function() {
-      var wrap = fn.wrap;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(wrap)).to.equal(3);
-      });
-
-
+    describeFunction('wrap', fn.wrap, 3, function(wrap) {
       it('Returns a function', function() {
         var f = function() {};
         var pre = function() {};
@@ -710,15 +671,7 @@
     });
 
 
-    describe('fixpoint', function() {
-      var fixpoint = fn.fixpoint;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(fixpoint)).to.equal(2);
-      });
-
-
+    describeFunction('fixpoint', fn.fixpoint, 2, function(fixpoint) {
       it('Throws if function does not have arity 1 (1)', function() {
         var f = function() {};
         var fn = function() {

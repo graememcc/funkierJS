@@ -12,9 +12,9 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var checkArrayEquality = testUtils.checkArrayEquality;
-    var getRealArity = base.getRealArity;
 
 
     var expectedObjects = [];
@@ -27,15 +27,7 @@
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
-    describe('toString', function() {
-      var toString = string.toString;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(toString)).to.equal(1);
-      });
-
-
+    describeFunction('toString', string.toString, 1, function(toString) {
       var testData = [
         {name: 'number', value: 1},
         {name: 'string', value: 'a'},
@@ -66,15 +58,7 @@
     });
 
 
-    describe('toCharCode', function() {
-      var toCharCode = string.toCharCode;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(toCharCode)).to.equal(2);
-      });
-
-
+    describeFunction('toCharCode', string.toCharCode, 2, function(toCharCode) {
       it('Works correctly (1)', function() {
         var a = 'abc';
         var l = a.length;
@@ -95,15 +79,7 @@
     });
 
 
-    describe('ord', function() {
-      var ord = string.ord;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(ord)).to.equal(1);
-      });
-
-
+    describeFunction('ord', string.ord, 1, function(ord) {
       it('Works correctly (1)', function() {
         var a = 'a';
 
@@ -133,14 +109,8 @@
     });
 
 
-    describe('chr', function() {
-      var chr = string.chr;
+    describeFunction('chr', string.chr, 1, function(chr) {
       var ord = string.ord;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(chr)).to.equal(1);
-      });
 
 
       it('Works correctly (1)', function() {
@@ -171,14 +141,7 @@
 
 
     var makeStringCaseTest = function(desc, fnUnderTest, verifier) {
-      describe(desc, function() {
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         it('Works correctly (1)', function() {
           var s = 'abc';
           var result = fnUnderTest(s);
@@ -211,15 +174,7 @@
     makeStringCaseTest('toLocaleUpperCase', string.toLocaleUpperCase, 'toLocaleUpperCase');
 
 
-    describe('split', function() {
-      var split = string.split;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(split)).to.equal(2);
-      });
-
-
+    describeFunction('split', string.split, 2, function(split) {
       it('Returns an array (1)', function() {
         var s = 'a-b-c';
         var result = split('-', s);
@@ -301,12 +256,7 @@
 
 
     var makeReplaceTest = function(desc, fnUnderTest, regexp, fn, once) {
-      describe(desc, function() {
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(3);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 3, function(fnUnderTest) {
         if (!regexp) {
           it('Throws if from is a regular expression', function() {
             var s = 'funkier';
@@ -511,15 +461,7 @@
     makeReplaceTest('replaceRegExpWith', string.replaceRegExpWith, true, true, false);
 
 
-    describe('test', function() {
-      var test = string.test;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(test)).to.equal(2);
-      });
-
-
+    describeFunction('test', string.test, 2, function(test) {
       it('Throws if first parameter not a RegExp', function() {
         var fn = function() {
           test('a', 'b');
@@ -579,12 +521,6 @@
 
 
     var addCommonMatcherTests = function(fnUnderTest, isFrom) {
-      it('Has correct arity', function() {
-        var expectedArity = isFrom ? 3 : 2;
-        expect(getRealArity(fnUnderTest)).to.equal(expectedArity);
-      });
-
-
       it('Throws a TypeError if first parameter not a RegExp', function() {
         var args = isFrom ? ['a', 0, 'b'] : ['a', 'b'];
         var fn = function() {
@@ -597,7 +533,7 @@
 
 
     var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, isFrom ? 3 : 2, function(fnUnderTest) {
         addCommonMatcherTests(fnUnderTest, isFrom);
 
 
@@ -759,7 +695,7 @@
 
 
     var makeSingleMatcherTests = function(desc, fnUnderTest, isFrom, multiEquivalent) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, isFrom ? 3 : 2, function(fnUnderTest) {
         addCommonMatcherTests(fnUnderTest, isFrom);
 
 

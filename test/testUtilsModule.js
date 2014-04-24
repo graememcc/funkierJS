@@ -11,7 +11,7 @@
 
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
-    var getRealArity = base.getRealArity;
+    var describeFunction = testUtils.describeFunction;
 
 
     var expectedObjects = [];
@@ -19,15 +19,7 @@
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
-    describe('valueStringifier', function() {
-      var valueStringifier = utils.valueStringifier;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(valueStringifier)).to.equal(1);
-      });
-
-
+    describeFunction('valueStringifier', utils.valueStringifier, 1, function(valueStringifier) {
       var f = function() {};
       var o = {};
       var tests = [

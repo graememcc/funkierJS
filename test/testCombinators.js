@@ -12,10 +12,10 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var exportsProperty = testUtils.exportsProperty;
     var exportsFunction = testUtils.exportsFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var getRealArity = base.getRealArity;
 
 
     var expectedObjects = ['combinators'];
@@ -48,15 +48,7 @@
     });
 
 
-    describe('Ky', function() {
-      var Ky = combinators.combinators.Ky;
-
-
-      it('Ky has arity 2', function() {
-        expect(getRealArity(Ky)).to.equal(2);
-      });
-
-
+    describeFunction('Ky', combinators.combinators.Ky, 2, function(Ky) {
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
@@ -85,15 +77,7 @@
     });
 
 
-    describe('S', function() {
-      var S = combinators.combinators.S;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(S)).to.equal(3);
-      });
-
-
+    describeFunction('S', combinators.combinators.S, 3, function(S) {
       var nonFunctions = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},

@@ -13,6 +13,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var getRealArity = base.getRealArity;
     var valueStringifier = utils.valueStringifier;
 
@@ -28,6 +29,9 @@
 
 
     describe('Pair constructor', function() {
+      // Note we cannot use describeFunction for the traditional arity testing
+      // here, as the constructor is not curried in the normal sense
+
       it('Has correct arity', function() {
         expect(getRealArity(Pair)).to.equal(2);
       });
@@ -311,12 +315,7 @@
     ];
 
 
-    describe('fst', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(fst)).to.equal(1);
-      });
-
-
+    describeFunction('fst', fst, 1, function(fst) {
       tests.forEach(function(t, i) {
         it('Throws if called with non-Pair value (' + (i + 1) + ')', function() {
           var fn = function() {
@@ -352,7 +351,7 @@
     });
 
 
-    describe('snd', function() {
+    describeFunction('snd', snd, 1, function(snd) {
       it('Has correct arity', function() {
         expect(getRealArity(snd)).to.equal(1);
       });
@@ -393,15 +392,7 @@
     });
 
 
-    describe('isPair', function() {
-      var isPair = pair.isPair;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(isPair)).to.equal(1);
-      });
-
-
+    describeFunction('isPair', pair.isPair, 1, function(isPair) {
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Pair value (' + (2 * i + 1) + ')', function() {
           expect(isPair(t[0])).to.be.false;
@@ -459,15 +450,7 @@
     });
 
 
-    describe('asArray', function() {
-      var asArray = pair.asArray;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(asArray)).to.equal(1);
-      });
-
-
+    describeFunction('asArray', pair.asArray, 1, function(asArray) {
       tests.forEach(function(t, i) {
         it('Throws if argument is not a pair (' + (2 * i + 1) + ')', function() {
           var fn = function() {

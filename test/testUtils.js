@@ -7,8 +7,27 @@
     var chai = require('chai');
     var expect = chai.expect;
 
+    var base = require('../base');
+    var getRealArity = base.getRealArity;
 
-    // Generate test code that ensures all expected functions and objects are exported
+
+    // Return a function that tests if the object has the given property
+    var exportsProperty = function(obj, prop) {
+      return function() {
+        expect(obj).to.have.property(prop);
+      };
+    };
+
+
+    // Return a function that tests if the object has the given function
+    var exportsFunction = function(obj, prop) {
+      return function() {
+        expect(obj[prop]).to.be.a('function');
+      };
+    };
+
+
+    // Generate test code that ensures all expected functions and objects are exported by a module
     var describeModule = function(name, module, expectedObjects, expectedFunctions) {
       var desc = name[0].toUpperCase() + name.slice(1);
 
@@ -23,6 +42,27 @@
           it(name + '.js exports \'' + f + '\' property', exportsProperty(module, f));
           it('\'' + f + '\' property of ' + name + '.js is a function', exportsFunction(module, f));
         });
+      });
+    };
+
+
+    // Generate a text fixture code that checks a function has a given length, and possibly that it is curried,
+    // and then calls remainingTests with the function under test in order to add function-specific tests
+    var describeFunction = function(name, fnUnderTest, arity, remainingTests) {
+      describe(name, function() {
+        it('Has correct arity', function() {
+          expect(getRealArity(fnUnderTest)).to.equal(arity);
+        });
+
+
+        if (arity > 1) {
+          it('Is curried', function() {
+            expect(fnUnderTest.length).to.equal(1);
+          });
+        }
+
+
+        remainingTests(fnUnderTest);
       });
     };
 
@@ -109,20 +149,6 @@
         // We already know obj1 !== obj2
         return false;
       }
-    };
-
-
-    var exportsProperty = function(obj, prop) {
-      return function() {
-        expect(obj).to.have.property(prop);
-      };
-    };
-
-
-    var exportsFunction = function(obj, prop) {
-      return function() {
-        expect(obj[prop]).to.be.a('function');
-      };
     };
 
 
@@ -240,6 +266,7 @@
       checkArrayEquality: checkArrayEquality,
       checkEquality: checkEquality,
       checkObjectEquality: checkObjectEquality,
+      describeFunction: describeFunction,
       describeModule: describeModule,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,

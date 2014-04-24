@@ -14,6 +14,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
     var checkEquality = testUtils.checkEquality;
     var checkArrayContent = testUtils.checkArrayContent;
@@ -31,15 +32,7 @@
     describeModule('object', object, expectedObjects, expectedFunctions);
 
 
-    describe('callPropWithArity', function() {
-      var callPropWithArity = object.callPropWithArity;
-
-
-      it('callPropWithArity has correct \'real\' arity', function() {
-        expect(getRealArity(callPropWithArity)).to.equal(2);
-      });
-
-
+    describeFunction('callPropWithArity', object.callPropWithArity, 2, function(callPropWithArity) {
       // Test generation
       var makeReturnedCurriedArityTest = function(i) {
         return function() {
@@ -114,15 +107,7 @@
     });
 
 
-    describe('callProp', function() {
-      var callProp = object.callProp;
-
-
-      it('callProp has correct arity', function() {
-        expect(getRealArity(callProp)).to.equal(1);
-      });
-
-
+    describeFunction('callProp', object.callProp, 1, function(callProp) {
       it('Returned function has correct arity', function() {
         var fn = callProp('prop');
 
@@ -159,15 +144,7 @@
     });
 
 
-    describe('hasOwnProperty', function() {
-      var hasOwnProperty = object.hasOwnProperty;
-
-
-      it('hasOwnProperty has correct arity', function() {
-        expect(getRealArity(hasOwnProperty)).to.equal(2);
-      });
-
-
+    describeFunction('hasOwnProperty', object.hasOwnProperty, 2, function(hasOwnProperty) {
       it('Wraps Object.prototype.hasOwnProperty', function() {
         // Temporary monkey-patch
         var original = Object.prototype.hasOwnProperty;
@@ -204,15 +181,7 @@
     });
 
 
-    describe('hasProperty', function() {
-      var hasProperty = object.hasProperty;
-
-
-      it('hasProperty has correct arity', function() {
-        expect(getRealArity(hasProperty)).to.equal(2);
-      });
-
-
+    describeFunction('hasProperty', object.hasProperty, 2, function(hasProperty) {
       it('Works correctly (1)', function() {
         var obj = {funkier: 1};
         var result = hasProperty('funkier', obj);
@@ -235,15 +204,7 @@
     });
 
 
-    describe('instanceOf', function() {
-      var instanceOf = object.instanceOf;
-
-
-      it('instanceOf has correct arity', function() {
-        expect(getRealArity(instanceOf)).to.equal(2);
-      });
-
-
+    describeFunction('instanceOf', object.instanceOf, 2, function(instanceOf) {
       it('Works correctly (1)', function() {
         expect(instanceOf(Object, {})).to.be.true;
       });
@@ -280,15 +241,7 @@
     });
 
 
-    describe('isPrototypeOf', function() {
-      var isPrototypeOf = object.isPrototypeOf;
-
-
-      it('isPrototypeOf has correct arity', function() {
-        expect(getRealArity(isPrototypeOf)).to.equal(2);
-      });
-
-
+    describeFunction('isPrototypeOf', object.isPrototypeOf, 2, function(isPrototypeOf) {
       it('Wraps Object.prototype.isPrototypeOf', function() {
         // Temporary monkey-patch
         var original = Object.prototype.isPrototypeOf;
@@ -354,15 +307,9 @@
     });
 
 
-    describe('createObject', function() {
-      var createObject = object.createObject;
+    describeFunction('createObject', object.createObject, 1, function(createObject) {
       var isPrototypeOf = object.isPrototypeOf;
       var hasOwnProperty = object.hasOwnProperty;
-
-
-      it('createObject has correct arity', function() {
-        expect(getRealArity(createObject)).to.equal(1);
-      });
 
 
       it('Returns an object', function() {
@@ -391,8 +338,7 @@
     });
 
 
-    describe('createObjectWithProps', function() {
-      var createObjectWithProps = object.createObjectWithProps;
+    describeFunction('createObjectWithProps', object.createObjectWithProps, 2, function(createObjectWithProps) {
       var isPrototypeOf = object.isPrototypeOf;
       var hasOwnProperty = object.hasOwnProperty;
       var descriptor = {prop1: {configurable: false, enumerable: false, writable: false, value: 42}};
@@ -449,15 +395,7 @@
     });
 
 
-    describe('defineProperty', function() {
-      var defineProperty = object.defineProperty;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(defineProperty)).to.equal(3);
-      });
-
-
+    describeFunction('defineProperty', object.defineProperty, 3, function(defineProperty) {
       it('Returns the object', function() {
         var obj = {};
         var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
@@ -500,10 +438,7 @@
     });
 
 
-    describe('defineProperties', function() {
-      var defineProperties = object.defineProperties;
-
-
+    describeFunction('defineProperties', object.defineProperties, 2, function(defineProperties) {
       // Test data
       // Note: don't omit any optional properties, or we'll fail the equality check
       var descriptors = {
@@ -511,11 +446,6 @@
         prop2: {configurable: false, writable: true, enumerable: false, value: 'funkier'},
         prop3: {configurable: true, enumerable: true, get: function() {return false;}, set: undefined}
       };
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(defineProperties)).to.equal(2);
-      });
 
 
       it('Returns the object', function() {
@@ -567,15 +497,7 @@
     });
 
 
-    describe('getOwnPropertyDescriptor', function() {
-      var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(getOwnPropertyDescriptor)).to.equal(2);
-      });
-
-
+    describeFunction('getOwnPropertyDescriptor', object.getOwnPropertyDescriptor, 2, function(getOwnPropertyDescriptor) {
       it('Returns undefined if property not present', function() {
         expect(getOwnPropertyDescriptor('prop', {})).to.equal(undefined);
       });
@@ -616,15 +538,7 @@
     });
 
 
-    describe('extract', function() {
-      var extract = object.extract;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(extract)).to.equal(2);
-      });
-
-
+    describeFunction('extract', object.extract, 2, function(extract) {
       it('Returns undefined if property not present (1)', function() {
         expect(extract('prop', {})).to.equal(undefined);
       });
@@ -669,15 +583,7 @@
     });
 
 
-    describe('extractOrDefault', function() {
-      var extractOrDefault = object.extractOrDefault;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(extractOrDefault)).to.equal(3);
-      });
-
-
+    describeFunction('extractOrDefault', object.extractOrDefault, 3, function(extractOrDefault) {
       it('Returns default if property not present (1)', function() {
         var defaultVal = 42;
 
@@ -733,11 +639,6 @@
 
     var makeCommonTests = function(setter, shouldThrow) {
       var defineProperty = object.defineProperty;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(setter)).to.equal(3);
-      });
 
 
       it('Behaves correctly if writable false (1)', function() {
@@ -1047,7 +948,7 @@
 
 
     var makeSetterTests = function(desc, setter, shouldThrow) {
-      describe(desc, function() {
+      describeFunction(desc, setter, 3, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonModificationTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
@@ -1064,7 +965,7 @@
 
 
     var makeModifierTests = function(desc, setter, shouldThrow) {
-      describe(desc, function() {
+      describeFunction(desc, setter, 3, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonModificationTests(setter, shouldThrow);
 
@@ -1098,7 +999,7 @@
 
 
     var makeCreatorTests = function(desc, setter, shouldThrow) {
-      describe(desc, function() {
+      describeFunction(desc, setter, 3, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
 
@@ -1169,14 +1070,9 @@
 
     // The delete functions also have a similar structure
     var makeDeleterTests = function(desc, deleter, shouldThrow) {
-      describe(desc, function() {
+      describeFunction(desc, deleter, 2, function(deleter) {
         var hasOwnProperty = object.hasOwnProperty;
         var defineProperty = object.defineProperty;
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(deleter)).to.equal(2);
-        });
 
 
         it('Object does not have property afterwards', function() {
@@ -1355,14 +1251,7 @@
       var defineProperty = object.defineProperty;
 
 
-      describe(desc, function() {
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         var makeNonObjectTest = function(val) {
           return function() {
             var result = fnUnderTest(val);
@@ -1465,14 +1354,7 @@
 
 
     var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {
-      describe(desc, function() {
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         var makeNonObjectTest = function(val) {
           return function() {
             var result = fnUnderTest(val);
@@ -1620,17 +1502,12 @@
 
 
     var makeCloneTests = function(desc, fnUnderTest, verifier) {
-      describe(desc, function() {
+      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
         var isPrototypeOf = object.isPrototypeOf;
         var keys = object.keys;
         var defineProperty = object.defineProperty;
         var getOwnPropertyNames = object.getOwnPropertyNames;
         var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
-
-
-        it('Has correct arity', function() {
-          expect(getRealArity(fnUnderTest)).to.equal(1);
-        });
 
 
         var makeNonObjectTest = function(val) {
@@ -1849,15 +1726,7 @@
     makeCloneTests('deepClone', object.deepClone, deepCheck);
 
 
-    describe('extend', function() {
-      var extend = object.extend;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(extend)).to.equal(2);
-      });
-
-
+    describeFunction('extend', object.extend, 2, function(extend) {
       it('Returns the destination object', function() {
         var dest = {};
 
@@ -1930,15 +1799,7 @@
     });
 
 
-    describe('extendOwn', function() {
-      var extendOwn = object.extendOwn;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(extendOwn)).to.equal(2);
-      });
-
-
+    describeFunction('extendOwn', object.extendOwn, 2, function(extendOwn) {
       it('Returns the destination object', function() {
         var dest = {};
 

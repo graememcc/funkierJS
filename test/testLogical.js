@@ -12,6 +12,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
 
 
@@ -21,10 +22,7 @@
     describeModule('logical', logical, expectedObjects, expectedFunctions);
 
 
-    describe('not', function() {
-      var not = logical.not;
-
-
+    describeFunction('not', logical.not, 1, function(not) {
       it('not works as expected (1)', function() {
         expect(not(true)).to.be.false;
       });
@@ -68,21 +66,21 @@
     };
 
 
-    describe('and', function() {
+    describeFunction('and', logical.and, 2, function(and) {
       var truthTable = makeTruthTable(false, false, false, true);
 
       makeBinaryBooleanTestFixture('and', truthTable);
     });
 
 
-    describe('or', function() {
+    describeFunction('or', logical.or, 2, function(or) {
       var truthTable = makeTruthTable(false, true, true, true);
 
       makeBinaryBooleanTestFixture('or', truthTable);
     });
 
 
-    describe('xor', function() {
+    describeFunction('xor', logical.xor, 2, function(xor) {
       var truthTable = makeTruthTable(false, true, true, false);
 
       makeBinaryBooleanTestFixture('xor', truthTable);
@@ -96,15 +94,7 @@
     var constantTrue = constant(true);
 
 
-    describe('notPred', function() {
-      var notPred = logical.notPred;
-
-
-      it('notPred has arity 1', function() {
-        expect(notPred.length).to.equal(1);
-      });
-
-
+    describeFunction('notPred', logical.notPred, 1, function(notPred) {
       // Utility function for test generation
       var makePredicateArityTest = function(funcUnderTest, badArity) {
         return function() {
@@ -242,7 +232,7 @@
     };
 
 
-    describe('andPred', function() {
+    describeFunction('andPred', logical.andPred, 2, function(andPred) {
       var truthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
                                           {expected: false, shortCircuits: false}, {expected: true, shortCircuits: false});
 
@@ -250,7 +240,7 @@
     });
 
 
-    describe('orPred', function() {
+    describeFunction('orPred', logical.orPred, 2, function(orPred) {
       var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
                                           {expected: true, shortCircuits: true}, {expected: true, shortCircuits: true});
 
@@ -258,7 +248,7 @@
     });
 
 
-    describe('xorPred', function() {
+    describeFunction('xorPred', logical.xorPred, 2, function(xorPred) {
       var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
                                           {expected: true, shortCircuits: false}, {expected: false, shortCircuits: false});
 
