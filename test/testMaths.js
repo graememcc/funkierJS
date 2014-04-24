@@ -69,7 +69,12 @@
 
 
     binaryTests.forEach(function(test) {
-      describeFunction(test.func, maths[test.func], 2, function(fnUnderTest) {
+      var spec = {
+        name: test.func,
+        arity: 2
+      };
+
+      describeFunction(spec, maths[test.func], function(fnUnderTest) {
         var test1 = test.test1;
         var test2 = test.test2;
 
@@ -88,7 +93,13 @@
     });
 
 
-    describeFunction('bitwiseNot', maths.bitwiseNot, 1, function(bitwiseNot) {
+    var bitwiseNotSpec = {
+      name: 'bitwiseNot',
+      arity: 1
+    };
+
+
+    describeFunction(bitwiseNotSpec, maths.bitwiseNot, function(bitwiseNot) {
       it('bitwiseNot works as expected (1)', function() {
         expect(bitwiseNot(1)).to.equal(~1);
       });
@@ -100,7 +111,13 @@
     });
 
 
-    describeFunction('min', maths.min, 2, function(min) {
+    var minSpec = {
+      name: 'min',
+      arity: 2
+    };
+
+
+    describeFunction(minSpec, maths.min, function(min) {
       it('min works as expected (1)', function() {
         expect(min(1, 2)).to.equal(Math.min(1, 2));
       });
@@ -120,7 +137,13 @@
     });
 
 
-    describeFunction('max', maths.max, 2, function(max) {
+    var maxSpec = {
+      name: 'max',
+      arity: 2
+    };
+
+
+    describeFunction(maxSpec, maths.max, function(max) {
       it('max works as expected (1)', function() {
         expect(max(1, 2)).to.equal(Math.max(1, 2));
       });
@@ -141,7 +164,12 @@
 
 
     var makeNumStringTest = function(desc, fnUnderTest, verifier, testData) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2
+      };
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Returns a string', function() {
           var n = 17;
           var result = fnUnderTest(2, n);
@@ -182,7 +210,13 @@
     makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
 
 
-    describeFunction('stringToInt', maths.stringToInt, 2, function(stringToInt) {
+    var stringToIntSpec = {
+      name: 'stringToInt',
+      arity: 2
+    };
+
+
+    describeFunction(stringToIntSpec, maths.stringToInt, function(stringToInt) {
       it('Returns a number', function() {
         var s = '17';
         var result = stringToInt(10, s);
@@ -231,7 +265,13 @@
     });
 
 
-    describeFunction('numToLocaleString', maths.numToLocaleString, 1, function(numToLocaleString) {
+    var numToLocaleStringSpec = {
+      name: 'numToLocaleString',
+      arity: 1
+    };
+
+
+    describeFunction(numToLocaleStringSpec, maths.numToLocaleString, function(numToLocaleString) {
       it('Returns a string', function() {
         var n = 1;
         var result = numToLocaleString(n);

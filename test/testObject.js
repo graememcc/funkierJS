@@ -32,7 +32,13 @@
     describeModule('object', object, expectedObjects, expectedFunctions);
 
 
-    describeFunction('callPropWithArity', object.callPropWithArity, 2, function(callPropWithArity) {
+    var cpwaSpec = {
+      name: 'callPropWithArity',
+      arity: 2
+    };
+
+
+    describeFunction(cpwaSpec, object.callPropWithArity, function(callPropWithArity) {
       // Test generation
       var makeReturnedCurriedArityTest = function(i) {
         return function() {
@@ -107,7 +113,13 @@
     });
 
 
-    describeFunction('callProp', object.callProp, 1, function(callProp) {
+    var cpSpec = {
+      name: 'callProp',
+      arity: 1
+    };
+
+
+    describeFunction(cpSpec, object.callProp, function(callProp) {
       it('Returned function has correct arity', function() {
         var fn = callProp('prop');
 
@@ -144,7 +156,13 @@
     });
 
 
-    describeFunction('hasOwnProperty', object.hasOwnProperty, 2, function(hasOwnProperty) {
+    var hopSpec = {
+      name: 'hasOwnProperty',
+      arity: 2
+    };
+
+
+    describeFunction(hopSpec, object.hasOwnProperty, function(hasOwnProperty) {
       it('Wraps Object.prototype.hasOwnProperty', function() {
         // Temporary monkey-patch
         var original = Object.prototype.hasOwnProperty;
@@ -181,7 +199,13 @@
     });
 
 
-    describeFunction('hasProperty', object.hasProperty, 2, function(hasProperty) {
+    var hpSpec = {
+      name: 'hasProperty',
+      arity: 2
+    };
+
+
+    describeFunction(hpSpec, object.hasProperty, function(hasProperty) {
       it('Works correctly (1)', function() {
         var obj = {funkier: 1};
         var result = hasProperty('funkier', obj);
@@ -204,7 +228,15 @@
     });
 
 
-    describeFunction('instanceOf', object.instanceOf, 2, function(instanceOf) {
+    var ioSpec = {
+      name: 'instanceOf',
+      arity: 2,
+      restrictions: [['function'], []],
+      validArguments: [[Object], [{}]]
+    };
+
+
+    describeFunction(ioSpec, object.instanceOf, function(instanceOf) {
       it('Works correctly (1)', function() {
         expect(instanceOf(Object, {})).to.be.true;
       });
@@ -241,7 +273,13 @@
     });
 
 
-    describeFunction('isPrototypeOf', object.isPrototypeOf, 2, function(isPrototypeOf) {
+    var ipoSpec = {
+      name: 'isPrototypeOf',
+      arity: 2
+    };
+
+
+    describeFunction(ipoSpec, object.isPrototypeOf, function(isPrototypeOf) {
       it('Wraps Object.prototype.isPrototypeOf', function() {
         // Temporary monkey-patch
         var original = Object.prototype.isPrototypeOf;
@@ -307,7 +345,13 @@
     });
 
 
-    describeFunction('createObject', object.createObject, 1, function(createObject) {
+    var coSpec = {
+      name: 'createObject',
+      arity: 1
+    };
+
+
+    describeFunction(coSpec, object.createObject, function(createObject) {
       var isPrototypeOf = object.isPrototypeOf;
       var hasOwnProperty = object.hasOwnProperty;
 
@@ -338,15 +382,16 @@
     });
 
 
-    describeFunction('createObjectWithProps', object.createObjectWithProps, 2, function(createObjectWithProps) {
+    var copSpec = {
+      name: 'createObjectWithProps',
+      arity: 2
+    };
+
+
+    describeFunction(copSpec, object.createObjectWithProps, function(createObjectWithProps) {
       var isPrototypeOf = object.isPrototypeOf;
       var hasOwnProperty = object.hasOwnProperty;
       var descriptor = {prop1: {configurable: false, enumerable: false, writable: false, value: 42}};
-
-
-      it('createObjectWithProps has correct arity', function() {
-        expect(getRealArity(createObjectWithProps)).to.equal(2);
-      });
 
 
       it('Returns an object', function() {
@@ -395,7 +440,13 @@
     });
 
 
-    describeFunction('defineProperty', object.defineProperty, 3, function(defineProperty) {
+    var dpSpec = {
+      name: 'defineProperty',
+      arity: 3
+    };
+
+
+    describeFunction(dpSpec, object.defineProperty, function(defineProperty) {
       it('Returns the object', function() {
         var obj = {};
         var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
@@ -438,7 +489,13 @@
     });
 
 
-    describeFunction('defineProperties', object.defineProperties, 2, function(defineProperties) {
+    var dpsSpec = {
+      name: 'defineProperties',
+      arity: 2
+    };
+
+
+    describeFunction(dpsSpec, object.defineProperties, function(defineProperties) {
       // Test data
       // Note: don't omit any optional properties, or we'll fail the equality check
       var descriptors = {
@@ -497,7 +554,13 @@
     });
 
 
-    describeFunction('getOwnPropertyDescriptor', object.getOwnPropertyDescriptor, 2, function(getOwnPropertyDescriptor) {
+    var gopdSpec = {
+      name: 'getOwnPropertyDescriptor',
+      arity: 2
+    };
+
+
+    describeFunction(gopdSpec, object.getOwnPropertyDescriptor, function(getOwnPropertyDescriptor) {
       it('Returns undefined if property not present', function() {
         expect(getOwnPropertyDescriptor('prop', {})).to.equal(undefined);
       });
@@ -538,7 +601,13 @@
     });
 
 
-    describeFunction('extract', object.extract, 2, function(extract) {
+    var extractSpec = {
+      name: 'extract',
+      arity: 2
+    };
+
+
+    describeFunction(extractSpec, object.extract, function(extract) {
       it('Returns undefined if property not present (1)', function() {
         expect(extract('prop', {})).to.equal(undefined);
       });
@@ -583,7 +652,13 @@
     });
 
 
-    describeFunction('extractOrDefault', object.extractOrDefault, 3, function(extractOrDefault) {
+    var eodSpec = {
+      name: 'extractOrDefault',
+      arity: 3
+    };
+
+
+    describeFunction(eodSpec, object.extractOrDefault, function(extractOrDefault) {
       it('Returns default if property not present (1)', function() {
         var defaultVal = 42;
 
@@ -948,7 +1023,13 @@
 
 
     var makeSetterTests = function(desc, setter, shouldThrow) {
-      describeFunction(desc, setter, 3, function(setter) {
+      var spec = {
+        name: desc,
+        arity: 3
+      };
+
+
+      describeFunction(spec, setter, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonModificationTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
@@ -965,7 +1046,13 @@
 
 
     var makeModifierTests = function(desc, setter, shouldThrow) {
-      describeFunction(desc, setter, 3, function(setter) {
+      var spec = {
+        name: desc,
+        arity: 3
+      };
+
+
+      describeFunction(spec, setter, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonModificationTests(setter, shouldThrow);
 
@@ -999,7 +1086,13 @@
 
 
     var makeCreatorTests = function(desc, setter, shouldThrow) {
-      describeFunction(desc, setter, 3, function(setter) {
+      var spec = {
+        name: desc,
+        arity: 3
+      };
+
+
+      describeFunction(spec, setter, function(setter) {
         makeCommonTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
 
@@ -1070,7 +1163,13 @@
 
     // The delete functions also have a similar structure
     var makeDeleterTests = function(desc, deleter, shouldThrow) {
-      describeFunction(desc, deleter, 2, function(deleter) {
+      var spec = {
+        name: desc,
+        arity: 2
+      };
+
+
+      describeFunction(spec, deleter, function(deleter) {
         var hasOwnProperty = object.hasOwnProperty;
         var defineProperty = object.defineProperty;
 
@@ -1251,7 +1350,13 @@
       var defineProperty = object.defineProperty;
 
 
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var makeNonObjectTest = function(val) {
           return function() {
             var result = fnUnderTest(val);
@@ -1354,7 +1459,13 @@
 
 
     var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var makeNonObjectTest = function(val) {
           return function() {
             var result = fnUnderTest(val);
@@ -1502,37 +1613,18 @@
 
 
     var makeCloneTests = function(desc, fnUnderTest, verifier) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var isPrototypeOf = object.isPrototypeOf;
         var keys = object.keys;
         var defineProperty = object.defineProperty;
         var getOwnPropertyNames = object.getOwnPropertyNames;
         var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
-
-
-        var makeNonObjectTest = function(val) {
-          return function() {
-            var fn = function() {
-              fnUnderTest(val);
-            };
-
-            expect(fn).to.throw(TypeError);
-          };
-        };
-
-
-        var nonObjects = [
-          {name: 'number', val: 1},
-          {name: 'boolean', val: true},
-          {name: 'string', val: 'a'},
-          {name: 'undefined', val: undefined},
-          {name: 'function', val: function() {}}];
-
-
-        nonObjects.forEach(function(test) {
-          it('Throws type error for value of type ' + test.name,
-             makeNonObjectTest(test.val));
-        });
 
 
         it('New object has does not have same prototype', function() {
@@ -1726,7 +1818,13 @@
     makeCloneTests('deepClone', object.deepClone, deepCheck);
 
 
-    describeFunction('extend', object.extend, 2, function(extend) {
+    var extendSpec = {
+      name: 'extend',
+      arity: 2
+    };
+
+
+    describeFunction(extendSpec, object.extend, function(extend) {
       it('Returns the destination object', function() {
         var dest = {};
 
@@ -1799,7 +1897,13 @@
     });
 
 
-    describeFunction('extendOwn', object.extendOwn, 2, function(extendOwn) {
+    var extendOwnSpec = {
+      name: 'extendOwn',
+      arity: 2
+    };
+
+
+    describeFunction(extendOwnSpec, object.extendOwn, function(extendOwn) {
       it('Returns the destination object', function() {
         var dest = {};
 

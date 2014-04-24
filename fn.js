@@ -14,11 +14,15 @@
      * bindWithContext: A curried version of Function.prototype.bind.
      *                  Binds the given object as the execution context
      *                  for the given function, returning a curried function
-     *                  with the same arity as the original.
+     *                  with the same arity as the original. Throws if f is not
+     *                  a function.
      *
      */
 
     var bindWithContext = curry(function(obj, f) {
+      if (typeof(f) !== 'function')
+        throw new TypeError('Value is not a function');
+
       var realArity = getRealArity(f);
       return curryWithArity(realArity, function() {
         var args = [].slice.call(arguments);
@@ -28,15 +32,19 @@
 
 
     /*
-     * bindWithContext: A curried version of Function.prototype.bind.
-     *                  Takes an execution context object, an arity and a
-     *                  function. Binds the given object as the execution
-     *                  context for the given function, returning a curried
-     *                  function accepting arity arguments.
+     * bindWithContextAndArity: A curried version of Function.prototype.bind.
+     *                          Takes an execution context object, an arity and a
+     *                          function. Binds the given object as the execution
+     *                          context for the given function, returning a curried
+     *                          function accepting arity arguments. Throws if f is not
+     *                          a function.
      *
      */
 
     var bindWithContextAndArity = curry(function(obj, arity, f) {
+      if (typeof(f) !== 'function')
+        throw new TypeError('Value is not a function');
+
       return curryWithArity(arity, function() {
         var args = [].slice.call(arguments);
         return f.apply(obj, arguments);
@@ -50,7 +58,7 @@
      *      call g with a single argument: an array containing all the arguments the
      *      function was called with. When g finishes executing, f will be called with
      *      those arguments, and a null execution context. f's return value will be
-     *      returned.
+     *      returned. Throws if either argument is not a function.
      *
      * For example, you might log function calls as follows:
      * var logger = function(args) {console.log('plus called with ', args.join(', '));};
@@ -60,6 +68,9 @@
      */
 
     var pre = curry(function(g, f) {
+      if (typeof(g) !== 'function' || typeof(f) !== 'function')
+        throw new TypeError('Value is not a function');
+
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
         g(args);
@@ -74,7 +85,8 @@
      *       call f with a null execution context and the given arguments, and then
      *       call g with two arguments: the first argument will be an array containing
      *       the arguments the function was called with, and the second argument will be
-     *       the value returned by f. f's return value will be returned.
+     *       the value returned by f. f's return value will be returned. Throws if either
+     *       argument is not a function.
      *
      * For example, you might log function calls as follows:
      * var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
@@ -84,6 +96,9 @@
      */
 
     var post = curry(function(g, f) {
+      if (typeof(g) !== 'function' || typeof(f) !== 'function')
+        throw new TypeError('Value is not a function');
+
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
         var result = f.apply(null, args);

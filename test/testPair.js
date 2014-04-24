@@ -315,26 +315,16 @@
     ];
 
 
-    describeFunction('fst', fst, 1, function(fst) {
+    var fstSpec = {
+      name: 'fst',
+      arity: 1,
+      restrictions: [[Pair]],
+      validArguments: [[new Pair(1, 2)]]
+    };
+
+
+    describeFunction(fstSpec, fst, function(fst) {
       tests.forEach(function(t, i) {
-        it('Throws if called with non-Pair value (' + (i + 1) + ')', function() {
-          var fn = function() {
-            fst(t[0]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
-        it('Throws if called with non-Pair value (' + (i + 2) + ')', function() {
-          var fn = function() {
-            fst(t[1]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
         it('Works correctly (' + (i + 1) + ')', function() {
           var p = Pair(t[0], t[1]);
 
@@ -351,31 +341,16 @@
     });
 
 
-    describeFunction('snd', snd, 1, function(snd) {
-      it('Has correct arity', function() {
-        expect(getRealArity(snd)).to.equal(1);
-      });
+    var sndSpec = {
+      name: 'snd',
+      arity: 1,
+      restrictions: [[Pair]],
+      validArguments: [[new Pair(1, 2)]]
+    };
 
 
+    describeFunction(sndSpec, snd, function(snd) {
       tests.forEach(function(t, i) {
-        it('Throws if called with non-Pair value (' + (2 * i + 1) + ')', function() {
-          var fn = function() {
-            snd(t[0]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
-        it('Throws if called with non-Pair value (' + (2 * i + 2) + ')', function() {
-          var fn = function() {
-            snd(t[1]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
         it('Works correctly (' + (2 * i + 1) + ')', function() {
           var p = Pair(t[0], t[1]);
 
@@ -392,7 +367,13 @@
     });
 
 
-    describeFunction('isPair', pair.isPair, 1, function(isPair) {
+    var isPairSpec = {
+      name: 'isPair',
+      arity: 1
+    };
+
+
+    describeFunction(isPairSpec, pair.isPair, function(isPair) {
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Pair value (' + (2 * i + 1) + ')', function() {
           expect(isPair(t[0])).to.be.false;
@@ -450,26 +431,16 @@
     });
 
 
-    describeFunction('asArray', pair.asArray, 1, function(asArray) {
+    var asArraySpec = {
+      name: 'asArray',
+      arity: 1,
+      restrictions: [[Pair]],
+      validArguments: [[new Pair(2, 3)]]
+    };
+
+
+    describeFunction(asArraySpec, pair.asArray, function(asArray) {
       tests.forEach(function(t, i) {
-        it('Throws if argument is not a pair (' + (2 * i + 1) + ')', function() {
-          var fn = function() {
-            asArray(t[0]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
-        it('Throws if argument is not a pair (' + (2 * i + 2) + ')', function() {
-          var fn = function() {
-            asArray(t[0]);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
         it('Works correctly (' + (2 * i + 1) + ')', function() {
           var arr = asArray(Pair(t[0], t[1]));
 

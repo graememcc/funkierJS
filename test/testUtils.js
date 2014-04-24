@@ -46,9 +46,203 @@
     };
 
 
+    var prims = ['number', 'boolean', 'undefined', 'object', 'string', 'function'];
+    var isPrimitiveType = function(t) {
+      return prims.indexOf(t) !== -1;
+    };
+
+
+    var nonPrimDict = {'null': 'object', 'array': 'object'};
+    var nonPrimToPrim = function(nP) {
+      return nonPrimDict[nP];
+    };
+
+
+    // Take an array of arrays—args—where each subarray is a list of acceptable values
+    // for the parameter at that position. Returns a new array of arrays where each subarray
+    // is an acceptable parameter list for the function.
+    var makeGoodArgs = function(args) {
+      var result = [];
+
+      if (args.length === 0)
+        return result;
+
+      var remaining = makeGoodArgs(args.slice(1));
+      args[0].forEach(function(arg) {
+        if (remaining.length > 0) {
+          remaining.forEach(function(rest) {
+            result.push([arg].concat(rest));
+          });
+        } else {
+          result.push([arg]);
+        }
+      });
+
+      return result;
+    };
+
+
+    var makeGoodArgDescriptor = function(b, a) {return {before: b, after: a};};
+
+    // Takes an array of arrays—args—where each subarray is a list of acceptable values
+    // for the parameter at that position, and the parameter position where we are going to
+    // substitute bad data. Returns an array of arg descriptor objects, with before and after
+    // properties: these are the arguments that slot in either side of the bad data.
+    var constructGoodArgsFor = function(goodArgs, paramIndex) {
+      var beforeArgs = makeGoodArgs(goodArgs.slice(0, paramIndex));
+      var afterArgs = makeGoodArgs(goodArgs.slice(paramIndex + 1));
+
+      var result = [];
+      if (beforeArgs.length > 0) {
+        beforeArgs.forEach(function(b) {
+          if (afterArgs.length > 0) {
+            afterArgs.forEach(function(a) {
+              result.push(makeGoodArgDescriptor(b, a));
+            });
+          } else {
+            result.push(makeGoodArgDescriptor(b, []));
+          }
+        });
+      } else {
+        if (afterArgs.length > 0) {
+          afterArgs.forEach(function(a) {
+            result.push(makeGoodArgDescriptor([], a));
+          });
+        } else {
+          result.push(makeGoodArgDescriptor([], []));
+        }
+      }
+
+      return result;
+    };
+
+
+    // Generates an array of possible bogus values. We want a fresh array
+    // every time, in case the function modifies values in some way.
+    var allBogus = function() {
+      return [
+        {name: 'number', article: 'a ', value: 2},
+        {name: 'boolean', article: 'a ', value: true},
+        {name: 'string', article: 'a ', value: 'c'},
+        {name: 'undefined', article: '', value: undefined},
+        {name: 'null', article: '', value: null},
+        {name: 'function', article: 'a ', value: function() {}},
+        {name: 'object', article: 'an ', value: {foo: 4}},
+        {name: 'array', article: 'an ', value: [4, 5, 6]}
+      ];
+    };
+
+
+    // If I've written a function taking 10 parameters, then something has gone terribly wrong!
+    var positions = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth'];
+
+
+    /*
+     * Generates a number of functions that test all possible combinations where a particular argument
+     * is of a type that should throw. Takes the function name, the function to test, and two arrays:
+     *
+     *  - restrictions: an array of arrays. This should have the same length as the function's arity.
+     *                  Each element is an array containing EITHER a list of strings representing the
+     *                  valid types for this parameter, or a single element which is the constructor
+     *                  function for a specific object type. For example,
+     *                  [['string'], ['object', 'array'], [RegExp]] denotes a function whose first
+     *                  argument must be a string, whose second can be an object or array, and whose
+     *                  third parameter must be a RegExp. Note, 'object' means a real object: use 'null'
+     *                  or 'array' if those types are acceptable.
+     *
+     *  - goodArgs:     An array of arrays. This must be the same length as the function's arity. Each
+     *                  element should be an array, containing acceptable values for the parameter at
+     *                  that position. Where an argument has a restriction, the array at this position
+     *                  should have the same length as the number of restrictions, and the values should
+     *                  match: i.e. for the example above for restrictions, the second array should have
+     *                  two elements: the first an acceptable object, the second an acceptable string.
+     *                  Arguments without restrictions can be supplied in any number, but there must be
+     *                  at least one.
+     *
+     * Throws at test generation time if the restrictions/good arguments don't match.
+     *
+     */
+
+    var testTypeRestrictions = function(name, fnUnderTest, restrictions, goodArgs) {
+      // First: test I've written the spec correctly! Throw if not!
+
+      var arity = getRealArity(fnUnderTest);
+      if (restrictions.length !== arity)
+        throw new Error('You haven\'t supplied enough restrictions: ' + name + ' has arity ' + arity +
+                        ' and you supplied ' + restrictions.length);
+
+      if (goodArgs.length !== arity)
+        throw new Error('You haven\'t supplied enough correct arguments: ' + name + ' has arity ' + arity +
+                        ' and you supplied ' + restrictions.length);
+
+      goodArgs.forEach(function(g, i) {
+        if (g.length === 0)
+          throw new Error('You never supplied any valid values for parameter ' + (i + 1) + ' of name');
+      });
+
+
+      restrictions.forEach(function(resSpec, i) {
+        resSpec.forEach(function(r, j) {
+          if (typeof(r) === 'function' && resSpec.length > 1) {
+            // If a function accepts a specific type of object e.g. RegExp, then that should be the only possible
+            // restriction for that position: we shouldn't have e.g. this can be a RegExp or a boolean.
+
+            throw new Error(name + ' Spec ' + i + ' incorrect. Specific object type should be isolated!');
+          } else if (typeof(r) === 'string') {
+            // The good arg at this position should have the right type!
+
+            var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
+            if (typeof(goodArgs[i][j]) !== t)
+              throw new Error(name + ' spec: "good argument" of incorrect type for ' + i + ' ' + j + ', expected ' +
+                             t + ' and found ' + typeof(goodArgs[i][j]) + ' ' + goodArgs[i][j]);
+          }
+        });
+      });
+
+      // Now we've checked that I'm not an idiot, we can generate the tests!
+      restrictions.forEach(function(resSpec, i) {
+        if (resSpec.length === 0)
+          return;
+
+        // We want the message to be 'the parameter' if there's only one
+        var posString = restrictions.length > 1 ? positions[i] + ' ' : '';
+
+        var good = constructGoodArgsFor(goodArgs, i);
+        var l = good.length;
+
+        var bogusArgs = allBogus();
+        bogusArgs = bogusArgs.filter(function(b) {
+          return resSpec.indexOf(b.name) === -1;
+        });
+
+        bogusArgs.forEach(function(bogus) {
+          good.forEach(function(goodDescriptor, j) {
+            var args = goodDescriptor.before.concat([bogus.value]).concat(goodDescriptor.after);
+            // The last argument might be modified
+            var idx = args.length - 1;
+            if (typeof(args[idx]) === 'object' && args[idx] !== null && 'reset' in args[idx])
+              args[idx] = args[idx].reset();
+
+            var message = ' (' + (j + 1) + ')';
+            it('Throws when the ' + posString + 'parameter is ' + bogus.article + bogus.name + message, function() {
+              var fn = function() {
+                fnUnderTest.apply(null, args);
+              };
+
+              expect(fn).to.throw(TypeError);
+            });
+          });
+        });
+      });
+    };
+
+
     // Generate a text fixture code that checks a function has a given length, and possibly that it is curried,
     // and then calls remainingTests with the function under test in order to add function-specific tests
-    var describeFunction = function(name, fnUnderTest, arity, remainingTests) {
+    var describeFunction = function(spec, fnUnderTest, remainingTests) {
+      var name = spec.name;
+      var arity = spec.arity;
+
       describe(name, function() {
         it('Has correct arity', function() {
           expect(getRealArity(fnUnderTest)).to.equal(arity);
@@ -61,6 +255,8 @@
           });
         }
 
+        if ('restrictions' in spec)
+          testTypeRestrictions(name, fnUnderTest, spec.restrictions, spec.validArguments);
 
         remainingTests(fnUnderTest);
       });
@@ -270,7 +466,8 @@
       describeModule: describeModule,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
-      testCurriedFunction: testCurriedFunction
+      testCurriedFunction: testCurriedFunction,
+      testTypeRestrictions: testTypeRestrictions // XXX TEMP
     };
   };
 

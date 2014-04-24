@@ -23,7 +23,15 @@
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
-    describeFunction('bindWithContext', fn.bindWithContext, 2, function(bindWithContext) {
+    var bindWithContextSpec = {
+      name: 'bindWithContext',
+      arity: 2,
+      restrictions: [[], ['function']],
+      validArguments: [[{}], [function() {}]]
+    };
+
+
+    describeFunction(bindWithContextSpec, fn.bindWithContext, function(bindWithContext) {
       it('Returns a function', function() {
         var f = function() {};
         var obj = {};
@@ -74,7 +82,15 @@
     });
 
 
-    describeFunction('bindWithContextAndArity', fn.bindWithContextAndArity, 3, function(bindWithContextAndArity) {
+    var bindWithContextAndAritySpec = {
+      name: 'bindWithContextAndArity',
+      arity: 3,
+      restrictions: [[], [], ['function']],
+      validArguments: [[{}], [0], [function() {}]]
+    };
+
+
+    describeFunction(bindWithContextAndAritySpec, fn.bindWithContextAndArity, function(bindWithContextAndArity) {
       it('Returns a function', function() {
         var f = function() {};
         var obj = {};
@@ -140,7 +156,15 @@
     });
 
 
-    describeFunction('pre', fn.pre, 2, function(pre) {
+    var preSpec = {
+      name: 'pre',
+      arity: 2,
+      restrictions: [['function'], ['function']],
+      validArguments: [[function() {}], [function() {}]]
+    };
+
+
+    describeFunction(preSpec, fn.pre, function(pre) {
       it('Returns a function', function() {
         var f = function() {};
         var g = function() {};
@@ -292,7 +316,15 @@
     });
 
 
-    describeFunction('post', fn.post, 2, function(post) {
+    var postSpec = {
+      name: 'post',
+      arity: 2,
+      restrictions: [['function'], ['function']],
+      validArguments: [[function() {}], [function() {}]]
+    };
+
+
+    describeFunction(postSpec, fn.post, function(post) {
       it('Returns a function', function() {
         var f = function() {};
         var g = function() {};
@@ -448,7 +480,15 @@
     });
 
 
-    describeFunction('wrap', fn.wrap, 3, function(wrap) {
+    var wrapSpec = {
+      name: 'wrap',
+      arity: 3,
+      restrictions: [['function'], ['function'], ['function']],
+      validArguments: [[function() {}], [function() {}], [function() {}]]
+    };
+
+
+    describeFunction(wrapSpec, fn.wrap, function(wrap) {
       it('Returns a function', function() {
         var f = function() {};
         var pre = function() {};
@@ -671,7 +711,15 @@
     });
 
 
-    describeFunction('fixpoint', fn.fixpoint, 2, function(fixpoint) {
+    var fixpointSpec = {
+      name: 'fixpoint',
+      arity: 2,
+      restrictions: [[], ['function']],
+      validArguments: [[1], [function(x) {return x;}]]
+    };
+
+
+    describeFunction(fixpointSpec, fn.fixpoint, function(fixpoint) {
       it('Throws if function does not have arity 1 (1)', function() {
         var f = function() {};
         var fn = function() {

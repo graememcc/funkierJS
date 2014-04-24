@@ -71,7 +71,13 @@
 
 
     var makeConstructorTests = function(desc, constructorFunction, verifier, toStringText) {
-      describeFunction(desc, constructorFunction, 1, function(constructorFunction) {
+      var spec = {
+        name: desc,
+        arity: 1,
+      };
+
+
+      describeFunction(spec, constructorFunction, function(constructorFunction) {
         it('Throws when called with no arguments (1)', function() {
           var fn = function() {
             new constructorFunction();
@@ -223,7 +229,15 @@
 
 
     var makeCommonExtractorTests = function(desc, fnUnderTest, correct, correctName, opposite, oppositeName) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: spec,
+        arity: 1,
+        restrictions: [[Result]],
+        validArguments: [[correct(1)]]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Throws if called with Result', function() {
           var fn = function() {
             fnUnderTest(Result);
@@ -235,7 +249,7 @@
 
         it('Throws if called with ' + oppositeName, function() {
           var fn = function() {
-            fnUnderTest(opposite);
+            fnUnderTest(opposite(1));
           };
 
           expect(fn).to.throw(TypeError);
@@ -243,15 +257,6 @@
 
 
         tests.forEach(function(t, i) {
-          it('Throws if called with non-' + correctName + ' value (' + (i + 1) + ')', function() {
-            var fn = function() {
-              fnUnderTest(t);
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-
-
           it('Works correctly (' + (i + 1) + ')', function() {
             var j = new correct(t);
 
@@ -273,7 +278,13 @@
     makeCommonExtractorTests('getErrValue', getErrValue, Err, 'Err', Ok, 'Ok');
 
 
-    describeFunction('isResult', result.isResult, 1, function(isResult) {
+    var isResultSpec = {
+      name: 'isResult',
+      arity: 1,
+    };
+
+
+    describeFunction(isResultSpec, result.isResult, function(isResult) {
       it('Correct for Result', function() {
         expect(isResult(Result)).to.be.true;
       });
@@ -298,7 +309,13 @@
 
 
     var makeIsTests = function(desc, fnUnderTest, constructorFn, name, opposite, oppositeName) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Correct for Result', function() {
           expect(fnUnderTest(Result)).to.be.false;
         });
@@ -327,41 +344,7 @@
     makeIsTests('isErr', result.isErr, Err, 'Err', Ok, 'Ok');
 
 
-    var addCommonResultMakerTests = function(fnUnderTest, badArgs, goodArgs) {
-      if (badArgs.length > 1)  {
-        badArgs[0].vals.forEach(function(val, i) {
-          it('Throws if first parameter not a ' + badArgs[0].type + ' (' + (i + 1) + ')', function() {
-            var fn = function() {
-              fnUnderTest(val, function() {});
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-        });
-
-
-        badArgs[1].vals.forEach(function(val, i) {
-          it('Throws if second parameter not a ' + badArgs[1].type + ' (' + (i + 1) + ')', function() {
-            var fn = function() {
-              fnUnderTest([1], val);
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-        });
-      } else {
-        badArgs[0].vals.forEach(function(val, i) {
-          it('Throws if parameter not a ' + badArgs[0].type + ' (' + (i + 1) + ')', function() {
-            var fn = function() {
-              fnUnderTest(val);
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-        });
-      }
-
-
+    var addCommonResultMakerTests = function(fnUnderTest, goodArgs) {
       it('Returns a function', function() {
         var result = fnUnderTest.apply(null, goodArgs);
 
@@ -412,12 +395,19 @@
     };
 
 
-    describeFunction('makeResultReturner', result.makeResultReturner, 2, function(makeResultReturner) {
+    var returnerSpec = {
+      name: 'makeResultReturner',
+      arity: 2,
+      restrictions: [['array'], ['function']],
+      validArguments: [[[]], [function() {}]]
+    };
+
+
+    describeFunction(returnerSpec, result.makeResultReturner, function(makeResultReturner) {
       var notArrays = [1, true, 'a', undefined, null, {}, function() {}];
       var notFns = [1, true, 'a', undefined, null, {}, [1]];
       var goodArgs = [[1], function() {}];
-      var bad = [{type: 'array', vals: notArrays}, {type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makeResultReturner, bad, goodArgs);
+      addCommonResultMakerTests(makeResultReturner, goodArgs);
 
 
       it('Returns Ok <value> when value not in bad arguments array (1)', function() {
@@ -524,11 +514,18 @@
     });
 
 
-    describeFunction('makePredResultReturner', result.makePredResultReturner, 2, function(makePredResultReturner) {
+    var predSpec = {
+      name: 'makePredResultReturner',
+      arity: 2,
+      restrictions: [['function'], ['function']],
+      validArguments: [[function(x) {}], [function() {}]]
+    };
+
+
+    describeFunction(predSpec, result.makePredResultReturner, function(makePredResultReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function(x) {}, function() {}];
-      var bad = [{type: 'function', vals: notFns}, {type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makePredResultReturner, bad, goodArgs);
+      addCommonResultMakerTests(makePredResultReturner, goodArgs);
 
 
       it('Throws if predicate function doesn\'t have arity 1 (1)', function() {
@@ -600,6 +597,7 @@
         var pred = function(x) {return x < 6;};
         var f = function(x) {return x + 1;};
         var newFn = makePredResultReturner(pred, f);
+        var bad = [5, 6, 7, 8, 9];
         var result = bad.every(function(v) {
           var r = newFn(v);
           return isErr(r) && getErrValue(r) === f(v);
@@ -613,6 +611,7 @@
         var pred = function(x) {return false;}; // XXX Use constant
         var f = function(x) {return x;};
         var newFn = makePredResultReturner(pred, f);
+        var bad = [true, null, 'b'];
         var result = bad.every(function(v) {
           var r = newFn(v);
           return isErr(r) && getErrValue(r) === f(v);
@@ -636,11 +635,18 @@
     });
 
 
-    describeFunction('makeThrowResultReturner', result.makeThrowResultReturner, 1, function(makeThrowResultReturner) {
+    var throwSpec = {
+      name: 'makeThrowResultReturner',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+     };
+
+
+    describeFunction(throwSpec, result.makeThrowResultReturner, function(makeThrowResultReturner) {
       var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function() {}];
-      var bad = [{type: 'function', vals: notFns}];
-      addCommonResultMakerTests(makeThrowResultReturner, bad, goodArgs);
+      addCommonResultMakerTests(makeThrowResultReturner, goodArgs);
 
 
       it('Returns Ok <value> when function does not throw', function() {

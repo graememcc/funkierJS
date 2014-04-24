@@ -48,7 +48,13 @@
     });
 
 
-    describeFunction('Ky', combinators.combinators.Ky, 2, function(Ky) {
+    var KySpec = {
+      name: 'Ky',
+      arity: 2,
+    };
+
+
+    describeFunction(KySpec, combinators.combinators.Ky, function(Ky) {
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
@@ -77,7 +83,14 @@
     });
 
 
-    describeFunction('S', combinators.combinators.S, 3, function(S) {
+    var SSpec = {
+      name: 'S',
+      arity: 3,
+      restrictions: [['function'], ['function'], []],
+      validArguments: [[function(x) {return base.id;}], [base.id], [2]]
+    };
+
+    describeFunction(SSpec, combinators.combinators.S, function(S) {
       var nonFunctions = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},

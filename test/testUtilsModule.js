@@ -19,7 +19,13 @@
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
-    describeFunction('valueStringifier', utils.valueStringifier, 1, function(valueStringifier) {
+    var vsSpec = {
+      name: 'valueStringifier',
+      arity: 1
+    };
+
+
+    describeFunction(vsSpec, utils.valueStringifier, function(valueStringifier) {
       var f = function() {};
       var o = {};
       var tests = [

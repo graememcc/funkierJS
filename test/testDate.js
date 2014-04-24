@@ -14,6 +14,7 @@
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var testTypeRestrictions = testUtils.testTypeRestrictions;
 
 
     var expectedObjects = [];
@@ -22,7 +23,7 @@
                              'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
                              'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
                              'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
-                             'toLocaleString', 'toLocaleTimeString', 'toDateString', 'toTimeString',
+                             'toLocaleTimeString', 'toDateString', 'toTimeString',
                              'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
                              'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setTimeSinceEpoch',
                              'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
@@ -36,8 +37,16 @@
     describeModule('date', date, expectedObjects, expectedFunctions);
 
 
-    var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+    var makeUnaryDateTest = function(desc, fnUnderTest, verifier, noRestrictions) {
+      var spec = {
+        name: desc,
+        arity: 1,
+        restrictions: [[Date]],
+        validArguments: [[new Date()]]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Works correctly (1)', function() {
           var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
           var result = fnUnderTest(testDate);
@@ -75,7 +84,6 @@
     makeUnaryDateTest('getUTCMonth', date.getUTCMonth, 'getUTCMonth');
     makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, 'getUTCSeconds');
     makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, 'toLocaleDateString');
-    makeUnaryDateTest('toLocaleString', date.toLocaleString, 'toLocaleString');
     makeUnaryDateTest('toLocaleTimeString', date.toLocaleTimeString, 'toLocaleTimeString');
     makeUnaryDateTest('toDateString', date.toDateString, 'toDateString');
     makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
@@ -118,7 +126,15 @@
 
 
     var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         makeBasicSetterTests(desc, fnUnderTest, verifier);
       });
     };
@@ -142,7 +158,15 @@
 
 
     var makeDateSafeSetterTests = function(desc, fnUnderTest, verifier, bounds) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         makeBasicSetterTests(desc, fnUnderTest, verifier);
 
 
@@ -172,9 +196,15 @@
 
     // day of month is trickier, so we break it out separately
     var makeSafeDayOfMonthTests = function(desc, fnUnderTest, monthSetter, verifier) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
 
 
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         makeBasicSetterTests(desc, fnUnderTest, verifier);
 
 
@@ -243,10 +273,19 @@
       date.safeSetUTCMonth, date.getUTCDayOfMonth);
 
 
-    describeFunction('getCurrentTimeString', date.getCurrentTimeString, 0, function() {});
+    var gctsSpec = {name: 'getCurrentTimeString', arity: 0};
+    describeFunction(gctsSpec, date.getCurrentTimeString, function() {});
 
 
-    describeFunction('makeDateFromString', date.makeDateFromString, 1, function(makeDateFromString) {
+    var mdfsSpec = {
+      name: 'makeDateFromString',
+      arity: 1,
+      restrictions: [['string']],
+      validArguments: [[new Date().toUTCString()]]
+    };
+
+
+    describeFunction(mdfsSpec, date.makeDateFromString, function(makeDateFromString) {
       it('Works correctly (1)', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = makeDateFromString(testDate.toString());
@@ -265,30 +304,6 @@
       });
 
 
-      var nonStrings = [
-       {name: 'number', value: 1},
-       {name: 'boolean', value: true},
-       {name: 'undefined', value: undefined},
-       {name: 'null', value: null},
-       {name: 'function', value: function() {}},
-       {name: 'array', value: []},
-       {name: 'object', value: {}}];
-
-
-      nonStrings.forEach(function(non) {
-        var name = non.name;
-        var value = non.value;
-
-        it('Throws for value of type: ' + name, function() {
-          var fn = function() {
-            makeDateFromString(value);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-      });
-
-
       it('Throws for unparsable string', function() {
         var fn = function() {
           makeDateFromString('a');
@@ -299,7 +314,15 @@
     });
 
 
-    describeFunction('makeDateFromMilliseconds', date.makeDateFromMilliseconds, 1, function(makeDateFromMilliseconds) {
+    var mdfnSpec = {
+      name: 'makeDateFromMilliseconds',
+      arity: 1,
+      restrictions: [['number']],
+      validArguments: [[1000]]
+    };
+
+
+    describeFunction(mdfnSpec, date.makeDateFromMilliseconds, function(makeDateFromMilliseconds) {
       it('Works correctly (1)', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = makeDateFromMilliseconds(testDate.getTime());
@@ -315,30 +338,6 @@
 
         expect(result).to.be.an.instanceOf(Date);
         expect(result).to.deep.equal(testDate);
-      });
-
-
-      var nonStrings = [
-       {name: 'string', value: 's'},
-       {name: 'boolean', value: true},
-       {name: 'undefined', value: undefined},
-       {name: 'null', value: null},
-       {name: 'function', value: function() {}},
-       {name: 'array', value: []},
-       {name: 'object', value: {}}];
-
-
-      nonStrings.forEach(function(non) {
-        var name = non.name;
-        var value = non.value;
-
-        it('Throws for value of type: ' + name, function() {
-          var fn = function() {
-            makeDateFromMilliseconds(value);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
       });
 
 
@@ -358,7 +357,13 @@
                      date.getMinutes, date.getSeconds, date.getMilliseconds];
 
     var makeDateConstructorTests = function(desc, fnUnderTest, arity) {
-      describeFunction(desc, fnUnderTest, arity, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: arity
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         testDates.forEach(function(testDate, i) {
           var message = ' (' + (i + 1) + ')';
           var args = testDate.slice(0, arity);

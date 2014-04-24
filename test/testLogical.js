@@ -22,7 +22,13 @@
     describeModule('logical', logical, expectedObjects, expectedFunctions);
 
 
-    describeFunction('not', logical.not, 1, function(not) {
+    var notSpec = {
+      name: 'not',
+      arity: 1
+    };
+
+
+    describeFunction(notSpec, logical.not, function(not) {
       it('not works as expected (1)', function() {
         expect(not(true)).to.be.false;
       });
@@ -44,7 +50,12 @@
 
     // All the boolean operator tests have the same template
     var makeBinaryBooleanTestFixture = function(desc, fnUnderTest, truthTable) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2
+      };
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         truthTable.forEach(function(test, i) {
           var indexString = ' (' + (i + 1) + ')';
           it('Works as expected' + indexString,
@@ -85,7 +96,13 @@
     var constantTrue = constant(true);
 
 
-    describeFunction('notPred', logical.notPred, 1, function(notPred) {
+    var notPredSpec = {
+      name: 'notPred',
+      arity: 1
+    };
+
+
+    describeFunction(notPredSpec, logical.notPred, function(notPred) {
       // Utility function for test generation
       var makePredicateArityTest = function(funcUnderTest, badArity) {
         return function() {
@@ -168,7 +185,12 @@
 
     // All the boolean operator tests have the same template
     var makeBinaryPredicateTestFixture = function(desc, fnUnderTest, truthTable) {
-      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 2
+      };
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var f0 = function() {};
         var f2 = function(x, y) {};
 

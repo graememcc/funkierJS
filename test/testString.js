@@ -27,7 +27,13 @@
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
-    describeFunction('toString', string.toString, 1, function(toString) {
+    var tsSpec = {
+      name: 'toString',
+      arity: 1
+    };
+
+
+    describeFunction(tsSpec, string.toString, function(toString) {
       var testData = [
         {name: 'number', value: 1},
         {name: 'string', value: 'a'},
@@ -58,7 +64,13 @@
     });
 
 
-    describeFunction('toCharCode', string.toCharCode, 2, function(toCharCode) {
+    var tccSpec = {
+      name: 'toCharCode',
+      arity: 2
+    };
+
+
+    describeFunction(tccSpec, string.toCharCode, function(toCharCode) {
       it('Works correctly (1)', function() {
         var a = 'abc';
         var l = a.length;
@@ -79,7 +91,13 @@
     });
 
 
-    describeFunction('ord', string.ord, 1, function(ord) {
+    var ordSpec = {
+      name: 'ord',
+      arity: 1
+    };
+
+
+    describeFunction(ordSpec, string.ord, function(ord) {
       it('Works correctly (1)', function() {
         var a = 'a';
 
@@ -109,7 +127,13 @@
     });
 
 
-    describeFunction('chr', string.chr, 1, function(chr) {
+    var chrSpec = {
+      name: 'chr',
+      arity: 1
+    };
+
+
+    describeFunction(chrSpec, string.chr, function(chr) {
       var ord = string.ord;
 
 
@@ -141,7 +165,13 @@
 
 
     var makeStringCaseTest = function(desc, fnUnderTest, verifier) {
-      describeFunction(desc, fnUnderTest, 1, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Works correctly (1)', function() {
           var s = 'abc';
           var result = fnUnderTest(s);
@@ -174,7 +204,13 @@
     makeStringCaseTest('toLocaleUpperCase', string.toLocaleUpperCase, 'toLocaleUpperCase');
 
 
-    describeFunction('split', string.split, 2, function(split) {
+    var splitSpec = {
+      name: 'split',
+      arity: 2
+    };
+
+
+    describeFunction(splitSpec, string.split, function(split) {
       it('Returns an array (1)', function() {
         var s = 'a-b-c';
         var result = split('-', s);
@@ -256,7 +292,17 @@
 
 
     var makeReplaceTest = function(desc, fnUnderTest, regexp, fn, once) {
-      describeFunction(desc, fnUnderTest, 3, function(fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 3
+      };
+
+      // XXX FIXME Need to modify testTypeRestriction to handle restriction
+      // where something is not something. We don't want to clamp down too hard
+      // and just say it must be a string: we should allow coercions.
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        // XXX Delete this when the above is fixed
         if (!regexp) {
           it('Throws if from is a regular expression', function() {
             var s = 'funkier';
@@ -461,16 +507,15 @@
     makeReplaceTest('replaceRegExpWith', string.replaceRegExpWith, true, true, false);
 
 
-    describeFunction('test', string.test, 2, function(test) {
-      it('Throws if first parameter not a RegExp', function() {
-        var fn = function() {
-          test('a', 'b');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
+    var testSpec = {
+      name: 'test',
+      arity: 2,
+      restrictions: [[RegExp], []],
+      validArguments: [[/a/], ['a']]
+    };
 
 
+    describeFunction(testSpec, string.test, function(test) {
       it('Returns a boolean (1)', function() {
         var result = test(/a/, 'b');
 
@@ -520,23 +565,16 @@
     };
 
 
-    var addCommonMatcherTests = function(fnUnderTest, isFrom) {
-      it('Throws a TypeError if first parameter not a RegExp', function() {
-        var args = isFrom ? ['a', 0, 'b'] : ['a', 'b'];
-        var fn = function() {
-          fnUnderTest.apply(null, args);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-    };
-
-
     var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
-      describeFunction(desc, fnUnderTest, isFrom ? 3 : 2, function(fnUnderTest) {
-        addCommonMatcherTests(fnUnderTest, isFrom);
+      var spec = {
+        name: desc,
+        arity: isFrom ? 3 : 2,
+        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
+        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
+      };
 
 
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Returns an empty array when there are no results', function() {
           var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
           var result = fnUnderTest.apply(null, args);
@@ -695,10 +733,15 @@
 
 
     var makeSingleMatcherTests = function(desc, fnUnderTest, isFrom, multiEquivalent) {
-      describeFunction(desc, fnUnderTest, isFrom ? 3 : 2, function(fnUnderTest) {
-        addCommonMatcherTests(fnUnderTest, isFrom);
+      var spec = {
+        name: desc,
+        arity: isFrom ? 3 : 2,
+        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
+        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
+      };
 
 
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Returns null when there are no results', function() {
           var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
           var result = fnUnderTest.apply(null, args);
