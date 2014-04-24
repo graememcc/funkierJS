@@ -974,54 +974,6 @@
     };
 
 
-    // We can't test the curried nature of setter in the normal fashion, due to the stateful
-    // nature of the operation. Thus, we test manually
-    var makePartialTests = function(setter, aMaker, message, parArgs, remainingArgs, val) {
-      var hasOwnProperty = object.hasOwnProperty;
-
-
-      var makePartial = function() {
-        var partial;
-
-        // We know setter has arity 3, so can partially apply at most 2 args.
-        // We want to test partially applying with f(a, b) and f(a)(b) forms.
-        if (!Array.isArray(parArgs[0]))
-          partial = setter.apply(null, parArgs);
-        else
-          partial = setter.apply(null, parArgs[0]).apply(null, parArgs[1]);
-
-        return partial;
-      };
-
-
-      it(message + ' returns a function', function() {
-        var a = aMaker();
-        var partial = makePartial();
-
-        expect(partial).to.be.a('function');
-      });
-
-
-      it(message + ' returns a function of length 1', function() {
-        var a = aMaker();
-        var partial = makePartial();
-
-        expect(partial.length).to.equal(1);
-      });
-
-
-      it(message + ' and supplying remaining arguments applies function', function() {
-        var a = aMaker();
-        var partial = makePartial();
-        var result = partial.apply(null, remainingArgs.concat([a]));
-
-        expect(result).to.equal(a);
-        expect(hasOwnProperty('foo', a)).to.be.true;
-        expect(a.foo).to.equal(val);
-      });
-    };
-
-
     var makeSetterTests = function(desc, setter, shouldThrow) {
       var spec = {
         name: desc,
@@ -1034,9 +986,7 @@
         makeCommonModificationTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
 
-        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument', ['foo'], [42], 42);
-        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument then another', [['foo'], [42]], [], 42);
-        makePartialTests(setter, function() {return {}}, 'Supplying 2 arguments', ['foo', 42], [], 42);
+        testCurriedFunction(desc, setter, ['foo', 42, {reset: function() {return {};}}]);
       });
     };
 
@@ -1045,23 +995,23 @@
     makeSetterTests('setOrThrow', object.setOrThrow, true);
 
 
-    var makeModifierTests = function(desc, setter, shouldThrow) {
+    var makeModifierTests = function(desc, modifier, shouldThrow) {
       var spec = {
         name: desc,
         arity: 3
       };
 
 
-      describeFunction(spec, setter, function(setter) {
-        makeCommonTests(setter, shouldThrow);
-        makeCommonModificationTests(setter, shouldThrow);
+      describeFunction(spec, modifier, function(modifier) {
+        makeCommonTests(modifier, shouldThrow);
+        makeCommonModificationTests(modifier, shouldThrow);
 
 
         it('Doesn\'t create the property if it doesn\'t exist', function() {
           var a = {};
           var val = 42;
           var fn = function() {
-            setter('foo', val, a);
+            modifier('foo', val, a);
           };
 
           if (!shouldThrow) {
@@ -1074,9 +1024,7 @@
         });
 
 
-        makePartialTests(setter, function() {return {foo: 1}}, 'Supplying 1 argument', ['foo'], [42], 42);
-        makePartialTests(setter, function() {return {foo: 1}}, 'Supplying 1 argument then another', [['foo'], [42]], [], 42);
-        makePartialTests(setter, function() {return {foo: 1}}, 'Supplying 2 arguments', ['foo', 42], [], 42);
+        testCurriedFunction(desc, modifier, ['foo', 42, {reset: function() {return {foo: 1};}}]);
       });
     };
 
@@ -1085,23 +1033,23 @@
     makeModifierTests('modifyOrThrow', object.modifyOrThrow, true);
 
 
-    var makeCreatorTests = function(desc, setter, shouldThrow) {
+    var makeCreatorTests = function(desc, creator, shouldThrow) {
       var spec = {
         name: desc,
         arity: 3
       };
 
 
-      describeFunction(spec, setter, function(setter) {
-        makeCommonTests(setter, shouldThrow);
-        makeCommonCreationTests(setter, shouldThrow);
+      describeFunction(spec, creator, function(creator) {
+        makeCommonTests(creator, shouldThrow);
+        makeCommonCreationTests(creator, shouldThrow);
 
 
         it('Doesn\'t modify the property if it exists', function() {
           var a = {foo: 1};
           var val = 42;
           var fn = function() {
-            setter('foo', val, a);
+            creator('foo', val, a);
           };
 
           if (!shouldThrow) {
@@ -1119,7 +1067,7 @@
           Object.preventExtensions(a);
           var val = 42;
           var fn = function() {
-            setter('foo', val, a);
+            creator('foo', val, a);
           };
 
           if (!shouldThrow) {
@@ -1136,7 +1084,7 @@
           Object.seal(a);
           var val = 42;
           var fn = function() {
-            setter('foo', val, a);
+            creator('foo', val, a);
           };
 
 
@@ -1150,9 +1098,7 @@
         });
 
 
-        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument', ['foo'], [42], 42);
-        makePartialTests(setter, function() {return {}}, 'Supplying 1 argument then another', [['foo'], [42]], [], 42);
-        makePartialTests(setter, function() {return {}}, 'Supplying 2 arguments', ['foo', 42], [], 42);
+        testCurriedFunction(desc, creator, ['foo', 42, {reset: function() {return {};}}]);
       });
     };
 
@@ -1310,6 +1256,12 @@
 
           expect(a).to.have.property('foo');
         });
+
+
+        if (shouldThrow)
+          testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {foo: 1};}}]);
+        else
+          testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {};}}]);
 
 
         // We can't test the curried nature of deleter in the normal fashion, due to the stateful
