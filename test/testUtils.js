@@ -237,6 +237,14 @@
     };
 
 
+    var addFunctionIsCurriedTest = function(fnUnderTest) {
+      it('Is curried', function() {
+        expect(fnUnderTest.length).to.equal(1);
+        expect(getRealArity(fnUnderTest)).to.not.equal(1);
+      });
+    };
+
+
     // Generate a text fixture code that checks a function has a given length, and possibly that it is curried,
     // and then calls remainingTests with the function under test in order to add function-specific tests
     var describeFunction = function(spec, fnUnderTest, remainingTests) {
@@ -249,11 +257,8 @@
         });
 
 
-        if (arity > 1) {
-          it('Is curried', function() {
-            expect(fnUnderTest.length).to.equal(1);
-          });
-        }
+        if (arity > 1)
+          addFunctionIsCurriedTest(fnUnderTest);
 
         if ('restrictions' in spec)
           testTypeRestrictions(name, fnUnderTest, spec.restrictions, spec.validArguments);
@@ -458,6 +463,7 @@
 
 
     module.exports = {
+      addFunctionIsCurriedTest: addFunctionIsCurriedTest,
       checkArrayContent: checkArrayContent,
       checkArrayEquality: checkArrayEquality,
       checkEquality: checkEquality,
@@ -467,7 +473,7 @@
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
       testCurriedFunction: testCurriedFunction,
-      testTypeRestrictions: testTypeRestrictions // XXX TEMP
+      testTypeRestrictions: testTypeRestrictions
     };
   };
 
