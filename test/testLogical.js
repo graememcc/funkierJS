@@ -43,15 +43,15 @@
 
 
     // All the boolean operator tests have the same template
-    var makeBinaryBooleanTestFixture = function(prop, truthTable) {
-      var functionUnderTest = logical[prop];
+    var makeBinaryBooleanTestFixture = function(desc, fnUnderTest, truthTable) {
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+        truthTable.forEach(function(test, i) {
+          var indexString = ' (' + (i + 1) + ')';
+          it('Works as expected' + indexString,
+              makeBinaryBooleanTest(fnUnderTest, test.val1, test.val2, test.expected));
 
-      truthTable.forEach(function(test, i) {
-        var indexString = ' (' + (i + 1) + ')';
-        it(prop + ' works as expected' + indexString,
-            makeBinaryBooleanTest(functionUnderTest, test.val1, test.val2, test.expected));
-
-        testCurriedFunction(prop + ' is curried' + indexString, functionUnderTest, [test.val1, test.val2]);
+          testCurriedFunction(desc + ' ' + indexString, fnUnderTest, [test.val1, test.val2]);
+        });
       });
     };
 
@@ -66,25 +66,16 @@
     };
 
 
-    describeFunction('and', logical.and, 2, function(and) {
-      var truthTable = makeTruthTable(false, false, false, true);
-
-      makeBinaryBooleanTestFixture('and', truthTable);
-    });
+    var andTruthTable = makeTruthTable(false, false, false, true);
+    makeBinaryBooleanTestFixture('and', logical.and, andTruthTable);
 
 
-    describeFunction('or', logical.or, 2, function(or) {
-      var truthTable = makeTruthTable(false, true, true, true);
-
-      makeBinaryBooleanTestFixture('or', truthTable);
-    });
+    var orTruthTable = makeTruthTable(false, true, true, true);
+    makeBinaryBooleanTestFixture('or', logical.or, orTruthTable);
 
 
-    describeFunction('xor', logical.xor, 2, function(xor) {
-      var truthTable = makeTruthTable(false, true, true, false);
-
-      makeBinaryBooleanTestFixture('xor', truthTable);
-    });
+    var xorTruthTable = makeTruthTable(false, true, true, false);
+    makeBinaryBooleanTestFixture('xor', logical.xor, xorTruthTable);
 
 
     // The following predicate functions require the following definitions
@@ -176,48 +167,49 @@
 
 
     // All the boolean operator tests have the same template
-    var makeBinaryPredicateTestFixture = function(prop, truthTable) {
-      var functionUnderTest = logical[prop];
-      var f0 = function() {};
-      var f2 = function(x, y) {};
+    var makeBinaryPredicateTestFixture = function(desc, fnUnderTest, truthTable) {
+      describeFunction(desc, fnUnderTest, 2, function(fnUnderTest) {
+        var f0 = function() {};
+        var f2 = function(x, y) {};
 
-      it(prop + ' throws when called with a function of arity 0 (1)',
-          makeBinaryPredicateArityTest(functionUnderTest, f0, constantTrue));
-
-
-      it(prop + ' throws when called with a function of arity 0 (2)',
-          makeBinaryPredicateArityTest(functionUnderTest, constantTrue, f0));
+        it('Throws when called with a function of arity 0 (1)',
+            makeBinaryPredicateArityTest(fnUnderTest, f0, constantTrue));
 
 
-      it(prop + ' throws when called with a function of arity > 1 (1)',
-          makeBinaryPredicateArityTest(functionUnderTest, f2, constantTrue));
+        it('Throws when called with a function of arity 0 (2)',
+            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, f0));
 
 
-      it(prop + ' throws when called with a function of arity > 1 (2)',
-          makeBinaryPredicateArityTest(functionUnderTest, constantTrue, f2));
+        it('Throws when called with a function of arity > 1 (1)',
+            makeBinaryPredicateArityTest(fnUnderTest, f2, constantTrue));
 
 
-      it(prop + ' throws when called with a curried function of arity > 1 (1)',
-          makeBinaryPredicateArityTest(functionUnderTest, curry(f2), constantTrue));
+        it('Throws when called with a function of arity > 1 (2)',
+            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, f2));
 
 
-      it(prop + ' throws when called with a curried function of arity > 1 (2)',
-          makeBinaryPredicateArityTest(functionUnderTest, constantTrue, curry(f2)));
+        it('Throws when called with a curried function of arity > 1 (1)',
+            makeBinaryPredicateArityTest(fnUnderTest, curry(f2), constantTrue));
 
 
-      truthTable.forEach(function(test, i) {
-        var indexString = ' (' + (i + 1) + ')';
-        it(prop + ' works as expected' + indexString,
-            makeBinaryPredicateTest(functionUnderTest, test.pred1, test.pred2, test.expected));
+        it('Throws when called with a curried function of arity > 1 (2)',
+            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, curry(f2)));
 
-        if (test.shortCircuits) {
-          // Note, we deliberately call the predicate functions now—we need the values they return
-          it(prop + ' correctly short-circuits' + indexString,
-              makePredicateShortCircuitTest(functionUnderTest, test.pred1(), test.pred2()));
-        }
 
-        var curryArgs = {firstArgs: [test.pred1, test.pred2], thenArgs: ['a']};
-        testCurriedFunction(prop + ' is curried' + indexString, functionUnderTest, curryArgs);
+        truthTable.forEach(function(test, i) {
+          var indexString = ' (' + (i + 1) + ')';
+          it('Works as expected' + indexString,
+              makeBinaryPredicateTest(fnUnderTest, test.pred1, test.pred2, test.expected));
+
+          if (test.shortCircuits) {
+            // Note, we deliberately call the predicate functions now—we need the values they return
+            it('Correctly short-circuits' + indexString,
+                makePredicateShortCircuitTest(fnUnderTest, test.pred1(), test.pred2()));
+          }
+
+          var curryArgs = {firstArgs: [test.pred1, test.pred2], thenArgs: ['a']};
+          testCurriedFunction(desc + ' ' + indexString, fnUnderTest, curryArgs);
+        });
       });
     };
 
@@ -232,28 +224,19 @@
     };
 
 
-    describeFunction('andPred', logical.andPred, 2, function(andPred) {
-      var truthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
-                                          {expected: false, shortCircuits: false}, {expected: true, shortCircuits: false});
-
-      makeBinaryPredicateTestFixture('andPred', truthTable);
-    });
+    var andTruthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
+                                           {expected: false, shortCircuits: false}, {expected: true, shortCircuits: false});
+    makeBinaryPredicateTestFixture('andPred', logical.andPred, andTruthTable);
 
 
-    describeFunction('orPred', logical.orPred, 2, function(orPred) {
-      var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+    var orTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
                                           {expected: true, shortCircuits: true}, {expected: true, shortCircuits: true});
-
-      makeBinaryPredicateTestFixture('orPred', truthTable);
-    });
+    makeBinaryPredicateTestFixture('orPred', logical.orPred, orTruthTable);
 
 
-    describeFunction('xorPred', logical.xorPred, 2, function(xorPred) {
-      var truthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
-                                          {expected: true, shortCircuits: false}, {expected: false, shortCircuits: false});
-
-      makeBinaryPredicateTestFixture('xorPred', truthTable);
-    });
+    var xorTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+                                           {expected: true, shortCircuits: false}, {expected: false, shortCircuits: false});
+    makeBinaryPredicateTestFixture('xorPred', logical.xorPred, xorTruthTable);
   };
 
 
