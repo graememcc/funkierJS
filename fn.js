@@ -119,7 +119,7 @@
      *
      */
 
-    var fixpoint = function(a, f) {
+    var fixpoint = curry(function(a, f) {
       if (getRealArity(f) !== 1)
         throw new TypeError('Cannot compute fixpoint of function with arity !== 1');
 
@@ -138,7 +138,7 @@
         throw new Error('Unable to find fixpoint in reasonable time');
 
       return result;
-    };
+    });
 
 
     var exported = {

@@ -873,6 +873,9 @@
         expect(result).to.not.equal(obj1);
         expect(result).to.equal(obj2);
       });
+
+
+      testCurriedFunction('fixpoint', fixpoint, [1, Math.cos]);
     });
   };
 
