@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head'];
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -165,47 +165,53 @@
     });
 
 
-    var headSpec = {
-      name: 'head',
-      arity: 1
+    var makeElementSelectorTest = function(desc, fnUnderTest, isFirst) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Works for arrays (1)', function() {
+          var a = [1, 7, 0, 42];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
+        });
+
+
+        it('Works for arrays (2)', function() {
+          var a = [42];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
+        });
+
+
+        it('Works for strings (1)', function() {
+          var a = 'dcba';
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
+        });
+
+
+        it('Works for strings (2)', function() {
+          var a = 'funkier';
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
+        });
+
+
+        addThrowsOnEmptyTests(fnUnderTest, []);
+      });
     };
 
 
-    describeFunction(headSpec, array.head, function(head) {
-      it('Works for arrays (1)', function() {
-        var a = [1, 7, 0, 42];
-        var result = head(a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      it('Works for arrays (2)', function() {
-        var a = [42];
-        var result = head(a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      it('Works for strings (1)', function() {
-        var a = 'dcba';
-        var result = head(a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      it('Works for strings (2)', function() {
-        var a = 'funkier';
-        var result = head(a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      addThrowsOnEmptyTests(head, []);
-    });
+    makeElementSelectorTest('head', array.head, true);
+    makeElementSelectorTest('last', array.last, false);
   };
 
 

@@ -42,9 +42,21 @@
     var head = getIndex(0);
 
 
+    /*
+     * last: Takes an array or string, and returns the last element. Throws when given
+     *       an empty array or string.
+     *
+     */
+
+    var last = curry(function(a) {
+      return getIndex(a.length - 1, a);
+    });
+
+
     var exported = {
       getIndex: getIndex,
       head: head,
+      last: last,
       length: length
     };
 
