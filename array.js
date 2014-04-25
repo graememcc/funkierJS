@@ -6,6 +6,8 @@
 
     var base = require('./base');
     var curry = base.curry;
+    var object = require('./object');
+    var extract = object.extract;
 
 
     /*
@@ -13,15 +15,26 @@
      *
      */
 
-    var length = curry(function(a) {
-      if (!Array.isArray(a) && typeof(a) !== 'string')
-        throw new TypeError('Value must be an array or string');
+    var length = extract('length');
 
-      return a.length;
+
+    /*
+     * getIndex: Takes an index and an array or string, and returns the element at
+     *           the given index. Throws if the index is outside the range for the
+     *           given object.
+     *
+     */
+
+    var getIndex = curry(function(i, a) {
+      if (i < 0 || i >= a.length)
+        throw new TypeError('Index out of bounds');
+
+      return a[i];
     });
 
 
     var exported = {
+      getIndex: getIndex,
       length: length
     };
 
