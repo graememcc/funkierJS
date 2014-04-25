@@ -73,6 +73,25 @@
     });
 
 
+    // Utility function for generating functions
+    var makeArrayPropCaller = function(arity, prop, fArity) {
+      return curryWithArity(arity, function() {
+        var args = [].slice.call(arguments);
+        var f = args[0];
+        var arr = last(args);
+
+        if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
+          throw new TypeError('map called with invalid arguments');
+
+        if (typeof(arr) === 'string')
+          arr = arr.split('');
+
+        args[0] = curryWithArity(fArity, f);
+        return arr[prop].apply(arr, args.slice(0, args.length - 1));
+      });
+    };
+
+
     /*
      * map: Takes a function f, and an array or string arr. Returns an array, a, where for
      *      each element a[i], we have a[i] === f(arr[i]). Throws if the first argument is not
@@ -80,18 +99,21 @@
      *
      */
 
-    var map = curry(function(f, arr) {
-      if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
-        throw new TypeError('map called with invalid arguments');
+    var map = makeArrayPropCaller(2, 'map', 1);
 
-      if (typeof(arr) === 'string')
-        arr = arr.split('');
 
-      return arr.map(curryWithArity(1, f));
-    });
+    /*
+     * each: Takes a function f, and an array or string arr. Calls f with each member of the array
+     *       in sequence, and returns undefined. Throws if the first argument is not a function,
+     *       or if the second is not an array or string.
+     *
+     */
+
+    var each = makeArrayPropCaller(2, 'forEach', 1);
 
 
     var exported = {
+      each: each,
       getIndex: getIndex,
       head: head,
       map: map,

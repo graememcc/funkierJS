@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map'];
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -414,6 +414,39 @@
 
 
       testCurriedFunction('map', map, [base.id, [1, 2]]);
+    });
+
+
+    var eachSpec = {
+      name: 'each',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function() {}], [['a'], 'a']]
+    };
+
+
+    describeFunction(eachSpec, array.each, function(each) {
+      it('Returns undefined when called with an array', function() {
+        var result = each(base.id, ['a', 1, true]);
+
+        expect(result === undefined).to.be.true;
+      });
+
+
+      it('Returns undefined when called with a string', function() {
+        var result = each(base.id, 'abc');
+
+        expect(result === undefined).to.be.true;
+      });
+
+
+      addFuncCalledWithEveryMemberTests('function', each, [], [[1, 2, 3]]);
+      addFuncCalledWithEveryMemberTests('function', each, [], ['abc']);
+      addFuncCalledWithOneParamTests('function', each, [], [[4, 2]]);
+      addFuncCalledWithOneParamTests('function', each, [], ['funkier']);
+
+
+      testCurriedFunction('each', each, [base.id, [1, 2]]);
     });
   };
 
