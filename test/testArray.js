@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head', 'last'];
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -87,6 +87,26 @@
     };
 
 
+    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
+      it('Throws when ' + paramName + ' is negative', function() {
+        var fn = function() {
+          fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws when ' + paramName + ' is NaN', function() {
+        var fn = function() {
+          fnUnderTest.apply(null, argsBefore.concat([NaN]).concat(argsAfter));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    };
+
+
     describeFunction(getIndexSpec, array.getIndex, function(getIndex) {
       it('Works for arrays (1)', function() {
         var a = [1, 7, 0, 42];
@@ -105,16 +125,6 @@
 
 
       it('Throws for values outside range (1)', function() {
-        var a = [1, 2, 3];
-        var fn = function() {
-          getIndex(-1, a);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws for values outside range (2)', function() {
         var a = [1, 2, 3];
         var fn = function() {
           getIndex(4, a);
@@ -140,17 +150,7 @@
       });
 
 
-      it('Throws for values outside range (3)', function() {
-        var a = 'abc';
-        var fn = function() {
-          getIndex(-1, a);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws for values outside range (4)', function() {
+      it('Throws for values outside range (2)', function() {
         var a = 'abc';
         var fn = function() {
           getIndex(4, a);
@@ -161,6 +161,8 @@
 
 
       addThrowsOnEmptyTests(getIndex, [0]);
+      addBadNumberTests('index', getIndex, [], [[1, 2, 3]]);
+      addBadNumberTests('index', getIndex, [], ['abc']);
       testCurriedFunction('getIndex', getIndex, [1, ['a', 'b']]);
     });
 
@@ -212,6 +214,84 @@
 
     makeElementSelectorTest('head', array.head, true);
     makeElementSelectorTest('last', array.last, false);
+
+
+    var repeatSpec = {
+      name: 'repeatSpec',
+      arity: 2
+    };
+
+
+    describeFunction(repeatSpec, array.repeat, function(repeat) {
+      it('Returns array (1)', function() {
+        var howMany = 10;
+        var obj = 'a';
+        var result = repeat(howMany, obj);
+
+        expect(Array.isArray(result)).to.be.true;
+      });
+
+
+      it('Returns array (2)', function() {
+        var howMany = 1;
+        var obj = 2;
+        var result = repeat(howMany, obj);
+
+        expect(Array.isArray(result)).to.be.true;
+      });
+
+
+      it('Returned array has correct length (1)', function() {
+        var howMany = 10;
+        var obj = 'a';
+        var result = repeat(howMany, obj);
+
+        expect(result.length).to.equal(howMany);
+      });
+
+
+      it('Returned array has correct length (2)', function() {
+        var howMany = 1;
+        var obj = 2;
+        var result = repeat(howMany, obj);
+
+        expect(result.length).to.equal(howMany);
+      });
+
+
+      it('Returned array\'s elements strictly equal parameter (1)', function() {
+        var howMany = 10;
+        var obj = 'a';
+        var result = repeat(howMany, obj).every(function(e) {
+          return e === obj;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returned array\'s elements strictly equal parameter (2)', function() {
+        var howMany = 10;
+        var obj = {};
+        var result = repeat(howMany, obj).every(function(e) {
+          return e === obj;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Works when count is zero', function() {
+        var result = repeat(0, 'a');
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      addBadNumberTests('length', repeat, [], ['a']);
+      addBadNumberTests('length', repeat, [], [1]);
+      testCurriedFunction('repeat', repeat, [1, 1]);
+    });
   };
 
 

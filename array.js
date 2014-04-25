@@ -26,7 +26,7 @@
      */
 
     var getIndex = curry(function(i, a) {
-      if (i < 0 || i >= a.length)
+      if (isNaN(i) || i < 0 || i >= a.length)
         throw new TypeError('Index out of bounds');
 
       return a[i];
@@ -53,11 +53,31 @@
     });
 
 
+    /*
+     * repeat: Takes a length and a value, and returns an array of the given length, where
+     *         each element is the given value. Throws if the given length is negative.
+     *
+     */
+
+    var repeat = curry(function(l, value) {
+      if (isNaN(l) || l < 0)
+        throw new TypeError('Invalid length');
+
+      var result = [];
+
+      for (var i = 0; i < l; i++)
+        result.push(value);
+
+      return result;
+    });
+
+
     var exported = {
       getIndex: getIndex,
       head: head,
       last: last,
-      length: length
+      length: length,
+      repeat: repeat
     };
 
 
