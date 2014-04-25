@@ -33,8 +33,18 @@
     });
 
 
+    /*
+     * head: Takes an array or string, and returns the first element. Throws when given
+     *       an empty array or string.
+     *
+     */
+
+    var head = getIndex(0);
+
+
     var exported = {
       getIndex: getIndex,
+      head: head,
       length: length
     };
 

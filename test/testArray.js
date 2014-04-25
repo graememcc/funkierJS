@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex'];
+    var expectedFunctions = ['length', 'getIndex', 'head'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -65,6 +65,28 @@
     };
 
 
+    var addThrowsOnEmptyTests = function(fnUnderTest, args) {
+      it('Throws for empty arrays', function() {
+        var a = [];
+        var fn = function() {
+          fnUnderTest.apply(null, args.concat([a]));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws for empty strings', function() {
+        var a = '';
+        var fn = function() {
+          fnUnderTest.apply(null, args.concat([a]));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    };
+
+
     describeFunction(getIndexSpec, array.getIndex, function(getIndex) {
       it('Works for arrays (1)', function() {
         var a = [1, 7, 0, 42];
@@ -79,16 +101,6 @@
         var result = getIndex(0, a);
 
         expect(result).to.equal(a[0]);
-      });
-
-
-      it('Throws for empty arrays', function() {
-        var a = [];
-        var fn = function() {
-          getIndex(0, a);
-        };
-
-        expect(fn).to.throw(TypeError);
       });
 
 
@@ -128,16 +140,6 @@
       });
 
 
-      it('Throws for empty strings', function() {
-        var a = '';
-        var fn = function() {
-          getIndex(0, a);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       it('Throws for values outside range (3)', function() {
         var a = 'abc';
         var fn = function() {
@@ -158,7 +160,51 @@
       });
 
 
+      addThrowsOnEmptyTests(getIndex, [0]);
       testCurriedFunction('getIndex', getIndex, [1, ['a', 'b']]);
+    });
+
+
+    var headSpec = {
+      name: 'head',
+      arity: 1
+    };
+
+
+    describeFunction(headSpec, array.head, function(head) {
+      it('Works for arrays (1)', function() {
+        var a = [1, 7, 0, 42];
+        var result = head(a);
+
+        expect(result).to.equal(a[0]);
+      });
+
+
+      it('Works for arrays (2)', function() {
+        var a = [42];
+        var result = head(a);
+
+        expect(result).to.equal(a[0]);
+      });
+
+
+      it('Works for strings (1)', function() {
+        var a = 'dcba';
+        var result = head(a);
+
+        expect(result).to.equal(a[0]);
+      });
+
+
+      it('Works for strings (2)', function() {
+        var a = 'funkier';
+        var result = head(a);
+
+        expect(result).to.equal(a[0]);
+      });
+
+
+      addThrowsOnEmptyTests(head, []);
     });
   };
 
