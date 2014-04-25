@@ -14,9 +14,10 @@
     var maybe = require('./maybe');
     var result = require('./result');
     var combinators = require('./combinators');
+    var array = require('./array');
 
     var imports = [base, logical, maths, object, string, fn, date, pair, maybe, result,
-                   combinators];
+                   combinators, array];
     var exportedFns = {};
 
     // Export our imports
