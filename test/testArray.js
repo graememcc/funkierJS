@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat'];
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -291,6 +291,129 @@
       addBadNumberTests('length', repeat, [], ['a']);
       addBadNumberTests('length', repeat, [], [1]);
       testCurriedFunction('repeat', repeat, [1, 1]);
+    });
+
+
+    var addFuncCalledWithOneParamTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
+      it(paramName + ' called with single argument', function() {
+        var allArgs = [];
+        var f = function(x, y) {
+          var args = [].slice.call(arguments);
+          allArgs.push(args);
+        };
+        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+        var result = allArgs.every(function(arr) {
+          return arr.length === 1;
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
+    var addFuncCalledWithEveryMemberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isRTL) {
+      isRTL = isRTL || false;
+      var sourceArray = argsAfter[argsAfter.length - 1];
+      var elems = sourceArray.length - 1;
+
+      it(paramName + ' called with every element of array', function() {
+        var allArgs = [];
+        var f = function(x, y) {
+          var args = [].slice.call(arguments);
+          allArgs.push(args);
+        };
+        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+        var result = allArgs.every(function(arr, i) {
+          return arr[arr.length - 1] === sourceArray[isRTL ? elems - i : i];
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
+    var mapSpec = {
+      name: 'map',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function() {}], [['a'], 'a']]
+    };
+
+
+    describeFunction(mapSpec, array.map, function(map) {
+      it('Returns an array when called with an array', function() {
+        var result = map(base.id, ['a', 1, true]);
+
+        expect(Array.isArray(result)).to.be.true;
+      });
+
+
+      it('Returns an array when called with a string', function() {
+        var result = map(base.id, 'abc');
+
+        expect(Array.isArray(result)).to.be.true;
+      });
+
+
+      it('Returned array has correct length for array', function() {
+        var arr = [2, null];
+        var result = map(base.id, arr);
+
+        expect(result.length).to.equal(arr.length);
+      });
+
+
+      it('Retured array has correct length for string', function() {
+        var s = 'dcba';
+        var result = map(base.id, s);
+
+        expect(result.length).to.equal(s.length);
+      });
+
+
+      addFuncCalledWithEveryMemberTests('function', map, [], [[1, 2, 3]]);
+      addFuncCalledWithEveryMemberTests('function', map, [], ['abc']);
+      addFuncCalledWithOneParamTests('function', map, [], [[4, 2]]);
+      addFuncCalledWithOneParamTests('function', map, [], ['funkier']);
+
+
+      it('Returned array correct for array', function() {
+        var arr = [1, 2, 3];
+        var f = function(x) {return x + 1;};
+        var result = map(f, arr).every(function(val, i) {
+          return val === f(arr[i]);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returned array correct for string', function() {
+        var arr = 'bdc';
+        var f = function(x) {return x.toUpperCase();};
+        var result = map(f, arr).every(function(val, i) {
+          return val === f(arr[i]);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returns empty array when called with empty array', function() {
+        var result = map(function(x) {}, []);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when called with empty string', function() {
+        var result = map(function(x) {}, '');
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      testCurriedFunction('map', map, [base.id, [1, 2]]);
     });
   };
 

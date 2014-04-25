@@ -6,6 +6,7 @@
 
     var base = require('./base');
     var curry = base.curry;
+    var curryWithArity = base.curryWithArity;
     var object = require('./object');
     var extract = object.extract;
 
@@ -72,9 +73,28 @@
     });
 
 
+    /*
+     * map: Takes a function f, and an array or string arr. Returns an array, a, where for
+     *      each element a[i], we have a[i] === f(arr[i]). Throws if the first argument is not
+     *      a function, or if the second is not an array or string.
+     *
+     */
+
+    var map = curry(function(f, arr) {
+      if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
+        throw new TypeError('map called with invalid arguments');
+
+      if (typeof(arr) === 'string')
+        arr = arr.split('');
+
+      return arr.map(curryWithArity(1, f));
+    });
+
+
     var exported = {
       getIndex: getIndex,
       head: head,
+      map: map,
       last: last,
       length: length,
       repeat: repeat
