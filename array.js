@@ -94,7 +94,7 @@
         }
 
         if ('fixedArity' in options && getRealArity(f) !== options.fixedArity)
-          throw new TypeError('2Called with invalid arguments');
+          throw new TypeError('Called with invalid arguments');
 
         args[0] = curryWithArity(fArity, f);
         var result = arr[prop].apply(arr, args.slice(0, args.length - 1));
@@ -129,7 +129,7 @@
 
     /*
      * filter: Takes a predicate function f, and an array or string arr. Returns an array or string containing
-     *         those members of arr—in the same order as the original array— for which the predicate function
+     *         those members of arr—in the same order as the original array—for which the predicate function
      *         returned true. Throws if f does not have arity 1.
      *
      */
@@ -137,9 +137,23 @@
     var filter = makeArrayPropCaller(2, 'filter', 1, {fixedArity: 1, returnSameType: true});
 
 
+    /*
+     * foldl: Takes three parameters: a function f of two arguments, an initial value, and an array or string.
+     *        Traverses the array or string from left to right, calling the function with two arguments: the current
+     *        accumulation value, and the current element. The value returned will form the next accumulation value,
+     *        and foldl returns the value returned by the final call. The first call's accumulation parameter will
+     *        be the given initial value. Throws if the first parameter is not a function of arity 2, or if the last
+     *        parameter is not an array or string.
+     *
+     */
+
+    var foldl = makeArrayPropCaller(3, 'reduce', 2, {fixedArity: 2});
+
+
     var exported = {
       each: each,
       filter: filter,
+      foldl: foldl,
       getIndex: getIndex,
       head: head,
       map: map,
