@@ -18,7 +18,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
-                             'foldl'];
+                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -994,6 +994,138 @@
 
         expect(result).to.equal('abc');
       });
+    });
+
+
+    var everySpec = {
+      name: 'every',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x) {}], [[1, 2], 'ab']]
+    };
+
+
+    var addPrematureEndTests = function(fnUnderTest, trigger) {
+      var okVal = !trigger;
+
+      var addTests = function(type, num, val) {
+        it('Stops prematurely when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+          var calls = 0;
+          var f = function(x) {
+            calls += 1;
+            if (calls === val.length - 1)
+              return trigger;
+            return okVal;
+          }
+          fnUnderTest(f, val);
+
+          expect(calls).to.equal(val.length - 1);
+        });
+
+
+        it('Called with correct values when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+          var vals = [];
+          var calls = 0;
+          var f = function(x) {
+            vals.push(x);
+            calls += 1;
+            if (calls === val.length - 1)
+              return trigger;
+            return okVal;
+          }
+          fnUnderTest(f, val);
+          var result = vals.every(function(elem, i) {
+            return val[i] === elem;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Returns correctly when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+          var calls = 0;
+          var f = function(x) {
+            calls += 1;
+            if (calls === val.length - 1)
+              return trigger;
+            return okVal;
+          }
+          var result = fnUnderTest(f, val);
+
+          expect(result).to.equal(trigger);
+        });
+      };
+
+
+      addTests('array', 1, [1, 2, 3]);
+      addTests('array', 2, [{}, {}, {}, {}]);
+      addTests('string', 1, 'abc');
+      addTests('string', 2, 'abcd');
+    };
+
+
+    var addRunsToEndTests = function(fnUnderTest, trigger) {
+      var okVal = !trigger;
+
+      var addTests = function(type, num, val) {
+        it('Called with all values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+          var calls = 0;
+          var f = function(x) {
+            calls += 1;
+            return okVal;
+          }
+          fnUnderTest(f, val);
+
+          expect(calls).to.equal(val.length);
+        });
+
+
+        it('Called with correct values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+          var vals = [];
+          var calls = 0;
+          var f = function(x) {
+            vals.push(x);
+            calls += 1;
+            return okVal;
+          }
+          fnUnderTest(f, val);
+          var result = vals.every(function(elem, i) {
+            return val[i] === elem;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Returns correctly when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+          var calls = 0;
+          var f = function(x) {
+            calls += 1;
+            return okVal;
+          }
+          var result = fnUnderTest(f, val);
+
+          expect(result).to.equal(okVal);
+        });
+      };
+
+      addTests('array', 1, [1, 2, 3]);
+      addTests('array', 2, [1, 2, 3, 4]);
+      addTests('string', 1, 'abc');
+      addTests('string', 2, 'abcd');
+    };
+
+
+    describeFunction(everySpec, array.every, function(every) {
+      addAcceptsOnlyFixedArityTests(every, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(every, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(every, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(every, 'string', 1, [], 'abc');
+      addPrematureEndTests(every, false);
+      addRunsToEndTests(every, false);
+
+
+      testCurriedFunction('every', every, [base.constant(true), [1, 2, 3]]);
     });
   };
 

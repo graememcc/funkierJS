@@ -189,8 +189,19 @@
     var foldr1 = makeArrayPropCaller(2, 'reduceRight', 2, {fixedArity: 2});
 
 
+    /*
+     * every: Takes two parameters: a predicate function p that takes one argument, and an array or string. Calls the predicate
+     *        with every element of the array or string, until either the predicate function returns false, or the end of the array
+     *        or string is reached. Returns the last value returned by the predicate function. Throws if p is not a function of arity
+     *        1, or if the second argument is not an array or string.
+     */
+
+    var every = makeArrayPropCaller(2, 'every', 1, {fixedArity: 1});
+
+
     var exported = {
       each: each,
+      every: every,
       filter: filter,
       foldl: foldl,
       foldl1: foldl1,
