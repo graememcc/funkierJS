@@ -905,6 +905,51 @@
         expect(result).to.equal('cba');
       });
     });
+
+
+    var foldrSpec = {
+      name: 'foldr',
+      arity: 3,
+      restrictions: [['function'], [], ['array', 'string']],
+      validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(foldrSpec, array.foldr, function(foldr) {
+      addCommonFoldTests('foldr', foldr, false, true);
+
+
+      it('Works correctly for array (1)', function() {
+        var f = function(x, y) {return x + y;};
+        var result = foldr(f, 0, [1, 2, 3]);
+
+        expect(result).to.equal(3 + 2 + 1);
+      });
+
+
+      it('Works correctly for array (2)', function() {
+        var f = function(x, y) {return x - y;};
+        var result = foldr(f, 0, [1, 2, 3]);
+
+        expect(result).to.equal(-3 - 2 - 1);
+      });
+
+
+      it('Works correctly for string (1)', function() {
+        var f = function(x, y) {return x + y;};
+        var result = foldr(f, '', 'abc');
+
+        expect(result).to.equal('cba');
+      });
+
+
+      it('Works correctly for string (2)', function() {
+        var f = function(x, y) {return y + x;};
+        var result = foldr(f, 'z', 'abc');
+
+        expect(result).to.equal('abcz');
+      });
+    });
   };
 
 
