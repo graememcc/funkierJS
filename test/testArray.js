@@ -997,14 +997,6 @@
     });
 
 
-    var everySpec = {
-      name: 'every',
-      arity: 2,
-      restrictions: [['function'], ['array', 'string']],
-      validArguments: [[function(x) {}], [[1, 2], 'ab']]
-    };
-
-
     var addPrematureEndTests = function(fnUnderTest, trigger) {
       var okVal = !trigger;
 
@@ -1116,6 +1108,14 @@
     };
 
 
+    var everySpec = {
+      name: 'every',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x) {}], [[1, 2], 'ab']]
+    };
+
+
     describeFunction(everySpec, array.every, function(every) {
       addAcceptsOnlyFixedArityTests(every, 'array', 1, [], [[1, 2, 3]]);
       addAcceptsOnlyFixedArityTests(every, 'string', 1, [], ['abc']);
@@ -1126,6 +1126,27 @@
 
 
       testCurriedFunction('every', every, [base.constant(true), [1, 2, 3]]);
+    });
+
+
+    var someSpec = {
+      name: 'some',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x) {}], [[1, 2], 'ab']]
+    };
+
+
+    describeFunction(someSpec, array.some, function(some) {
+      addAcceptsOnlyFixedArityTests(some, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(some, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(some, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(some, 'string', 1, [], 'abc');
+      addPrematureEndTests(some, true);
+      addRunsToEndTests(some, true);
+
+
+      testCurriedFunction('some', some, [base.constant(false), [1, 2, 3]]);
     });
   };
 
