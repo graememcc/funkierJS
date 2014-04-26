@@ -286,8 +286,20 @@
     var product = foldl(productFn, 1);
 
 
+    /*
+     * element: Takes a value and an array or string. Returns true if the value is in the array or string (checked with strict
+     *          identity) and false otherwise. Throws if the second argument is not an array or string.
+     *
+     */
+
+    var element = curry(function(val, arr) {
+      return some(base.strictEquals(val), arr);
+    });
+
+
     var exported = {
       each: each,
+      element: element,
       every: every,
       filter: filter,
       foldl: foldl,

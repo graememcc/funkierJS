@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product'];
+                             'sum', 'product', 'element'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1230,6 +1230,79 @@
 
     makeSumProductTests('sum', array.sum, true);
     makeSumProductTests('product', array.product, false);
+
+
+    var elementSpec = {
+      name: 'element',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [['a'], [['a', 'b', 'c'], 'abc']]
+    };
+
+
+    describeFunction(elementSpec, array.element, function(element) {
+      it('Returns correct result for empty arrays', function() {
+        var result = element(2, []);
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result for empty strings', function() {
+        var result = element('a', '');
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when element not present in array', function() {
+        var result = element(5, [1, 3, 4]);
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when element not present in string', function() {
+        var result = element('e', 'bcd');
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when element present in array', function() {
+        var result = element(6, [1, 6, 4]);
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returns correct result when element not present in string', function() {
+        var result = element('c', 'bcd');
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Tests with identity for arrays (1)', function() {
+        var obj = {foo: 1};
+        var a = [{foo: 1}, {foo: 1}, {foo: 1}];
+        var result = element(obj, a);
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Tests with identity for arrays (2)', function() {
+        var obj = {foo: 1};
+        var a = [{foo: 1}, {foo: 1}, {foo: 1}, obj];
+        var result = element(obj, a);
+
+        expect(result).to.be.true;
+      });
+
+
+      testCurriedFunction('element', element, [2, [1, 2, 3]]);
+    });
   };
 
 
