@@ -70,7 +70,9 @@
 
 
     // Several functions require that the first parameter is a function with a specific arity
-    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, type, requiredArity, argsBefore, argsAfter) {
+    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, type, requiredArity, argsBefore, argsAfter, isMinimum) {
+      isMinimum = isMinimum || false;
+
       var funcs = [
         function() {},
         function(x) {},
@@ -80,7 +82,7 @@
       ];
 
       funcs.forEach(function(f, i) {
-        if (i !== requiredArity) {
+        if ((!isMinimum && i !== requiredArity) || (isMinimum && i < requiredArity)) {
           it('Throws when called with ' + type + ' and function of arity ' + i, function() {
             var fn = function() {
               fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
@@ -479,8 +481,8 @@
       });
 
 
-      addFuncCalledWithSpecificArityTests(map, 'array', 1, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(map, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(map, 'array', 1, [], [[1, 2, 3]], true);
+      addFuncCalledWithSpecificArityTests(map, 'string', 1, [], ['abc'], true);
       addCalledWithEveryMemberTests(map, 'array', [], [[1, 2, 3]]);
       addCalledWithEveryMemberTests(map, 'string', [], ['abc']);
 

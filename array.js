@@ -95,6 +95,8 @@
 
         if ('fixedArity' in options && getRealArity(f) !== options.fixedArity)
           throw new TypeError('Called with invalid arguments');
+        else if ('minimumArity' in options && getRealArity(f) < options.minimumArity)
+          throw new TypeError('Called with invalid arguments');
 
         args[0] = curryWithArity(fArity, f);
         var result = arr[prop].apply(arr, args.slice(0, args.length - 1));
@@ -110,11 +112,12 @@
     /*
      * map: Takes a function f, and an array or string arr. Returns an array, a, where for
      *      each element a[i], we have a[i] === f(arr[i]). Throws if the first argument is not
-     *      a function, or if the second is not an array or string.
+     *      a function, if the function does not have an arity of at least 1, or if the last argument
+     *      is not an array or string.
      *
      */
 
-    var map = makeArrayPropCaller(2, 'map', 1);
+    var map = makeArrayPropCaller(2, 'map', 1, {minimumArity : 1});
 
 
     /*
