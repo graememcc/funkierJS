@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum'];
+                             'sum', 'product'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1229,6 +1229,7 @@
 
 
     makeSumProductTests('sum', array.sum, true);
+    makeSumProductTests('product', array.product, false);
   };
 
 

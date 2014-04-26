@@ -267,6 +267,25 @@
     var sum = foldl(sumFn, 0);
 
 
+    /*
+     * product: Returns the product of the elements of the given array. Throws if given a value that is not an array.
+     *
+     * Note: this function is intended to be used with arrays of numeric data. You are of course free to abuse this, but it won't
+     * end well.
+     *
+     */
+
+    var productFn = function(soFar, current) {
+      // Hack to prevent execution with strings
+      if (typeof(current) === 'string')
+        throw new TypeError('sum called on non-array value');
+
+      return soFar * current;
+    };
+
+    var product = foldl(productFn, 1);
+
+
     var exported = {
       each: each,
       every: every,
@@ -282,6 +301,7 @@
       minimum: minimum,
       last: last,
       length: length,
+      product: product,
       repeat: repeat,
       some: some,
       sum: sum
