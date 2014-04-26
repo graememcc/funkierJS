@@ -7,6 +7,8 @@
     var base = require('./base');
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;
+    var getRealArity = base.getRealArity;
+
     var object = require('./object');
     var extract = object.extract;
 
@@ -74,20 +76,33 @@
 
 
     // Utility function for generating functions
-    var makeArrayPropCaller = function(arity, prop, fArity) {
+    var makeArrayPropCaller = function(arity, prop, fArity, options) {
+      options = options || {};
+
       return curryWithArity(arity, function() {
         var args = [].slice.call(arguments);
         var f = args[0];
         var arr = last(args);
+        var wasString = false;
 
         if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
-          throw new TypeError('map called with invalid arguments');
+          throw new TypeError('Called with invalid arguments');
 
-        if (typeof(arr) === 'string')
+        if (typeof(arr) === 'string') {
+          wasString = true;
           arr = arr.split('');
+        }
+
+        if ('fixedArity' in options && getRealArity(f) !== options.fixedArity)
+          throw new TypeError('2Called with invalid arguments');
 
         args[0] = curryWithArity(fArity, f);
-        return arr[prop].apply(arr, args.slice(0, args.length - 1));
+        var result = arr[prop].apply(arr, args.slice(0, args.length - 1));
+
+        if ('returnSameType' in options && wasString)
+          result = result.join('');
+
+        return result;
       });
     };
 
@@ -112,8 +127,19 @@
     var each = makeArrayPropCaller(2, 'forEach', 1);
 
 
+    /*
+     * filter: Takes a predicate function f, and an array or string arr. Returns an array or string containing
+     *         those members of arr—in the same order as the original array— for which the predicate function
+     *         returned true. Throws if f does not have arity 1.
+     *
+     */
+
+    var filter = makeArrayPropCaller(2, 'filter', 1, {fixedArity: 1, returnSameType: true});
+
+
     var exported = {
       each: each,
+      filter: filter,
       getIndex: getIndex,
       head: head,
       map: map,

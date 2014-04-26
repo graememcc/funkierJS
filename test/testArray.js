@@ -17,7 +17,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each'];
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter'];
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -294,13 +294,56 @@
     });
 
 
-    var addFuncCalledWithOneParamTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
+    var addFunctionFixedArityTests = function(paramName, arity, fnUnderTest, argsBefore, argsAfter) {
+      var funcs = [
+        function() {},
+        function(x) {},
+        function(x, y) {},
+        function(x, y, z) {},
+        function(w, x, y, z) {}
+      ];
+
+      funcs.forEach(function(f, i) {
+        if (i !== arity) {
+          it('Throws when called with function of arity ' + i, function() {
+            var fn = function() {
+              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        } else {
+          it('Does not throw when called with function of arity ' + i, function() {
+            var fn = function() {
+              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+            };
+
+            expect(fn).to.not.throw(TypeError);
+          });
+        }
+      });
+    };
+
+
+    var addFuncCalledWithOneParamTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isArity1) {
+      isArity1 = isArity1 || false;
+
       it(paramName + ' called with single argument', function() {
         var allArgs = [];
-        var f = function(x, y) {
-          var args = [].slice.call(arguments);
-          allArgs.push(args);
-        };
+        var f;
+
+        if (isArity1) {
+          f = function(x) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        } else {
+          f = function(x, y) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        }
+
         fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
         var result = allArgs.every(function(arr) {
           return arr.length === 1;
@@ -311,17 +354,28 @@
     };
 
 
-    var addFuncCalledWithEveryMemberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isRTL) {
+    var addFuncCalledWithEveryMemberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isArity1, isRTL) {
+      isArity1 = isArity1 || false;
       isRTL = isRTL || false;
       var sourceArray = argsAfter[argsAfter.length - 1];
       var elems = sourceArray.length - 1;
 
       it(paramName + ' called with every element of array', function() {
         var allArgs = [];
-        var f = function(x, y) {
-          var args = [].slice.call(arguments);
-          allArgs.push(args);
-        };
+        var f;
+
+        if (isArity1) {
+          f = function(x) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        } else {
+          f = function(x, y) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        }
+
         fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
         var result = allArgs.every(function(arr, i) {
           return arr[arr.length - 1] === sourceArray[isRTL ? elems - i : i];
@@ -447,6 +501,162 @@
 
 
       testCurriedFunction('each', each, [base.id, [1, 2]]);
+    });
+
+
+    var filterSpec = {
+      name: 'filter',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x) {}], [['a'], 'a']]
+    };
+
+
+    describeFunction(filterSpec, array.filter, function(filter) {
+      it('Returns an array when called with an array', function() {
+        var result = filter(base.id, ['a', 1, true]);
+
+        expect(Array.isArray(result)).to.be.true;
+      });
+
+
+      it('Returns a string when called with a string', function() {
+        var result = filter(base.id, 'abc');
+
+        expect(typeof(result) === 'string').to.be.true;
+      });
+
+
+      it('Returned array has correct length when called with an array (1)', function() {
+        var arr = [2, null];
+        var result = filter(base.constant(true), arr);
+
+        expect(result.length).to.equal(arr.length);
+      });
+
+
+      it('Returned array has correct length when called with an array (2)', function() {
+        var arr = [1, 2, 3, 4];
+        var f = function(x) {return x % 2 === 0;};
+        var result = filter(f, arr);
+
+        expect(result.length).to.equal(2);
+      });
+
+
+      it('Returned string has correct length when called with a string (1)', function() {
+        var s = 'abc';
+        var result = filter(base.constant(true), s);
+
+        expect(result.length).to.equal(s.length);
+      });
+
+
+      it('Returned array has correct length when called with an array (2)', function() {
+        var s = 'banana';
+        var f = function(c) {return c  === 'a';};
+        var result = filter(f, s);
+
+        expect(result.length).to.equal(3);
+      });
+
+
+      addFunctionFixedArityTests('function', 1, filter, [], [[1, 2, 3]]);
+      addFunctionFixedArityTests('function', 1, filter, [], ['abc']);
+      addFuncCalledWithEveryMemberTests('function', filter, [], [[1, 2, 3]], true);
+      addFuncCalledWithEveryMemberTests('function', filter, [], ['abc'], true);
+      addFuncCalledWithOneParamTests('function', filter, [], [[4, 2]], true);
+      addFuncCalledWithOneParamTests('function', filter, [], ['funkier'], true);
+
+
+      it('Returned array correct when called with an array (1)', function() {
+        var arr = [2, null];
+        var result = filter(base.constant(true), arr);
+
+        expect(result).to.deep.equal(arr);
+      });
+
+
+      it('Returned array correct when called with an array (2)', function() {
+        var arr = [1, 2, 3, 4];
+        var f = function(x) {return x % 2 !== 0;};
+        var result = filter(f, arr);
+
+        expect(result).to.deep.equal([1, 3]);
+      });
+
+
+      it('Returned string correct when called with a string (1)', function() {
+        var s = 'abc';
+        var result = filter(base.constant(true), s);
+
+        expect(result).to.equal(s);
+      });
+
+
+      it('Returned array has correct length when called with an array (2)', function() {
+        var s = 'banana';
+        var f = function(c) {return c  !== 'a';};
+        var result = filter(f, s);
+
+        expect(result).to.equal('bnn');
+      });
+
+
+      it('Preserves order when called with an array', function() {
+        var a = [1, 2, 3, 4, 5, 6];
+        var f = function(x) {return x % 2 !== 0;};
+        var result = true;
+        var filtered = filter(f, a);
+        for (var i = 1, l = filtered.length; i < l; i++) {
+          if (a.indexOf(filtered[i - 1]) > a.indexOf(filtered[i]))
+            result = false;
+        }
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Preserves order when called with an string', function() {
+        var s = 'funkier';
+        var f = function(x) {return 'aeiou'.indexOf(x) === 1;};
+        var result = true;
+        var filtered = filter(f, s);
+        for (var i = 1, l = filtered.length; i < l; i++) {
+          if (s.indexOf(filtered[i - 1]) > s.indexOf(filtered[i]))
+            result = false;
+        }
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returned elements are precisely those from the original array', function() {
+        var a = [{}, {}, {}, {}];
+        var f = base.constant(true);
+        var result = filter(f, a).every(function(e, i) {
+            return e === a[i];
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returns empty array when called with empty array', function() {
+        var result = filter(function(x) {}, []);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty string when called with empty string', function() {
+        var result = filter(function(x) {}, '');
+
+        expect(result).to.equal('');
+      });
+
+
+      testCurriedFunction('filter', filter, [base.constant(true), [1, 2]]);
     });
   };
 
