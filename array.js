@@ -213,7 +213,8 @@
 
 
     /*
-     * maximum: Returns the largest element of the given array or string. Throws if the array or string is empty.
+     * maximum: Returns the largest element of the given array or string. Throws if the array or string is empty, or if the value is
+     *          not an array or string.
      *
      * Note: this function is intended to be used with arrays of numeric or character data. You are of course free to abuse
      * it, but it will likely not do what you expect.
@@ -230,7 +231,8 @@
 
 
     /*
-     * minimum: Returns the smallest element of the given array or string. Throws if the array or string is empty.
+     * minimum: Returns the smallest element of the given array or string. Throws if the array or string is empty, or if the value is
+     *          not an array or string.
      *
      * Note: this function is intended to be used with arrays of numeric or character data. You are of course free to abuse
      * it, but it will likely not do what you expect.
@@ -244,6 +246,25 @@
     };
 
     var minimum = foldl1(minFn);
+
+
+    /*
+     * sum: Returns the sum of the elements of the given array. Throws if given a value that is not an array.
+     *
+     * Note: this function is intended to be used with arrays of numeric data. You are of course free to abuse this, but it won't
+     * end well.
+     *
+     */
+
+    var sumFn = function(soFar, current) {
+      // Hack to prevent execution with strings
+      if (typeof(current) === 'string')
+        throw new TypeError('sum called on non-array value');
+
+      return soFar + current;
+    };
+
+    var sum = foldl(sumFn, 0);
 
 
     var exported = {
@@ -262,7 +283,8 @@
       last: last,
       length: length,
       repeat: repeat,
-      some: some
+      some: some,
+      sum: sum
     };
 
 

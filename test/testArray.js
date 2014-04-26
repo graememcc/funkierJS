@@ -18,7 +18,8 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
-                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum'];
+                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
+                             'sum'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1180,6 +1181,54 @@
 
     makeMinMaxTests('maximum', array.maximum, true);
     makeMinMaxTests('minimum', array.minimum, false);
+
+
+    var makeSumProductTests = function(desc, fnUnderTest, isSum) {
+      var spec = {
+        name: desc,
+        arity: 1,
+        restrictions: [['array']],
+        validArguments: [[[1, 2]]]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Throws when called with a string', function() {
+          var fn = function() {
+            fnUnderTest('abc');
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Works correctly for array (1)', function() {
+          var a = [1, 2, 3, 4];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(isSum ? 10 : 24);
+        });
+
+
+        it('Works correctly for array (2)', function() {
+          var a = [2];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(2);
+        });
+
+
+        it('Works correctly for empty arrays', function() {
+          var a = [];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(isSum ? 0 : 1);
+        });
+      });
+    };
+
+
+    makeSumProductTests('sum', array.sum, true);
   };
 
 
