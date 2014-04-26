@@ -22,6 +22,192 @@
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
+    // Several functions have common behaviours, so we factor out common tests
+
+
+    // Several functions should throw on empty arrays/strings
+    var addThrowsOnEmptyTests = function(fnUnderTest, args) {
+      it('Throws for empty arrays', function() {
+        var a = [];
+        var fn = function() {
+          fnUnderTest.apply(null, args.concat([a]));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws for empty strings', function() {
+        var a = '';
+        var fn = function() {
+          fnUnderTest.apply(null, args.concat([a]));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    };
+
+
+    // Several functions should throw when the first parameter is negative or NaN
+    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
+      it('Throws when ' + paramName + ' is negative', function() {
+        var fn = function() {
+          fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws when ' + paramName + ' is NaN', function() {
+        var fn = function() {
+          fnUnderTest.apply(null, argsBefore.concat([NaN]).concat(argsAfter));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    };
+
+
+    // Several functions require that the first parameter is a function with a specific arity
+    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, type, requiredArity, argsBefore, argsAfter) {
+      var funcs = [
+        function() {},
+        function(x) {},
+        function(x, y) {},
+        function(x, y, z) {},
+        function(w, x, y, z) {}
+      ];
+
+      funcs.forEach(function(f, i) {
+        if (i !== requiredArity) {
+          it('Throws when called with ' + type + ' and function of arity ' + i, function() {
+            var fn = function() {
+              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        } else {
+          it('Does not throw when called with ' + type + ' and function of arity ' + i, function() {
+            var fn = function() {
+              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+            };
+
+            expect(fn).to.not.throw(TypeError);
+          });
+        }
+      });
+    };
+
+
+    // Several functions expect the first argument to be a function that should be always be called with a
+    // specific number of arguments
+    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, type, requiredArgs, argsBefore, argsAfter) {
+      if (requiredArgs > 2)
+        throw new Error('Incorrect test: addFuncCalledWithSpecificArityTests called with ' + requiredArgs);
+
+      it('Function called with correct number of arguments when called with ' + type, function() {
+        var allArgs = [];
+        var f;
+
+        if (requiredArgs === 1) {
+          f = function(x) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        } else {
+          f = function(x, y) {
+            var args = [].slice.call(arguments);
+            allArgs.push(args);
+          };
+        }
+
+        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+        var result = allArgs.every(function(arr) {
+          return arr.length === requiredArgs;
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
+    // Several functions expect that  the function being tested should be called with each element
+    // of the given object, in order.
+    var addCalledWithEveryMemberTests = function(fnUnderTest, type, argsBefore, argsAfter, isArity2, isRTL, skipsFirst) {
+      // only the fold* functions have arity 2
+      isArity2 = isArity2 || false;
+      // only the foldr* functions operate RTL
+      isRTL = isRTL || false;
+      // only the fold*1 functions skip the first element
+      skipsFirst = skipsFirst || false;
+
+      it('Called the correct number of times for ' + type, function() {
+        var allArgs = [];
+        var f = function(x) {
+          allArgs.push(x);
+        };
+
+        if (isArity2) {
+          f = function(x, y) {
+            // In the fold* functions, the current element is the second parameter
+            allArgs.push(y);
+          };
+        }
+
+        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+        var source = argsAfter[argsAfter.length - 1];
+
+        // allArgs now contains each element that our function was called with
+        expect(allArgs.length).to.equal(skipsFirst ? source.length - 1 : source.length);
+      });
+
+
+      it('Called with every element of ' + type, function() {
+        var allArgs = [];
+        var f = function(x) {
+          allArgs.push(x);
+        };
+
+        if (isArity2) {
+          f = function(x, y) {
+            // In the fold* functions, the current element is the second parameter
+            allArgs.push(y);
+          };
+        }
+
+        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+
+        // allArgs now contains each element that our function was called with
+        var source = argsAfter[argsAfter.length - 1];
+        if (typeof(source) === 'string') source = source.split('');
+        var numElems = source.length - 1;
+
+        var result = source.every(function(elem, i) {
+          // The fold*1 functions should have 1 call fewer
+          if (skipsFirst) {
+            if ((isRTL && i === numElems) || (!isRTL && i === 0))
+              return true;
+          }
+
+          // Where should this element be in allArgs?
+          var index = i;
+          if (skipsFirst) {
+            if (isRTL)
+              index += 1;
+            else
+              index -= 1;
+          }
+
+          return allArgs[isRTL ? numElems - index : index] === elem;
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
     var lengthSpec = {
       name: 'length',
       arity: 1
@@ -63,48 +249,6 @@
     var getIndexSpec = {
       name: 'getIndex',
       arity: 2
-    };
-
-
-    var addThrowsOnEmptyTests = function(fnUnderTest, args) {
-      it('Throws for empty arrays', function() {
-        var a = [];
-        var fn = function() {
-          fnUnderTest.apply(null, args.concat([a]));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws for empty strings', function() {
-        var a = '';
-        var fn = function() {
-          fnUnderTest.apply(null, args.concat([a]));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-    };
-
-
-    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
-      it('Throws when ' + paramName + ' is negative', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws when ' + paramName + ' is NaN', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([NaN]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
     };
 
 
@@ -168,6 +312,7 @@
     });
 
 
+    // The tests for head and tail are very similar, and can be generated
     var makeElementSelectorTest = function(desc, fnUnderTest, isFirst) {
       var spec = {
         name: desc,
@@ -295,98 +440,6 @@
     });
 
 
-    var addAcceptsOnlyFixedArityTests = function(paramName, arity, fnUnderTest, argsBefore, argsAfter) {
-      var funcs = [
-        function() {},
-        function(x) {},
-        function(x, y) {},
-        function(x, y, z) {},
-        function(w, x, y, z) {}
-      ];
-
-      funcs.forEach(function(f, i) {
-        if (i !== arity) {
-          it('Throws when called with function of arity ' + i, function() {
-            var fn = function() {
-              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-        } else {
-          it('Does not throw when called with function of arity ' + i, function() {
-            var fn = function() {
-              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-            };
-
-            expect(fn).to.not.throw(TypeError);
-          });
-        }
-      });
-    };
-
-
-    var addFuncCalledWithSpecificArityTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isArity2) {
-      isArity2 = isArity2 || false;
-
-      it(paramName + ' called with correct number of arguments', function() {
-        var allArgs = [];
-        var f;
-
-        if (!isArity2) {
-          f = function(x) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        } else {
-          f = function(x, y) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        }
-
-        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-        var result = allArgs.every(function(arr) {
-          return arr.length === (isArity2 ? 2 : 1);
-        });
-
-        expect(result).to.be.true;
-      });
-    };
-
-
-    var addFuncCalledWithEveryMemberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, isArity1, isRTL) {
-      isArity1 = isArity1 || false;
-      isRTL = isRTL || false;
-      var sourceArray = argsAfter[argsAfter.length - 1];
-      var elems = sourceArray.length - 1;
-
-      it(paramName + ' called with every element of array', function() {
-        var allArgs = [];
-        var f;
-
-        if (isArity1) {
-          f = function(x) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        } else {
-          f = function(x, y) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        }
-
-        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-        var result = allArgs.every(function(arr, i) {
-          return arr[arr.length - 1] === sourceArray[isRTL ? elems - i : i];
-        });
-
-        expect(result).to.be.true;
-      });
-    };
-
-
     var mapSpec = {
       name: 'map',
       arity: 2,
@@ -426,10 +479,10 @@
       });
 
 
-      addFuncCalledWithEveryMemberTests('function', map, [], [[1, 2, 3]]);
-      addFuncCalledWithEveryMemberTests('function', map, [], ['abc']);
-      addFuncCalledWithSpecificArityTests('function', map, [], [[4, 2]]);
-      addFuncCalledWithSpecificArityTests('function', map, [], ['funkier']);
+      addFuncCalledWithSpecificArityTests(map, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(map, 'string', 1, [], ['abc']);
+      addCalledWithEveryMemberTests(map, 'array', [], [[1, 2, 3]]);
+      addCalledWithEveryMemberTests(map, 'string', [], ['abc']);
 
 
       it('Returned array correct for array', function() {
@@ -495,10 +548,10 @@
       });
 
 
-      addFuncCalledWithEveryMemberTests('function', each, [], [[1, 2, 3]]);
-      addFuncCalledWithEveryMemberTests('function', each, [], ['abc']);
-      addFuncCalledWithSpecificArityTests('function', each, [], [[4, 2]]);
-      addFuncCalledWithSpecificArityTests('function', each, [], ['funkier']);
+      addFuncCalledWithSpecificArityTests(each, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(each, 'string', 1, [], ['abc']);
+      addCalledWithEveryMemberTests(each, 'array', [], [[1, 2, 3]]);
+      addCalledWithEveryMemberTests(each, 'string', [], ['abc']);
 
 
       testCurriedFunction('each', each, [base.id, [1, 2]]);
@@ -562,12 +615,12 @@
       });
 
 
-      addAcceptsOnlyFixedArityTests('function', 1, filter, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests('function', 1, filter, [], ['abc']);
-      addFuncCalledWithEveryMemberTests('function', filter, [], [[1, 2, 3]], true);
-      addFuncCalledWithEveryMemberTests('function', filter, [], ['abc'], true);
-      addFuncCalledWithSpecificArityTests('function', filter, [], [[4, 2]]);
-      addFuncCalledWithSpecificArityTests('function', filter, [], ['funkier']);
+      addAcceptsOnlyFixedArityTests(filter, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(filter, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(filter, 'array', 1, [], [[4, 2]]);
+      addFuncCalledWithSpecificArityTests(filter, 'string', 1, [], ['funkier']);
+      addCalledWithEveryMemberTests(filter, 'array', [], [[1, 2, 3]]);
+      addCalledWithEveryMemberTests(filter, 'string', [], ['abc']);
 
 
       it('Returned array correct when called with an array (1)', function() {
@@ -661,19 +714,12 @@
     });
 
 
-    var addCommonFoldTests = function(desc, fnUnderTest, isArity2, isRTL) {
-      var afterArgsArr = isArity2 ? [[1, 2, 3]] : [0, [1, 2, 3]];
-      var afterArgsStr = isArity2 ? ['abc'] : [0, 'abc'];
-
-      addAcceptsOnlyFixedArityTests('function', 2, fnUnderTest, [], afterArgsArr);
-      addAcceptsOnlyFixedArityTests('function', 2, fnUnderTest, [], afterArgsStr);
-      addFuncCalledWithEveryMemberTests('function', fnUnderTest, [], afterArgsArr, false, isRTL);
-      addFuncCalledWithEveryMemberTests('function', fnUnderTest, [], afterArgsStr, false, isRTL);
-      addFuncCalledWithSpecificArityTests('function', fnUnderTest, [], afterArgsArr, true);
-      addFuncCalledWithSpecificArityTests('function', fnUnderTest, [], afterArgsStr, true);
+    var addCommonFoldTests = function(desc, fnUnderTest, is1Func, isRTL) {
+      var afterArgsArr = is1Func ? [[1, 2, 3]] : [0, [1, 2, 3]];
+      var afterArgsStr = is1Func ? ['abc'] : [0, 'abc'];
 
 
-      var addCalledWithAccumulatorTest = function(after, type) {
+      var addCalledWithAccumulatorTest = function(source, type) {
         it('Called with correct accumulator for ' + type, function() {
           var allArgs = [];
           var f;
@@ -685,11 +731,16 @@
             return count++;
           };
 
-          var fnArgs = isArity2 ? [f, after] : [f, 0, after];
+          var fnArgs = is1Func ? [f, source] : [f, 0, source];
           fnUnderTest.apply(null, fnArgs);
+
+          // Calculate the first element of the array/string for fold*1 tests
+          var first = source[isRTL ? source.length - 1 : 0];
+
           var result = allArgs.every(function(acc, i) {
-            if (isArity2)
-              return acc === i + 1;
+            if (is1Func && i === 0)
+              return acc === first;
+
             return acc === i;
           });
 
@@ -698,11 +749,17 @@
       };
 
 
+      addAcceptsOnlyFixedArityTests(fnUnderTest, 'array', 2, [], afterArgsArr);
+      addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 2, [], afterArgsStr);
+      addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 2, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 2, [], 'abc');
+      addCalledWithEveryMemberTests(fnUnderTest, 'array', [], afterArgsArr, true, isRTL, is1Func);
+      addCalledWithEveryMemberTests(fnUnderTest, 'string', [], afterArgsStr, true, isRTL, is1Func);
       addCalledWithAccumulatorTest([1, 2, 3], 'array');
       addCalledWithAccumulatorTest('123', 'string');
 
 
-      if (isArity2) {
+      if (is1Func) {
         it('Throws when called with empty array', function() {
           var fn = function() {
             fnUnderTest(function(x, y) {return 3;}, []);
@@ -753,7 +810,7 @@
       }
 
 
-      var curriedArgs = isArity2 ? [function(x, y) {return 42;}, [1, 2]] :
+      var curriedArgs = is1Func ? [function(x, y) {return 42;}, [1, 2]] :
                                    [function(x, y) {return 42;}, 0, [1, 2]];
 
       testCurriedFunction(desc, fnUnderTest, curriedArgs);
@@ -784,7 +841,7 @@
         var f = function(x, y) {return x - y;};
         var result = foldl(f, 0, [1, 2, 3]);
 
-        expect(result).to.equal(-3 - 2 - 1);
+        expect(result).to.equal(-1 - 2 - 3);
       });
 
 
@@ -801,6 +858,51 @@
         var result = foldl(f, 'z', 'abc');
 
         expect(result).to.equal('cbaz');
+      });
+    });
+
+
+    var foldl1Spec = {
+      name: 'foldl1',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(foldl1Spec, array.foldl1, function(foldl1) {
+      addCommonFoldTests('foldl1', foldl1, true, false);
+
+
+      it('Works correctly for array (1)', function() {
+        var f = function(x, y) {return x + y;};
+        var result = foldl1(f, [1, 2, 3]);
+
+        expect(result).to.equal(1 + 2 + 3);
+      });
+
+
+      it('Works correctly for array (2)', function() {
+        var f = function(x, y) {return x - y;};
+        var result = foldl1(f, [1, 2, 3]);
+
+        expect(result).to.equal(1 - 2 - 3);
+      });
+
+
+      it('Works correctly for string (1)', function() {
+        var f = function(x, y) {return x + y;};
+        var result = foldl1(f, 'abc');
+
+        expect(result).to.equal('abc');
+      });
+
+
+      it('Works correctly for string (2)', function() {
+        var f = function(x, y) {return y + x;};
+        var result = foldl1(f, 'abc');
+
+        expect(result).to.equal('cba');
       });
     });
   };

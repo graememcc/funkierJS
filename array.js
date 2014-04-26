@@ -150,10 +150,24 @@
     var foldl = makeArrayPropCaller(3, 'reduce', 2, {fixedArity: 2});
 
 
+    /*
+     * foldl: Takes two parameters: a function f of two arguments, and an array or string. Traverses the array from
+     *        left to right from the second element, calling the function with two arguments: the current acccumulation
+     *        value, and the current element. The value returned will form the next accumulation value, and foldl1 returns
+     *        returns the value returned by the final call. The first call's accumulation parameter will be the first
+     *        element of the array or string. Throws if the first parameter is not a function of arity 2, if the last
+     *        parameter is not an array or string, or if the array or string is empty.
+     *
+     */
+
+    var foldl1 = makeArrayPropCaller(2, 'reduce', 2, {fixedArity: 2});
+
+
     var exported = {
       each: each,
       filter: filter,
       foldl: foldl,
+      foldl1: foldl1,
       getIndex: getIndex,
       head: head,
       map: map,
