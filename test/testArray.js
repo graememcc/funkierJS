@@ -18,7 +18,8 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
-                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every'];
+                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum'];
+
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
@@ -1128,6 +1129,57 @@
 
     makeArrayBooleanTest('every', array.every, false);
     makeArrayBooleanTest('some', array.some, true);
+
+
+    var makeMinMaxTests = function(desc, fnUnderTest, isMax) {
+      var spec = {
+        name: desc,
+        arity: 1,
+        restrictions: [['array', 'string']],
+        validArguments: [[[1, 2], 'ab']]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addThrowsOnEmptyTests(fnUnderTest, []);
+
+
+        it('Works correctly for array (1)', function() {
+          var a = [3, 1, 2, 42, 6];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(isMax ? 42 : 1);
+        });
+
+
+        it('Works correctly for array (2)', function() {
+          var a = [2];
+          var result = fnUnderTest(a);
+
+          expect(result).to.equal(2);
+        });
+
+
+        it('Works correctly for string (1)', function() {
+          var s = 'bad0Z9w';
+          var result = fnUnderTest(s);
+
+          expect(result).to.equal(isMax ? 'w' : '0');
+        });
+
+
+        it('Works correctly for string (2)', function() {
+          var s = ['e'];
+          var result = fnUnderTest(s);
+
+          expect(result).to.equal('e');
+        });
+      });
+    };
+
+
+    makeMinMaxTests('maximum', array.maximum, true);
+    makeMinMaxTests('minimum', array.minimum, false);
   };
 
 

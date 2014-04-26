@@ -212,6 +212,40 @@
     var some = makeArrayPropCaller(2, 'some', 1, {fixedArity: 1});
 
 
+    /*
+     * maximum: Returns the largest element of the given array or string. Throws if the array or string is empty.
+     *
+     * Note: this function is intended to be used with arrays of numeric or character data. You are of course free to abuse
+     * it, but it will likely not do what you expect.
+     *
+     */
+
+    var maxFn = function(soFar, current) {
+      if (current > soFar)
+        return current;
+      return soFar;
+    };
+
+    var maximum = foldl1(maxFn);
+
+
+    /*
+     * minimum: Returns the smallest element of the given array or string. Throws if the array or string is empty.
+     *
+     * Note: this function is intended to be used with arrays of numeric or character data. You are of course free to abuse
+     * it, but it will likely not do what you expect.
+     *
+     */
+
+    var minFn = function(soFar, current) {
+      if (current < soFar)
+        return current;
+      return soFar;
+    };
+
+    var minimum = foldl1(minFn);
+
+
     var exported = {
       each: each,
       every: every,
@@ -223,6 +257,8 @@
       getIndex: getIndex,
       head: head,
       map: map,
+      maximum: maximum,
+      minimum: minimum,
       last: last,
       length: length,
       repeat: repeat,
