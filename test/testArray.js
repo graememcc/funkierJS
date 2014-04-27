@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits', 'tails', 'copy'];
+                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1964,6 +1964,84 @@
       addTests('for empty arrays', []);
       addTests('(1)', [1, 2, 3]);
       addTests('(2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
+    });
+
+
+    var sliceSpec = {
+      name: 'slice',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [[0], [1], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(sliceSpec, array.slice, function(slice) {
+      addBadNumberTests('from', slice, [], [1, 'abc']);
+      addBadNumberTests('to', slice, [0], ['abc']);
+
+
+      it('Returns empty array if from <= length', function() {
+        var original = [1, 2, 3];
+        var result = slice(4, 5, original);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty string if from <= length', function() {
+        var original = 'abc';
+        var result = slice(4, 5, original);
+
+        expect(result).to.deep.equal('');
+      });
+
+
+      var addTests = function(message, from, to, arrData, strData) {
+        var addOne = function(type, data) {
+          it('Result has type ' + type + ' when ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var result = slice(from, to, original);
+
+            if (type === 'array')
+              expect(Array.isArray(result)).to.be.true;
+            else
+              expect(result).to.be.a('string');
+          });
+
+
+          it('Result has correct length when ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var result = slice(from, to, original).length === Math.min(original.length - from, to - from);
+
+            expect(result).to.be.true;
+          });
+
+
+          it('Result has correct values when ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var newVal = slice(from, to, original);
+            if (type === 'string')
+              newVal = newVal.split('');
+
+            var result = newVal.every(function(val, i) {
+              return val === original[from + i];
+            });
+
+            expect(result).to.be.true;
+          });
+        };
+
+        addOne('array', arrData);
+        addOne('string', strData);
+      };
+
+
+      addTests('to > len', 1, 5, [1, 2, 3, 4], 'abcd');
+      addTests('to === len', 1, 4, [2, 3, 4, 5], 'efgh');
+      addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], 'abcd');
+
+
+      testCurriedFunction('slice', slice, [1, 2, 'funkier']);
     });
   };
 

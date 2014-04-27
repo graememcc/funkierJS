@@ -461,6 +461,21 @@
     var copy = callProp('slice');
 
 
+    /*
+     * slice: Takes two numbers, from and to, and an array or string. Returns the subarray or string containing the elements between these
+     *        two points (inclusive at from, exclusive at to). If to is greater than the length of the object, then all values from from will
+     *        be returned. Throws a TypeError if from or to are not positive integers, or if the last argument is not an array or string.
+     *
+     */
+
+    var slice = curry(function(from, to, arr) {
+      from = checkPositiveIntegral(from);
+      to = checkPositiveIntegral(to);
+
+      return take(to - from, drop(from, arr));
+    });
+
+
     var exported = {
       copy: copy,
       drop: drop,
@@ -486,6 +501,7 @@
       range: range,
       rangeStep: rangeStep,
       repeat: repeat,
+      slice: slice,
       some: some,
       sum: sum,
       tail: tail,
