@@ -569,8 +569,33 @@
     });
 
 
+    /*
+     * concat: Takes two arrays or strings, and returns their concatenation. Throws a TypeError if either argument is not an array/string.
+     *         If both arguments are the same type, then the result will be the same type, otherwise it will be an array.
+     *
+     */
+
+    var concat = curry(function(left, right) {
+      if (!Array.isArray(left) && typeof(left) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      if (!Array.isArray(right) && typeof(right) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      if (typeof(left) !== typeof(right)) {
+        if (Array.isArray(left))
+          right = right.split('');
+        else
+          left = left.split('');
+      }
+
+      return left.concat(right);
+    });
+
+
     var exported = {
       append: append,
+      concat: concat,
       copy: copy,
       drop: drop,
       dropWhile: dropWhile,

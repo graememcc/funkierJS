@@ -21,7 +21,7 @@
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-                             'dropWhile', 'prepend', 'append'];
+                             'dropWhile', 'prepend', 'append', 'concat'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2216,6 +2216,77 @@
 
     makePrependAppendTests('prepend', array.prepend);
     makePrependAppendTests('append', array.append);
+
+
+    var concatSpec = {
+      name: 'concat',
+      arity: 2,
+      restrictions: [['array', 'string'], ['array', 'string']],
+      validArguments: [[[1, 2], 'abc'], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(concatSpec, array.concat, function(concat) {
+      var addTests = function(arrData, strData) {
+        var addOne = function(type, message, left, right) {
+          it('Result has type ' + type + ' ' + message + ' for ' + type, function() {
+            var first = left.slice();
+            var second = right.slice();
+            var result = concat(first, second);
+
+            if (type === 'array')
+              expect(Array.isArray(result)).to.be.true;
+            else
+              expect(result).to.be.a('string');
+          });
+
+
+          it('Result has correct length ' + message + ' for ' + type, function() {
+            var first = left.slice();
+            var second = right.slice();
+            var result = concat(first, second).length === left.length + right.length;
+
+            expect(result).to.be.true;
+          });
+
+
+          it('Result has correct values ' + message + ' for ' + type, function() {
+            var first = left.slice();
+            var second = right.slice();
+            var newVal = concat(first, second);
+            if (type === 'string')
+              newVal = newVal.split('');
+
+            var result = newVal.every(function(v, i) {
+              return v === (i < first.length ? first[i] : second[i - first.length]);
+            });
+
+            expect(result).to.be.true;
+          });
+        };
+
+        addOne('array', '(LHS empty)', [], [1, 2, 3]);
+        addOne('array', '(RHS empty)', [1, 2, 3], []);
+        addOne('array', '(both empty)', [], []);
+        arrData.forEach(function(data, i) {
+          addOne('array', '(' + (i + 1) + ')', data[0], data[1]);
+        });
+        addOne('string', '(LHS empty)', '', 'abc');
+        addOne('string', '(RHS empty)', 'abc', '');
+        addOne('string', '(both empty)', '', '');
+        strData.forEach(function(data, i) {
+          addOne('string', '(' + (i + 1) + ')', data[0], data[1]);
+        });
+        addOne('array', '(LHS array, RHS string)', [1, 2], 'abc');
+        addOne('array', '(LHS string, RHS array)', 'abc', [3, 4, 5]);
+      };
+
+      addTests([[[4], [1, 2, 3]], [[{}], [{foo: 1}, {bar: 2}, {fizz: 3}]]],
+               [['a', 'bcd'], ['0', '123']]);
+
+
+      testCurriedFunction('concat', concat, [[1], [1, 2, 3]]);
+    });
   };
 
 
