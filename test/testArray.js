@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep'];
+                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1570,6 +1570,99 @@
 
 
       testCurriedFunction('rangeStep', array.rangeStep, [1, 1, 5]);
+    });
+
+
+    var takeSpec = {
+      name: 'take',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[1], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(takeSpec, array.take, function(take) {
+      addBadNumberTests('count', take, [], [[1, 2, 3]]);
+      addBadNumberTests('count', take, [], ['abc']);
+
+
+      it('Returns empty array when count is 0 for array (1)', function() {
+        var result = take(0, [2, 3, 4]);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when count is 0 for array (2)', function() {
+        var result = take(0, []);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty string when count is 0 for string (1)', function() {
+        var result = take(0, 'funkier');
+
+        expect(result).to.deep.equal('');
+      });
+
+
+      it('Returns empty string when count is 0 for string (2)', function() {
+        var result = take(0, '');
+
+        expect(result).to.deep.equal('');
+      });
+
+
+      var addCorrectTypeTests = function(message, count, arrData, strData) {
+        var addTest = function(type, typeMessage, data) {
+          it('Returns ' + type + ' when ' + message + typeMessage, function() {
+            var result = take(count, data);
+
+            if (type === 'array')
+              expect(Array.isArray(result)).to.be.true;
+            else
+              expect(result).to.be.a('string');
+          });
+        };
+
+        addTest('array', ' for array', arrData);
+        addTest('string', ' for string', strData);
+      };
+
+
+      var addCorrectEntryTests = function(message, count, arrData, strData) {
+        var addTest = function(typeMessage, data) {
+          it('Works correctly when ' + message + typeMessage, function() {
+            var arr = take(count, data);
+            if (data === strData)
+              arr = arr.split('');
+
+            var result = arr.every(function(val, i) {
+              return val === data[i];
+            });
+
+            expect(result).to.be.true;
+          });
+        };
+
+        addTest(' for array', arrData);
+        addTest(' for string', strData);
+      };
+
+
+      var addTests = function(message, count, arrData, strData) {
+        addCorrectTypeTests(message, count, arrData, strData);
+        addCorrectEntryTests(message, count, arrData, strData);
+      };
+
+
+      addTests('count < length', 2, [1, 2, 3], 'funkier');
+      addTests('count === length', 3, [{}, {}, {}], 'abc');
+      addTests('count > length', 4, [3, 4, 5], 'x');
+
+
+      testCurriedFunction('take', take, [1, [1, 2, 3]]);
     });
   };
 

@@ -347,6 +347,30 @@
     });
 
 
+    /*
+     * take: Takes a count, and an array or string. Returns an array or string containing the first count elements of the given array or string.
+     *       Throws if the first element is not an array or string.
+     *
+     */
+
+    var take = curry(function(count, arr) {
+      count = checkPositiveIntegral(count);
+
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var wasString = typeof(arr) === 'string';
+      if (wasString)
+        arr = arr.split('');
+
+      var result = arr.slice(0, count);
+      if (wasString)
+        result = result.join('');
+
+      return result;
+    });
+
+
     var exported = {
       each: each,
       element: element,
@@ -369,7 +393,8 @@
       rangeStep: rangeStep,
       repeat: repeat,
       some: some,
-      sum: sum
+      sum: sum,
+      take: take
     };
 
 
