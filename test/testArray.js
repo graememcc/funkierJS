@@ -1616,8 +1616,8 @@
 
 
       var addCorrectTypeTests = function(message, count, arrData, strData) {
-        var addTest = function(type, typeMessage, data) {
-          it('Returns ' + type + ' when ' + message + typeMessage, function() {
+        var addTest = function(type, data) {
+          it('Returns ' + type + ' when ' + message + ' for ' + type, function() {
             var result = take(count, data);
 
             if (type === 'array')
@@ -1627,8 +1627,8 @@
           });
         };
 
-        addTest('array', ' for array', arrData);
-        addTest('string', ' for string', strData);
+        addTest('array', arrData);
+        addTest('string', strData);
       };
 
 
@@ -1713,8 +1713,8 @@
 
 
       var addCorrectTypeTests = function(message, count, arrData, strData) {
-        var addTest = function(type, typeMessage, data) {
-          it('Returns ' + type + ' when ' + message + typeMessage, function() {
+        var addTest = function(type, data) {
+          it('Returns ' + type + ' when ' + message + ' for ' + type, function() {
             var result = drop(count, data);
 
             if (type === 'array')
@@ -1724,8 +1724,8 @@
           });
         };
 
-        addTest('array', ' for array', arrData);
-        addTest('string', ' for string', strData);
+        addTest('array', arrData);
+        addTest('string', strData);
       };
 
 
