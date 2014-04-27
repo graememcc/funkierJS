@@ -533,6 +533,24 @@
     });
 
 
+    /*
+     * prepend: takes a value, and an array or string, and returns a new array or string with the given value prepended. Throws if the second
+     *          argument is not an array/string. Note: if the second argument is a string and the first is not, the value will be coerced to
+     *          a string; you may not get the result you expect.
+     *
+     */
+
+    var prepend = curry(function(v, arr) {
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      if (Array.isArray(arr))
+        return [v].concat(arr);
+
+      return '' + v + arr;
+    });
+
+
     var exported = {
       copy: copy,
       drop: drop,
@@ -555,6 +573,7 @@
       minimum: minimum,
       last: last,
       length: length,
+      prepend: prepend,
       product: product,
       range: range,
       rangeStep: rangeStep,

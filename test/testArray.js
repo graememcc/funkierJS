@@ -20,7 +20,8 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile', 'dropWhile'];
+                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
+                             'dropWhile', 'prepend'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2136,6 +2137,84 @@
 
     makeTakeWDropWTests('takeWhile', array.takeWhile);
     makeTakeWDropWTests('dropWhile', array.dropWhile);
+
+
+    var makePrependAppendTests = function(desc, fnUnderTest) {
+      var isPrepend = desc === 'prepend';
+
+
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [[], ['array', 'string']],
+        validArguments: [[1], [[1, 2, 3], 'abc']]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var addTests = function(arrData, strData) {
+          var addOne = function(type, message, val, data) {
+            it('Result has type ' + type + ' ' + message + ' for ' + type, function() {
+              var original = data.slice();
+              var result = fnUnderTest(val, original);
+
+              if (type === 'array')
+                expect(Array.isArray(result)).to.be.true;
+              else
+                expect(result).to.be.a('string');
+            });
+
+
+            it('Result has correct length ' + message + ' for ' + type, function() {
+              var original = data.slice();
+              var result = fnUnderTest(val, original).length === original.length + 1;
+
+              expect(result).to.be.true;
+            });
+
+
+            it('Result has correct values ' + message + ' for ' + type, function() {
+              var original = data.slice();
+              var newVal = fnUnderTest(val, original);
+              if (type === 'string')
+                newVal = newVal.split('');
+
+              var prependCheck = function(v, i) {
+                if (i === 0)
+                  return v === val;
+                return v === original[i - 1];
+              };
+
+              var appendCheck = function(v, i) {
+                if (i === original.length)
+                  return v === val;
+                return v === original[i];
+              };
+
+              var result = newVal.every(isPrepend ? prependCheck : appendCheck);
+
+              expect(result).to.be.true;
+            });
+          };
+
+          arrData.forEach(function(data, i) {
+            addOne('array', '(' + (i + 1) + ')', data[0], data[1]);
+          });
+          strData.forEach(function(data, i) {
+            addOne('string', '(' + (i + 1) + ')', data[0], data[1]);
+          });
+        };
+
+        addTests([[4, [1, 2, 3]], [{}, [{foo: 1}, {bar: 2}, {fizz: 3}]], [1, []]],
+                 [['a', 'bcd'], ['0', '123'], ['z', '']]);
+
+
+        testCurriedFunction(desc, fnUnderTest, [1, [1, 2, 3]]);
+      });
+    };
+
+
+    makePrependAppendTests('prepend', array.prepend);
   };
 
 
