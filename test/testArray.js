@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile'];
+                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile', 'dropWhile'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2088,7 +2088,7 @@
 
           it('Result has correct length ' + message + ' for ' + type, function() {
             var original = data.slice();
-            var length = isTakeWhile ? expectedLength : originalLength - expectedLength;
+            var length = isTakeWhile ? expectedLength : original.length - expectedLength;
             var result = fnUnderTest(predicate, original).length === length;
 
             expect(result).to.be.true;
@@ -2099,7 +2099,7 @@
             var newPredicate = function(x) {newPredicate.called += 1; return predicate(x);};
             newPredicate.called = 0;
             fnUnderTest(newPredicate, data.slice());
-            var result = newPredicate.called === expectedLength + 1;
+            var result = newPredicate.called === expectedLength + (expectedLength === data.length ? 0 : 1);
 
             expect(result).to.be.true;
           });
@@ -2123,8 +2123,10 @@
         addTests('array', '(1)', function(x) {return x.foo < 4;}, 2,
                  [{foo: 1}, {foo: 3}, {foo: 4}, {foo: 5}, {foo: 6}]);
         addTests('array', '(2)', function(x) {return x % 2 === 0;}, 3, [2, 4, 6, 1, 5]);
+        addTests('array', '(3)', base.constant(true), 5, [2, 4, 6, 1, 5]);
         addTests('string', '(1)', function(x) {return x  === ' ';}, 3, '   funkier');
         addTests('string', '(2)', function(x) {return x >= '0' && x <= '9';}, 2, '09abc');
+        addTests('string', '(3)', base.constant(true), 5, 'abcde');
 
 
         testCurriedFunction(desc, fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
@@ -2133,6 +2135,7 @@
 
 
     makeTakeWDropWTests('takeWhile', array.takeWhile);
+    makeTakeWDropWTests('dropWhile', array.dropWhile);
   };
 
 

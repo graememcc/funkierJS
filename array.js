@@ -508,9 +508,35 @@
     });
 
 
+    /*
+     * dropWhile: Takes a predicate function p, and an array or string. Returns a new array or string containing the members of the array/string
+     *            after the initial members for which the predicate returned true have been removed. Throws a TypeError if p is not a function
+     *            of arity 1, or if the given value is not an array or string.
+     *
+     */
+
+    var dropWhile = curry(function(p, arr) {
+      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
+        throw new TypeError('Value is not a predicate function');
+
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var l = arr.length;
+      var done = false;
+
+      var i = 0;
+      while (i < arr.length && p(arr[i]))
+        i += 1;
+
+      return arr.slice(i);
+    });
+
+
     var exported = {
       copy: copy,
       drop: drop,
+      dropWhile: dropWhile,
       each: each,
       element: element,
       elementWith: elementWith,
