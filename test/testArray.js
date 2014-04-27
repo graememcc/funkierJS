@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product', 'element', 'elementWith', 'range'];
+                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1463,6 +1463,113 @@
 
 
       testCurriedFunction('range', array.range, [1, 5]);
+    });
+
+
+    var rangeStepSpec = {
+      name: 'rangeSpec',
+      arity: 3
+    };
+
+
+    describeFunction(rangeStepSpec, array.rangeStep, function(rangeStep) {
+      it('Throws if b < a, and step positive', function() {
+        var fn = function() {
+          rangeStep(1, 1, 0);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if b > a, and step negative', function() {
+        var fn = function() {
+          rangeStep(1, -1, 10);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if b < a, and step zero', function() {
+        var fn = function() {
+          rangeStep(1, 0, 0);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if b > a, and step zero', function() {
+        var fn = function() {
+          rangeStep(1, 0, 10);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Returns empty array if b === a (1)', function() {
+        var result = rangeStep(1, 1, 1);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array if b === a (2)', function() {
+        var result = rangeStep(1, -1, 1);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var a = 0;
+        var step = 2;
+        var b = 10;
+        var arr = rangeStep(a, step, b);
+        var result = arr.every(function(val, i) {
+          return (i === 0 && val === a) || (val === arr[i - 1] + step);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var a = 15.2;
+        var step = -1.1;
+        var b = 1.1
+        var arr = rangeStep(a, step, b);
+        var result = arr.every(function(val, i) {
+          return (i === 0 && val === a) || (val === arr[i - 1] + step);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Does not include right-hand limit (1)', function() {
+        var a = 0;
+        var step = 2;
+        var b = 10;
+        var arr = rangeStep(a, step, b);
+
+        expect(array.last(arr) < b).to.be.true;
+      });
+
+
+      it('Does not include right-hand limit (2)', function() {
+        var a = 15.2;
+        var step = -1.1;
+        var b = 1.1
+        var arr = rangeStep(a, step, b);
+
+        expect(array.last(arr) > b).to.be.true;
+      });
+
+
+      testCurriedFunction('rangeStep', array.rangeStep, [1, 1, 5]);
     });
   };
 
