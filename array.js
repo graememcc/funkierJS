@@ -395,6 +395,17 @@
     });
 
 
+    /*
+     * init: takes an array or string. Returns an array or string containing every element except the last. Throws if the array or string is empty,
+     *       or if the argument is not an array or string.
+     *
+     */
+
+    var init = curry(function(arr) {
+      return take(length(arr) - 1, arr);
+    });
+
+
     var exported = {
       drop: drop,
       each: each,
@@ -408,6 +419,7 @@
       foldr1: foldr1,
       getIndex: getIndex,
       head: head,
+      init: init,
       map: map,
       maximum: maximum,
       minimum: minimum,
