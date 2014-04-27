@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init'];
+                             'drop', 'init', 'tail'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1784,55 +1784,61 @@
     });
 
 
-    var initSpec = {
-      name: 'init',
-      arity: 1,
-      restrictions: [['array', 'string']],
-      validArguments: [[[1, 2, 3], 'abc']]
-    };
-
-
-    describeFunction(initSpec, array.init, function(init) {
-      addThrowsOnEmptyTests(init, []);
-
-
-      var addTests = function(type, tests) {
-        var addOneSet = function(data, count) {
-          it('Returns ' + type + ' when called with ' + type + '(' + count + ')', function() {
-            var result = init(data);
-
-            if (type === 'array')
-              expect(Array.isArray(result)).to.be.true;
-            else
-              expect(result).to.be.a('string');
-          });
-
-
-          it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
-            var result = init(data);
-
-            expect(result.length).equal(data.length - 1);
-          });
-
-
-          it('Works correctly for ' + type + ' (' + count + ')', function() {
-            var arr = init(data);
-            if (type === 'string')
-              arr = arr.split('');
-
-            var result = arr.every(function(val, i) {
-              return val === data[i];
-            });
-          });
-        };
-
-        tests.forEach(addOneSet);
+    var makeInitTailTests = function(desc, fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1,
+        restrictions: [['array', 'string']],
+        validArguments: [[[1, 2, 3], 'abc']]
       };
 
 
-      addTests('array', [[1, 2, 3], [{}, {}, {}, {}, {}]]);
-      addTests('string', ['abc', 'funkier']);
-    });
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addThrowsOnEmptyTests(fnUnderTest, []);
+
+
+        var addTests = function(type, tests) {
+          var addOneSet = function(data, count) {
+            it('Returns ' + type + ' when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data);
+
+              if (type === 'array')
+                expect(Array.isArray(result)).to.be.true;
+              else
+                expect(result).to.be.a('string');
+            });
+
+
+            it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data);
+
+              expect(result.length).equal(data.length - 1);
+            });
+
+
+            it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var arr = fnUnderTest(data);
+              if (type === 'string')
+                arr = arr.split('');
+
+              var result = arr.every(function(val, i) {
+                return val === data[fnUnderTest === array.tail ? i + 1 : i];
+              });
+            });
+          };
+
+          tests.forEach(addOneSet);
+        };
+
+
+        addTests('array', [[1, 2, 3], [{}, {}, {}, {}, {}]]);
+        addTests('string', ['abc', 'funkier']);
+      });
+    };
+
+
+    makeInitTailTests('init', array.init);
+    makeInitTailTests('tail', array.tail);
   };
 
 

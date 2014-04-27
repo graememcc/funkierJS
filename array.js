@@ -406,6 +406,20 @@
     });
 
 
+    /*
+     * tail: takes an array or string. Returns an array or string containing every element except the first. Throws if the array or string is empty,
+     *       or if the argument is not an array or string.
+     *
+     */
+
+    var tail = curry(function(arr) {
+      if (arr.length === 0)
+        throw new TypeError('Cannot take tail of empty array/string');
+
+      return drop(1, arr);
+    });
+
+
     var exported = {
       drop: drop,
       each: each,
@@ -431,6 +445,7 @@
       repeat: repeat,
       some: some,
       sum: sum,
+      tail: tail,
       take: take
     };
 
