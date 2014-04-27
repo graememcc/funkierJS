@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail'];
+                             'drop', 'init', 'tail', 'inits'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1839,6 +1839,80 @@
 
     makeInitTailTests('init', array.init);
     makeInitTailTests('tail', array.tail);
+
+
+    var makeInitsTailsTests = function(desc, fnUnderTest) {
+      var spec = {
+        name: desc,
+        arity: 1,
+        restrictions: [['array', 'string']],
+        validArguments: [[[1, 2, 3], 'abc']]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var addTests = function(type, tests) {
+          var addOneSet = function(data, count) {
+            it('Returns array when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data);
+
+              expect(Array.isArray(result)).to.be.true;
+            });
+
+
+            it('Returns elements of type ' + type + ' when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data).every(function(val) {
+                if (type === 'array')
+                  return Array.isArray(val);
+                return typeof(val) === 'string';
+               });
+
+               expect(result).to.be.true;
+            });
+
+
+            it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data);
+
+              expect(result.length).equal(data.length + 1);
+            });
+
+
+            it('Elements have correct length when called with ' + type + '(' + count + ')', function() {
+              var result = fnUnderTest(data).every(function(val, i) {
+                return val.length === (fnUnderTest === array.tails ? data.length - i : i);
+              });
+
+              expect(result).to.be.true;
+            });
+
+
+            it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var arr = fnUnderTest(data);
+              var result = arr.every(function(val) {
+                if (type === 'string')
+                  val = val.split('');
+
+                return val.every(function(v, i) {
+                  return v === data[i];
+                });
+              });
+
+              expect(result).to.be.true;
+            });
+          };
+
+          tests.forEach(addOneSet);
+        };
+
+
+        addTests('array', [[], [1, 2], [{}, {}, {}]]);
+        addTests('string', ['', 'ab', 'funkier']);
+      });
+    };
+
+
+    makeInitsTailsTests('inits', array.inits);
   };
 
 

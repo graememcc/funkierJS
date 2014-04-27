@@ -420,6 +420,22 @@
     });
 
 
+    /*
+     * inits: Takes an array or string. Returns all the prefixes of the given array or string. Throws if the given value is not an array or
+     *        string.
+     *
+     */
+
+    var inits = curry(function(arr) {
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var r = range(0, length(arr) + 1);
+
+      return map(function(v) {return take(v, arr);}, r);
+    });
+
+
     var exported = {
       drop: drop,
       each: each,
@@ -434,6 +450,7 @@
       getIndex: getIndex,
       head: head,
       init: init,
+      inits: inits,
       map: map,
       maximum: maximum,
       minimum: minimum,
