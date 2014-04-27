@@ -299,9 +299,22 @@
     });
 
 
+    /*
+     * elementWith: A generalised version of element. Takes a predicate function p of one argument,  and an array or string. Returns true
+     *              if there is an element in the array or string for which p returns true, and returns false otherwise. Throws if the first
+     *              argument is not a function of arity 1, or the second argument is not an array or string.
+     *
+     */
+
+    var elementWith = curry(function(p, arr) {
+      return some(p, arr);
+    });
+
+
     var exported = {
       each: each,
       element: element,
+      elementWith: elementWith,
       every: every,
       filter: filter,
       foldl: foldl,

@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product', 'element'];
+                             'sum', 'product', 'element', 'elementWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1329,6 +1329,71 @@
 
 
       testCurriedFunction('element', element, [2, [1, 2, 3]]);
+    });
+
+
+    var elementWithSpec = {
+      name: 'element',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc']]
+    };
+
+
+    describeFunction(elementWithSpec, array.elementWith, function(elementWith) {
+      addAcceptsOnlyFixedArityTests(elementWith, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(elementWith, 'string', 1, [], ['abc']);
+
+
+      it('Returns correct result for empty arrays', function() {
+        var f = function(x) {return true;};
+        var result = elementWith(f, []);
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result for empty strings', function() {
+        var f = function(x) {return true;};
+        var result = elementWith(f, '');
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when elementWith does not match elements in array', function() {
+        var f = function(x) {return 'foo' in x && x.foo === 5;};
+        var result = elementWith(f, [{foo: 1}, {foo: 3}, {foo: 4}]);
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when elementWith does not match elements in string', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var result = elementWith(f, 'bcd');
+
+        expect(result).to.be.false;
+      });
+
+
+      it('Returns correct result when elementWith matches element in array', function() {
+        var f = function(x) {return 'foo' in x && x.foo === 7;};
+        var result = elementWith(f, [{foo: 1}, {foo: 7}, {foo: 4}]);
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Returns correct result when elementWith matches element in string', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var result = elementWith(f, 'bc7d');
+
+        expect(result).to.be.true;
+      });
+
+
+      testCurriedFunction('elementWith', elementWith, [function(x) {return true;}, [1, 2, 3]]);
     });
   };
 
