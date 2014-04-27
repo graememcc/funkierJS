@@ -19,7 +19,8 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take'];
+                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
+                             'drop'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1663,6 +1664,123 @@
 
 
       testCurriedFunction('take', take, [1, [1, 2, 3]]);
+    });
+
+
+    var dropSpec = {
+      name: 'drop',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[1], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(dropSpec, array.drop, function(drop) {
+      addBadNumberTests('count', drop, [], [[1, 2, 3]]);
+      addBadNumberTests('count', drop, [], ['abc']);
+
+
+      it('Returns empty array when count is 0 for array (1)', function() {
+        var original = [2, 3, 4];
+        var result = drop(0, original);
+
+        expect(result).to.deep.equal(original);
+      });
+
+
+      it('Returns empty array when count is 0 for array (2)', function() {
+        var original = [];
+        var result = drop(0, original);
+
+        expect(result).to.deep.equal(original);
+      });
+
+
+      it('Returns empty string when count is 0 for string (1)', function() {
+        var original = 'funkier';
+        var result = drop(0, original);
+
+        expect(result).to.deep.equal(original);
+      });
+
+
+      it('Returns empty string when count is 0 for string (2)', function() {
+        var original = '';
+        var result = drop(0, original);
+
+        expect(result).to.deep.equal(original);
+      });
+
+
+      var addCorrectTypeTests = function(message, count, arrData, strData) {
+        var addTest = function(type, typeMessage, data) {
+          it('Returns ' + type + ' when ' + message + typeMessage, function() {
+            var result = drop(count, data);
+
+            if (type === 'array')
+              expect(Array.isArray(result)).to.be.true;
+            else
+              expect(result).to.be.a('string');
+          });
+        };
+
+        addTest('array', ' for array', arrData);
+        addTest('string', ' for string', strData);
+      };
+
+
+      var addCorrectEntryTests = function(message, count, arrData, strData) {
+        var addTest = function(typeMessage, data) {
+          it('Works correctly when ' + message + typeMessage, function() {
+            var arr = drop(count, data);
+            if (data === strData)
+              arr = arr.split('');
+
+            var result = arr.every(function(val, i) {
+              return val === data[i + count];
+            });
+
+            expect(result).to.be.true;
+          });
+        };
+
+        addTest(' for array', arrData);
+        addTest(' for string', strData);
+      };
+
+
+      var addNonEmptyTests = function(message, count, arrData, strData) {
+        addCorrectTypeTests(message, count, arrData, strData);
+        addCorrectEntryTests(message, count, arrData, strData);
+      };
+
+
+      var addEmptyAfterDropTests = function(message, count, arrData, strData) {
+        var addTest = function(type, typeMessage, data) {
+          it('Returns empty ' + type + ' when ' + message + typeMessage, function() {
+            var result = drop(count, data);
+
+            expect(result).to.deep.equal(type === 'array' ? [] : '');
+          });
+        };
+
+        addTest('array', ' for array ', arrData);
+        addTest('string', ' for string ', strData);
+      };
+
+
+      var addEmptyTests = function(message, count, arrData, strData) {
+        addCorrectTypeTests(message, count, arrData, strData);
+        addEmptyAfterDropTests(message, count, arrData, strData);
+      };
+
+
+      addNonEmptyTests('count < length', 1, [1, 2, 3], 'funkier');
+      addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], 'abc');
+      addEmptyAfterDropTests('count > length', 4, [3, 4, 5], 'x');
+
+
+      testCurriedFunction('drop', drop, [1, [1, 2, 3]]);
     });
   };
 

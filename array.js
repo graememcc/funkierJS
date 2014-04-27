@@ -349,7 +349,7 @@
 
     /*
      * take: Takes a count, and an array or string. Returns an array or string containing the first count elements of the given array or string.
-     *       Throws if the first element is not an array or string.
+     *       Throws if the last argument is not an array or string.
      *
      */
 
@@ -371,7 +371,32 @@
     });
 
 
+    /*
+     * drop: Takes a count, and an array or string. Returns an array or string with the first count elements of the given array or string removed.
+     *       Throws if the last argument is not an array or string.
+     *
+     */
+
+    var drop = curry(function(count, arr) {
+      count = checkPositiveIntegral(count);
+
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var wasString = typeof(arr) === 'string';
+      if (wasString)
+        arr = arr.split('');
+
+      var result = arr.slice(count);
+      if (wasString)
+        result = result.join('');
+
+      return result;
+    });
+
+
     var exported = {
+      drop: drop,
       each: each,
       element: element,
       elementWith: elementWith,
