@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits', 'tails'];
+                             'drop', 'init', 'tail', 'inits', 'tails', 'copy'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1914,6 +1914,57 @@
 
     makeInitsTailsTests('inits', array.inits);
     makeInitsTailsTests('tails', array.tails);
+
+
+    var copySpec = {
+      name: 'copy',
+      arity: 1,
+      restrictions: [['array', 'string']],
+      validArguments: [[[1, 2], 'abc']]
+    };
+
+
+    describeFunction(copySpec, array.copy, function(copy) {
+      var addTests = function(message, data) {
+        it('Returns a copy ' + message, function() {
+          var original = data.slice();
+          var result = copy(original) === original;
+
+          expect(result).to.be.false;
+        });
+
+
+        it('Has correct length ' + message, function() {
+          var original = data.slice();
+          var result = copy(original).length === original.length;
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Works correctly ' + message, function() {
+          var original = data.slice();
+          var result = copy(original);
+
+          expect(result).to.deep.equal(original);
+        });
+
+
+        it('Shallow copies members ' + message, function() {
+          var original = data.slice();
+          var result = copy(original).every(function(val, i) {
+            return val === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for empty arrays', []);
+      addTests('(1)', [1, 2, 3]);
+      addTests('(2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
+    });
   };
 
 

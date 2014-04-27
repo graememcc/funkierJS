@@ -11,6 +11,7 @@
 
     var object = require('./object');
     var extract = object.extract;
+    var callProp = object.callProp;
 
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
@@ -452,7 +453,16 @@
     });
 
 
+    /*
+     * copy: Takes an array, and returns a shallow copy. Throws a TypeError if the given value is not an array.
+     *
+     */
+
+    var copy = callProp('slice');
+
+
     var exported = {
+      copy: copy,
       drop: drop,
       each: each,
       element: element,
