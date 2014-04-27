@@ -436,6 +436,22 @@
     });
 
 
+    /*
+     * tails: Takes an array or string. Returns all the suffixes of the given array or string. Throws if the given value is not an array or
+     *        string.
+     *
+     */
+
+    var tails = curry(function(arr) {
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var r = range(0, length(arr) + 1);
+
+      return map(function(v) {return drop(v, arr);}, r);
+    });
+
+
     var exported = {
       drop: drop,
       each: each,
@@ -463,6 +479,7 @@
       some: some,
       sum: sum,
       tail: tail,
+      tails: tails,
       take: take
     };
 

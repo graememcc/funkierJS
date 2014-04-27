@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits'];
+                             'drop', 'init', 'tail', 'inits', 'tails'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1889,12 +1889,12 @@
 
             it('Works correctly for ' + type + ' (' + count + ')', function() {
               var arr = fnUnderTest(data);
-              var result = arr.every(function(val) {
+              var result = arr.every(function(val, i) {
                 if (type === 'string')
                   val = val.split('');
 
-                return val.every(function(v, i) {
-                  return v === data[i];
+                return val.every(function(v, j) {
+                  return v === data[fnUnderTest === array.tails ? i + j : j];
                 });
               });
 
@@ -1913,6 +1913,7 @@
 
 
     makeInitsTailsTests('inits', array.inits);
+    makeInitsTailsTests('tails', array.tails);
   };
 
 
