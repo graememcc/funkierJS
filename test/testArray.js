@@ -19,7 +19,7 @@
     var expectedObjects = [];
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-                             'sum', 'product', 'element', 'elementWith'];
+                             'sum', 'product', 'element', 'elementWith', 'range'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -1394,6 +1394,75 @@
 
 
       testCurriedFunction('elementWith', elementWith, [function(x) {return true;}, [1, 2, 3]]);
+    });
+
+
+    var rangeSpec = {
+      name: 'range',
+      arity: 2
+    };
+
+
+    describeFunction(rangeSpec, array.range, function(range) {
+      it('Throws if b < a', function() {
+        var fn = function() {
+          range(1, 0);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Returns empty array if b === a', function() {
+        var result = range(1, 1);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var a = 0;
+        var b = 10;
+        var arr = range(a, b);
+        var result = arr.every(function(val, i) {
+          return (i === 0 && val === a) || (val === arr[i - 1] + 1);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var a = 1.1;
+        var b = 15.2;
+        var arr = range(a, b);
+        var result = arr.every(function(val, i) {
+          return (i === 0 && val === a) || (val === arr[i - 1] + 1);
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Does not include right-hand limit (1)', function() {
+        var a = 0;
+        var b = 10;
+        var arr = range(a, b);
+
+        expect(array.last(arr) < b).to.be.true;
+      });
+
+
+      it('Does not include right-hand limit (2)', function() {
+        var a = 1.1;
+        var b = 15.2;
+        var arr = range(a, b);
+
+        expect(array.last(arr) < b).to.be.true;
+      });
+
+
+      testCurriedFunction('range', array.range, [1, 5]);
     });
   };
 

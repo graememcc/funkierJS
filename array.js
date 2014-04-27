@@ -311,6 +311,24 @@
     });
 
 
+    /*
+     * range: Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not including b,
+     *        each element increasing by 1. Throws a TypeError if b < a.
+     *
+     */
+
+    var range = curry(function(a, b) {
+      if (b < a)
+        throw new TypeError('Incorrect bounds for range');
+
+      var result = [];
+      for (var i = a; i < b; i++)
+        result.push(i);
+
+      return result;
+    });
+
+
     var exported = {
       each: each,
       element: element,
@@ -329,6 +347,7 @@
       last: last,
       length: length,
       product: product,
+      range: range,
       repeat: repeat,
       some: some,
       sum: sum
