@@ -476,6 +476,38 @@
     });
 
 
+    /*
+     * takeWhile: Takes a predicate function p, and an array or string. Returns a new array or string containing the initial members of the
+     *            given array/string for which the predicate returned true. Throws a TypeError if p is not a function of arity 1, or if the
+     *            given value is not an array or string.
+     *
+     */
+
+    var takeWhile = curry(function(p, arr) {
+      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
+        throw new TypeError('Value is not a predicate function');
+
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      var result = [];
+      var wasString = typeof(arr) === 'string';
+      var l = arr.length;
+      var done = false;
+
+      for (var i = 0; !done && i < l; i++) {
+        if (p(arr[i]))
+          result.push(arr[i]);
+        else
+          done = true;
+      }
+
+      if (wasString)
+        result = result.join('');
+      return result;
+    });
+
+
     var exported = {
       copy: copy,
       drop: drop,
@@ -506,7 +538,8 @@
       sum: sum,
       tail: tail,
       tails: tails,
-      take: take
+      take: take,
+      takeWhile: takeWhile
     };
 
 

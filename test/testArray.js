@@ -20,7 +20,7 @@
     var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice'];
+                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2043,6 +2043,96 @@
 
       testCurriedFunction('slice', slice, [1, 2, 'funkier']);
     });
+
+
+    var makeTakeWDropWTests = function(desc, fnUnderTest) {
+      var isTakeWhile = desc === 'takeWhile';
+
+
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [['function'], ['array', 'string']],
+        validArguments: [[function(x) {return true;}], [[1, 2, 3], 'abc']]
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addAcceptsOnlyFixedArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
+        addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 1, [], ['abc']);
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], ['abc']);
+
+
+        if (isTakeWhile) {
+          it('Always returns a copy', function() {
+            var original = [4, 5, 6];
+            var result = fnUnderTest(base.constant(true), original) !== original;
+
+            expect(result).to.be.true;
+          });
+        }
+
+
+        var addTests = function(type, message, predicate, expectedLength, data) {
+          it('Returns ' + type + ' ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var result = fnUnderTest(predicate, original);
+
+            if (type === 'array')
+              expect(Array.isArray(result)).to.be.true;
+            else
+              expect(result).to.be.a('string');
+          });
+
+
+          it('Result has correct length ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var length = isTakeWhile ? expectedLength : originalLength - expectedLength;
+            var result = fnUnderTest(predicate, original).length === length;
+
+            expect(result).to.be.true;
+          });
+
+
+          it('Predicate only called as often as needed ' + message + ' for ' + type, function() {
+            var newPredicate = function(x) {newPredicate.called += 1; return predicate(x);};
+            newPredicate.called = 0;
+            fnUnderTest(newPredicate, data.slice());
+            var result = newPredicate.called === expectedLength + 1;
+
+            expect(result).to.be.true;
+          });
+
+
+          it('Result has correct members ' + message + ' for ' + type, function() {
+            var original = data.slice();
+            var arr = fnUnderTest(predicate, original);
+            if (type === 'string')
+              arr = arr.split('');
+
+            var result = arr.every(function(val, i) {
+              return val === original[isTakeWhile ? i : i + expectedLength];
+            });
+
+            expect(result).to.be.true;
+          });
+        };
+
+
+        addTests('array', '(1)', function(x) {return x.foo < 4;}, 2,
+                 [{foo: 1}, {foo: 3}, {foo: 4}, {foo: 5}, {foo: 6}]);
+        addTests('array', '(2)', function(x) {return x % 2 === 0;}, 3, [2, 4, 6, 1, 5]);
+        addTests('string', '(1)', function(x) {return x  === ' ';}, 3, '   funkier');
+        addTests('string', '(2)', function(x) {return x >= '0' && x <= '9';}, 2, '09abc');
+
+
+        testCurriedFunction(desc, fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
+      });
+    };
+
+
+    makeTakeWDropWTests('takeWhile', array.takeWhile);
   };
 
 
