@@ -21,7 +21,7 @@
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-                             'dropWhile', 'prepend'];
+                             'dropWhile', 'prepend', 'append'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2215,6 +2215,7 @@
 
 
     makePrependAppendTests('prepend', array.prepend);
+    makePrependAppendTests('append', array.append);
   };
 
 

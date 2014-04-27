@@ -551,7 +551,26 @@
     });
 
 
+    /*
+     * append: takes a value, and an array or string, and returns a new array or string with the given value appended. Throws if the second
+     *         argument is not an array/string. Note: if the second argument is a string and the first is not, the value will be coerced to
+     *         a string; you may not get the result you expect.
+     *
+     */
+
+    var append = curry(function(v, arr) {
+      if (!Array.isArray(arr) && typeof(arr) !== 'string')
+        throw new TypeError('Value is not an array or string');
+
+      if (Array.isArray(arr))
+        return arr.concat([v]);
+
+      return '' + arr + v;
+    });
+
+
     var exported = {
+      append: append,
       copy: copy,
       drop: drop,
       dropWhile: dropWhile,
