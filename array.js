@@ -12,6 +12,8 @@
     var object = require('./object');
     var extract = object.extract;
 
+    var utils = require('./utils');
+    var checkPositiveIntegral = utils.checkPositiveIntegral;
 
     /*
      * length: Takes an array or string, and returns its length
@@ -29,7 +31,8 @@
      */
 
     var getIndex = curry(function(i, a) {
-      if (isNaN(i) || i < 0 || i >= a.length)
+      i = checkPositiveIntegral(i);
+      if (i >= a.length)
         throw new TypeError('Index out of bounds');
 
       return a[i];
@@ -63,8 +66,7 @@
      */
 
     var repeat = curry(function(l, value) {
-      if (isNaN(l) || l < 0)
-        throw new TypeError('Invalid length');
+      l = checkPositiveIntegral(l);
 
       var result = [];
 

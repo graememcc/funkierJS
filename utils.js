@@ -38,7 +38,26 @@
     };
 
 
+    /* checkPositiveIntegral: takes a number and throw if it is not integral, otherwise
+     *                        return it.
+     *
+     */
+
+    var checkPositiveIntegral = function(n) {
+      n = n - 0;
+
+      if (isNaN(n) || !isFinite(n) || n < 0)
+        throw new TypeError('Value is not a positive integer');
+
+      if (n !== Math.floor(n) || n !== Math.ceil(n))
+        throw new TypeError('Value is not a positive integer');
+
+      return n;
+    };
+
+
     var exported = {
+      checkPositiveIntegral: checkPositiveIntegral,
       valueStringifier: valueStringifier
     };
 
