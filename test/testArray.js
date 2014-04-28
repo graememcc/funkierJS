@@ -21,9 +21,18 @@
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty'];
+                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
+
+
+    // Many functions split string arguments in order to run a test using every
+    var splitIfNecessary = function(val) {
+      if (typeof(val) === 'string')
+        val = val.split('');
+
+      return val;
+    };
 
 
     // Several functions have common behaviours, so we factor out common tests
@@ -214,7 +223,7 @@
 
         // allArgs now contains each element that our function was called with
         var source = argsAfter[argsAfter.length - 1];
-        if (typeof(source) === 'string') source = source.split('');
+        source = splitIfNecessary(source);
         var numElems = source.length - 1;
 
         var result = source.every(function(elem, i) {
@@ -250,8 +259,7 @@
           var copy = testData.slice();
           var fnResult = fnUnderTest.apply(null, argsBefore.concat([original]));
           var stillSameLength = original.length === copy.length;
-          if (type === 'string')
-            original = original.split('');
+          original = splitIfNecessary(original);
 
           var result = original.every(function(v, i) {
             return copy[i] === v;
@@ -264,6 +272,24 @@
 
       addOne('array', [{foo: 1}, {foo: 2}, {bar: 3}]);
       addOne('string', 'ab01cd');
+    };
+
+
+    // Several functions expect the return type to be the same as the final argument
+    var addReturnsSameTypeTests = function(fnUnderTest, argsBefore) {
+      var addOne = function(type, testData) {
+        it('Returns ' + type + ' when called with ' + type, function() {
+          var result = fnUnderTest.apply(null, argsBefore.concat([testData]));
+
+          if (type === 'array')
+            expect(Array.isArray(result)).to.be.true;
+          else
+            expect(typeof(result)).to.equal('string');
+        });
+      };
+
+      addOne('array', [{foo: 1}]);
+      addOne('string', 'abc');
     };
 
 
@@ -626,20 +652,6 @@
 
 
     describeFunction(filterSpec, array.filter, function(filter) {
-      it('Returns an array when called with an array', function() {
-        var result = filter(base.id, ['a', 1, true]);
-
-        expect(Array.isArray(result)).to.be.true;
-      });
-
-
-      it('Returns a string when called with a string', function() {
-        var result = filter(base.id, 'abc');
-
-        expect(typeof(result) === 'string').to.be.true;
-      });
-
-
       it('Returned array has correct length when called with an array (1)', function() {
         var arr = [2, null];
         var result = filter(base.constant(true), arr);
@@ -674,6 +686,7 @@
       });
 
 
+      addReturnsSameTypeTests(filter, [base.constant(true)]);
       addAcceptsOnlyFixedArityTests(filter, 'array', 1, [], [[1, 2, 3]]);
       addAcceptsOnlyFixedArityTests(filter, 'string', 1, [], ['abc']);
       addFuncCalledWithSpecificArityTests(filter, 'array', 1, [], [[4, 2]]);
@@ -1643,29 +1656,11 @@
       });
 
 
-      var addCorrectTypeTests = function(message, count, arrData, strData) {
-        var addTest = function(type, data) {
-          it('Returns ' + type + ' when ' + message + ' for ' + type, function() {
-            var result = take(count, data);
-
-            if (type === 'array')
-              expect(Array.isArray(result)).to.be.true;
-            else
-              expect(result).to.be.a('string');
-          });
-        };
-
-        addTest('array', arrData);
-        addTest('string', strData);
-      };
-
-
       var addCorrectEntryTests = function(message, count, arrData, strData) {
         var addTest = function(typeMessage, data) {
           it('Works correctly when ' + message + typeMessage, function() {
             var arr = take(count, data);
-            if (data === strData)
-              arr = arr.split('');
+            arr = splitIfNecessary(arr);
 
             var result = arr.every(function(val, i) {
               return val === data[i];
@@ -1680,15 +1675,11 @@
       };
 
 
-      var addTests = function(message, count, arrData, strData) {
-        addCorrectTypeTests(message, count, arrData, strData);
-        addCorrectEntryTests(message, count, arrData, strData);
-      };
+      addCorrectEntryTests('count < length', 2, [1, 2, 3], 'funkier');
+      addCorrectEntryTests('count === length', 3, [{}, {}, {}], 'abc');
+      addCorrectEntryTests('count > length', 4, [3, 4, 5], 'x');
 
-
-      addTests('count < length', 2, [1, 2, 3], 'funkier');
-      addTests('count === length', 3, [{}, {}, {}], 'abc');
-      addTests('count > length', 4, [3, 4, 5], 'x');
+      addReturnsSameTypeTests(take, [1]);
       addNoModificationOfOriginalTests(take, [1]);
 
 
@@ -1741,29 +1732,11 @@
       });
 
 
-      var addCorrectTypeTests = function(message, count, arrData, strData) {
-        var addTest = function(type, data) {
-          it('Returns ' + type + ' when ' + message + ' for ' + type, function() {
-            var result = drop(count, data);
-
-            if (type === 'array')
-              expect(Array.isArray(result)).to.be.true;
-            else
-              expect(result).to.be.a('string');
-          });
-        };
-
-        addTest('array', arrData);
-        addTest('string', strData);
-      };
-
-
       var addCorrectEntryTests = function(message, count, arrData, strData) {
         var addTest = function(typeMessage, data) {
           it('Works correctly when ' + message + typeMessage, function() {
             var arr = drop(count, data);
-            if (data === strData)
-              arr = arr.split('');
+            arr = splitIfNecessary(arr);
 
             var result = arr.every(function(val, i) {
               return val === data[i + count];
@@ -1775,12 +1748,6 @@
 
         addTest(' for array', arrData);
         addTest(' for string', strData);
-      };
-
-
-      var addNonEmptyTests = function(message, count, arrData, strData) {
-        addCorrectTypeTests(message, count, arrData, strData);
-        addCorrectEntryTests(message, count, arrData, strData);
       };
 
 
@@ -1798,15 +1765,10 @@
       };
 
 
-      var addEmptyTests = function(message, count, arrData, strData) {
-        addCorrectTypeTests(message, count, arrData, strData);
-        addEmptyAfterDropTests(message, count, arrData, strData);
-      };
-
-
-      addNonEmptyTests('count < length', 1, [1, 2, 3], 'funkier');
+      addCorrectEntryTests('count < length', 1, [1, 2, 3], 'funkier');
       addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], 'abc');
       addEmptyAfterDropTests('count > length', 4, [3, 4, 5], 'x');
+      addReturnsSameTypeTests(drop, [1]);
       addNoModificationOfOriginalTests(drop, [1]);
 
 
@@ -1825,20 +1787,11 @@
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         addThrowsOnEmptyTests(fnUnderTest, []);
+        addReturnsSameTypeTests(fnUnderTest, []);
 
 
         var addTests = function(type, tests) {
-          var addOneSet = function(data, count) {
-            it('Returns ' + type + ' when called with ' + type + '(' + count + ')', function() {
-              var result = fnUnderTest(data);
-
-              if (type === 'array')
-                expect(Array.isArray(result)).to.be.true;
-              else
-                expect(result).to.be.a('string');
-            });
-
-
+          var addOne = function(data, count) {
             it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
               var result = fnUnderTest(data);
 
@@ -1848,8 +1801,7 @@
 
             it('Works correctly for ' + type + ' (' + count + ')', function() {
               var arr = fnUnderTest(data);
-              if (type === 'string')
-                arr = arr.split('');
+              arr = splitIfNecessary(arr);
 
               var result = arr.every(function(val, i) {
                 return val === data[fnUnderTest === array.tail ? i + 1 : i];
@@ -1857,7 +1809,7 @@
             });
           };
 
-          tests.forEach(addOneSet);
+          tests.forEach(addOne);
         };
 
 
@@ -1920,8 +1872,7 @@
             it('Works correctly for ' + type + ' (' + count + ')', function() {
               var arr = fnUnderTest(data);
               var result = arr.every(function(val, i) {
-                if (type === 'string')
-                  val = val.split('');
+                val = splitIfNecessary(val);
 
                 return val.every(function(v, j) {
                   return v === data[fnUnderTest === array.tails ? i + j : j];
@@ -1993,6 +1944,7 @@
       };
 
 
+      addReturnsSameTypeTests(copy, []);
       addTests('for empty arrays', []);
       addTests('(1)', [1, 2, 3]);
       addTests('(2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
@@ -2030,17 +1982,6 @@
 
       var addTests = function(message, from, to, arrData, strData) {
         var addOne = function(type, data) {
-          it('Result has type ' + type + ' when ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var result = slice(from, to, original);
-
-            if (type === 'array')
-              expect(Array.isArray(result)).to.be.true;
-            else
-              expect(result).to.be.a('string');
-          });
-
-
           it('Result has correct length when ' + message + ' for ' + type, function() {
             var original = data.slice();
             var result = slice(from, to, original).length === Math.min(original.length - from, to - from);
@@ -2052,8 +1993,7 @@
           it('Result has correct values when ' + message + ' for ' + type, function() {
             var original = data.slice();
             var newVal = slice(from, to, original);
-            if (type === 'string')
-              newVal = newVal.split('');
+            newVal = splitIfNecessary(newVal);
 
             var result = newVal.every(function(val, i) {
               return val === original[from + i];
@@ -2071,6 +2011,7 @@
       addTests('to > len', 1, 5, [1, 2, 3, 4], 'abcd');
       addTests('to === len', 1, 4, [2, 3, 4, 5], 'efgh');
       addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], 'abcd');
+      addReturnsSameTypeTests(slice, [0, 1]);
       addNoModificationOfOriginalTests(slice, []);
       addNoModificationOfOriginalTests(slice, []);
 
@@ -2096,6 +2037,7 @@
         addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 1, [], ['abc']);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], ['abc']);
+        addReturnsSameTypeTests(fnUnderTest, [base.constant(true)]);
 
 
         if (isTakeWhile) {
@@ -2109,17 +2051,6 @@
 
 
         var addTests = function(type, message, predicate, expectedLength, data) {
-          it('Returns ' + type + ' ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var result = fnUnderTest(predicate, original);
-
-            if (type === 'array')
-              expect(Array.isArray(result)).to.be.true;
-            else
-              expect(result).to.be.a('string');
-          });
-
-
           it('Result has correct length ' + message + ' for ' + type, function() {
             var original = data.slice();
             var length = isTakeWhile ? expectedLength : original.length - expectedLength;
@@ -2142,8 +2073,7 @@
           it('Result has correct members ' + message + ' for ' + type, function() {
             var original = data.slice();
             var arr = fnUnderTest(predicate, original);
-            if (type === 'string')
-              arr = arr.split('');
+            arr = splitIfNecessary(arr);
 
             var result = arr.every(function(val, i) {
               return val === original[isTakeWhile ? i : i + expectedLength];
@@ -2188,17 +2118,6 @@
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var addTests = function(arrData, strData) {
           var addOne = function(type, message, val, data) {
-            it('Result has type ' + type + ' ' + message + ' for ' + type, function() {
-              var original = data.slice();
-              var result = fnUnderTest(val, original);
-
-              if (type === 'array')
-                expect(Array.isArray(result)).to.be.true;
-              else
-                expect(result).to.be.a('string');
-            });
-
-
             it('Result has correct length ' + message + ' for ' + type, function() {
               var original = data.slice();
               var result = fnUnderTest(val, original).length === original.length + 1;
@@ -2210,8 +2129,7 @@
             it('Result has correct values ' + message + ' for ' + type, function() {
               var original = data.slice();
               var newVal = fnUnderTest(val, original);
-              if (type === 'string')
-                newVal = newVal.split('');
+              newVal = splitIfNecessary(newVal);
 
               var prependCheck = function(v, i) {
                 if (i === 0)
@@ -2241,6 +2159,7 @@
 
         addTests([[4, [1, 2, 3]], [{}, [{foo: 1}, {bar: 2}, {fizz: 3}]], [1, []]],
                  [['a', 'bcd'], ['0', '123'], ['z', '']]);
+        addReturnsSameTypeTests(fnUnderTest, [1]);
         addNoModificationOfOriginalTests(fnUnderTest, [1]);
 
 
@@ -2264,6 +2183,7 @@
     describeFunction(concatSpec, array.concat, function(concat) {
       var addTests = function(arrData, strData) {
         var addOne = function(type, message, left, right) {
+          // Can't use the global test generation here
           it('Result has type ' + type + ' ' + message + ' for ' + type, function() {
             var first = left.slice();
             var second = right.slice();
@@ -2289,8 +2209,7 @@
             var first = left.slice();
             var second = right.slice();
             var newVal = concat(first, second);
-            if (type === 'string')
-              newVal = newVal.split('');
+            newVal = splitIfNecessary(newVal);
 
             var result = newVal.every(function(v, i) {
               return v === (i < first.length ? first[i] : second[i - first.length]);
@@ -2362,6 +2281,71 @@
       it('Works for an non-empty string', function() {
         expect(isEmpty('a')).to.be.false;
       });
+    });
+
+
+    var intersperseSpec = {
+      name: 'intersperse',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[','], [[1, 2], 'abc']]
+    };
+
+
+    describeFunction(intersperseSpec, array.intersperse, function(intersperse) {
+      var addDegenerateTest = function(message, val) {
+        it('Works correctly ' + message, function() {
+          var result = intersperse(',', val);
+
+          expect(result).to.deep.equal(val);
+        });
+      };
+
+
+      addDegenerateTest('for empty array', []);
+      addDegenerateTest('for empty string', '');
+      addDegenerateTest('for single element array', [1]);
+      addDegenerateTest('for single element string', 'a');
+
+
+      var addTests = function(message, val) {
+        it('Result has correct length ' + message, function() {
+          var result = intersperse(',', val);
+
+          expect(result.length).to.equal(val.length + (val.length - 1));
+        });
+
+
+        it('Result has original values at correct positions ' + message, function() {
+          var interspersed = intersperse(',', val);
+          interspersed = splitIfNecessary(interspersed);
+          var result = interspersed.every(function(v, i) {
+            if (i % 2 === 1) return true;
+
+            return v === val[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Result has interspersed values at correct positions ' + message, function() {
+          var intersperseValue = ':';
+          var interspersed = intersperse(',', val);
+          interspersed = splitIfNecessary(interspersed);
+          var result = interspersed.every(function(v, i) {
+            if (i % 2 === 0) return true;
+
+            return v === intersperseValue;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addReturnsSameTypeTests(intersperse, ['-']);
+      testCurriedFunction('intersperse', intersperse, ['1', 'abc']);
     });
   };
 

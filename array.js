@@ -607,6 +607,33 @@
     });
 
 
+    /*
+     * intersperse: Takes a value, and an array or string, and returns a new array or string with the value in between each pair
+     *              of elements of the original. Throws if the second argument is not an array/string.
+     *
+     * Note: if the second parameter is a string, the first parameter will be coerced to a string.
+     */
+
+    var intersperse = curry(function(val, arr) {
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var wasString = false;
+      if (typeof(arr) === 'string') {
+        wasString = true;
+        val = '' + val;
+      }
+
+      var result = wasString ? '' : [];
+      if (arr.length > 0)
+        result = result.concat(wasString ? arr[0] : [arr[0]]);
+      for (var i = 1, l = arr.length; i < l; i++)
+        result = result.concat(wasString ? val + arr[i] : [val, arr[i]]);
+
+      return result;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -626,6 +653,7 @@
       head: head,
       init: init,
       inits: inits,
+      intersperse: intersperse,
       isEmpty: isEmpty,
       map: map,
       maximum: maximum,
