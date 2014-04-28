@@ -177,7 +177,7 @@
 
       goodArgs.forEach(function(g, i) {
         if (g.length === 0)
-          throw new Error('You never supplied any valid values for parameter ' + (i + 1) + ' of name');
+          throw new Error('You never supplied any valid values for parameter ' + (i + 1) + ' of ' + name);
       });
 
 
