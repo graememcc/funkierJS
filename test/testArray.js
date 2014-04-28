@@ -241,6 +241,32 @@
     };
 
 
+    // Several functions expect that the result should be distinct from the original
+    // value, not harming the original value in any way
+    var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore) {
+      var addOne = function(type, testData) {
+        it('Doesn\'t modify original ' + type + ' value', function() {
+          var original = testData.slice();
+          var copy = testData.slice();
+          var fnResult = fnUnderTest.apply(null, argsBefore.concat([original]));
+          var stillSameLength = original.length === copy.length;
+          if (type === 'string')
+            original = original.split('');
+
+          var result = original.every(function(v, i) {
+            return copy[i] === v;
+          });
+
+          expect(stillSameLength && result).to.be.true;
+        });
+      };
+
+
+      addOne('array', [{foo: 1}, {foo: 2}, {bar: 3}]);
+      addOne('string', 'ab01cd');
+    };
+
+
     var lengthSpec = {
       name: 'length',
       arity: 1
@@ -654,6 +680,7 @@
       addFuncCalledWithSpecificArityTests(filter, 'string', 1, [], ['funkier']);
       addCalledWithEveryMemberTests(filter, 'array', [], [[1, 2, 3]]);
       addCalledWithEveryMemberTests(filter, 'string', [], ['abc']);
+      addNoModificationOfOriginalTests(filter, [base.constant(true)]);
 
 
       it('Returned array correct when called with an array (1)', function() {
@@ -1662,6 +1689,7 @@
       addTests('count < length', 2, [1, 2, 3], 'funkier');
       addTests('count === length', 3, [{}, {}, {}], 'abc');
       addTests('count > length', 4, [3, 4, 5], 'x');
+      addNoModificationOfOriginalTests(take, [1]);
 
 
       testCurriedFunction('take', take, [1, [1, 2, 3]]);
@@ -1779,6 +1807,7 @@
       addNonEmptyTests('count < length', 1, [1, 2, 3], 'funkier');
       addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], 'abc');
       addEmptyAfterDropTests('count > length', 4, [3, 4, 5], 'x');
+      addNoModificationOfOriginalTests(drop, [1]);
 
 
       testCurriedFunction('drop', drop, [1, [1, 2, 3]]);
@@ -1909,6 +1938,8 @@
 
         addTests('array', [[], [1, 2], [{}, {}, {}]]);
         addTests('string', ['', 'ab', 'funkier']);
+        addNoModificationOfOriginalTests(fnUnderTest, []);
+        addNoModificationOfOriginalTests(fnUnderTest, []);
       });
     };
 
@@ -2040,6 +2071,8 @@
       addTests('to > len', 1, 5, [1, 2, 3, 4], 'abcd');
       addTests('to === len', 1, 4, [2, 3, 4, 5], 'efgh');
       addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], 'abcd');
+      addNoModificationOfOriginalTests(slice, []);
+      addNoModificationOfOriginalTests(slice, []);
 
 
       testCurriedFunction('slice', slice, [1, 2, 'funkier']);
@@ -2128,6 +2161,7 @@
         addTests('string', '(1)', function(x) {return x  === ' ';}, 3, '   funkier');
         addTests('string', '(2)', function(x) {return x >= '0' && x <= '9';}, 2, '09abc');
         addTests('string', '(3)', base.constant(true), 5, 'abcde');
+        addNoModificationOfOriginalTests(fnUnderTest, [base.constant(true)]);
 
 
         testCurriedFunction(desc, fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
@@ -2207,6 +2241,7 @@
 
         addTests([[4, [1, 2, 3]], [{}, [{foo: 1}, {bar: 2}, {fizz: 3}]], [1, []]],
                  [['a', 'bcd'], ['0', '123'], ['z', '']]);
+        addNoModificationOfOriginalTests(fnUnderTest, [1]);
 
 
         testCurriedFunction(desc, fnUnderTest, [1, [1, 2, 3]]);
