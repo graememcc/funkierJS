@@ -56,8 +56,33 @@
     };
 
 
+    /*
+     * isArrayLike: returns true if the given value is a string, array, or 'array-like', and
+     *              false otherwise.
+     *
+     */
+
+    var isArrayLike = function(v) {
+      if (typeof(v) === 'string')
+        return true;
+
+      if (typeof(v) !== 'object' || v === null)
+        return false;
+
+      if (Array.isArray(v))
+        return true;
+
+      if (!v.hasOwnProperty('length'))
+        return false;
+
+      var l = v.length;
+      return v.hasOwnProperty('0') && v.hasOwnProperty('' + (l - 1));
+    };
+
+
     var exported = {
       checkPositiveIntegral: checkPositiveIntegral,
+      isArrayLike: isArrayLike,
       valueStringifier: valueStringifier
     };
 

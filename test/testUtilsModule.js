@@ -15,7 +15,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['valueStringifier'];
+    var expectedFunctions = ['valueStringifier', 'isArrayLike'];
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
@@ -50,6 +50,39 @@
           var expected = t.result;
 
           expect(s).to.equal(expected);
+        });
+      });
+    });
+
+
+    var ialSpec = {
+      name: 'isArrayLike',
+      arity: 1
+    };
+
+
+    describeFunction(ialSpec, utils.isArrayLike, function(isArrayLike) {
+      var tests = [
+        {name: 'number', value: 1, result: false},
+        {name: 'boolean', value: true, result: false},
+        {name: 'string', value: 'a', result: true},
+        {name: 'function', value: function() {}, result: false},
+        {name: 'object', value: {}, result: false},
+        {name: 'array', value: [1, 2], result: true},
+        {name: 'undefined', value: undefined, result: false},
+        {name: 'null', value: null, result: false},
+        {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
+      ];
+
+
+      tests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var b = isArrayLike(t.value);
+          var expected = t.result;
+
+          expect(b).to.equal(expected);
         });
       });
     });
