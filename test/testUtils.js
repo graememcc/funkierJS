@@ -237,6 +237,19 @@
     };
 
 
+    var makeArrayLike = function() {
+      var args = [].slice.call(arguments);
+
+      var result = {};
+      args.forEach(function(arg, i) {
+        result[i] = arg;
+      });
+
+      result.length = args.length;
+      return result;
+    };
+
+
     var addFunctionIsCurriedTest = function(fnUnderTest) {
       it('Is curried', function() {
         expect(fnUnderTest.length).to.equal(1);
@@ -472,6 +485,7 @@
       describeModule: describeModule,
       exportsFunction: exportsFunction,
       exportsProperty: exportsProperty,
+      makeArrayLike: makeArrayLike,
       testCurriedFunction: testCurriedFunction,
       testTypeRestrictions: testTypeRestrictions
     };
