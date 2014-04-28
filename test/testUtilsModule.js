@@ -88,6 +88,38 @@
     });
 
 
+    var iolSpec = {
+      name: 'isObjectLike',
+      arity: 1
+    };
+
+
+    describeFunction(iolSpec, utils.isObjectLike, function(isObjectLike) {
+      var tests = [
+        {name: 'number', value: 1, result: false},
+        {name: 'boolean', value: true, result: false},
+        {name: 'string', value: 'a', result: true},
+        {name: 'function', value: function() {}, result: true},
+        {name: 'object', value: {}, result: true},
+        {name: 'array', value: [1, 2], result: true},
+        {name: 'undefined', value: undefined, result: false},
+        {name: 'null', value: null, result: false}
+      ];
+
+
+      tests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var b = isObjectLike(t.value);
+          var expected = t.result;
+
+          expect(b).to.equal(expected);
+        });
+      });
+    });
+
+
     var cpiSpec = {
       name: 'checkPositiveIntegral',
       arity: 1

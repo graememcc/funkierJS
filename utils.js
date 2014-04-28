@@ -57,6 +57,23 @@
 
 
     /*
+     * isObjectLike: returns true if the given value is a string, array, function, or object,
+     *               and false otherwise.
+     *
+     */
+
+    var isObjectLike = function(v) {
+      if (typeof(v) === 'string')
+        return true;
+
+      if (typeof(v) === 'function')
+        return true;
+
+      return typeof(v) === 'object' && v !== null;
+    };
+
+
+    /*
      * isArrayLike: returns true if the given value is a string, array, or 'array-like', and
      *              false otherwise.
      *
@@ -83,6 +100,7 @@
     var exported = {
       checkPositiveIntegral: checkPositiveIntegral,
       isArrayLike: isArrayLike,
+      isObjectLike: isObjectLike,
       valueStringifier: valueStringifier
     };
 
