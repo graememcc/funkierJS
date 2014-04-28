@@ -21,7 +21,7 @@
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-                             'dropWhile', 'prepend', 'append', 'concat'];
+                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2332,6 +2332,36 @@
 
 
       testCurriedFunction('concat', concat, [[1], [1, 2, 3]]);
+    });
+
+
+    var isEmptySpec = {
+      name: 'empty',
+      arity: 1,
+      restrictions: [['array', 'string']],
+      validArguments: [[[], '']]
+    };
+
+
+    describeFunction(isEmptySpec, array.isEmpty, function(isEmpty) {
+      it('Works for an empty array', function() {
+        expect(isEmpty([])).to.be.true;
+      });
+
+
+      it('Works for an empty string', function() {
+        expect(isEmpty('')).to.be.true;
+      });
+
+
+      it('Works for non-empty array', function() {
+        expect(isEmpty([1, 2])).to.be.false;
+      });
+
+
+      it('Works for an non-empty string', function() {
+        expect(isEmpty('a')).to.be.false;
+      });
     });
   };
 

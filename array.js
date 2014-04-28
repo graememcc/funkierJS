@@ -15,6 +15,7 @@
 
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
+    var isArrayLike = utils.isArrayLike;
 
     /*
      * length: Takes an array or string, and returns its length
@@ -593,6 +594,19 @@
     });
 
 
+    /*
+     * isEmpty: Returns true if the given array or string is empty, and false if not. Throws if the argument is not an array/string.
+     *
+     */
+
+    var isEmpty = curry(function(val) {
+      if (!isArrayLike(val))
+        throw new TypeError('Value is not an array or string');
+
+      return val.length === 0;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -612,6 +626,7 @@
       head: head,
       init: init,
       inits: inits,
+      isEmpty: isEmpty,
       map: map,
       maximum: maximum,
       minimum: minimum,
