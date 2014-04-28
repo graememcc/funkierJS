@@ -2298,6 +2298,17 @@
 
             expect(result).to.be.true;
           });
+
+
+          it('Doesn\'t affect originals', function() {
+            var first = left.slice();
+            var second = right.slice();
+            var firstLength = first.length;
+            var secondLength = second.length;
+            concat(first, second);
+
+            expect(first.length === firstLength && second.length === secondLength).to.be.true;
+          });
         };
 
         addOne('array', '(LHS empty)', [], [1, 2, 3]);
