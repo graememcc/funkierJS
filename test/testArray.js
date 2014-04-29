@@ -22,7 +22,7 @@
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-                             'reverse', 'find'];
+                             'reverse', 'find', 'findFrom'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2406,6 +2406,21 @@
     });
 
 
+    var addFindTest = function(message, fnUnderTest, args, expected) {
+      var val = args[0];
+      var data = args[args.length - 1];
+
+      it(message, function() {
+        var original = data.slice();
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.equal(expected);
+        if (result !== -1)
+          expect(data[result]).to.equal(val);
+      });
+    };
+
+
     var findSpec = {
       name: 'find',
       arity: 2,
@@ -2415,31 +2430,46 @@
 
 
     describeFunction(findSpec, array.find, function(find) {
-      var addTest = function(message, val, data, expected) {
-        it(message, function() {
-          var original = data.slice();
-          var result = find(val, data);
-
-          expect(result).to.equal(expected);
-          if (result !== -1)
-            expect(data[result]).to.equal(val);
-        });
-      };
-
-
-      addTest('Works correctly for array (1)', 1, [1, 2, 3], 0);
-      addTest('Works correctly for array (2)', 1, [3, 2, 1], 2);
-      addTest('Returns first match for array', 1, [3, 1, 1], 1);
-      addTest('Returns -1 when no match for array', 4, [1, 2, 3], -1);
-      addTest('Works correctly for string (1)', 'a', 'abc', 0);
-      addTest('Works correctly for array (2)', 'b', 'abc', 1);
-      addTest('Returns first match for string (1)', 'c', 'abcc', 2);
-      addTest('Returns -1 when no match for string', 'a', 'def', -1);
-      addTest('Works correctly when array empty', 1, [], -1);
-      addTest('Works correctly when string empty', 'a', '', -1);
-      addTest('Tests with strict identity (1)', {}, [{}, {}, {}], -1);
+      addFindTest('Works correctly for array (1)', find, [1, [1, 2, 3]], 0);
+      addFindTest('Works correctly for array (2)', find, [1, [3, 2, 1]], 2);
+      addFindTest('Returns first match for array', find, [1, [3, 1, 1]], 1);
+      addFindTest('Returns -1 when no match for array', find, [4, [1, 2, 3]], -1);
+      addFindTest('Works correctly for string (1)', find, ['a', 'abc'], 0);
+      addFindTest('Works correctly for string (2)', find, ['b', 'abc'], 1);
+      addFindTest('Returns first match for string', find, ['c', 'abcc'], 2);
+      addFindTest('Returns -1 when no match for string', find, ['a', 'def'], -1);
+      addFindTest('Works correctly when array empty', find, [1, []], -1);
+      addFindTest('Works correctly when string empty', find, ['a', ''], -1);
+      addFindTest('Tests with strict identity (1)', find, [{}, [{}, {}, {}]], -1);
       var obj = {};
-      addTest('Tests with strict identity (2)', obj, [{}, obj, {}], 1);
+      addFindTest('Tests with strict identity (2)', find, [obj, [{}, obj, {}]], 1);
+    });
+
+
+    var findFromSpec = {
+      name: 'findFrom',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [[1], [1], [[2, 3], '234']]
+    };
+
+
+    describeFunction(findFromSpec, array.findFrom, function(findFrom) {
+      addFindTest('Works correctly for array (1)', findFrom, [1, 0, [1, 2, 3]], 0);
+      addFindTest('Works correctly for array (2)', findFrom, [1, 1, [3, 2, 1]], 2);
+      addFindTest('Ignores earlier matches for array', findFrom, [1, 1, [1, 1, 1]], 1);
+      addFindTest('Returns -1 when no match for array', findFrom, [4, 0, [1, 2, 3]], -1);
+      addFindTest('Returns -1 when no match at position for array', findFrom, [4, 1, [4, 1, 2, 3]], -1);
+      addFindTest('Works correctly for string (1)', findFrom, ['a', 0, 'abc'], 0);
+      addFindTest('Works correctly for string (2)', findFrom, ['b', 1, 'abc'], 1);
+      addFindTest('Ignores earlier matches for string', findFrom, ['c', 3, 'abcc'], 3);
+      addFindTest('Returns -1 when no match for string', findFrom, ['a', 0, 'def'], -1);
+      addFindTest('Returns -1 when no match at position for string', findFrom, ['a', 1, 'abc'], -1);
+      addFindTest('Works correctly when array empty', findFrom, [1, 0, []], -1);
+      addFindTest('Works correctly when string empty', findFrom, ['a', 0, ''], -1);
+      addFindTest('Tests with strict identity (1)', findFrom, [{}, 0, [{}, {}, {}]], -1);
+      var obj = {};
+      addFindTest('Tests with strict identity (2)', findFrom, [obj, 1, [{}, {}, obj, {}]], 2);
     });
   };
 

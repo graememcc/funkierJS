@@ -664,6 +664,16 @@
     var find = callPropWithArity('indexOf', 1);
 
 
+    /*
+     * findFrom: Takes a value, an index, and an array or string. Searches for the value—tested for strict equality—starting
+     *           the search at the given index, and returns the index of the first match, or -1 if the value is not present.
+     *           Throws if the lastparameter is not an array or string.
+     *
+     */
+
+    var findFrom = callPropWithArity('indexOf', 2);
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -676,6 +686,7 @@
       every: every,
       filter: filter,
       find: find,
+      findFrom: findFrom,
       foldl: foldl,
       foldl1: foldl1,
       foldr: foldr,
