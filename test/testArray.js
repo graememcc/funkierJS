@@ -22,7 +22,7 @@
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-                             'reverse'];
+                             'reverse', 'find'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2403,6 +2403,43 @@
       addTests('for string', 'funkier');
       addTests('for single element array', [1]);
       addTests('for single element string', '');
+    });
+
+
+    var findSpec = {
+      name: 'find',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[1], [[2, 3], '234']]
+    };
+
+
+    describeFunction(findSpec, array.find, function(find) {
+      var addTest = function(message, val, data, expected) {
+        it(message, function() {
+          var original = data.slice();
+          var result = find(val, data);
+
+          expect(result).to.equal(expected);
+          if (result !== -1)
+            expect(data[result]).to.equal(val);
+        });
+      };
+
+
+      addTest('Works correctly for array (1)', 1, [1, 2, 3], 0);
+      addTest('Works correctly for array (2)', 1, [3, 2, 1], 2);
+      addTest('Returns first match for array', 1, [3, 1, 1], 1);
+      addTest('Returns -1 when no match for array', 4, [1, 2, 3], -1);
+      addTest('Works correctly for string (1)', 'a', 'abc', 0);
+      addTest('Works correctly for array (2)', 'b', 'abc', 1);
+      addTest('Returns first match for string (1)', 'c', 'abcc', 2);
+      addTest('Returns -1 when no match for string', 'a', 'def', -1);
+      addTest('Works correctly when array empty', 1, [], -1);
+      addTest('Works correctly when string empty', 'a', '', -1);
+      addTest('Tests with strict identity (1)', {}, [{}, {}, {}], -1);
+      var obj = {};
+      addTest('Tests with strict identity (2)', obj, [{}, obj, {}], 1);
     });
   };
 

@@ -12,6 +12,7 @@
     var object = require('./object');
     var extract = object.extract;
     var callProp = object.callProp;
+    var callPropWithArity = object.callPropWithArity;
 
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
@@ -653,6 +654,16 @@
     });
 
 
+    /*
+     * find: Takes a value, and an array or string. Searches for the value—tested for strict equality—and returns the
+     *       index of the first match, or -1 if the value is not present. Throws if the second parameter is not an array
+     *       or string.
+     *
+     */
+
+    var find = callPropWithArity('indexOf', 1);
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -664,6 +675,7 @@
       elementWith: elementWith,
       every: every,
       filter: filter,
+      find: find,
       foldl: foldl,
       foldl1: foldl1,
       foldr: foldr,
