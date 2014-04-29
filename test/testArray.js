@@ -21,7 +21,8 @@
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse'];
+                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
+                             'reverse'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2358,6 +2359,50 @@
 
       addReturnsSameTypeTests(intersperse, ['-']);
       testCurriedFunction('intersperse', intersperse, ['1', 'abc']);
+    });
+
+
+    var reverseSpec = {
+      name: 'reverse',
+      arity: 1,
+      restrictions: [['array', 'string']],
+      validArguments: [[[1, 2], 'ab']]
+    };
+
+
+    describeFunction(reverseSpec, array.reverse, function(reverse) {
+      addReturnsEmptyOnEmptyTests(reverse, []);
+      addReturnsSameTypeTests(reverse, []);
+
+
+      var addTests = function(message, data) {
+        it('Returns value with same length as original ' + message, function() {
+          var original = data.slice();
+          var expected = original.length;
+          var result = reverse(original);
+
+          expect(result.length).to.equal(expected);
+        });
+
+
+        it('Returns correct result ' + message, function() {
+          var original = data.slice();
+          var originalLength = original.length - 1;
+          var reversed = reverse(original);
+          reversed = splitIfNecessary(reversed);
+          var result = reversed.every(function(v, i) {
+            return v === original[originalLength - i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for array', [{}, {}]);
+      addTests('for string', 'funkier');
+      addTests('for single element array', [1]);
+      addTests('for single element string', '');
     });
   };
 

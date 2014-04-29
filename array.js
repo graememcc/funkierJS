@@ -634,6 +634,25 @@
     });
 
 
+    /*
+     * reverse: Takes an array or string, and returns a new array or string that is the reverse of the original.
+     *          Throws if the argument is not an array/string.
+     *
+     */
+
+    var reverseFn = function(soFar, current) {
+      return soFar.concat(Array.isArray(soFar) ? [current] : current);
+    };
+
+
+    var reverse = curry(function(arr) {
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      return foldr(reverseFn, Array.isArray(arr) ? [] : '', arr);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -665,6 +684,7 @@
       range: range,
       rangeStep: rangeStep,
       repeat: repeat,
+      reverse: reverse,
       slice: slice,
       some: some,
       sum: sum,
