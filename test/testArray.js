@@ -293,6 +293,27 @@
     };
 
 
+    // Several functions should yield the empty array/string when called with an empty
+    // array/string
+    var addReturnsEmptyOnEmptyTests = function(fnUnderTest, argsBefore) {
+      it('Returns empty array when called with empty array', function() {
+        var original = [];
+        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
+
+        expect(result === original).to.be.false;
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when called with empty string', function() {
+        var original = '';
+        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
+
+        expect(result).to.deep.equal('');
+      });
+    };
+
+
     var lengthSpec = {
       name: 'length',
       arity: 1
@@ -694,6 +715,7 @@
       addCalledWithEveryMemberTests(filter, 'array', [], [[1, 2, 3]]);
       addCalledWithEveryMemberTests(filter, 'string', [], ['abc']);
       addNoModificationOfOriginalTests(filter, [base.constant(true)]);
+      addReturnsEmptyOnEmptyTests(filter, [base.constant(true)]);
 
 
       it('Returned array correct when called with an array (1)', function() {
@@ -766,20 +788,6 @@
         });
 
         expect(result).to.be.true;
-      });
-
-
-      it('Returns empty array when called with empty array', function() {
-        var result = filter(function(x) {}, []);
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Returns empty string when called with empty string', function() {
-        var result = filter(function(x) {}, '');
-
-        expect(result).to.equal('');
       });
 
 
@@ -1681,6 +1689,7 @@
 
       addReturnsSameTypeTests(take, [1]);
       addNoModificationOfOriginalTests(take, [1]);
+      addReturnsEmptyOnEmptyTests(take, [1]);
 
 
       testCurriedFunction('take', take, [1, [1, 2, 3]]);
@@ -1770,6 +1779,7 @@
       addEmptyAfterDropTests('count > length', 4, [3, 4, 5], 'x');
       addReturnsSameTypeTests(drop, [1]);
       addNoModificationOfOriginalTests(drop, [1]);
+      addReturnsEmptyOnEmptyTests(drop, [1]);
 
 
       testCurriedFunction('drop', drop, [1, [1, 2, 3]]);
@@ -1945,6 +1955,7 @@
 
 
       addReturnsSameTypeTests(copy, []);
+      addReturnsEmptyOnEmptyTests(copy, []);
       addTests('for empty arrays', []);
       addTests('(1)', [1, 2, 3]);
       addTests('(2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
@@ -2038,6 +2049,7 @@
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], ['abc']);
         addReturnsSameTypeTests(fnUnderTest, [base.constant(true)]);
+        addReturnsEmptyOnEmptyTests(fnUnderTest, [base.constant(true)]);
 
 
         if (isTakeWhile) {
