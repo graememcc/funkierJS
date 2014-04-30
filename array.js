@@ -696,6 +696,29 @@
     });
 
 
+    /*
+     * findFromWith: Takes a predicate function p of arity 1, and an array or string. Searches for the value—tested using
+     *               the given function—from the given index, and returns the index of the first match, or -1 if the value
+     *               is not present. Throws if the first parameter is not a predicate function of arity 1, or the last
+     *               parameter is not an array or string.
+     *
+     */
+
+    var findFromWith = curry(function(p, index, arr) {
+      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
+        throw new TypeError('Value is not a predicate function');
+
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var found = false;
+      for (var i = index, l = arr.length; !found && i < l; i++)
+        found = p(arr[i]);
+
+      return found ? i - 1 : -1;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -709,6 +732,7 @@
       filter: filter,
       find: find,
       findFrom: findFrom,
+      findFromWith: findFromWith,
       findWith: findWith,
       foldl: foldl,
       foldl1: foldl1,

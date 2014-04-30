@@ -23,7 +23,7 @@
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-                             'reverse', 'find', 'findFrom', 'findWith'];
+                             'reverse', 'find', 'findFrom', 'findWith', 'findFromWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2628,6 +2628,203 @@
 
 
       testCurriedFunction('findWith', findWith, [alwaysTrue, 'funkier']);
+    });
+
+
+    var findFromWithSpec = {
+      name: 'findFromWith',
+      arity: 3,
+      restrictions: [['function'], [], ['array', 'string']],
+      validArguments: [[alwaysTrue], [1], [[1, 2], 'abc']]
+    };
+
+
+    describeFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
+      addAcceptsOnlyFixedArityTests(findFromWith, 'array', 1, [], [1, [1, 2]]);
+      addAcceptsOnlyFixedArityTests(findFromWith, 'string', 1, [], [1, 'ab']);
+      addFuncCalledWithSpecificArityTests(findFromWith, 'array', 1, [], [1, [1, 2]]);
+      addFuncCalledWithSpecificArityTests(findFromWith, 'string', 1, [], [1, 'abc']);
+
+
+      it('Function never called with empty array', function() {
+        var f = function(x) {f.called += 1; return true;};
+        f.called = 0;
+        findFromWith(f, 1, []);
+
+        expect(f.called).to.equal(0);
+      });
+
+
+      it('Works correctly with empty arrays', function() {
+        var result = findFromWith(alwaysTrue, 1, []);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function never called with empty string', function() {
+        var f = function(x) {f.called += 1; return true;};
+        f.called = 0;
+        findFromWith(f, 1, '');
+
+        expect(f.called).to.equal(0);
+      });
+
+
+      it('Works correctly with empty string', function() {
+        var result = findFromWith(alwaysTrue, 1, '');
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called with every element from position if not found (array)', function() {
+        var f = function(x) {f.called.push(x); return false;};
+        f.called = [];
+        var arr = [2, 3, 4];
+        var index = 1;
+        findFromWith(f, index, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i + index];
+        });
+
+        expect(f.called.length).to.equal(arr.length - index);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly if value never found from position (array)', function() {
+        var result = findFromWith(base.constant(false), 1, [1, 2, 3]);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called with every element from position if not found (string)', function() {
+        var f = function(x) {f.called.push(x); return false;};
+        f.called = [];
+        var arr = 'funkier';
+        var index = 2;
+        findFromWith(f, index, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i + index];
+        });
+
+        expect(f.called.length).to.equal(arr.length - index);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly if value never found from position (string)', function() {
+        var result = findFromWith(base.constant(false), 1, 'def');
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called only as often as necessary when found from position (array)', function() {
+        var f = function(x) {f.called.push(x); return x.foo === 42;};
+        f.called = [];
+        var arr = [{foo: 1}, {foo: 3}, {foo: 7}, {foo: 5}, {foo: 42}, {foo: 6}];
+        var index = 3;
+        findFromWith(f, index, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i + index];
+        });
+
+        expect(f.called.length).to.equal(2);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly when value present (array)', function() {
+        var f = function(x) {return x.foo === 42;};
+        var arr = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
+        var result = findFromWith(f, 1, arr);
+
+        expect(result).to.equal(1);
+      });
+
+
+      it('Returns first index (array)', function() {
+        var f = function(x) {return x.foo === 42;};
+        var arr = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+        var result = findFromWith(f, 1, arr);
+
+        expect(result).to.equal(2);
+      });
+
+
+      it('Ignores earlier occurrences (array)', function() {
+        var f = function(x) {return x.foo === 42;};
+        var arr = [{foo: 42}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+        var result = findFromWith(f, 1, arr);
+
+        expect(result).to.equal(2);
+      });
+
+
+      it('Works correctly if index >= array length', function() {
+        var f = alwaysTrue;
+        var arr = [1, 2, 3];
+        var result = findFromWith(f, 4, arr);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called only as often as necessary when found (string)', function() {
+        var f = function(x) {f.called.push(x); return x >= '0' && x <= '9';};
+        f.called = [];
+        var arr = 'ab0cd';
+        var index = 1;
+        findFromWith(f, index, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i + index];
+        });
+
+        expect(f.called.length).to.equal(2);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly when value present (string)', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var arr = 'ab0cd';
+        var result = findFromWith(f, 1, arr);
+
+        expect(result).to.equal(2);
+      });
+
+
+      it('Returns first index (array)', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var arr = 'a0c1d';
+        var result = findFromWith(f, 1, arr);
+
+        expect(result).to.equal(1);
+      });
+
+
+      it('Ignores earlier matches (array)', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var arr = 'a0c1d';
+        var result = findFromWith(f, 2, arr);
+
+        expect(result).to.equal(3);
+      });
+
+
+      it('Works correctly if index >= string length', function() {
+        var f = alwaysTrue;
+        var arr = 'abc';
+        var result = findFromWith(f, 7, arr);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      testCurriedFunction('findFromWith', findFromWith, [alwaysTrue, 1, 'funkier']);
     });
   };
 
