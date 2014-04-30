@@ -14,6 +14,7 @@
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var alwaysTrue = base.constant(true);
 
 
     var expectedObjects = [];
@@ -22,7 +23,7 @@
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-                             'reverse', 'find', 'findFrom'];
+                             'reverse', 'find', 'findFrom', 'findWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -676,7 +677,7 @@
     describeFunction(filterSpec, array.filter, function(filter) {
       it('Returned array has correct length when called with an array (1)', function() {
         var arr = [2, null];
-        var result = filter(base.constant(true), arr);
+        var result = filter(alwaysTrue, arr);
 
         expect(result.length).to.equal(arr.length);
       });
@@ -693,7 +694,7 @@
 
       it('Returned string has correct length when called with a string (1)', function() {
         var s = 'abc';
-        var result = filter(base.constant(true), s);
+        var result = filter(alwaysTrue, s);
 
         expect(result.length).to.equal(s.length);
       });
@@ -708,20 +709,20 @@
       });
 
 
-      addReturnsSameTypeTests(filter, [base.constant(true)]);
+      addReturnsSameTypeTests(filter, [alwaysTrue]);
       addAcceptsOnlyFixedArityTests(filter, 'array', 1, [], [[1, 2, 3]]);
       addAcceptsOnlyFixedArityTests(filter, 'string', 1, [], ['abc']);
       addFuncCalledWithSpecificArityTests(filter, 'array', 1, [], [[4, 2]]);
       addFuncCalledWithSpecificArityTests(filter, 'string', 1, [], ['funkier']);
       addCalledWithEveryMemberTests(filter, 'array', [], [[1, 2, 3]]);
       addCalledWithEveryMemberTests(filter, 'string', [], ['abc']);
-      addNoModificationOfOriginalTests(filter, [base.constant(true)]);
-      addReturnsEmptyOnEmptyTests(filter, [base.constant(true)]);
+      addNoModificationOfOriginalTests(filter, [alwaysTrue]);
+      addReturnsEmptyOnEmptyTests(filter, [alwaysTrue]);
 
 
       it('Returned array correct when called with an array (1)', function() {
         var arr = [2, null];
-        var result = filter(base.constant(true), arr);
+        var result = filter(alwaysTrue, arr);
 
         expect(result).to.deep.equal(arr);
       });
@@ -738,7 +739,7 @@
 
       it('Returned string correct when called with a string (1)', function() {
         var s = 'abc';
-        var result = filter(base.constant(true), s);
+        var result = filter(alwaysTrue, s);
 
         expect(result).to.equal(s);
       });
@@ -783,7 +784,7 @@
 
       it('Returned elements are precisely those from the original array', function() {
         var a = [{}, {}, {}, {}];
-        var f = base.constant(true);
+        var f = alwaysTrue;
         var result = filter(f, a).every(function(e, i) {
             return e === a[i];
         });
@@ -792,7 +793,7 @@
       });
 
 
-      testCurriedFunction('filter', filter, [base.constant(true), [1, 2]]);
+      testCurriedFunction('filter', filter, [alwaysTrue, [1, 2]]);
     });
 
 
@@ -1201,7 +1202,7 @@
         addShortCircuitTests('string', 2, 'abcd');
 
 
-        testCurriedFunction(desc, fnUnderTest, [base.constant(true), [1, 2, 3]]);
+        testCurriedFunction(desc, fnUnderTest, [alwaysTrue, [1, 2, 3]]);
       });
     };
 
@@ -2049,14 +2050,14 @@
         addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 1, [], ['abc']);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], ['abc']);
-        addReturnsSameTypeTests(fnUnderTest, [base.constant(true)]);
-        addReturnsEmptyOnEmptyTests(fnUnderTest, [base.constant(true)]);
+        addReturnsSameTypeTests(fnUnderTest, [alwaysTrue]);
+        addReturnsEmptyOnEmptyTests(fnUnderTest, [alwaysTrue]);
 
 
         if (isTakeWhile) {
           it('Always returns a copy', function() {
             var original = [4, 5, 6];
-            var result = fnUnderTest(base.constant(true), original) !== original;
+            var result = fnUnderTest(alwaysTrue, original) !== original;
 
             expect(result).to.be.true;
           });
@@ -2100,11 +2101,11 @@
         addTests('array', '(1)', function(x) {return x.foo < 4;}, 2,
                  [{foo: 1}, {foo: 3}, {foo: 4}, {foo: 5}, {foo: 6}]);
         addTests('array', '(2)', function(x) {return x % 2 === 0;}, 3, [2, 4, 6, 1, 5]);
-        addTests('array', '(3)', base.constant(true), 5, [2, 4, 6, 1, 5]);
+        addTests('array', '(3)', alwaysTrue, 5, [2, 4, 6, 1, 5]);
         addTests('string', '(1)', function(x) {return x  === ' ';}, 3, '   funkier');
         addTests('string', '(2)', function(x) {return x >= '0' && x <= '9';}, 2, '09abc');
-        addTests('string', '(3)', base.constant(true), 5, 'abcde');
-        addNoModificationOfOriginalTests(fnUnderTest, [base.constant(true)]);
+        addTests('string', '(3)', alwaysTrue, 5, 'abcde');
+        addNoModificationOfOriginalTests(fnUnderTest, [alwaysTrue]);
 
 
         testCurriedFunction(desc, fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
@@ -2470,6 +2471,163 @@
       addFindTest('Tests with strict identity (1)', findFrom, [{}, 0, [{}, {}, {}]], -1);
       var obj = {};
       addFindTest('Tests with strict identity (2)', findFrom, [obj, 1, [{}, {}, obj, {}]], 2);
+    });
+
+
+    var findWithSpec = {
+      name: 'findWith',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[alwaysTrue], [[1, 2], 'abc']]
+    };
+
+
+    describeFunction(findWithSpec, array.findWith, function(findWith) {
+      addAcceptsOnlyFixedArityTests(findWith, 'array', 1, [], [[1, 2]]);
+      addAcceptsOnlyFixedArityTests(findWith, 'string', 1, [], ['ab']);
+      addFuncCalledWithSpecificArityTests(findWith, 'array', 1, [], [[1, 2]]);
+      addFuncCalledWithSpecificArityTests(findWith, 'string', 1, [], ['abc']);
+
+
+      it('Function never called with empty array', function() {
+        var f = function(x) {f.called += 1; return true;};
+        f.called = 0;
+        findWith(f, []);
+
+        expect(f.called).to.equal(0);
+      });
+
+
+      it('Works correctly with empty arrays', function() {
+        var result = findWith(alwaysTrue, []);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function never called with empty string', function() {
+        var f = function(x) {f.called += 1; return true;};
+        f.called = 0;
+        findWith(f, '');
+
+        expect(f.called).to.equal(0);
+      });
+
+
+      it('Works correctly with empty string', function() {
+        var result = findWith(alwaysTrue, '');
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called with every element if not found (array)', function() {
+        var f = function(x) {f.called.push(x); return false;};
+        f.called = [];
+        var arr = [2, 3, 4];
+        findWith(f, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i];
+        });
+
+        expect(f.called.length).to.equal(arr.length);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly if value never found (array)', function() {
+        var result = findWith(base.constant(false), [1, 2, 3]);
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called with every element if not found (string)', function() {
+        var f = function(x) {f.called.push(x); return false;};
+        f.called = [];
+        var arr = 'funkier';
+        findWith(f, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i];
+        });
+
+        expect(f.called.length).to.equal(arr.length);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly if value never found (string)', function() {
+        var result = findWith(base.constant(false), 'def');
+
+        expect(result).to.equal(-1);
+      });
+
+
+      it('Function called only as often as necessary when found (array)', function() {
+        var f = function(x) {f.called.push(x); return x.foo === 42;};
+        f.called = [];
+        var arr = [{foo: 1}, {foo: 3}, {foo: 7}, {foo: 5}, {foo: 42}, {foo: 6}];
+        findWith(f, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i];
+        });
+
+        expect(f.called.length).to.equal(5);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly when value present (array)', function() {
+        var f = function(x) {return x.foo === 42;};
+        var arr = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
+        var result = findWith(f, arr);
+
+        expect(result).to.equal(1);
+      });
+
+
+      it('Returns first index (array)', function() {
+        var f = function(x) {return x.foo === 42;};
+        var arr = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+        var result = findWith(f, arr);
+
+        expect(result).to.equal(2);
+      });
+
+
+      it('Function called only as often as necessary when found (string)', function() {
+        var f = function(x) {f.called.push(x); return x >= '0' && x <= '9';};
+        f.called = [];
+        var arr = 'ab0cd';
+        findWith(f, arr);
+        var result = f.called.every(function(v, i) {
+          return v === arr[i];
+        });
+
+        expect(f.called.length).to.equal(3);
+        expect(result).to.be.true;
+      });
+
+
+      it('Works correctly when value present (string)', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var arr = 'ab0cd';
+        var result = findWith(f, arr);
+
+        expect(result).to.equal(2);
+      });
+
+
+      it('Returns first index (array)', function() {
+        var f = function(x) {return x >= '0' && x <= '9';};
+        var arr = 'a0c1d';
+        var result = findWith(f, arr);
+
+        expect(result).to.equal(1);
+      });
+
+
+      testCurriedFunction('findWith', findWith, [alwaysTrue, 'funkier']);
     });
   };
 

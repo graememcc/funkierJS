@@ -667,11 +667,33 @@
     /*
      * findFrom: Takes a value, an index, and an array or string. Searches for the value—tested for strict equality—starting
      *           the search at the given index, and returns the index of the first match, or -1 if the value is not present.
-     *           Throws if the lastparameter is not an array or string.
+     *           Throws if the last parameter is not an array or string.
      *
      */
 
     var findFrom = callPropWithArity('indexOf', 2);
+
+
+    /*
+     * findWith: Takes a predicate function p of arity 1, and an array or string. Searches for the value—tested using the given
+     *           function—and returns the index of the first match, or -1 if the value is not present. Throws if the first
+     *           parameter is not a predicate function of arity 1, or the last parameter is not an array or string.
+     *
+     */
+
+    var findWith = curry(function(p, arr) {
+      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
+        throw new TypeError('Value is not a predicate function');
+
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var found = false;
+      for (var i = 0, l = arr.length; !found && i < l; i++)
+        found = p(arr[i]);
+
+      return found ? i - 1 : -1;
+    });
 
 
     var exported = {
@@ -687,6 +709,7 @@
       filter: filter,
       find: find,
       findFrom: findFrom,
+      findWith: findWith,
       foldl: foldl,
       foldl1: foldl1,
       foldr: foldr,
