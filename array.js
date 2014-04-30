@@ -18,6 +18,10 @@
     var checkPositiveIntegral = utils.checkPositiveIntegral;
     var isArrayLike = utils.isArrayLike;
 
+    var pair = require('./pair');
+    var Pair = pair.Pair;
+
+
     /*
      * length: Takes an array or string, and returns its length
      *
@@ -763,6 +767,27 @@
     });
 
 
+    /*
+     * zip: Takes two arrays/strings, a and b, and returns a new array. The new array has the same length as the
+     *      smaller of the two arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i]
+     *      for each position i in the result. Throws if neither argument is an array or string.
+     *
+     */
+
+    var zip = curry(function(a, b) {
+      if (!isArrayLike(a) || !isArrayLike(b))
+        throw new TypeError('Value is not an array or string');
+
+      var len = Math.min(a.length, b.length);
+
+      var result = [];
+      for (var i = 0; i < len; i++)
+        result.push(Pair(a[i], b[i]));
+
+      return result;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -807,7 +832,8 @@
       tail: tail,
       tails: tails,
       take: take,
-      takeWhile: takeWhile
+      takeWhile: takeWhile,
+      zip: zip
     };
 
 
