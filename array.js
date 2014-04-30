@@ -803,6 +803,27 @@
     var zip = zipWith(Pair);
 
 
+    /*
+     * nub: Takes an array or string. Returns a new array/string, with all duplicate elements—tested for strict
+     *      equality—removed. The order of elements is preserved. Throws if the given argument is not an array
+     *      or string.
+     *
+     */
+
+    var nubFn = function(soFar, current) {
+      return soFar.indexOf(current) !== -1 ? soFar :
+             soFar.concat(Array.isArray(soFar) ? [current] : current);
+    };
+
+
+    var nub = curry(function(arr) {
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      return foldl(nubFn, Array.isArray(arr) ? [] : '', arr);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -833,6 +854,7 @@
       map: map,
       maximum: maximum,
       minimum: minimum,
+      nub: nub,
       occurrences: occurrences,
       occurrencesWith: occurrencesWith,
       prepend: prepend,
@@ -848,6 +870,7 @@
       tails: tails,
       take: take,
       takeWhile: takeWhile,
+      uniq: nub,
       zip: zip,
       zipWith: zipWith
     };

@@ -28,7 +28,7 @@
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
-                             'occurrencesWith', 'zip', 'zipWith'];
+                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3204,6 +3204,86 @@
 
 
       testCurriedFunction('zipWith', zipWith, [function(x, y) {return x * y;}, [1, 2, 3], [4, 5, 6]]);
+    });
+
+
+    var nubSpec = {
+      name: 'nub',
+      arity: 1,
+      restrictions: [['array', 'string']],
+      validArguments: [[[1, 2], 'abc']]
+    };
+
+
+    describeFunction(nubSpec, array.nub, function(nub) {
+      addReturnsEmptyOnEmptyTests(nub, []);
+      addNoModificationOfOriginalTests(nub, []);
+      addReturnsSameTypeTests(nub, []);
+
+
+      var addTests = function(message, data, expectedLength) {
+        it('Length is correct for ' + message, function() {
+          var original = data.slice();
+          var result = nub(original).length;
+
+          expect(result).to.equal(expectedLength);
+        });
+
+
+        it('Each value only occurs once for ' + message, function() {
+          var original = data.slice();
+          var unique = nub(original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val) {
+            return array.occurrences(val, unique).length === 1;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Each value came from original for ' + message, function() {
+          var original = data.slice();
+          var unique = nub(original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val) {
+            return original.indexOf(val) !== -1;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Ordering maintained from original for ' + message, function() {
+          var original = data.slice();
+          var unique = nub(original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return original.indexOf(unique[i - 1]) < original.indexOf(val);
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('singleton array', [5], 1);
+      addTests('array with no duplicates', [2, 3, 4], 3);
+      addTests('array with one duplicate', [2, 3, 2, 4], 3);
+      addTests('array with multiple duplicate', [2, 3, 3, 4, 2, 4], 3);
+      addTests('singleton string', 'a', 1);
+      addTests('string with no duplicates', 'abcd', 4);
+      addTests('string with one duplicate', 'mozilla', 6);
+      addTests('string with multiple duplicates', 'banana', 3);
+    });
+
+
+    describe('uniq', function() {
+      it('uniq is a synonym for nub', function() {
+        return array.uniq === array.nub;
+      });
     });
   };
 
