@@ -768,13 +768,18 @@
 
 
     /*
-     * zip: Takes two arrays/strings, a and b, and returns a new array. The new array has the same length as the
-     *      smaller of the two arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i]
-     *      for each position i in the result. Throws if neither argument is an array or string.
+     * zipWith: Takes a function of arity 2, and a two arrays/strings, a and b, and returns a new array. The new array
+     *          has the same length as the smaller of the two arguments. Each element is the result of calling the
+     *          supplied function with the elements at the corresponding position in the original arrays/strings.
+     *          Throws if the first argument is not an argument of arity at least 2, or if neither of the last two arguments
+     *          is an array.
      *
      */
 
-    var zip = curry(function(a, b) {
+    var zipWith = curry(function(f, a, b) {
+      if (typeof(f) !== 'function' || getRealArity(f) < 2)
+        throw new TypeError('Value is not a function of arity 2');
+
       if (!isArrayLike(a) || !isArrayLike(b))
         throw new TypeError('Value is not an array or string');
 
@@ -782,10 +787,20 @@
 
       var result = [];
       for (var i = 0; i < len; i++)
-        result.push(Pair(a[i], b[i]));
+        result.push(f(a[i], b[i]));
 
       return result;
     });
+
+
+    /*
+     * zip: Takes two arrays/strings, a and b, and returns a new array. The new array has the same length as the
+     *      smaller of the two arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i]
+     *      for each position i in the result. Throws if neither argument is an array or string.
+     *
+     */
+
+    var zip = zipWith(Pair);
 
 
     var exported = {
@@ -833,7 +848,8 @@
       tails: tails,
       take: take,
       takeWhile: takeWhile,
-      zip: zip
+      zip: zip,
+      zipWith: zipWith
     };
 
 

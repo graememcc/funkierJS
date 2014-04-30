@@ -28,7 +28,7 @@
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
-                             'occurrencesWith', 'zip'];
+                             'occurrencesWith', 'zip', 'zipWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3129,6 +3129,81 @@
 
 
       testCurriedFunction('zip', zip, [[1, 2, 3], [4, 5, 6]]);
+    });
+
+
+    var zipWithSpec = {
+      name: 'zipWith',
+      arity: 3,
+      restrictions: [['function'], ['array', 'string'], ['array', 'string']],
+      validArguments: [[function(x, y) {return x + y;}], [[1, 2], 'abc'], [[3, 4, 5], 'def']]
+    };
+
+
+    describeFunction(zipWithSpec, array.zipWith, function(zipWith) {
+      var addDegenerateTests = function(message, left, right) {
+        it('Works for ' + message, function() {
+          var result = zipWith(function(l, r) {return l;}, left, right);
+
+          expect(result).to.deep.equal([]);
+        });
+      };
+
+
+      addDegenerateTests('LHS empty', [], [1, 2, 3]);
+      addDegenerateTests('RHS empty', [1, 2, 3], []);
+      addDegenerateTests('both empty', [], []);
+
+
+      addAcceptsOnlyFixedArityTests(zipWith, 'array', 2, [], [[1, 2, 3], [4, 5, 6]], true);
+      addAcceptsOnlyFixedArityTests(zipWith, 'string', 2, [], ['abc', 'def'], true);
+      addFuncCalledWithSpecificArityTests(zipWith, 'array', 2, [], [[1, 2, 3], [4, 5, 6]]);
+      addFuncCalledWithSpecificArityTests(zipWith, 'string', 2, [], ['abc', 'def']);
+
+
+      var addTests = function(message, f, left, right) {
+        it('Result is an array ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var result = zipWith(f, l, r);
+
+          expect(Array.isArray(result)).to.be.true;
+        });
+
+
+        it('Result has correct length ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var expected = Math.min(l.length, r.length);
+          var result = zipWith(f, l, r).length;
+
+          expect(result).to.equal(expected);
+        });
+
+
+        it('Every element is correct ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var result = zipWith(f, l, r).every(function(p, i) {
+            return p === f(l[i], r[i]);
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for array (1)', function(x, y) {return x + y;}, [1], [2, 3, 4]);
+      addTests('for array (2)', function(x, y) {return x - y;}, [2, 3, 4], [5]);
+      addTests('for array (3)', function(x, y) {return x * y;}, [2, 3, 4], [5, 6, 7, 8]);
+      addTests('for string (1)', function(x, y) {return x.toUpperCase();}, 'a', 'bcd');
+      addTests('for string (2)', function(x, y) {return x + y;}, 'bcd', 'e');
+      addTests('for string (3)', function(x, y) {return y + x;}, 'bcd', 'efgh');
+      addTests('for mix (1)', function(x, y) {return x.toString() + y.toString();}, [{}, {}, {}], 'funkier');
+      addTests('for mix (2)', function(x, y) {return x.toString() + y.toString();}, 'funkier', [true, false, {}]);
+
+
+      testCurriedFunction('zipWith', zipWith, [function(x, y) {return x * y;}, [1, 2, 3], [4, 5, 6]]);
     });
   };
 
