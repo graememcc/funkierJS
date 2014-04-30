@@ -824,6 +824,35 @@
     });
 
 
+    /*
+     * nubBy: Takes a predicate function of arity 2, and an array or string. Returns a new array/string, with
+     *        all duplicate elements removed. A duplicate is defined as a value for which the predicate function
+     *        returned true when called with a previously encountered element and the element under consideration.
+     *        The order of elements is preserved. Throws if the first argument is not a function, or has an arity
+     *        other than 2, or if the last argument is not an array/string.
+     *
+     */
+
+    var nubWithFn = curry(function(p, soFar, current) {
+      var isDuplicate = some(base.flip(p)(current), soFar);
+
+      return isDuplicate ? soFar :
+             soFar.concat(Array.isArray(soFar) ? [current] : current);
+    });
+
+
+    var nubWith = curry(function(f, arr) {
+      if (typeof(f) !== 'function' || getRealArity(f) !== 2)
+        throw new TypeError('Value is not a function of arity 2');
+
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var fn = nubWithFn(f);
+      return foldl(fn, Array.isArray(arr) ? [] : '', arr);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -855,6 +884,7 @@
       maximum: maximum,
       minimum: minimum,
       nub: nub,
+      nubWith: nubWith,
       occurrences: occurrences,
       occurrencesWith: occurrencesWith,
       prepend: prepend,
@@ -871,6 +901,7 @@
       take: take,
       takeWhile: takeWhile,
       uniq: nub,
+      uniqWith: nubWith,
       zip: zip,
       zipWith: zipWith
     };

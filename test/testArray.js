@@ -28,7 +28,7 @@
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
-                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq'];
+                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3272,7 +3272,7 @@
       addTests('singleton array', [5], 1);
       addTests('array with no duplicates', [2, 3, 4], 3);
       addTests('array with one duplicate', [2, 3, 2, 4], 3);
-      addTests('array with multiple duplicate', [2, 3, 3, 4, 2, 4], 3);
+      addTests('array with multiple duplicates', [2, 3, 3, 4, 2, 4], 3);
       addTests('singleton string', 'a', 1);
       addTests('string with no duplicates', 'abcd', 4);
       addTests('string with one duplicate', 'mozilla', 6);
@@ -3283,6 +3283,119 @@
     describe('uniq', function() {
       it('uniq is a synonym for nub', function() {
         return array.uniq === array.nub;
+      });
+    });
+
+
+    var nubWithSpec = {
+      name: 'nubWith',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x, y) {return false;}], [[1, 2, 3], 'abcd']]
+    };
+
+
+    describeFunction(nubWithSpec, array.nubWith, function(nubWith) {
+      var alwaysFalse = function(x, y) {return false;};
+
+
+      addReturnsEmptyOnEmptyTests(nubWith, [alwaysFalse]);
+      addNoModificationOfOriginalTests(nubWith, [alwaysFalse]);
+      addReturnsSameTypeTests(nubWith, [alwaysFalse]);
+      addAcceptsOnlyFixedArityTests(nubWith, 'array', 2, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(nubWith, 'string', 2, [], ['def']);
+      addFuncCalledWithSpecificArityTests(nubWith, 'array', 2, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(nubWith, 'string', 2, [], ['ghi']);
+
+
+      var addTests = function(message, f, data, expectedLength) {
+        it('Length is correct for ' + message, function() {
+          var original = data.slice();
+          var result = nubWith(f, original).length;
+
+          expect(result).to.equal(expectedLength);
+        });
+
+
+        it('Predicate function called as often as required for ' + message, function() {
+          var original = data.slice();
+          var p = function(x, y) {
+            p.called += 1;
+            return f(x, y);
+          };
+          p.called = 0;
+          nubWith(p, original);
+
+          expect(p.called).to.be.at.most(original.length * (original.length - 1) / 2);
+        });
+
+
+        it('Each value only occurs once for ' + message, function() {
+          var original = data.slice();
+          var unique = nubWith(f, original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val, i) {
+            return unique.every(function(val2, j) {
+              if (i === j) return true;
+
+              if (j < i)
+                return f(val2, val) === false;
+
+              return f(val, val2) === false;
+            });
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Each value came from original for ' + message, function() {
+          var original = data.slice();
+          var unique = nubWith(f, original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val) {
+            return original.indexOf(val) !== -1;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Ordering maintained from original for ' + message, function() {
+          var original = data.slice();
+          var unique = nubWith(f, original);
+          unique = splitIfNecessary(unique);
+          var result = unique.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return original.indexOf(unique[i - 1]) <= original.indexOf(val);
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('singleton array', alwaysFalse, [1], 1);
+      addTests('array with no duplicates', function(x, y) {return x + y === 4;}, [2, 3, 4], 3);
+      addTests('array with one duplicate', function(x, y) {return x + y === 4;}, [2, 3, 2, 4], 3);
+      addTests('array with multiple duplicates', function(x, y) {return x.foo === y.foo;},
+               [{foo: 1}, {foo: 2}, {foo: 1}, {foo: 3}, {foo: 2}], 3);
+
+      var oneVowel = function(x, y) {return 'aeiou'.indexOf(x) !== -1 && 'aeiou'.indexOf(y) !== -1;};
+      addTests('singleton string', oneVowel, 'a', 1);
+      addTests('string with no duplicates', oneVowel, 'abcd', 4);
+      addTests('string with one duplicate', oneVowel, 'java', 3);
+      addTests('string with multiple duplicates', oneVowel, 'bananae', 4);
+
+
+      testCurriedFunction('nubWith', nubWith, [alwaysFalse, 'funkier']);
+    });
+
+
+    describe('uniqWith', function() {
+      it('uniqWith is a synonym for nubWith', function() {
+        return array.uniqWith === array.nubWith;
       });
     });
   };
