@@ -23,7 +23,7 @@
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-                             'reverse', 'find', 'findFrom', 'findWith', 'findFromWith'];
+                             'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -2825,6 +2825,86 @@
 
 
       testCurriedFunction('findFromWith', findFromWith, [alwaysTrue, 1, 'funkier']);
+    });
+
+
+    var occurrencesSpec = {
+      name: 'occurrences',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[1], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(occurrencesSpec, array.occurrences, function(occurrences) {
+      it('Returns empty array when called with empty array', function() {
+        var result = occurrences(1, []);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when called with empty string', function() {
+        var result = occurrences(1, '');
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when value not found (array)', function() {
+        var result = occurrences(1, [2, 3, 4]);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when value not found (array)', function() {
+        var result = occurrences('a', 'funkier');
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      var addTest = function(message, val, data) {
+        it('Returns an array ' + message, function() {
+          var result = occurrences(val, data);
+
+          expect(Array.isArray(result)).to.be.true;
+        });
+
+
+        it('Returned values are valid indices ' + message, function() {
+          var result = occurrences(val, data).every(function(i) {
+            return i >= 0 && i < data.length && data[i] === val;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('No indices missing ' + message, function() {
+          var original = splitIfNecessary(data);
+          var found = occurrences(val, data);
+          var result = original.every(function(v, i) {
+            if (found.indexOf(i) !== -1) return true;
+            return v !== val;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTest('for array (1)', 1, [2, 1, 3]);
+      addTest('for array (2)', 1, [2, 1, 1, 3, 1]);
+      addTest('for array (3)', {}, [{}, {}, {}]);
+      var obj = {};
+      addTest('for array (4)', obj, [{}, obj, {}]);
+      addTest('for string (1)', 'a', 'ban');
+      addTest('for string (2)', 'a', 'banana');
+
+
+      testCurriedFunction('occurrences', occurrences, [1, [1, 2, 3]]);
     });
   };
 

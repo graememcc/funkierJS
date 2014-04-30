@@ -719,6 +719,26 @@
     });
 
 
+    /*
+     * occurrences: Takes a value, and an array or string. Searches for all occurrences of the value—tested using strict
+     *              equality—and returns an array containing all indices into the array/string where the value can be found.
+     *              Throws if the last parameter is not an array/string.
+     *
+     */
+
+    var occurrences = curry(function(val, arr) {
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var result = [];
+      for (var i = 0, l = arr.length; i < l; i++)
+        if (arr[i] === val)
+          result.push(i);
+
+      return result;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -744,11 +764,12 @@
       inits: inits,
       intersperse: intersperse,
       isEmpty: isEmpty,
+      last: last,
+      length: length,
       map: map,
       maximum: maximum,
       minimum: minimum,
-      last: last,
-      length: length,
+      occurrences: occurrences,
       prepend: prepend,
       product: product,
       range: range,
