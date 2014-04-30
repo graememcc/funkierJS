@@ -739,6 +739,30 @@
     });
 
 
+    /*
+     * occurrencesWith: Takes a predicate function p, and an array or string. Searches for all occurrences of the value—tested
+     *                  using the given predicate—and returns an array containing all indices into the array/string where the
+     *                  value can be found. Throws if the first parameter is not a predicate function of arity 1, or if the last
+     *                  parameter is not an array/string.
+     *
+     */
+
+    var occurrencesWith = curry(function(p, arr) {
+      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
+        throw new TypeError('Value is not a predicate function');
+
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      var result = [];
+      for (var i = 0, l = arr.length; i < l; i++)
+        if (p(arr[i]))
+          result.push(i);
+
+      return result;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -770,6 +794,7 @@
       maximum: maximum,
       minimum: minimum,
       occurrences: occurrences,
+      occurrencesWith: occurrencesWith,
       prepend: prepend,
       product: product,
       range: range,
