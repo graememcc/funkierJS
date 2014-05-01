@@ -15,6 +15,7 @@
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
+    var getRealArity = base.getRealArity;
     var alwaysTrue = base.constant(true);
     var isPair = pair.isPair;
     var fst = pair.fst;
@@ -632,6 +633,15 @@
         var result = map(function(x) {}, '');
 
         expect(result).to.deep.equal([]);
+      });
+
+
+      it('Array contains partially applied functions if supplied function arity > 1', function() {
+        var result = map(function(x, y) {return x + y;}, [1, 2]).every(function(f) {
+          return typeof(f) === 'function' && getRealArity(f) === 1;
+        });
+
+        expect(result).to.be.true;
       });
 
 

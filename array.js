@@ -90,7 +90,7 @@
 
       return curryWithArity(arity, function() {
         var args = [].slice.call(arguments);
-        var f = args[0];
+        var f = curry(args[0]);
         var arr = last(args);
         var wasString = false;
 
@@ -108,8 +108,12 @@
         else if ('minimumArity' in options && getRealArity(f) < options.minimumArity)
           throw new TypeError('Called with invalid arguments');
 
-        // XXX Is this really what we always want?
-        args[0] = curryWithArity(fArity, f);
+        var fn = curryWithArity(fArity, function() {
+          var args = [].slice.call(arguments);
+          return f.apply(null, args);
+        });
+        args[0] = fn;
+
         var result = arr[prop].apply(arr, args.slice(0, args.length - 1));
 
         if ('returnSameType' in options && wasString)
