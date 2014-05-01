@@ -21,7 +21,8 @@
 
     var expectedObjects = ['Result'];
     var expectedFunctions = ['Ok', 'Err', 'getOkValue', 'getErrValue', 'isResult', 'isOk', 'isErr',
-                             'makeResultReturner', 'makePredResultReturner', 'makeThrowResultReturner'];
+                             'makeResultReturner', 'makePredResultReturner', 'makeThrowResultReturner',
+                             'either'];
     describeModule('result', result, expectedObjects, expectedFunctions);
 
 
@@ -694,6 +695,169 @@
       var f2 = function(x, y) {return x + y;};
       var newFn = makeThrowResultReturner(f2);
       testCurriedFunction('function returned by makeThrowResultReturner', newFn, [2, 3]);
+    });
+
+
+    var eitherSpec = {
+      name: 'either',
+      arity: 3,
+      restrictions: [['function'], ['function'], [Result]],
+      validArguments: [[base.id], [base.id], [Ok(1)]]
+    };
+
+
+    describeFunction(eitherSpec, result.either, function(either) {
+      it('Throws if first function has arity 0', function() {
+        var fn = function() {
+          either(function() {}, base.id, Ok(1));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if second function has arity 0', function() {
+        var fn = function() {
+          either(base.id, function() {}, Ok(1));
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Does not throw if functions have arity 1', function() {
+        var fn = function() {
+          either(base.id, base.id, Ok(1));
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Does not throw if a function has arity > 1 (1)', function() {
+        var fn = function() {
+          either(base.constant, base.id, Ok(1));
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Does not throw if a function has arity > 1 (2)', function() {
+        var fn = function() {
+          either(function(x, y, z) {return x;}, base.constant, Ok(1));
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      var notResults = [1, 'a', true, null, undefined, {}, []];
+
+      notResults.forEach(function(test, i) {
+        it('Throws if the last argument is not a Result (' + (i + 1) + ')', function() {
+          var fn = function() {
+            either(base.id, base.constant, test);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      var addOKTest = function(message, val) {
+        it('Calls first function if value is OK ' + message, function() {
+          var ok = Ok(val);
+          var f = function(x) {f.called = true; return null;};
+          f.called = false;
+          either(f, base.id, ok);
+
+          expect(f.called).to.be.true;
+        });
+
+
+        it('Calls first function with wrapped value if OK ' + message, function() {
+          var ok = Ok(val);
+          var f = function(x) {f.arg = x; return null;};
+          f.arg = null;
+          either(f, base.id, ok);
+
+          expect(f.arg === val).to.be.true;
+        });
+
+
+        it('Returns result of first function if OK (1) ' + message, function() {
+          var ok = Ok(val);
+          var res = 1;
+          var f = function(x) {return res;};
+          var result = either(f, base.id, ok);
+
+          expect(result === res).to.be.true;
+        });
+
+
+        it('Returns result of first function if OK (2) ' + message, function() {
+          var ok = Ok(val);
+          var res = 'funkier';
+          var f = function(x) {return res;};
+          var result = either(f, base.id, ok);
+
+          expect(result === res).to.be.true;
+        });
+      };
+
+
+      addOKTest('(1)', {foo: 1});
+      addOKTest('(2)', 'abc');
+
+
+      var addErrTest = function(message, val) {
+        it('Calls second function if value is Err ' + message, function() {
+          var err = Err(val);
+          var f = function(x) {f.called = true; return null;};
+          f.called = false;
+          either(base.id, f, err);
+
+          expect(f.called).to.be.true;
+        });
+
+
+        it('Calls second function with wrapped value if Err ' + message, function() {
+          var err = Err(val);
+          var f = function(x) {f.arg = x; return null;};
+          f.arg = null;
+          either(base.id, f, err);
+
+          expect(f.arg === val).to.be.true;
+        });
+
+
+        it('Returns result of second function if Err (1) ' + message, function() {
+          var err = Err(val);
+          var res = 1;
+          var f = function(x) {return res;};
+          var result = either(base.id, f, err);
+
+          expect(result === res).to.be.true;
+        });
+
+
+        it('Returns result of second function if Err (2) ' + message, function() {
+          var err = Err(val);
+          var res = 'funkier';
+          var f = function(x) {return res;};
+          var result = either(base.id, f, err);
+
+          expect(result === res).to.be.true;
+        });
+      };
+
+
+      addErrTest('(1)', {foo: 42});
+      addErrTest('(2)', 2);
+
+
+      testCurriedFunction('either', either, [base.id, base.id, Err(1)]);
     });
   };
 

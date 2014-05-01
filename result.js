@@ -210,7 +210,35 @@
     });
 
 
+    /*
+     * either: Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value,
+     *         the first function will be called with the unwrapped value. Otherwise, when the Result
+     *         is an Err value, the second function is called with the unwrapped value. In either case
+     *         the result of the called function is returned. Throws a TypeError if either of the first
+     *         two arguments are not a function, or if they have arity 0, or if the last argument is not
+     *         a Result.
+     *
+     */
+
+    var either = curry(function(f, g, result) {
+      if (typeof(f) !== 'function' || typeof(g) !== 'function')
+        throw new TypeError('Value is not a function');
+
+      if (getRealArity(f) === 0 || getRealArity(g) === 0)
+        throw new TypeError('Function has incorrect arity');
+
+      if (isOk(result))
+        return f(getOkValue(result));
+
+      if (isErr(result))
+        return g(getErrValue(result));
+
+      throw new TypeError('Invalid value');
+    });
+
+
     var exported = {
+      either: either,
       getErrValue: getErrValue,
       getOkValue: getOkValue,
       isErr: isErr,
