@@ -885,6 +885,30 @@
     var sortWith = makeArrayPropCaller(2, 'sort', 2, {fixedArity: 2, returnSameType: true});
 
 
+    /*
+     * insert: Takes an index, a value, and an array or string. Returns a new array/string with the value inserted
+     *         at the given index, and later elements shuffled one place to the right. The index argument should be
+     *         a number between 0 and the length of the given array/string; a value equal to the length will insert
+     *         the new value at the end of the array/string. If passed a string, the value will be coerced to a string
+     *         if necessary. Throws a TypeError if the index is out of bounds, or otherwise invalid, or if the last
+     *         argument is not an array/string.
+     *
+     */
+
+    var insert = curry(function(index, val, arr) {
+      index = checkPositiveIntegral(index);
+      if (index > arr.length)
+        throw new TypeError('Index out of bounds');
+
+      arr = checkArrayLike(arr);
+
+      if (Array.isArray(arr))
+        return arr.slice(0, index).concat([val]).concat(arr.slice(index));
+
+      return arr.slice(0, index) + val + arr.slice(index);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -908,6 +932,7 @@
       head: head,
       init: init,
       inits: inits,
+      insert: insert,
       intersperse: intersperse,
       isEmpty: isEmpty,
       last: last,

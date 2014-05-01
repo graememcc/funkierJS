@@ -31,7 +31,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith', 'unzip'];
+                             'sort', 'sortWith', 'unzip', 'insert'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3682,6 +3682,109 @@
 
       addTests('singleton', [Pair(1, 2)]);
       addTests('normal array', [Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})]);
+    });
+
+
+    var insertSpec = {
+      name: 'insert',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [['1'], [0], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(insertSpec, array.insert, function(insert) {
+      addBadNumberTests('index', insert, [], ['a', [1, 2, 3]]);
+      addBadNumberTests('index', insert, [], ['a', 'bcd']);
+
+
+      it('Throws if index > length (1)', function() {
+        var fn = function() {
+          insert(4, 'a', [1, 2, 3]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index > length (2)', function() {
+        var fn = function() {
+          insert(10, 'a', 'bcde');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Does not throw if index === length (1)', function() {
+        var fn = function() {
+          insert(3, 'a', [1, 2, 3]);
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Does not throw if index === length (2)', function() {
+        var fn = function() {
+          insert(4, 'a', 'bcde');
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      addNoModificationOfOriginalTests(insert, [0, 'a']);
+      addReturnsSameTypeTests(insert, [0, 'a']);
+
+
+      var addTests = function(message, index, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = insert(index, val, original);
+
+          expect(result.length).to.equal(original.length + 1);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = insert(index, val, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            if (i < index)
+              return v === original[i];
+
+            if (i === index)
+              return v === val;
+
+            return v === original[i - 1];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for array', 1, 4, [1, 2, 3]);
+      addTests('for string', 1, 'd', 'abc');
+      addTests('for array when index === length', 3, 4, [1, 2, 3]);
+      addTests('for string when index === length', 3, 'd', 'abc');
+      addTests('for array when index === 0', 0, 4, [1, 2, 3]);
+      addTests('for string when index === 0', 0, 'd', 'abc');
+      addTests('for empty array when index === 0', 0, 1, []);
+      addTests('for empty string when index === 0', 0, 'a', '');
+
+
+      it('toString called when inserting non-string in string', function() {
+        var obj = {toString: function() {return 'funk';}};
+        var result = insert(0, obj, 'ier');
+
+        expect(result).to.equal('funkier');
+      });
+
+
+      testCurriedFunction('insert', insert, [0, 'a', [1, 2, 3]]);
     });
   };
 
