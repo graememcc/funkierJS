@@ -108,6 +108,7 @@
         else if ('minimumArity' in options && getRealArity(f) < options.minimumArity)
           throw new TypeError('Called with invalid arguments');
 
+        // XXX Is this really what we always want?
         args[0] = curryWithArity(fArity, f);
         var result = arr[prop].apply(arr, args.slice(0, args.length - 1));
 
@@ -851,6 +852,18 @@
     });
 
 
+    /*
+     * sortWith: Takes a function of two arguments, and an array or string. Returns a new array/string, sorted
+     *           per the given function. The function should return a negative number if the first argument is
+     *           "less than" the second, 0 if the two arguments are "equal", and a positive number if the first
+     *           argument is greater than the second. Throws if the first argument is not a function of arity 2,
+     *           or if the second is not an array/string.
+     *
+     */
+
+    var sortWith = makeArrayPropCaller(2, 'sort', 2, {fixedArity: 2, returnSameType: true});
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -894,6 +907,7 @@
       slice: slice,
       some: some,
       sort: sort,
+      sortWith: sortWith,
       sum: sum,
       tail: tail,
       tails: tails,

@@ -98,7 +98,7 @@
 
 
     /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
-     *                 return it.
+     *                 return a copy.
      *
      */
 
@@ -106,7 +106,7 @@
       if (!isArrayLike(v))
         throw new TypeError('Value is not a string or array');
 
-      return v;
+      return (typeof(v) === 'string' ? '' : []).slice.call(v);
     };
 
 

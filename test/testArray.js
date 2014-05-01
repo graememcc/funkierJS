@@ -29,7 +29,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort'];
+                             'sort', 'sortWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3465,6 +3465,88 @@
       addTests('string with duplicate', 'dcebc');
       addTests('already sorted string', '0123');
       addTests('worst case', 'zyxw');
+    });
+
+
+    var sortWithSpec = {
+      name: 'sortWith',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[function(x, y) {return -1;}], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(sortWithSpec, array.sortWith, function(sortWith) {
+      var normalCompare = function(x, y) {return x - y;};
+      addReturnsEmptyOnEmptyTests(sortWith, [normalCompare]);
+      addNoModificationOfOriginalTests(sortWith, [normalCompare]);
+      addReturnsSameTypeTests(sortWith, [normalCompare]);
+      addAcceptsOnlyFixedArityTests(sortWith, 'array', 2, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(sortWith, 'string', 2, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(sortWith, 'array', 2, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(sortWith, 'string', 2, [], ['abc']);
+
+
+      var addTests = function(message, f, data) {
+        it('Length is correct for ' + message, function() {
+          var original = data.slice();
+          var result = sortWith(f, original).length;
+
+          expect(result).to.equal(original.length);
+        });
+
+
+        it('Each value came from original for ' + message, function() {
+          var original = data.slice();
+          var sorted = sortWith(f, original);
+          sorted = splitIfNecessary(sorted);
+          var result = sorted.every(function(val) {
+            var ourOccurrences = array.occurrences(val, sorted).length;
+            var originalOccurrences = array.occurrences(val, original).length;
+
+            return original.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Ordering correct for ' + message, function() {
+          var original = data.slice();
+          var sorted = sortWith(f, original);
+          sorted = splitIfNecessary(sorted);
+          var result = sorted.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return f(sorted[i - 1], val) <= 0;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('singleton array', normalCompare, [1]);
+      addTests('array with no duplicates', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 3}, {foo: 2}]);
+      addTests('array with duplicate', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 3}, {foo: 1}, {foo: 3}]);
+      addTests('already sorted array', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 2}, {foo: 3}]);
+      addTests('worst case',  function(x, y) {return x.foo - y.foo;},
+                [{foo: 3}, {foo: 2}, {foo: 1}]);
+
+      var stringSort = function(x, y) {
+        return x.toUpperCase() < y.toUpperCase() ? -1 : x.toUpperCase() === y.toUpperCase() ? 0 : 1;
+      };
+      addTests('singleton string', stringSort, 'a');
+      addTests('string with no duplicates', stringSort, 'debc');
+      addTests('string with duplicate', stringSort, 'dcebc');
+      addTests('already sorted string', stringSort, '0123');
+      addTests('worst case', stringSort, 'zyxw');
+
+
+      testCurriedFunction('sortWith', sortWith, [normalCompare, [1, 2, 3]]);
     });
   };
 

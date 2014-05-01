@@ -107,7 +107,13 @@
 
           if (t.result) {
             expect(fn).to.not.throw(TypeError);
-            expect(v === t.value).to.be.true;
+            for (var i = 0, l = t.value.length; i < t; i++)
+              expect(v[i] === t.value[i]).to.be.true;
+
+            if (t.name === 'string')
+              expect(v === t.value).to.be.true;
+            else
+              expect(v !== t.value).to.be.true;
           } else {
             expect(fn).to.throw(TypeError);
           }
