@@ -28,7 +28,8 @@
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
-                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith'];
+                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
+                             'sort'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3397,6 +3398,73 @@
       it('uniqWith is a synonym for nubWith', function() {
         return array.uniqWith === array.nubWith;
       });
+    });
+
+
+    var sortSpec = {
+      name: 'sort',
+      arity: 1,
+      restrictions: [['array', 'string']],
+      validArguments: [[[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(sortSpec, array.sort, function(sort) {
+      addReturnsEmptyOnEmptyTests(sort, []);
+      addNoModificationOfOriginalTests(sort, []);
+      addReturnsSameTypeTests(sort, []);
+
+
+      var addTests = function(message, data) {
+        it('Length is correct for ' + message, function() {
+          var original = data.slice();
+          var result = sort(original).length;
+
+          expect(result).to.equal(original.length);
+        });
+
+
+        it('Each value came from original for ' + message, function() {
+          var original = data.slice();
+          var sorted = sort(original);
+          sorted = splitIfNecessary(sorted);
+          var result = sorted.every(function(val) {
+            var ourOccurrences = array.occurrences(val, sorted).length;
+            var originalOccurrences = array.occurrences(val, original).length;
+
+            return original.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Ordering correct for ' + message, function() {
+          var original = data.slice();
+          var sorted = sort(original);
+          sorted = splitIfNecessary(sorted);
+          var result = sorted.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return sorted[i - 1] <= val;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('singleton array', [1]);
+      addTests('array with no duplicates', [4, 2, 3]);
+      addTests('array with duplicate', [4, 2, 3, 2]);
+      addTests('already sorted array', [1, 2, 3]);
+      addTests('worst case', [5, 4, 3, 2, 1]);
+
+      addTests('singleton string', 'a');
+      addTests('string with no duplicates', 'debc');
+      addTests('string with duplicate', 'dcebc');
+      addTests('already sorted string', '0123');
+      addTests('worst case', 'zyxw');
     });
   };
 

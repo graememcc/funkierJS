@@ -853,6 +853,32 @@
     });
 
 
+    /*
+     * sort: Takes an array/string, and returns a new array, sorted in lexicographical order. Throws if the given argument
+     *       is not an array/string.
+     *
+     */
+
+    var sort = curry(function(arr) {
+      if (!isArrayLike(arr))
+        throw new TypeError('Value is not an array or string');
+
+      arr = arr.slice();
+
+      var wasString = false;
+      if (typeof(arr) === 'string') {
+        wasString = true;
+        arr = arr.split('');
+      }
+
+      arr.sort();
+      if (wasString)
+        arr = arr.join('');
+
+      return arr;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -895,6 +921,7 @@
       reverse: reverse,
       slice: slice,
       some: some,
+      sort: sort,
       sum: sum,
       tail: tail,
       tails: tails,
