@@ -15,7 +15,8 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['valueStringifier', 'isArrayLike'];
+    var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
+                             'checkPositiveIntegral'];
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
@@ -55,6 +56,19 @@
     });
 
 
+    var arrayLikeTests = [
+      {name: 'number', value: 1, result: false},
+      {name: 'boolean', value: true, result: false},
+      {name: 'string', value: 'a', result: true},
+      {name: 'function', value: function() {}, result: false},
+      {name: 'object', value: {}, result: false},
+      {name: 'array', value: [1, 2], result: true},
+      {name: 'undefined', value: undefined, result: false},
+      {name: 'null', value: null, result: false},
+      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
+    ];
+
+
     var ialSpec = {
       name: 'isArrayLike',
       arity: 1
@@ -62,20 +76,7 @@
 
 
     describeFunction(ialSpec, utils.isArrayLike, function(isArrayLike) {
-      var tests = [
-        {name: 'number', value: 1, result: false},
-        {name: 'boolean', value: true, result: false},
-        {name: 'string', value: 'a', result: true},
-        {name: 'function', value: function() {}, result: false},
-        {name: 'object', value: {}, result: false},
-        {name: 'array', value: [1, 2], result: true},
-        {name: 'undefined', value: undefined, result: false},
-        {name: 'null', value: null, result: false},
-        {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
-      ];
-
-
-      tests.forEach(function(t) {
+      arrayLikeTests.forEach(function(t) {
         var name = t.name;
 
         it('Behaves correctly for ' + name, function() {
@@ -83,6 +84,33 @@
           var expected = t.result;
 
           expect(b).to.equal(expected);
+        });
+      });
+    });
+
+
+    var calSpec = {
+      name: 'checkArrayLike',
+      arity: 1
+    };
+
+
+    describeFunction(calSpec, utils.checkArrayLike, function(checkArrayLike) {
+      arrayLikeTests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var v;
+          var fn = function() {
+            v = checkArrayLike(t.value);
+          };
+
+          if (t.result) {
+            expect(fn).to.not.throw(TypeError);
+            expect(v === t.value).to.be.true;
+          } else {
+            expect(fn).to.throw(TypeError);
+          }
         });
       });
     });

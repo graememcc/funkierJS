@@ -16,7 +16,7 @@
 
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
-    var isArrayLike = utils.isArrayLike;
+    var checkArrayLike = utils.checkArrayLike;
 
     var pair = require('./pair');
     var Pair = pair.Pair;
@@ -97,6 +97,7 @@
         if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
           throw new TypeError('Called with invalid arguments');
 
+        arr = checkArrayLike(arr);
         if (typeof(arr) === 'string') {
           wasString = true;
           arr = arr.split('');
@@ -363,8 +364,7 @@
     var take = curry(function(count, arr) {
       count = checkPositiveIntegral(count);
 
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var wasString = typeof(arr) === 'string';
       if (wasString)
@@ -387,8 +387,7 @@
     var drop = curry(function(count, arr) {
       count = checkPositiveIntegral(count);
 
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var wasString = typeof(arr) === 'string';
       if (wasString)
@@ -434,9 +433,7 @@
      */
 
     var inits = curry(function(arr) {
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
-
+      arr = checkArrayLike(arr);
       var r = range(0, length(arr) + 1);
 
       return map(function(v) {return take(v, arr);}, r);
@@ -450,9 +447,7 @@
      */
 
     var tails = curry(function(arr) {
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
-
+      arr = checkArrayLike(arr);
       var r = range(0, length(arr) + 1);
 
       return map(function(v) {return drop(v, arr);}, r);
@@ -493,8 +488,7 @@
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var result = [];
       var wasString = typeof(arr) === 'string';
@@ -525,8 +519,7 @@
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var l = arr.length;
       var done = false;
@@ -547,8 +540,7 @@
      */
 
     var prepend = curry(function(v, arr) {
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       if (Array.isArray(arr))
         return [v].concat(arr);
@@ -565,8 +557,7 @@
      */
 
     var append = curry(function(v, arr) {
-      if (!Array.isArray(arr) && typeof(arr) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       if (Array.isArray(arr))
         return arr.concat([v]);
@@ -582,11 +573,8 @@
      */
 
     var concat = curry(function(left, right) {
-      if (!Array.isArray(left) && typeof(left) !== 'string')
-        throw new TypeError('Value is not an array or string');
-
-      if (!Array.isArray(right) && typeof(right) !== 'string')
-        throw new TypeError('Value is not an array or string');
+      left = checkArrayLike(left);
+      right = checkArrayLike(right);
 
       if (typeof(left) !== typeof(right)) {
         if (Array.isArray(left))
@@ -605,8 +593,7 @@
      */
 
     var isEmpty = curry(function(val) {
-      if (!isArrayLike(val))
-        throw new TypeError('Value is not an array or string');
+      val = checkArrayLike(val);
 
       return val.length === 0;
     });
@@ -620,8 +607,7 @@
      */
 
     var intersperse = curry(function(val, arr) {
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var wasString = false;
       if (typeof(arr) === 'string') {
@@ -651,8 +637,7 @@
 
 
     var reverse = curry(function(arr) {
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       return foldr(reverseFn, Array.isArray(arr) ? [] : '', arr);
     });
@@ -686,11 +671,9 @@
      */
 
     var findWith = curry(function(p, arr) {
+      arr = checkArrayLike(arr);
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
-
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
 
       var found = false;
       for (var i = 0, l = arr.length; !found && i < l; i++)
@@ -709,11 +692,9 @@
      */
 
     var findFromWith = curry(function(p, index, arr) {
+      arr = checkArrayLike(arr);
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
-
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
 
       var found = false;
       for (var i = index, l = arr.length; !found && i < l; i++)
@@ -731,8 +712,7 @@
      */
 
     var occurrences = curry(function(val, arr) {
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       var result = [];
       for (var i = 0, l = arr.length; i < l; i++)
@@ -752,11 +732,9 @@
      */
 
     var occurrencesWith = curry(function(p, arr) {
+      arr = checkArrayLike(arr);
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
-
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
 
       var result = [];
       for (var i = 0, l = arr.length; i < l; i++)
@@ -777,11 +755,10 @@
      */
 
     var zipWith = curry(function(f, a, b) {
+      a = checkArrayLike(a);
+      b = checkArrayLike(b);
       if (typeof(f) !== 'function' || getRealArity(f) < 2)
         throw new TypeError('Value is not a function of arity 2');
-
-      if (!isArrayLike(a) || !isArrayLike(b))
-        throw new TypeError('Value is not an array or string');
 
       var len = Math.min(a.length, b.length);
 
@@ -817,8 +794,7 @@
 
 
     var nub = curry(function(arr) {
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
+      arr = checkArrayLike(arr);
 
       return foldl(nubFn, Array.isArray(arr) ? [] : '', arr);
     });
@@ -842,11 +818,9 @@
 
 
     var nubWith = curry(function(f, arr) {
+      arr = checkArrayLike(arr);
       if (typeof(f) !== 'function' || getRealArity(f) !== 2)
         throw new TypeError('Value is not a function of arity 2');
-
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
 
       var fn = nubWithFn(f);
       return foldl(fn, Array.isArray(arr) ? [] : '', arr);
@@ -860,9 +834,7 @@
      */
 
     var sort = curry(function(arr) {
-      if (!isArrayLike(arr))
-        throw new TypeError('Value is not an array or string');
-
+      arr = checkArrayLike(arr);
       arr = arr.slice();
 
       var wasString = false;

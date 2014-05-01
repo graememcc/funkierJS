@@ -97,7 +97,21 @@
     };
 
 
+    /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
+     *                 return it.
+     *
+     */
+
+    var checkArrayLike = function(v) {
+      if (!isArrayLike(v))
+        throw new TypeError('Value is not a string or array');
+
+      return v;
+    };
+
+
     var exported = {
+      checkArrayLike: checkArrayLike,
       checkPositiveIntegral: checkPositiveIntegral,
       isArrayLike: isArrayLike,
       isObjectLike: isObjectLike,
