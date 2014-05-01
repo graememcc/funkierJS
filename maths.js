@@ -296,6 +296,16 @@
     });
 
 
+    /*
+     * odd: Returns true if the given value has remainder 1 on division by 2, and false otherwise.
+     *
+     */
+
+    var odd = curry(function(n) {
+      return n % 2 !== 0;
+    });
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -316,6 +326,7 @@
       max: max,
       multiply: multiply,
       numToLocaleString: numToLocaleString,
+      odd: odd,
       rem: rem,
       rightShift: rightShift,
       rightShiftZero: rightShiftZero,

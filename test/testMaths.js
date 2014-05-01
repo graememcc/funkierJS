@@ -24,7 +24,7 @@
                              'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
                              'toFixed', 'toExponential', 'toPrecision',
                              'toBaseAndString', 'stringToInt', 'numToLocaleString',
-                             'even'];
+                             'even', 'odd'];
     describeModule('maths', maths, expectedObjects, expectedFunctions);
 
 
@@ -322,6 +322,7 @@
 
 
     addEvenOddTests('even', maths.even, true);
+    addEvenOddTests('odd', maths.odd, false);
   };
 
 
