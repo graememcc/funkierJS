@@ -286,6 +286,16 @@
     var numToLocaleString = callProp('toLocaleString');
 
 
+    /*
+     * even: Returns true if the given value is divisible by 2, and false otherwise.
+     *
+     */
+
+    var even = curry(function(n) {
+      return n % 2 === 0;
+    });
+
+
     var exported = {
       add: add,
       bitwiseAnd: bitwiseAnd,
@@ -294,6 +304,7 @@
       bitwiseXor: bitwiseXor,
       div: div,
       divide: divide,
+      even: even,
       exp: exp,
       greaterThan: greaterThan,
       greaterThanEqual: greaterThanEqual,

@@ -23,7 +23,8 @@
                              'rightShift', 'rightShiftZero', 'bitwiseAnd',
                              'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
                              'toFixed', 'toExponential', 'toPrecision',
-                             'toBaseAndString', 'stringToInt', 'numToLocaleString'];
+                             'toBaseAndString', 'stringToInt', 'numToLocaleString',
+                             'even'];
     describeModule('maths', maths, expectedObjects, expectedFunctions);
 
 
@@ -287,6 +288,40 @@
         expect(result).to.equal(n.toLocaleString());
       });
     });
+
+
+    var addEvenOddTests = function(desc, fnUnderTest, isEven) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
+
+
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Works correctly (1)', function() {
+          var result = fnUnderTest(2);
+
+          expect(result).to.equal(isEven ? true : false);
+        });
+
+
+        it('Works correctly (2)', function() {
+          var result = fnUnderTest(3);
+
+          expect(result).to.equal(isEven ? false : true);
+        });
+
+
+        it('Works correctly (3)', function() {
+          var result = fnUnderTest(0);
+
+          expect(result).to.equal(isEven ? true : false);
+        });
+      });
+    };
+
+
+    addEvenOddTests('even', maths.even, true);
   };
 
 
