@@ -112,7 +112,7 @@
       it('Works correctly (2)', function() {
         var d = new Date();
         var current = verifier(d);
-        var newVal = current > 0 ? current - 1 : 1;
+        var newVal = current > 1 ? current - 1 : current + 1;
         var result = fnUnderTest(newVal, d);
 
         expect(verifier(result)).to.equal(newVal);
