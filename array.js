@@ -909,6 +909,25 @@
     });
 
 
+    /*
+     * remove: Takes an index, and an array or string. Returns a new array/string with the value at the given index
+     *         removed, and later elements shuffled one place to the left. The index argument should be a number
+     *         between 0 and one less than the length of the given array/string. Throws a TypeError if the index is
+     *         out of bounds, or otherwise invalid, or if the last argument is not an array/string.
+     *
+     */
+
+    var remove = curry(function(index, arr) {
+      index = checkPositiveIntegral(index);
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+      arr = checkArrayLike(arr);
+
+      return arr.slice(0, index).concat(arr.slice(index + 1));
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -948,6 +967,7 @@
       product: product,
       range: range,
       rangeStep: rangeStep,
+      remove: remove,
       repeat: repeat,
       reverse: reverse,
       slice: slice,

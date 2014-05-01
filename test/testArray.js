@@ -31,7 +31,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith', 'unzip', 'insert'];
+                             'sort', 'sortWith', 'unzip', 'insert', 'remove'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3689,7 +3689,7 @@
       name: 'insert',
       arity: 3,
       restrictions: [[], [], ['array', 'string']],
-      validArguments: [['1'], [0], [[1, 2, 3], 'abc']]
+      validArguments: [[0], ['1'], [[1, 2, 3], 'abc']]
     };
 
 
@@ -3785,6 +3785,98 @@
 
 
       testCurriedFunction('insert', insert, [0, 'a', [1, 2, 3]]);
+    });
+
+
+    var removeSpec = {
+      name: 'remove',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[0], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(removeSpec, array.remove, function(remove) {
+      addBadNumberTests('index', remove, [], [[1, 2, 3]]);
+      addBadNumberTests('index', remove, [], ['bcd']);
+
+
+      it('Throws if index >= length (1)', function() {
+        var fn = function() {
+          remove(4, [1, 2, 3]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (2)', function() {
+        var fn = function() {
+          remove(3, [1, 2, 3]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (3)', function() {
+        var fn = function() {
+          remove(10, 'bcde');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (4)', function() {
+        var fn = function() {
+          remove(4, 'bcde');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      addNoModificationOfOriginalTests(remove, [0]);
+      addReturnsSameTypeTests(remove, [0]);
+
+
+      var addTests = function(message, index, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = remove(index, original);
+
+          expect(result.length).to.equal(original.length - 1);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = remove(index, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            if (i < index)
+              return v === original[i];
+
+            return v === original[i + 1];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for array', 1, [1, 2, 3]);
+      addTests('for string', 1, 'abc');
+      addTests('for array when index === length - 1', 2, [1, 2, 3]);
+      addTests('for string when index === length - 1', 2, 'abc');
+      addTests('for array when index === 0', 0, [1, 2, 3]);
+      addTests('for string when index === 0', 0, 'abc');
+      addTests('for singleton array when index === 0', 0, [1]);
+      addTests('for singleton string when index === 0', 0, 'a');
+
+
+      testCurriedFunction('remove', remove, [0, [1, 2, 3]]);
     });
   };
 
