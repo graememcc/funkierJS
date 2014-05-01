@@ -20,6 +20,8 @@
 
     var pair = require('./pair');
     var Pair = pair.Pair;
+    var fst = pair.fst;
+    var snd = pair.snd;
 
 
     /*
@@ -786,6 +788,21 @@
 
 
     /*
+     * unzip: Takes an array of Pairs, and returns a Pair. The first element is an array containing the first element
+     *        from each pair, and likewise the second element is an array containing the second elements. Throws if
+     *        the given argument is not an array, or if any element is not a Pair.
+     *
+     */
+
+    var unzip = curry(function(arr) {
+      if (!Array.isArray(arr))
+        throw new TypeError('Value is not an array');
+
+      return Pair(map(fst, arr), map(snd, arr));
+    });
+
+
+    /*
      * nub: Takes an array or string. Returns a new array/string, with all duplicate elements—tested for strict
      *      equality—removed. The order of elements is preserved. Throws if the given argument is not an array
      *      or string.
@@ -919,6 +936,7 @@
       takeWhile: takeWhile,
       uniq: nub,
       uniqWith: nubWith,
+      unzip: unzip,
       zip: zip,
       zipWith: zipWith
     };

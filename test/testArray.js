@@ -17,6 +17,7 @@
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
     var alwaysTrue = base.constant(true);
+    var Pair = pair.Pair;
     var isPair = pair.isPair;
     var fst = pair.fst;
     var snd = pair.snd;
@@ -30,7 +31,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith'];
+                             'sort', 'sortWith', 'unzip'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3557,6 +3558,130 @@
 
 
       testCurriedFunction('sortWith', sortWith, [normalCompare, [1, 2, 3]]);
+    });
+
+
+    var unzipSpec = {
+      name: 'unzip',
+      arity: 1,
+      restrictions: [['array']],
+      validArguments: [[[Pair(1, 2)]]]
+    };
+
+
+    describeFunction(unzipSpec, array.unzip, function(unzip) {
+      it('Throws if any element is not a Pair (1)', function() {
+        var bogus = ['a', Pair(1, 2), Pair(3, 4)];
+        var fn = function() {
+          unzip(bogus);
+        };
+
+       expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if any element is not a Pair (2)', function() {
+        var bogus = [Pair(1, 2), Pair(5, 6), 1, Pair(3, 4)];
+        var fn = function() {
+          unzip(bogus);
+        };
+
+       expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if any element is not a Pair (3)', function() {
+        var bogus = [Pair(1, 2), Pair(5, 6), Pair(3, 4), []];
+        var fn = function() {
+          unzip(bogus);
+        };
+
+       expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Works for degenerate case', function() {
+        var arr = [];
+        var result = unzip(arr);
+
+        expect(isPair(result)).to.be.true;
+        expect(fst(result)).to.deep.equal([]);
+        expect(snd(result)).to.deep.equal([]);
+      });
+
+
+      var addTests = function(message, data) {
+        it('Returns a pair for ' + message, function() {
+          var arr = data.slice();
+          var result = unzip(arr);
+
+          expect(isPair(result)).to.be.true;
+        });
+
+
+        it('First element is an array for ' + message, function() {
+          var arr = data.slice();
+          var result = Array.isArray(fst(unzip(arr)));
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Second element is an array for ' + message, function() {
+          var arr = data.slice();
+          var result = Array.isArray(snd(unzip(arr)));
+
+          expect(result).to.be.true;
+        });
+
+
+        it('First element has correct length for ' + message, function() {
+          var arr = data.slice();
+          var result = fst(unzip(arr)).length === arr.length;
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Second element has correct length for ' + message, function() {
+          var arr = data.slice();
+          var result = snd(unzip(arr)).length === arr.length;
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Doesn\'t affect the original ' + message, function() {
+          var arr = data.slice();
+          var result = unzip(arr) !== arr;
+
+          expect(result).to.be.true;
+        });
+
+
+        it('First element correct for ' + message, function() {
+          var arr = data.slice();
+          var result = fst(unzip(arr)).every(function(val, i) {
+            return fst(arr[i]) === val;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        it('Second element correct for ' + message, function() {
+          var arr = data.slice();
+          var result = snd(unzip(arr)).every(function(val, i) {
+            return snd(arr[i]) === val;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('singleton', [Pair(1, 2)]);
+      addTests('normal array', [Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})]);
     });
   };
 
