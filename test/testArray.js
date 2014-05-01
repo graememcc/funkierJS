@@ -31,7 +31,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith', 'unzip', 'insert', 'remove'];
+                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3877,6 +3877,106 @@
 
 
       testCurriedFunction('remove', remove, [0, [1, 2, 3]]);
+    });
+
+
+    var replaceSpec = {
+      name: 'replace',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [[0], ['a'], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(replaceSpec, array.replace, function(replace) {
+      addBadNumberTests('index', replace, [], [1, [1, 2, 3]]);
+      addBadNumberTests('index', replace, [], ['a', 'bcd']);
+
+
+      it('Throws if index >= length (1)', function() {
+        var fn = function() {
+          replace(4, 0, [1, 2, 3]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (2)', function() {
+        var fn = function() {
+          replace(3, 0, [1, 2, 3]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (3)', function() {
+        var fn = function() {
+          replace(10, 'a', 'bcde');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if index >= length (4)', function() {
+        var fn = function() {
+          replace(4, 'a', 'bcde');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      addNoModificationOfOriginalTests(replace, [0, 'a']);
+      addReturnsSameTypeTests(replace, [0, 'a']);
+
+
+      var addTests = function(message, index, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = replace(index, val, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = replace(index, val, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            if (i !== index)
+              return v === original[i];
+
+            return v === val;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('for array', 1, 0, [1, 2, 3]);
+      addTests('for string', 1, 'd', 'abc');
+      addTests('for array when index === length - 1', 2, 0, [1, 2, 3]);
+      addTests('for string when index === length - 1', 2, 'd', 'abc');
+      addTests('for array when index === 0', 0, 0, [1, 2, 3]);
+      addTests('for string when index === 0', 0, 'd', 'abc');
+      addTests('for singleton array when index === 0', 0, 0, [1]);
+      addTests('for singleton string when index === 0', 0, 'd', 'a');
+
+
+      it('toString called when replacement is non-string for string', function() {
+        var obj = {toString: function() {return 'funk';}};
+        var result = replace(0, obj, 'bier');
+
+        expect(result).to.equal('funkier');
+      });
+
+
+      testCurriedFunction('replace', replace, [0, 0, [1, 2, 3]]);
     });
   };
 

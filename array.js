@@ -928,6 +928,33 @@
     });
 
 
+    /*
+     * replace: Takes an index, a value, and an array or string. Returns a new array/string with the value replacing
+     *          the value at the given index. The index argument should be a number between 0 and one less than the
+     *          length of the given array/string. If passed a string, the value will be coerced to a string if necessary.
+     *          Throws a TypeError if the index is out of bounds, or otherwise invalid, or if the last argument is not
+     *          an array/string.
+     *
+     */
+
+    var replace = curry(function(index, val, arr) {
+      index = checkPositiveIntegral(index);
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+      arr = checkArrayLike(arr);
+      arr = arr.slice();
+
+      if (Array.isArray(arr)) {
+        arr[index] = val;
+        return arr;
+      }
+
+      val = val.toString();
+      return arr.slice(0, index) + val + arr.slice(index + 1);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -969,6 +996,7 @@
       rangeStep: rangeStep,
       remove: remove,
       repeat: repeat,
+      replace: replace,
       reverse: reverse,
       slice: slice,
       some: some,
