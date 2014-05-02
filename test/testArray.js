@@ -32,7 +32,7 @@
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
-                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne'];
+                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4134,10 +4134,10 @@
       addFuncCalledWithSpecificArityTests(removeOneWith, 'string', 1, [], ['abc']);
 
 
-      var addTests = function(message, fn, data) {
+      var addTests = function(message, f, data) {
         it('Returned value is the correct length ' + message, function() {
           var original = data.slice();
-          var result = removeOneWith(fn, original);
+          var result = removeOneWith(f, original);
 
           expect(result.length).to.equal(original.length - 1);
         });
@@ -4145,11 +4145,11 @@
 
         it('Returned value has correct elements ' + message, function() {
           var original = data.slice();
-          var newVal = removeOneWith(fn, original);
+          var newVal = removeOneWith(f, original);
           newVal = splitIfNecessary(newVal);
           var deletionSpotFound = false;
           var result = newVal.every(function(v, i) {
-            if (deletionSpotFound || fn(original[i])) {
+            if (deletionSpotFound || f(original[i])) {
               deletionSpotFound = true;
               return v === original[i + 1];
             }
@@ -4165,9 +4165,9 @@
         // make this explicit
         it('Returned value has one less occurrence of value ' + message, function() {
           var original = data.slice();
-          var originalCount = array.occurrencesWith(fn, original).length;
-          var newVal = removeOneWith(fn, original);
-          var newCount = array.occurrencesWith(fn, newVal).length;
+          var originalCount = array.occurrencesWith(f, original).length;
+          var newVal = removeOneWith(f, original);
+          var newCount = array.occurrencesWith(f, newVal).length;
 
           expect(newCount).to.equal(originalCount - 1);
         });
@@ -4176,9 +4176,9 @@
         // And likewise...
         it('Removes first occurrence of value ' + message, function() {
           var original = data.slice();
-          var originalOcc = array.occurrencesWith(fn, original);
-          var newVal = removeOneWith(fn, original);
-          var newOcc = array.occurrencesWith(fn, newVal);
+          var originalOcc = array.occurrencesWith(f, original);
+          var newVal = removeOneWith(f, original);
+          var newOcc = array.occurrencesWith(f, newVal);
 
           if (originalOcc.length === 1)
             expect(newOcc).to.deep.equal([]);
@@ -4272,11 +4272,11 @@
       addFuncCalledWithSpecificArityTests(removeAllWith, 'string', 1, [], ['abc']);
 
 
-      var addTests = function(message, fn, data) {
+      var addTests = function(message, f, data) {
         it('Returned value is the correct length ' + message, function() {
           var original = data.slice();
-          var originalCount = array.occurrencesWith(fn, original).length;
-          var result = removeAllWith(fn, original);
+          var originalCount = array.occurrencesWith(f, original).length;
+          var result = removeAllWith(f, original);
 
           expect(result.length).to.equal(original.length - originalCount);
         });
@@ -4284,11 +4284,11 @@
 
         it('Returned value has correct elements ' + message, function() {
           var original = data.slice();
-          var newVal = removeAllWith(fn, original);
+          var newVal = removeAllWith(f, original);
           newVal = splitIfNecessary(newVal);
           var offset = 0;
           var result = newVal.every(function(v, i) {
-            while (fn(original[i + offset]))
+            while (f(original[i + offset]))
                offset += 1;
 
             return original[i + offset] === v;
@@ -4302,8 +4302,8 @@
         // make this explicit
         it('Returned value has no occurrences of value ' + message, function() {
           var original = data.slice();
-          var newVal = removeAllWith(fn, original);
-          var newCount = array.occurrencesWith(fn, newVal).length;
+          var newVal = removeAllWith(f, original);
+          var newCount = array.occurrencesWith(f, newVal).length;
 
           expect(newCount).to.equal(0);
         });
@@ -4354,6 +4354,18 @@
       addCommonReplaceNotFoundTests('for array when value not strictly equal', fnUnderTest, obj, {foo: 52},
                        [{foo: 1}, {foo: 42}, {foo: 3}]);
       testAdder('for array when value strictly equal', obj, {foo: 62}, [{foo: 1}, obj, {foo: 3}]);
+    };
+
+
+    var addCommonReplaceWithTests = function(testAdder, fnUnderTest) {
+      testAdder('for array', function(x) {return x.foo === 42;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for string', base.equals('b'), 'd', 'abc');
+      testAdder('for array with multiple matches', function(x) {return x < 10;}, 11, [1, 2, 3, 1]);
+      testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'e', 'abca');
+
+      addCommonReplaceNotFoundTests('for array when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addCommonReplaceNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'd', 'abc');
     };
 
 
@@ -4425,6 +4437,84 @@
 
 
       testCurriedFunction('replaceOne', replaceOne, [0, 1, [1, 2, 3]]);
+    });
+
+
+    var replaceOneWithSpec = {
+      name: 'replaceOneWith',
+      arity: 3,
+      restrictions: [['function'], [], ['array', 'string']],
+      validArguments: [[alwaysTrue], [1], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
+      addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1]);
+      addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a']);
+      addAcceptsOnlyFixedArityTests(replaceOneWith, 'array', 1, [], [1, [1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(replaceOneWith, 'string', 1, [], ['a', 'abc']);
+      addFuncCalledWithSpecificArityTests(replaceOneWith, 'array', 1, [], [1, [1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(replaceOneWith, 'string', 1, [], ['a', 'abc']);
+
+
+      var addTests = function(message, f, newVal, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = replaceOneWith(f, newVal, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var replaced = replaceOneWith(f, newVal, original);
+          replaced = splitIfNecessary(replaced);
+          var found = false;
+          var result = replaced.every(function(v, i) {
+            if (!found && f(original[i])) {
+              found = true;
+              return v === newVal;
+            }
+
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has one less occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalCount = array.occurrencesWith(f, original).length;
+          var replaced = replaceOneWith(f, newVal, original);
+          var newCount = array.occurrencesWith(f, replaced).length;
+
+          expect(newCount).to.equal(originalCount - 1);
+        });
+
+
+        // And likewise...
+        it('Replaces first occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalOcc = array.occurrencesWith(f, original);
+          var replaced = replaceOneWith(f, newVal, original);
+          var newOcc = array.occurrencesWith(f, replaced);
+
+          if (originalOcc.length === 1)
+            expect(newOcc).to.deep.equal([]);
+          else
+            expect(newOcc[0]).to.equal(originalOcc[1]);
+        });
+      };
+
+
+      addCommonReplaceWithTests(addTests, replaceOneWith);
+
+
+      testCurriedFunction('replaceOneWith', replaceOneWith, [base.constant(true), 4, [1, 2, 3]]);
     });
   };
 

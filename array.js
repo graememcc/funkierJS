@@ -1055,6 +1055,44 @@
     });
 
 
+    /*
+     * replaceOneWith: Takes a predicate function of arity 1, a replacement value, and an array/string. Returns a
+     *                 new array/string where the first value for which the given predicate returned true has been
+     *                 replaced with the given replacement. Throws if the first argument is not a function, if the
+     *                 function does not have arity 1, or if the last parameter is not an array/string.
+     *
+     */
+
+    var replaceOneWith = curry(function(p, replacement, arr) {
+      if (typeof(p) !== 'function')
+        throw new TypeError('Value is not a function');
+
+      if (getRealArity(p) !== 1)
+        throw new TypeError('Function has incorrect arity');
+
+      arr = checkArrayLike(arr);
+      if (Array.isArray(arr))
+        replacement = [replacement];
+      else
+        replacement = replacement.toString();
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (p(arr[i])) {
+          found = true;
+        } else {
+          i++;
+        }
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1102,6 +1140,7 @@
       repeat: repeat,
       replace: replace,
       replaceOne: replaceOne,
+      replaceOneWith: replaceOneWith,
       reverse: reverse,
       slice: slice,
       some: some,
