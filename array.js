@@ -1093,6 +1093,38 @@
     });
 
 
+    /*
+     * replaceAll: Takes a value, a replacement value, and an array/string. Returns a new array/string where the
+     *             new array/string where all occurrences of the given value—checked for strict equality—have been
+     *             replaced with the given replacement. Throws if the last parameter is not an array/string.
+     *
+     */
+
+    var replaceAll = curry(function(val, replacement, arr) {
+      arr = checkArrayLike(arr);
+      if (Array.isArray(arr))
+        replacement = [replacement];
+      else
+        replacement = replacement.toString();
+
+      var result = arr.slice();
+      var i = 0;
+      while (i < arr.length) {
+        if (arr[i] === val) {
+          result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
+          if (Array.isArray(arr))
+            i += 1;
+          else
+            i += replacement.length;
+        } else {
+          i++;
+        }
+      }
+
+      return result;
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1139,6 +1171,7 @@
       removeOneWith: removeOneWith,
       repeat: repeat,
       replace: replace,
+      replaceAll: replaceAll,
       replaceOne: replaceOne,
       replaceOneWith: replaceOneWith,
       reverse: reverse,

@@ -32,7 +32,8 @@
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
-                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith'];
+                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith',
+                             'replaceAll'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4515,6 +4516,76 @@
 
 
       testCurriedFunction('replaceOneWith', replaceOneWith, [base.constant(true), 4, [1, 2, 3]]);
+    });
+
+
+    var replaceAllSpec = {
+      name: 'replaceAll',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [[2], [4], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(replaceAllSpec, array.replaceAll, function(replaceAll) {
+      addNoModificationOfOriginalTests(replaceAll, [0, 1]);
+      addReturnsSameTypeTests(replaceAll, [0, 1]);
+
+
+      var addTests = function(message, val, newVal, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = replaceAll(val, newVal, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var replaced = replaceAll(val, newVal, original);
+          replaced = splitIfNecessary(replaced);
+          var result = replaced.every(function(v, i) {
+            if (original[i] === val)
+              return v === newVal;
+
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has no occurrences of value ' + message, function() {
+          var original = data.slice();
+          var replaced = replaceAll(val, newVal, original);
+          var newCount = array.occurrences(val, replaced).length;
+
+          expect(newCount).to.equal(0);
+        });
+
+
+        // And likewise...
+        it('Replaces all occurrences of value ' + message, function() {
+          var original = data.slice();
+          var originalOcc = array.occurrences(val, original);
+          var replaced = replaceAll(val, newVal, original);
+          var newOcc = array.occurrences(newVal, replaced);
+          var result = newOcc.every(function(idx, i) {
+            return idx === originalOcc[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addCommonReplaceValTests(addTests, replaceAll);
+
+
+      testCurriedFunction('replaceAll', replaceAll, [0, 1, [1, 2, 3]]);
     });
   };
 
