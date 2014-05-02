@@ -8,6 +8,8 @@
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;
     var getRealArity = base.getRealArity;
+    var compose = base.compose;
+    var strictEquals = base.strictEquals;
 
     var object = require('./object');
     var extract = object.extract;
@@ -22,6 +24,9 @@
     var Pair = pair.Pair;
     var fst = pair.fst;
     var snd = pair.snd;
+
+    var logical = require('./logical');
+    var notPred = logical.notPred;
 
 
     /*
@@ -957,7 +962,7 @@
 
     /*
      * removeOne: Takes a predicate function of arity 1, and an array or string. Returns a new array/string with the
-     *            first value for which the function returns false removed from the array. Throws a TypeError if the
+     *            first value for which the function returns true removed from the array. Throws a TypeError if the
      *            given predicate is not a function, or does not have arity 1, or if the last parameter is not an array/string.
      *
      */
@@ -990,7 +995,27 @@
      *
      */
 
-    var removeOne = base.compose(removeOneWith, base.strictEquals);
+    var removeOne = compose(removeOneWith, strictEquals);
+
+
+    /*
+     * removeAll: Takes a value, and an array or string. Returns a new array/string with all occurrences of the
+     *            given value—checked for strict equality—removed from the array. Throws a TypeError if the last
+     *            argument is not an array/string.
+     */
+
+    var removeAll = base.composeMany([filter, notPred, strictEquals]);
+
+
+    /*
+     * removeAllWith: Takes a predicate function of arity 1, and an array or string. Returns a new array/string
+     *                with values for which the function returns true removed from the array. Throws a TypeError
+     *                if the first argument is not a predicate function of arity 1, or if the last parameter is
+     *                not an array/string.
+     *
+     */
+
+    var removeAllWith = base.compose(filter, notPred);
 
 
     var exported = {
@@ -1033,6 +1058,8 @@
       range: range,
       rangeStep: rangeStep,
       remove: remove,
+      removeAll: removeAll,
+      removeAllWith: removeAllWith,
       removeOne: removeOne,
       removeOneWith: removeOneWith,
       repeat: repeat,

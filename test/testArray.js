@@ -32,7 +32,7 @@
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
-                             'removeOneWith'];
+                             'removeOneWith', 'removeAll', 'removeAllWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4205,6 +4205,205 @@
 
 
       testCurriedFunction('removeOneWith', removeOneWith, [base.constant(true), [1, 2, 3]]);
+    });
+
+
+    var removeAllSpec = {
+      name: 'removeAll',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[2], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(removeAllSpec, array.removeAll, function(removeAll) {
+      addNoModificationOfOriginalTests(removeAll, [0]);
+      addReturnsSameTypeTests(removeAll, [0]);
+
+
+      var addTests = function(message, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var occurrences = array.occurrences(val, original);
+          var result = removeAll(val, original);
+
+          expect(result.length).to.equal(original.length - occurrences.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAll(val, original);
+          newVal = splitIfNecessary(newVal);
+          var offset = 0;
+          var result = newVal.every(function(v, i) {
+            while (original[i + offset] === val)
+               offset += 1;
+
+            return original[i + offset] === v;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has no occurrences of value ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAll(val, original);
+          var newCount = array.occurrences(val, newVal).length;
+
+          expect(newCount).to.equal(0);
+        });
+      };
+
+
+      addTests('for array', 2, [1, 2, 3]);
+      addTests('for string', 'b', 'abc');
+      addTests('for array when value matches last entry', 3, [1, 2, 3]);
+      addTests('for string when value matches last entry', 'c', 'abc');
+      addTests('for array when value matches first entry', 1, [1, 2, 3]);
+      addTests('for string when value matches first entry', 'a', 'abc');
+      addTests('for singleton array when value matches', 1, [1]);
+      addTests('for singleton string when value matches', 'a', 'a');
+      addTests('for array with multiple matches', 1, [1, 2, 3, 1]);
+      addTests('for string with multiple matches', 'a', 'abca');
+      addTests('for array with all matches', 1, [1, 1, 1, 1]);
+      addTests('for string with multiple matches', 'a', 'aaaa');
+
+
+      var addNotFoundTests = function(message, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeAll(val, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAll(val, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addNotFoundTests('for array when value not found', 4, [1, 2, 3]);
+      addNotFoundTests('for string when value not found', 'd', 'abc');
+      var obj = {foo: 42};
+      addNotFoundTests('for array when value not strictly equal', obj,
+                       [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addTests('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+
+
+      testCurriedFunction('removeAll', removeAll, [0, [1, 2, 3]]);
+    });
+
+
+    var removeAllWithSpec = {
+      name: 'removeAllWith',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
+      addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue]);
+      addReturnsSameTypeTests(removeAllWith, [alwaysTrue]);
+      addAcceptsOnlyFixedArityTests(removeAllWith, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(removeAllWith, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(removeAllWith, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(removeAllWith, 'string', 1, [], ['abc']);
+
+
+      var addTests = function(message, fn, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var originalCount = array.occurrencesWith(fn, original).length;
+          var result = removeAllWith(fn, original);
+
+          expect(result.length).to.equal(original.length - originalCount);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAllWith(fn, original);
+          newVal = splitIfNecessary(newVal);
+          var offset = 0;
+          var result = newVal.every(function(v, i) {
+            while (fn(original[i + offset]))
+               offset += 1;
+
+            return original[i + offset] === v;
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has no occurrences of value ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAllWith(fn, original);
+          var newCount = array.occurrencesWith(fn, newVal).length;
+
+          expect(newCount).to.equal(0);
+        });
+      };
+
+
+      addTests('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addTests('for array', base.equals(2), [1, 2, 3]);
+      addTests('for string', base.equals('b'), 'abc');
+      addTests('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
+      addTests('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
+      addTests('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
+      addTests('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
+      addTests('for singleton array when value matches', base.equals(1), [1]);
+      addTests('for singleton string when value matches', base.equals('a'), 'a');
+      addTests('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 10]);
+      addTests('for string with multiple matches', function(x) {return x < 'd';}, 'abcad');
+      addTests('for array where every value matches', base.constant(true), [1, 2, 3, 4]);
+      addTests('for string where every value matches', base.constant(true), 'abcd');
+
+
+      var addNotFoundTests = function(message, fn, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeAllWith(fn, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeAllWith(fn, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addNotFoundTests('for array when value not found', function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addNotFoundTests('for string when value not found', base.constant(false), 'abc');
+
+
+      testCurriedFunction('removeAllWith', removeAllWith, [base.constant(true), [1, 2, 3]]);
     });
   };
 
