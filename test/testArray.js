@@ -122,7 +122,8 @@
 
 
     // Several functions require that the first parameter is a function with a specific arity
-    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, type, requiredArity, argsBefore, argsAfter, isMinimum) {
+    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, argsBetween, isMinimum) {
+      argsBetween = argsBetween || [];
       isMinimum = isMinimum || false;
 
       var funcs = [
@@ -133,63 +134,87 @@
         function(w, x, y, z) {}
       ];
 
-      funcs.forEach(function(f, i) {
-        if ((!isMinimum && i !== requiredArity) || (isMinimum && i < requiredArity)) {
-          it('Throws when called with ' + type + ' and function of arity ' + i, function() {
-            var fn = function() {
-              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-            };
+      var addTestsForType = function(type, originalData) {
+        funcs.forEach(function(f, i) {
+          if ((!isMinimum && i !== requiredArity) || (isMinimum && i < requiredArity)) {
+            it('Throws when called with ' + type + ' and function of arity ' + i, function() {
+              var data = originalData.slice();
 
-            expect(fn).to.throw(TypeError);
-          });
-        } else {
+              var fn = function() {
+                fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
+              };
+
+              expect(fn).to.throw(TypeError);
+            });
+
+            return;
+          }
           it('Does not throw when called with ' + type + ' and function of arity ' + i, function() {
+            var data = originalData.slice();
+
             var fn = function() {
-              fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
+              fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
             };
 
             expect(fn).to.not.throw(TypeError);
           });
-        }
-      });
+        });
+      };
+
+
+      addTestsForType('array', [1, 2, 3]);
+      addTestsForType('string', 'abc');
     };
 
 
     // Several functions expect the first argument to be a function that should be always be called with a
     // specific number of arguments
-    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, type, requiredArgs, argsBefore, argsAfter) {
+    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween) {
+      // None of the functions in array need more than 2 arguments: throw at test generation stage if I get
+      // this wrong
       if (requiredArgs > 2)
         throw new Error('Incorrect test: addFuncCalledWithSpecificArityTests called with ' + requiredArgs);
 
-      it('Function called with correct number of arguments when called with ' + type, function() {
-        var allArgs = [];
-        var f;
+      argsBetween = argsBetween || [];
 
-        if (requiredArgs === 1) {
-          f = function(x) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        } else {
-          f = function(x, y) {
-            var args = [].slice.call(arguments);
-            allArgs.push(args);
-          };
-        }
+      var addTestsForType = function(type, originalData) {
+        it('Function called with correct number of arguments when called with ' + type, function() {
+          var data = originalData.slice();
+          var allArgs = [];
+          var f;
 
-        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-        var result = allArgs.every(function(arr) {
-          return arr.length === requiredArgs;
+          if (requiredArgs === 1) {
+            f = function(x) {
+              var args = [].slice.call(arguments);
+              allArgs.push(args);
+            };
+          } else {
+            f = function(x, y) {
+              var args = [].slice.call(arguments);
+              allArgs.push(args);
+            };
+          }
+
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
+          var result = allArgs.every(function(arr) {
+            return arr.length === requiredArgs;
+          });
+
+          expect(result).to.be.true;
         });
+      };
 
-        expect(result).to.be.true;
-      });
+
+      addTestsForType('array', [1, 2, 3]);
+      addTestsForType('string', 'abc');
     };
 
 
-    // Several functions expect that  the function being tested should be called with each element
+    // Several functions expect that the function being tested should be called with each element
     // of the given object, in order.
-    var addCalledWithEveryMemberTests = function(fnUnderTest, type, argsBefore, argsAfter, isArity2, isRTL, skipsFirst) {
+    var addCalledWithEveryMemberTests = function(fnUnderTest, argsBetween, isArity2, isRTL, skipsFirst) {
+      argsBetween = argsBetween || [];
+
       // only the fold* functions have arity 2
       isArity2 = isArity2 || false;
       // only the foldr* functions operate RTL
@@ -197,68 +222,76 @@
       // only the fold*1 functions skip the first element
       skipsFirst = skipsFirst || false;
 
-      it('Called the correct number of times for ' + type, function() {
-        var allArgs = [];
-        var f = function(x) {
-          allArgs.push(x);
-        };
+      var addTestsForType = function(type, originalData) {
+        it('Called the correct number of times for ' + type, function() {
+          var data = originalData.slice();
 
-        if (isArity2) {
-          f = function(x, y) {
-            // In the fold* functions, the current element is the second parameter
-            allArgs.push(y);
+          var allArgs = [];
+          var f = function(x) {
+            allArgs.push(x);
           };
-        }
 
-        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-        var source = argsAfter[argsAfter.length - 1];
-
-        // allArgs now contains each element that our function was called with
-        expect(allArgs.length).to.equal(skipsFirst ? source.length - 1 : source.length);
-      });
-
-
-      it('Called with every element of ' + type, function() {
-        var allArgs = [];
-        var f = function(x) {
-          allArgs.push(x);
-        };
-
-        if (isArity2) {
-          f = function(x, y) {
-            // In the fold* functions, the current element is the second parameter
-            allArgs.push(y);
-          };
-        }
-
-        fnUnderTest.apply(null, argsBefore.concat([f]).concat(argsAfter));
-
-        // allArgs now contains each element that our function was called with
-        var source = argsAfter[argsAfter.length - 1];
-        source = splitIfNecessary(source);
-        var numElems = source.length - 1;
-
-        var result = source.every(function(elem, i) {
-          // The fold*1 functions should have 1 call fewer
-          if (skipsFirst) {
-            if ((isRTL && i === numElems) || (!isRTL && i === 0))
-              return true;
+          if (isArity2) {
+            f = function(x, y) {
+              // In the fold* functions, the current element is the second parameter
+              allArgs.push(y);
+            };
           }
 
-          // Where should this element be in allArgs?
-          var index = i;
-          if (skipsFirst) {
-            if (isRTL)
-              index += 1;
-            else
-              index -= 1;
-          }
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
 
-          return allArgs[isRTL ? numElems - index : index] === elem;
+          // allArgs now contains each element that our function was called with
+          expect(allArgs.length).to.equal(skipsFirst ? originalData.length - 1 : originalData.length);
         });
 
-        expect(result).to.be.true;
-      });
+
+        it('Called with every element of ' + type, function() {
+          var data = originalData.slice();
+
+          var allArgs = [];
+          var f = function(x) {
+            allArgs.push(x);
+          };
+
+          if (isArity2) {
+            f = function(x, y) {
+              // In the fold* functions, the current element is the second parameter
+              allArgs.push(y);
+            };
+          }
+
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
+
+          // allArgs now contains each element that our function was called with
+          originalData = splitIfNecessary(originalData);
+          var numElems = originalData.length - 1;
+
+          var result = originalData.every(function(elem, i) {
+            // The fold*1 functions should have 1 call fewer
+            if (skipsFirst) {
+              if ((isRTL && i === numElems) || (!isRTL && i === 0))
+                return true;
+            }
+
+            // Where should this element be in allArgs?
+            var index = i;
+            if (skipsFirst) {
+              if (isRTL)
+                index += 1;
+              else
+                index -= 1;
+            }
+
+            return allArgs[isRTL ? numElems - index : index] === elem;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTestsForType('array', [1, 2, 3]);
+      addTestsForType('string', 'abc');
     };
 
 
@@ -597,10 +630,9 @@
       });
 
 
-      addFuncCalledWithSpecificArityTests(map, 'array', 1, [], [[1, 2, 3]], true);
-      addFuncCalledWithSpecificArityTests(map, 'string', 1, [], ['abc'], true);
-      addCalledWithEveryMemberTests(map, 'array', [], [[1, 2, 3]]);
-      addCalledWithEveryMemberTests(map, 'string', [], ['abc']);
+      addFuncCalledWithSpecificArityTests(map, 1);
+      addAcceptsOnlyFixedArityTests(map, 1, [], true);
+      addCalledWithEveryMemberTests(map);
 
 
       it('Returned array correct for array', function() {
@@ -675,10 +707,8 @@
       });
 
 
-      addFuncCalledWithSpecificArityTests(each, 'array', 1, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(each, 'string', 1, [], ['abc']);
-      addCalledWithEveryMemberTests(each, 'array', [], [[1, 2, 3]]);
-      addCalledWithEveryMemberTests(each, 'string', [], ['abc']);
+      addFuncCalledWithSpecificArityTests(each, 1);
+      addCalledWithEveryMemberTests(each);
 
 
       testCurriedFunction('each', each, [base.id, [1, 2]]);
@@ -729,12 +759,9 @@
 
 
       addReturnsSameTypeTests(filter, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(filter, 'array', 1, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(filter, 'string', 1, [], ['abc']);
-      addFuncCalledWithSpecificArityTests(filter, 'array', 1, [], [[4, 2]]);
-      addFuncCalledWithSpecificArityTests(filter, 'string', 1, [], ['funkier']);
-      addCalledWithEveryMemberTests(filter, 'array', [], [[1, 2, 3]]);
-      addCalledWithEveryMemberTests(filter, 'string', [], ['abc']);
+      addAcceptsOnlyFixedArityTests(filter, 1);
+      addFuncCalledWithSpecificArityTests(filter, 1);
+      addCalledWithEveryMemberTests(filter);
       addNoModificationOfOriginalTests(filter, [alwaysTrue]);
       addReturnsEmptyOnEmptyTests(filter, [alwaysTrue]);
 
@@ -817,8 +844,7 @@
 
 
     var addCommonFoldTests = function(desc, fnUnderTest, is1Func, isRTL) {
-      var afterArgsArr = is1Func ? [[1, 2, 3]] : [0, [1, 2, 3]];
-      var afterArgsStr = is1Func ? ['abc'] : [0, 'abc'];
+      var betweenArgs = is1Func ? [] : [0];
 
 
       var addCalledWithAccumulatorTest = function(source, type) {
@@ -851,12 +877,9 @@
       };
 
 
-      addAcceptsOnlyFixedArityTests(fnUnderTest, 'array', 2, [], afterArgsArr);
-      addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 2, [], afterArgsStr);
-      addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 2, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 2, [], 'abc');
-      addCalledWithEveryMemberTests(fnUnderTest, 'array', [], afterArgsArr, true, isRTL, is1Func);
-      addCalledWithEveryMemberTests(fnUnderTest, 'string', [], afterArgsStr, true, isRTL, is1Func);
+      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, betweenArgs);
+      addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
+      addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
       addCalledWithAccumulatorTest([1, 2, 3], 'array');
       addCalledWithAccumulatorTest('123', 'string');
 
@@ -1209,10 +1232,8 @@
         };
 
 
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 1, [], ['abc']);
-        addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
-        addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], 'abc');
+        addAcceptsOnlyFixedArityTests(fnUnderTest, 1);
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
         addPrematureEndTests(fnUnderTest, trigger);
         addRunsToEndTests(fnUnderTest, trigger);
         addShortCircuitTests('array', 1, [1, 2, 3]);
@@ -1412,8 +1433,7 @@
 
 
     describeFunction(elementWithSpec, array.elementWith, function(elementWith) {
-      addAcceptsOnlyFixedArityTests(elementWith, 'array', 1, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(elementWith, 'string', 1, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(elementWith, 1);
 
 
       it('Returns correct result for empty arrays', function() {
@@ -2065,10 +2085,8 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 'string', 1, [], ['abc']);
-        addFuncCalledWithSpecificArityTests(fnUnderTest, 'array', 1, [], [[1, 2, 3]]);
-        addFuncCalledWithSpecificArityTests(fnUnderTest, 'string', 1, [], ['abc']);
+        addAcceptsOnlyFixedArityTests(fnUnderTest, 1);
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
         addReturnsSameTypeTests(fnUnderTest, [alwaysTrue]);
         addReturnsEmptyOnEmptyTests(fnUnderTest, [alwaysTrue]);
 
@@ -2502,10 +2520,8 @@
 
 
     describeFunction(findWithSpec, array.findWith, function(findWith) {
-      addAcceptsOnlyFixedArityTests(findWith, 'array', 1, [], [[1, 2]]);
-      addAcceptsOnlyFixedArityTests(findWith, 'string', 1, [], ['ab']);
-      addFuncCalledWithSpecificArityTests(findWith, 'array', 1, [], [[1, 2]]);
-      addFuncCalledWithSpecificArityTests(findWith, 'string', 1, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(findWith, 1);
+      addFuncCalledWithSpecificArityTests(findWith, 1);
 
 
       it('Function never called with empty array', function() {
@@ -2659,10 +2675,8 @@
 
 
     describeFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
-      addAcceptsOnlyFixedArityTests(findFromWith, 'array', 1, [], [1, [1, 2]]);
-      addAcceptsOnlyFixedArityTests(findFromWith, 'string', 1, [], [1, 'ab']);
-      addFuncCalledWithSpecificArityTests(findFromWith, 'array', 1, [], [1, [1, 2]]);
-      addFuncCalledWithSpecificArityTests(findFromWith, 'string', 1, [], [1, 'abc']);
+      addAcceptsOnlyFixedArityTests(findFromWith, 1, [1]);
+      addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
 
 
       it('Function never called with empty array', function() {
@@ -2936,8 +2950,7 @@
 
 
     describeFunction(occurrencesWithSpec, array.occurrencesWith, function(occurrencesWith) {
-      addAcceptsOnlyFixedArityTests(occurrencesWith, 'array', 1, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(occurrencesWith, 'string', 1, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(occurrencesWith, 1);
 
 
       it('Returns empty array when called with empty array', function() {
@@ -3169,10 +3182,8 @@
       addDegenerateTests('both empty', [], []);
 
 
-      addAcceptsOnlyFixedArityTests(zipWith, 'array', 2, [], [[1, 2, 3], [4, 5, 6]], true);
-      addAcceptsOnlyFixedArityTests(zipWith, 'string', 2, [], ['abc', 'def'], true);
-      addFuncCalledWithSpecificArityTests(zipWith, 'array', 2, [], [[1, 2, 3], [4, 5, 6]]);
-      addFuncCalledWithSpecificArityTests(zipWith, 'string', 2, [], ['abc', 'def']);
+      addAcceptsOnlyFixedArityTests(zipWith, 2, [[4, 5, 6]], true);
+      addFuncCalledWithSpecificArityTests(zipWith, 2, [['a', 'b', 'c']]);
 
 
       var addTests = function(message, f, left, right) {
@@ -3316,10 +3327,8 @@
       addReturnsEmptyOnEmptyTests(nubWith, [alwaysFalse]);
       addNoModificationOfOriginalTests(nubWith, [alwaysFalse]);
       addReturnsSameTypeTests(nubWith, [alwaysFalse]);
-      addAcceptsOnlyFixedArityTests(nubWith, 'array', 2, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(nubWith, 'string', 2, [], ['def']);
-      addFuncCalledWithSpecificArityTests(nubWith, 'array', 2, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(nubWith, 'string', 2, [], ['ghi']);
+      addAcceptsOnlyFixedArityTests(nubWith, 2);
+      addFuncCalledWithSpecificArityTests(nubWith, 2);
 
 
       var addTests = function(message, f, data, expectedLength) {
@@ -3494,10 +3503,8 @@
       addReturnsEmptyOnEmptyTests(sortWith, [normalCompare]);
       addNoModificationOfOriginalTests(sortWith, [normalCompare]);
       addReturnsSameTypeTests(sortWith, [normalCompare]);
-      addAcceptsOnlyFixedArityTests(sortWith, 'array', 2, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(sortWith, 'string', 2, [], ['abc']);
-      addFuncCalledWithSpecificArityTests(sortWith, 'array', 2, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(sortWith, 'string', 2, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(sortWith, 2);
+      addFuncCalledWithSpecificArityTests(sortWith, 2);
 
 
       var addTests = function(message, f, data) {
@@ -4129,10 +4136,8 @@
     describeFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
       addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue]);
       addReturnsSameTypeTests(removeOneWith, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(removeOneWith, 'array', 1, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(removeOneWith, 'string', 1, [], ['abc']);
-      addFuncCalledWithSpecificArityTests(removeOneWith, 'array', 1, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(removeOneWith, 'string', 1, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(removeOneWith, 1);
+      addFuncCalledWithSpecificArityTests(removeOneWith, 1);
 
 
       var addTests = function(message, f, data) {
@@ -4267,10 +4272,8 @@
     describeFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
       addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue]);
       addReturnsSameTypeTests(removeAllWith, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(removeAllWith, 'array', 1, [], [[1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(removeAllWith, 'string', 1, [], ['abc']);
-      addFuncCalledWithSpecificArityTests(removeAllWith, 'array', 1, [], [[1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(removeAllWith, 'string', 1, [], ['abc']);
+      addAcceptsOnlyFixedArityTests(removeAllWith, 1);
+      addFuncCalledWithSpecificArityTests(removeAllWith, 1);
 
 
       var addTests = function(message, f, data) {
@@ -4452,10 +4455,8 @@
     describeFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
       addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1]);
       addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a']);
-      addAcceptsOnlyFixedArityTests(replaceOneWith, 'array', 1, [], [1, [1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(replaceOneWith, 'string', 1, [], ['a', 'abc']);
-      addFuncCalledWithSpecificArityTests(replaceOneWith, 'array', 1, [], [1, [1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(replaceOneWith, 'string', 1, [], ['a', 'abc']);
+      addAcceptsOnlyFixedArityTests(replaceOneWith, 1, ['a']);
+      addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a']);
 
 
       var addTests = function(message, f, newVal, data) {
@@ -4600,10 +4601,8 @@
     describeFunction(replaceAllWithSpec, array.replaceAllWith, function(replaceAllWith) {
       addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e']);
       addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e']);
-      addAcceptsOnlyFixedArityTests(replaceAllWith, 'array', 1, [], [4, [1, 2, 3]]);
-      addAcceptsOnlyFixedArityTests(replaceAllWith, 'string', 1, [], ['d', 'abc']);
-      addFuncCalledWithSpecificArityTests(replaceAllWith, 'array', 1, [], [4, [1, 2, 3]]);
-      addFuncCalledWithSpecificArityTests(replaceAllWith, 'string', 1, [], ['e', 'abc']);
+      addAcceptsOnlyFixedArityTests(replaceAllWith, 1, ['e']);
+      addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e']);
 
 
       var addTests = function(message, f, newVal, data) {
