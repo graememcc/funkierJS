@@ -974,17 +974,22 @@
       if (getRealArity(f) !== 1)
         throw new TypeError('Function has incorrect arity');
 
+      arr = checkArrayLike(arr);
+
       var found = false;
-      var filterFn = function(x) {
-        if (!found && f(x)) {
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (f(arr[i])) {
           found = true;
-          return false;
+        } else {
+          i++;
         }
+      }
 
-        return true;
-      };
+      if (!found)
+        return arr.slice();
 
-      return filter(filterFn, arr);
+      return arr.slice(0, i).concat(arr.slice(i + 1));
     });
 
 
