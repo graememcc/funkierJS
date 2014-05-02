@@ -961,9 +961,10 @@
 
 
     /*
-     * removeOne: Takes a predicate function of arity 1, and an array or string. Returns a new array/string with the
-     *            first value for which the function returns true removed from the array. Throws a TypeError if the
-     *            given predicate is not a function, or does not have arity 1, or if the last parameter is not an array/string.
+     * removeOneWith: Takes a predicate function of arity 1, and an array or string. Returns a new array/string with the
+     *                first value for which the function returns true removed from the array. Throws a TypeError if the
+     *                given predicate is not a function, or does not have arity 1, or if the last parameter is not an
+     *                array/string.
      *
      */
 
@@ -1023,6 +1024,37 @@
     var removeAllWith = base.compose(filter, notPred);
 
 
+    /*
+     * replaceOne: Takes a value, a replacement value, and an array/string. Returns a new array/string where the first
+     *             occurrence of the given value—checked for strict equality—is replaced with the given replacement.
+     *             Throws a TypeError if the last parameter is not an array/string.
+     *
+     */
+
+    var replaceOne = curry(function(val, replacement, arr) {
+      arr = checkArrayLike(arr);
+      if (Array.isArray(arr))
+        replacement = [replacement];
+      else
+        replacement = replacement.toString();
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (arr[i] === val) {
+          found = true;
+        } else {
+          i++;
+        }
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1069,6 +1101,7 @@
       removeOneWith: removeOneWith,
       repeat: repeat,
       replace: replace,
+      replaceOne: replaceOne,
       reverse: reverse,
       slice: slice,
       some: some,

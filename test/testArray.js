@@ -32,7 +32,7 @@
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
-                             'removeOneWith', 'removeAll', 'removeAllWith'];
+                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3981,7 +3981,7 @@
     });
 
 
-    var addCommonNotFoundTests = function(message, fnUnderTest, val, data) {
+    var addCommonRemoveNotFoundTests = function(message, fnUnderTest, val, data) {
       it('Returned value is the correct length ' + message, function() {
         var original = data.slice();
         var result = fnUnderTest(val, original);
@@ -4016,10 +4016,10 @@
       testAdder('for string with multiple matches', 'a', 'abca');
 
 
-      addCommonNotFoundTests('for array when value not found', fnUnderTest, 4, [1, 2, 3]);
-      addCommonNotFoundTests('for string when value not found', fnUnderTest, 'd', 'abc');
+      addCommonRemoveNotFoundTests('for array when value not found', fnUnderTest, 4, [1, 2, 3]);
+      addCommonRemoveNotFoundTests('for string when value not found', fnUnderTest, 'd', 'abc');
       var obj = {foo: 42};
-      addCommonNotFoundTests('for array when value not strictly equal', fnUnderTest, obj,
+      addCommonRemoveNotFoundTests('for array when value not strictly equal', fnUnderTest, obj,
                        [{foo: 1}, {foo: 42}, {foo: 3}]);
       testAdder('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
     };
@@ -4027,7 +4027,6 @@
 
     var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
       testAdder('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      testAdder('for array', base.equals(2), [1, 2, 3]);
       testAdder('for string', base.equals('b'), 'abc');
       testAdder('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
       testAdder('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
@@ -4038,14 +4037,14 @@
       testAdder('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
       testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'abca');
 
-      addCommonNotFoundTests('for array when value not found', fnUnderTest,
+      addCommonRemoveNotFoundTests('for array when value not found', fnUnderTest,
                              function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addCommonNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'abc');
+      addCommonRemoveNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'abc');
     };
 
 
     var removeOneSpec = {
-      name: 'remove',
+      name: 'removeOne',
       arity: 2,
       restrictions: [[], ['array', 'string']],
       validArguments: [[2], [[1, 2, 3], 'abc']]
@@ -4317,6 +4316,115 @@
 
 
       testCurriedFunction('removeAllWith', removeAllWith, [base.constant(true), [1, 2, 3]]);
+    });
+
+
+    var addCommonReplaceNotFoundTests = function(message, fnUnderTest, val, newVal, data) {
+      it('Returned value is the correct length ' + message, function() {
+        var original = data.slice();
+        var result = fnUnderTest(val, newVal, original);
+
+        expect(result.length).to.equal(original.length);
+      });
+
+
+      it('Returned value has correct elements ' + message, function() {
+        var original = data.slice();
+        var replaced = fnUnderTest(val, newVal, original);
+        replaced = splitIfNecessary(replaced);
+        var result = replaced.every(function(v, i) {
+          return v === original[i];
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
+    var addCommonReplaceValTests = function(testAdder, fnUnderTest) {
+      testAdder('for array', 2, 4, [1, 2, 3]);
+      testAdder('for string', 'b', 'd', 'abc');
+      testAdder('for array with multiple matches', 1, 4, [1, 2, 3, 1]);
+      testAdder('for string with multiple matches', 'a', 'd', 'abca');
+
+
+      addCommonReplaceNotFoundTests('for array when value not found', fnUnderTest, 4, 5, [1, 2, 3]);
+      addCommonReplaceNotFoundTests('for string when value not found', fnUnderTest, 'd', 'e', 'abc');
+      var obj = {foo: 42};
+      addCommonReplaceNotFoundTests('for array when value not strictly equal', fnUnderTest, obj, {foo: 52},
+                       [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for array when value strictly equal', obj, {foo: 62}, [{foo: 1}, obj, {foo: 3}]);
+    };
+
+
+    var replaceOneSpec = {
+      name: 'replaceOne',
+      arity: 3,
+      restrictions: [[], [], ['array', 'string']],
+      validArguments: [[2], [4], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(replaceOneSpec, array.replaceOne, function(replaceOne) {
+      addNoModificationOfOriginalTests(replaceOne, [0, 1]);
+      addReturnsSameTypeTests(replaceOne, [0, 1]);
+
+
+      var addTests = function(message, val, newVal, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = replaceOne(val, newVal, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var replaced = replaceOne(val, newVal, original);
+          replaced = splitIfNecessary(replaced);
+          var found = false;
+          var result = replaced.every(function(v, i) {
+            if (!found && original[i] === val) {
+              found = true;
+              return v === newVal;
+            }
+
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has one less occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalCount = array.occurrences(val, original).length;
+          var replaced = replaceOne(val, newVal, original);
+          var newCount = array.occurrences(val, replaced).length;
+
+          expect(newCount).to.equal(originalCount - 1);
+        });
+
+
+        // And likewise...
+        it('Replaces first occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalOcc = array.occurrences(val, original);
+          var replaced = replaceOne(val, newVal, original);
+          var newOcc = array.occurrences(newVal, replaced);
+
+          expect(newOcc[0]).to.equal(originalOcc[0]);
+        });
+      };
+
+
+      addCommonReplaceValTests(addTests, replaceOne);
+
+
+      testCurriedFunction('replaceOne', replaceOne, [0, 1, [1, 2, 3]]);
     });
   };
 
