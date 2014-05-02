@@ -31,7 +31,7 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace'];
+                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -3977,6 +3977,119 @@
 
 
       testCurriedFunction('replace', replace, [0, 0, [1, 2, 3]]);
+    });
+
+
+    var removeOneSpec = {
+      name: 'remove',
+      arity: 2,
+      restrictions: [[], ['array', 'string']],
+      validArguments: [[2], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(removeOneSpec, array.removeOne, function(removeOne) {
+      addNoModificationOfOriginalTests(removeOne, [0]);
+      addReturnsSameTypeTests(removeOne, [0]);
+
+
+      var addTests = function(message, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeOne(val, original);
+
+          expect(result.length).to.equal(original.length - 1);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeOne(val, original);
+          newVal = splitIfNecessary(newVal);
+          var deletionSpotFound = false;
+          var result = newVal.every(function(v, i) {
+            if (deletionSpotFound || original[i] === val) {
+              deletionSpotFound = true;
+              return v === original[i + 1];
+            }
+
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has one less occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalCount = array.occurrences(val, original).length;
+          var newVal = removeOne(val, original);
+          var newCount = array.occurrences(val, newVal).length;
+
+          expect(newCount).to.equal(originalCount - 1);
+        });
+
+
+        // And likewise...
+        it('Removes first occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalOcc = array.occurrences(val, original);
+          var newVal = removeOne(val, original);
+          var newOcc = array.occurrences(val, newVal);
+
+          if (originalOcc.length === 1)
+            expect(newOcc).to.deep.equal([]);
+          else
+            expect(newOcc[0]).to.equal(originalOcc[1] - 1);
+        });
+      };
+
+
+      addTests('for array', 2, [1, 2, 3]);
+      addTests('for string', 'b', 'abc');
+      addTests('for array when value matches last entry', 3, [1, 2, 3]);
+      addTests('for string when value matches last entry', 'c', 'abc');
+      addTests('for array when value matches first entry', 1, [1, 2, 3]);
+      addTests('for string when value matches first entry', 'a', 'abc');
+      addTests('for singleton array when value matches', 1, [1]);
+      addTests('for singleton string when value matches', 'a', 'a');
+      addTests('for array with multiple matches', 1, [1, 2, 3, 1]);
+      addTests('for string with multiple matches', 'a', 'abca');
+
+
+      var addNotFoundTests = function(message, val, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeOne(val, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeOne(val, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addNotFoundTests('for array when value not found', 4, [1, 2, 3]);
+      addNotFoundTests('for string when value not found', 'd', 'abc');
+      var obj = {foo: 42};
+      addNotFoundTests('for array when value not strictly equal', obj,
+                       [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addTests('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+
+
+      testCurriedFunction('removeOne', removeOne, [0, [1, 2, 3]]);
     });
   };
 

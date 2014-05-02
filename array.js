@@ -955,6 +955,28 @@
     });
 
 
+    /*
+     * removeOne: Takes a value, and an array or string. Returns a new array/string with the first occurrence of the
+     *            value—checked for strict equality— removed from the array. Throws a TypeError if the last argument
+     *            is not an array/string.
+     *
+     */
+
+    var removeOne = curry(function(val, arr) {
+      var found = false;
+      var filterFn = function(x) {
+        if (!found && x === val) {
+          found = true;
+          return false;
+        }
+
+        return true;
+      };
+
+      return filter(filterFn, arr);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -995,6 +1017,7 @@
       range: range,
       rangeStep: rangeStep,
       remove: remove,
+      removeOne: removeOne,
       repeat: repeat,
       replace: replace,
       reverse: reverse,
