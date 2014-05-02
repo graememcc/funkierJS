@@ -31,7 +31,8 @@
                              'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
                              'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne'];
+                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
+                             'removeOneWith'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4090,6 +4091,120 @@
 
 
       testCurriedFunction('removeOne', removeOne, [0, [1, 2, 3]]);
+    });
+
+
+    var removeOneWithSpec = {
+      name: 'removeOneWith',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
+      addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue]);
+      addReturnsSameTypeTests(removeOneWith, [alwaysTrue]);
+      addAcceptsOnlyFixedArityTests(removeOneWith, 'array', 1, [], [[1, 2, 3]]);
+      addAcceptsOnlyFixedArityTests(removeOneWith, 'string', 1, [], ['abc']);
+      addFuncCalledWithSpecificArityTests(removeOneWith, 'array', 1, [], [[1, 2, 3]]);
+      addFuncCalledWithSpecificArityTests(removeOneWith, 'string', 1, [], ['abc']);
+
+
+      var addTests = function(message, fn, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeOneWith(fn, original);
+
+          expect(result.length).to.equal(original.length - 1);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeOneWith(fn, original);
+          newVal = splitIfNecessary(newVal);
+          var deletionSpotFound = false;
+          var result = newVal.every(function(v, i) {
+            if (deletionSpotFound || fn(original[i])) {
+              deletionSpotFound = true;
+              return v === original[i + 1];
+            }
+
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+
+
+        // Although any errors would be caught by the previous test, I prefer to
+        // make this explicit
+        it('Returned value has one less occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalCount = array.occurrencesWith(fn, original).length;
+          var newVal = removeOneWith(fn, original);
+          var newCount = array.occurrencesWith(fn, newVal).length;
+
+          expect(newCount).to.equal(originalCount - 1);
+        });
+
+
+        // And likewise...
+        it('Removes first occurrence of value ' + message, function() {
+          var original = data.slice();
+          var originalOcc = array.occurrencesWith(fn, original);
+          var newVal = removeOneWith(fn, original);
+          var newOcc = array.occurrencesWith(fn, newVal);
+
+          if (originalOcc.length === 1)
+            expect(newOcc).to.deep.equal([]);
+          else
+            expect(newOcc[0]).to.equal(originalOcc[1] - 1);
+        });
+      };
+
+
+      addTests('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addTests('for array', base.equals(2), [1, 2, 3]);
+      addTests('for string', base.equals('b'), 'abc');
+      addTests('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
+      addTests('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
+      addTests('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
+      addTests('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
+      addTests('for singleton array when value matches', base.equals(1), [1]);
+      addTests('for singleton string when value matches', base.equals('a'), 'a');
+      addTests('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
+      addTests('for string with multiple matches', function(x) {return x < 'd';}, 'abca');
+
+
+      var addNotFoundTests = function(message, fn, data) {
+        it('Returned value is the correct length ' + message, function() {
+          var original = data.slice();
+          var result = removeOneWith(fn, original);
+
+          expect(result.length).to.equal(original.length);
+        });
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var original = data.slice();
+          var newVal = removeOneWith(fn, original);
+          newVal = splitIfNecessary(newVal);
+          var result = newVal.every(function(v, i) {
+            return v === original[i];
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addNotFoundTests('for array when value not found', function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addNotFoundTests('for string when value not found', base.constant(false), 'abc');
+
+
+      testCurriedFunction('removeOneWith', removeOneWith, [base.constant(true), [1, 2, 3]]);
     });
   };
 

@@ -956,16 +956,22 @@
 
 
     /*
-     * removeOne: Takes a value, and an array or string. Returns a new array/string with the first occurrence of the
-     *            value—checked for strict equality— removed from the array. Throws a TypeError if the last argument
-     *            is not an array/string.
+     * removeOne: Takes a predicate function of arity 1, and an array or string. Returns a new array/string with the
+     *            first value for which the function returns false removed from the array. Throws a TypeError if the
+     *            given predicate is not a function, or does not have arity 1, or if the last parameter is not an array/string.
      *
      */
 
-    var removeOne = curry(function(val, arr) {
+    var removeOneWith = curry(function(f, arr) {
+      if (typeof(f) !== 'function')
+        throw new TypeError('Value is not a function');
+
+      if (getRealArity(f) !== 1)
+        throw new TypeError('Function has incorrect arity');
+
       var found = false;
       var filterFn = function(x) {
-        if (!found && x === val) {
+        if (!found && f(x)) {
           found = true;
           return false;
         }
@@ -975,6 +981,16 @@
 
       return filter(filterFn, arr);
     });
+
+
+    /*
+     * removeOne: Takes a value, and an array or string. Returns a new array/string with the first occurrence of the
+     *            value—checked for strict equality— removed from the array. Throws a TypeError if the last argument
+     *            is not an array/string.
+     *
+     */
+
+    var removeOne = base.compose(removeOneWith, base.strictEquals);
 
 
     var exported = {
@@ -1018,6 +1034,7 @@
       rangeStep: rangeStep,
       remove: remove,
       removeOne: removeOne,
+      removeOneWith: removeOneWith,
       repeat: repeat,
       replace: replace,
       reverse: reverse,
