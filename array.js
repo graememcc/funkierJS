@@ -1041,11 +1041,10 @@
       var found = false;
       var i = 0;
       while (!found && i < arr.length) {
-        if (arr[i] === val) {
+        if (arr[i] === val)
           found = true;
-        } else {
+        else
           i++;
-        }
       }
 
       if (!found)
@@ -1079,17 +1078,58 @@
       var found = false;
       var i = 0;
       while (!found && i < arr.length) {
-        if (p(arr[i])) {
+        if (p(arr[i]))
           found = true;
-        } else {
+        else
           i++;
-        }
       }
 
       if (!found)
         return arr.slice();
 
       return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    });
+
+
+    /*
+     * replaceAllWith: Takes a predicate function of arity 1, a replacement value, and an array/string. Returns a new
+     *                 array/string where thenew array/string where all values for which the predicate returned true
+     *                 have been replaced with the given replacement. Throws a TypeError if the first parameter is not
+     *                 a function of arity 1, or if the last parameter is not an array/string.
+     *
+     */
+
+    var replaceAllWith = curry(function(p, replacement, arr) {
+      if (typeof(p) !== 'function')
+        throw new TypeError('Value is not a function');
+
+      if (getRealArity(p) !== 1)
+        throw new TypeError('Function has incorrect arity');
+
+      arr = checkArrayLike(arr);
+      if (Array.isArray(arr))
+        replacement = [replacement];
+      else
+        replacement = replacement.toString();
+
+      var result = arr.slice();
+      var i = 0;
+
+      while (i < arr.length) {
+        if (!p(arr[i])) {
+          i += 1;
+          continue;
+        }
+
+        result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
+
+        if (Array.isArray(arr))
+          i += 1;
+        else
+          i += replacement.length;
+      }
+
+      return result;
     });
 
 
@@ -1101,27 +1141,7 @@
      */
 
     var replaceAll = curry(function(val, replacement, arr) {
-      arr = checkArrayLike(arr);
-      if (Array.isArray(arr))
-        replacement = [replacement];
-      else
-        replacement = replacement.toString();
-
-      var result = arr.slice();
-      var i = 0;
-      while (i < arr.length) {
-        if (arr[i] === val) {
-          result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
-          if (Array.isArray(arr))
-            i += 1;
-          else
-            i += replacement.length;
-        } else {
-          i++;
-        }
-      }
-
-      return result;
+      return replaceAllWith(strictEquals(val), replacement, arr);
     });
 
 
@@ -1172,6 +1192,7 @@
       repeat: repeat,
       replace: replace,
       replaceAll: replaceAll,
+      replaceAllWith: replaceAllWith,
       replaceOne: replaceOne,
       replaceOneWith: replaceOneWith,
       reverse: reverse,
