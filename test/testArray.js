@@ -3981,6 +3981,69 @@
     });
 
 
+    var addCommonNotFoundTests = function(message, fnUnderTest, val, data) {
+      it('Returned value is the correct length ' + message, function() {
+        var original = data.slice();
+        var result = fnUnderTest(val, original);
+
+        expect(result.length).to.equal(original.length);
+      });
+
+
+      it('Returned value has correct elements ' + message, function() {
+        var original = data.slice();
+        var newVal = fnUnderTest(val, original);
+        newVal = splitIfNecessary(newVal);
+        var result = newVal.every(function(v, i) {
+          return v === original[i];
+        });
+
+        expect(result).to.be.true;
+      });
+    };
+
+
+    var addCommonRemoveValTests = function(testAdder, fnUnderTest) {
+      testAdder('for array', 2, [1, 2, 3]);
+      testAdder('for string', 'b', 'abc');
+      testAdder('for array when value matches last entry', 3, [1, 2, 3]);
+      testAdder('for string when value matches last entry', 'c', 'abc');
+      testAdder('for array when value matches first entry', 1, [1, 2, 3]);
+      testAdder('for string when value matches first entry', 'a', 'abc');
+      testAdder('for singleton array when value matches', 1, [1]);
+      testAdder('for singleton string when value matches', 'a', 'a');
+      testAdder('for array with multiple matches', 1, [1, 2, 3, 1]);
+      testAdder('for string with multiple matches', 'a', 'abca');
+
+
+      addCommonNotFoundTests('for array when value not found', fnUnderTest, 4, [1, 2, 3]);
+      addCommonNotFoundTests('for string when value not found', fnUnderTest, 'd', 'abc');
+      var obj = {foo: 42};
+      addCommonNotFoundTests('for array when value not strictly equal', fnUnderTest, obj,
+                       [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+    };
+
+
+    var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
+      testAdder('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for array', base.equals(2), [1, 2, 3]);
+      testAdder('for string', base.equals('b'), 'abc');
+      testAdder('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
+      testAdder('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
+      testAdder('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
+      testAdder('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
+      testAdder('for singleton array when value matches', base.equals(1), [1]);
+      testAdder('for singleton string when value matches', base.equals('a'), 'a');
+      testAdder('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
+      testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'abca');
+
+      addCommonNotFoundTests('for array when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addCommonNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'abc');
+    };
+
+
     var removeOneSpec = {
       name: 'remove',
       arity: 2,
@@ -4048,46 +4111,7 @@
       };
 
 
-      addTests('for array', 2, [1, 2, 3]);
-      addTests('for string', 'b', 'abc');
-      addTests('for array when value matches last entry', 3, [1, 2, 3]);
-      addTests('for string when value matches last entry', 'c', 'abc');
-      addTests('for array when value matches first entry', 1, [1, 2, 3]);
-      addTests('for string when value matches first entry', 'a', 'abc');
-      addTests('for singleton array when value matches', 1, [1]);
-      addTests('for singleton string when value matches', 'a', 'a');
-      addTests('for array with multiple matches', 1, [1, 2, 3, 1]);
-      addTests('for string with multiple matches', 'a', 'abca');
-
-
-      var addNotFoundTests = function(message, val, data) {
-        it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeOne(val, original);
-
-          expect(result.length).to.equal(original.length);
-        });
-
-
-        it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeOne(val, original);
-          newVal = splitIfNecessary(newVal);
-          var result = newVal.every(function(v, i) {
-            return v === original[i];
-          });
-
-          expect(result).to.be.true;
-        });
-      };
-
-
-      addNotFoundTests('for array when value not found', 4, [1, 2, 3]);
-      addNotFoundTests('for string when value not found', 'd', 'abc');
-      var obj = {foo: 42};
-      addNotFoundTests('for array when value not strictly equal', obj,
-                       [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addTests('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+      addCommonRemoveValTests(addTests, removeOne);
 
 
       testCurriedFunction('removeOne', removeOne, [0, [1, 2, 3]]);
@@ -4165,43 +4189,7 @@
       };
 
 
-      addTests('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addTests('for array', base.equals(2), [1, 2, 3]);
-      addTests('for string', base.equals('b'), 'abc');
-      addTests('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
-      addTests('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
-      addTests('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
-      addTests('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
-      addTests('for singleton array when value matches', base.equals(1), [1]);
-      addTests('for singleton string when value matches', base.equals('a'), 'a');
-      addTests('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
-      addTests('for string with multiple matches', function(x) {return x < 'd';}, 'abca');
-
-
-      var addNotFoundTests = function(message, fn, data) {
-        it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeOneWith(fn, original);
-
-          expect(result.length).to.equal(original.length);
-        });
-
-
-        it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeOneWith(fn, original);
-          newVal = splitIfNecessary(newVal);
-          var result = newVal.every(function(v, i) {
-            return v === original[i];
-          });
-
-          expect(result).to.be.true;
-        });
-      };
-
-
-      addNotFoundTests('for array when value not found', function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addNotFoundTests('for string when value not found', base.constant(false), 'abc');
+      addCommonRemoveWithTests(addTests, removeOneWith);
 
 
       testCurriedFunction('removeOneWith', removeOneWith, [base.constant(true), [1, 2, 3]]);
@@ -4259,48 +4247,9 @@
       };
 
 
-      addTests('for array', 2, [1, 2, 3]);
-      addTests('for string', 'b', 'abc');
-      addTests('for array when value matches last entry', 3, [1, 2, 3]);
-      addTests('for string when value matches last entry', 'c', 'abc');
-      addTests('for array when value matches first entry', 1, [1, 2, 3]);
-      addTests('for string when value matches first entry', 'a', 'abc');
-      addTests('for singleton array when value matches', 1, [1]);
-      addTests('for singleton string when value matches', 'a', 'a');
-      addTests('for array with multiple matches', 1, [1, 2, 3, 1]);
-      addTests('for string with multiple matches', 'a', 'abca');
+      addCommonRemoveValTests(addTests, removeAll);
       addTests('for array with all matches', 1, [1, 1, 1, 1]);
-      addTests('for string with multiple matches', 'a', 'aaaa');
-
-
-      var addNotFoundTests = function(message, val, data) {
-        it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeAll(val, original);
-
-          expect(result.length).to.equal(original.length);
-        });
-
-
-        it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAll(val, original);
-          newVal = splitIfNecessary(newVal);
-          var result = newVal.every(function(v, i) {
-            return v === original[i];
-          });
-
-          expect(result).to.be.true;
-        });
-      };
-
-
-      addNotFoundTests('for array when value not found', 4, [1, 2, 3]);
-      addNotFoundTests('for string when value not found', 'd', 'abc');
-      var obj = {foo: 42};
-      addNotFoundTests('for array when value not strictly equal', obj,
-                       [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addTests('for array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+      addTests('for string with all matches', 'a', 'aaaa');
 
 
       testCurriedFunction('removeAll', removeAll, [0, [1, 2, 3]]);
@@ -4362,45 +4311,9 @@
       };
 
 
-      addTests('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addTests('for array', base.equals(2), [1, 2, 3]);
-      addTests('for string', base.equals('b'), 'abc');
-      addTests('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
-      addTests('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
-      addTests('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
-      addTests('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
-      addTests('for singleton array when value matches', base.equals(1), [1]);
-      addTests('for singleton string when value matches', base.equals('a'), 'a');
-      addTests('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 10]);
-      addTests('for string with multiple matches', function(x) {return x < 'd';}, 'abcad');
+      addCommonRemoveWithTests(addTests, removeAllWith);
       addTests('for array where every value matches', base.constant(true), [1, 2, 3, 4]);
       addTests('for string where every value matches', base.constant(true), 'abcd');
-
-
-      var addNotFoundTests = function(message, fn, data) {
-        it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeAllWith(fn, original);
-
-          expect(result.length).to.equal(original.length);
-        });
-
-
-        it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAllWith(fn, original);
-          newVal = splitIfNecessary(newVal);
-          var result = newVal.every(function(v, i) {
-            return v === original[i];
-          });
-
-          expect(result).to.be.true;
-        });
-      };
-
-
-      addNotFoundTests('for array when value not found', function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addNotFoundTests('for string when value not found', base.constant(false), 'abc');
 
 
       testCurriedFunction('removeAllWith', removeAllWith, [base.constant(true), [1, 2, 3]]);
