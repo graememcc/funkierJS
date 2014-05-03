@@ -1184,6 +1184,19 @@
     });
 
 
+    /*
+     * flattenMap: Takes a function of arity 1, and an array/string. Maps the function over the array/string and flattens the result.
+     *             The supplied function must be of arity 1, as it is expected to return an array or string; a TypeError is thrown if
+     *             this is not the case. A TypeError will also be thrown if the last argument is not an array/string, or if the first
+     *             argument is not a function.
+     *
+     */
+
+    var flattenMap = curry(function(f, arr) {
+      return flatten(map(f, arr));
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1200,6 +1213,7 @@
       findFromWith: findFromWith,
       findWith: findWith,
       flatten: flatten,
+      flattenMap: flattenMap,
       foldl: foldl,
       foldl1: foldl1,
       foldr: foldr,

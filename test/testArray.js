@@ -33,7 +33,7 @@
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
                              'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith',
-                             'replaceAll', 'replaceAllWith', 'join', 'flatten'];
+                             'replaceAll', 'replaceAllWith', 'join', 'flatten', 'flattenMap'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -122,8 +122,9 @@
 
 
     // Several functions require that the first parameter is a function with a specific arity
-    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, argsBetween, isMinimum) {
+    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, argsBetween, isMinimum, validFunction) {
       argsBetween = argsBetween || [];
+      validFunction = validFunction || null;
       isMinimum = isMinimum || false;
 
       var funcs = [
@@ -151,6 +152,10 @@
           }
           it('Does not throw when called with ' + type + ' and function of arity ' + i, function() {
             var data = originalData.slice();
+
+            // The following is needed for flattenMap, whose function must return an array
+            if (!isMinimum && validFunction !== null)
+              f = validFunction;
 
             var fn = function() {
               fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
@@ -4842,6 +4847,45 @@
 
         expect(result).to.be.true;
       });
+    });
+
+
+    var flattenMapSpec = {
+      name: 'flattenMap',
+      arity: 2,
+      restrictions: [['function'], ['array', 'string']],
+      validArguments: [[array.repeat(2)], [[1, 2, 3], 'abc']]
+    };
+
+
+    describeFunction(flattenMapSpec, array.flattenMap, function(flattenMap) {
+      addAcceptsOnlyFixedArityTests(flattenMap, 1, [], false, base.constant([]));
+
+
+      var addTest = function(message, f, data) {
+        it('Works correctly ' + message, function() {
+          var result = flattenMap(f, data);
+
+          expect(result).to.deep.equal(array.flatten(array.map(f, data)));
+        });
+      };
+
+
+      addTest('(1)', array.range(1), [2, 3, 4, 5]);
+      addTest('(2)', array.repeat(2), 'abc');
+      addTest('for singleton', array.repeat(1), [1]);
+
+
+      it('Throws if the function does not return an array/string', function() {
+        var fn = function() {
+          flattenMap(function(x) {return x + 1;}, [2, 3, 4]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      testCurriedFunction('flattenMap', flattenMap, [array.range(1), [2, 3, 4]]);
     });
   };
 
