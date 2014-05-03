@@ -19,7 +19,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity',
-                             'pre', 'post', 'wrap', 'fixpoint'];
+                             'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
@@ -877,6 +877,108 @@
 
 
       testCurriedFunction('fixpoint', fixpoint, [1, Math.cos]);
+    });
+
+
+    var callWithContextSpec = {
+      name: 'callWithContext',
+      arity: 3,
+      restrictions: [[], ['array'], ['function']],
+      validArguments: [[{}], [[]], [function() {}]]
+    };
+
+
+    describeFunction(callWithContextSpec, fn.callWithContext, function(callWithContext) {
+      it('Calls function with correct context', function() {
+        var f = function() {f.context = this;};
+        f.context = null;
+        var context = {};
+        callWithContext(context, [], f);
+
+        expect(f.context).to.equal(context);
+      });
+
+
+      it('Calls function with correct arguments (1)', function() {
+        var f = function(a, b, c) {f.args = [].slice.call(arguments)};
+        f.args = [];
+        var context = {};
+        var args = [1, true , {}];
+        callWithContext(context, args, f);
+
+        expect(f.args).to.deep.equal(args);
+      });
+
+
+      it('Calls function with correct arguments (2)', function() {
+        var f = function() {f.args = [].slice.call(arguments)};
+        f.args = [];
+        var context = {};
+        var args = [];
+        callWithContext(context, args, f);
+
+        expect(f.args).to.deep.equal(args);
+      });
+
+
+      it('Returns result of function (1)', function() {
+        var expected = {};
+        var f = function() {return expected;};
+        var context = {};
+        var result = callWithContext(context, [], f);
+
+        expect(result).to.equal(expected);
+      });
+
+
+      it('Returns result of function (2)', function() {
+        var f = function(x) {return this.foo + x;};
+        var context = {foo: 15};
+        var result = callWithContext(context, [1], f);
+
+        expect(result).to.equal(context.foo + 1);
+      });
+
+
+      it('Curries function if necessary (1)', function() {
+        var f = function(x, y) {return this.foo + x + y;};
+        var x = 2;
+        var y = 3;
+        var context = {foo: 5};
+        var result = callWithContext(context, [x], f);
+
+        expect(result).to.be.a('function');
+        expect(getRealArity(result)).to.equal(1);
+        expect(result(y)).to.equal(context.foo + x + y);
+      });
+
+
+      it('Curries function if necessary (2)', function() {
+        var f = function(x, y, z) {return this.foo + x + y + z;};
+        var x = 2;
+        var y = 3;
+        var z = 7;
+        var context = {foo: 9};
+        var result = callWithContext(context, [x], f);
+
+        expect(result).to.be.a('function');
+        expect(getRealArity(result)).to.equal(2);
+        expect(result(y, z)).to.equal(context.foo + x + y + z);
+      });
+
+
+      it('Doesn\'t permanently affect context', function() {
+        var f = function() {return this;};
+        var context = {};
+        callWithContext(context, [], f);
+        var result = f();
+
+        expect(result).to.not.equal(context);
+      });
+
+
+      var f = function() {return this.foo;};
+      testCurriedFunction('callWithContext', callWithContext, [{foo: 42}, [], f]);
     });
   };
 

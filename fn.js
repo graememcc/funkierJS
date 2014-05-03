@@ -9,6 +9,9 @@
     var curryWithArity = base.curryWithArity;
     var getRealArity = base.getRealArity;
 
+    var utils = require('./utils');
+    var checkArrayLike = utils.checkArrayLike;
+
 
     /*
      * bindWithContext: A curried version of Function.prototype.bind.
@@ -156,9 +159,26 @@
     });
 
 
+    /*
+     * callWithContext: Takes an execution context object, an array of arguments, and a function. Calls
+     *                  the function with the given context and arguments, and returns the result. The
+     *                  function will be curried if necessary. Throws a TypeError if the middle argument
+     *                  is not an array, or if the last argument is not a function.
+     *
+     */
+
+    var callWithContext = curry(function(context, args, f) {
+      args = checkArrayLike(args);
+      f = curry(f);
+
+      return f.apply(context, args);
+    });
+
+
     var exported = {
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
+      callWithContext: callWithContext,
       fixpoint: fixpoint,
       pre: pre,
       post: post,
