@@ -1145,6 +1145,22 @@
     });
 
 
+    /*
+     * join: Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the
+     *       toString of each element in the array, separated by the toString of the given separator. Throws a TypeError
+     *       if the last element is not an array.
+     *
+     */
+
+    var join = curry(function(sep, arr) {
+      arr = checkArrayLike(arr);
+      if (typeof(arr) === 'string')
+        throw new TypeError('Value is not an array');
+
+      return arr.join(sep);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1171,6 +1187,7 @@
       insert: insert,
       intersperse: intersperse,
       isEmpty: isEmpty,
+      join: join,
       last: last,
       length: length,
       map: map,

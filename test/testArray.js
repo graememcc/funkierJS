@@ -33,7 +33,7 @@
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
                              'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith',
-                             'replaceAll', 'replaceAllWith'];
+                             'replaceAll', 'replaceAllWith', 'join'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4661,6 +4661,74 @@
 
 
       testCurriedFunction('replaceAllWith', replaceAllWith, [base.constant(true), 4, [1, 2, 3]]);
+    });
+
+
+    var joinSpec = {
+      name: 'join',
+      arity: 2,
+      restrictions: [[], ['array']],
+      validArguments: [[' '], [[1, 2, 3]]]
+    };
+
+
+    describeFunction(joinSpec, array.join, function(join) {
+      it('Works correctly for empty array', function() {
+        expect(join('-', [])).to.equal('');
+      });
+
+
+      it('Works correctly for singleton array', function() {
+        var arr = [1];
+
+        expect(join('-', arr)).to.equal(arr[0].toString());
+      });
+
+
+      var addTests = function(message, str, original) {
+        it('Returns a string ' + message, function() {
+          var data = original.slice();
+          var result = join(str, data);
+
+          expect(result).to.be.a('string');
+        });
+
+
+        it('Returned value is correct ' + message, function() {
+          var data = original.slice();
+          var joined = join(str, data);
+          var s = str.toString();
+          var l = s.length;
+          var offset = 0;
+
+          var result = data.every(function(val, i) {
+            var valString = val.toString();
+
+            if (joined.slice(offset, offset + valString.length) !== valString)
+              return false;
+
+            if (i === data.length - 1)
+              return true;
+
+            offset += valString.length;
+            if (joined.slice(offset, offset + l) !== s)
+              return false;
+
+            offset += l;
+            return true;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('in normal case', ':', ['a', 'b', 'c']);
+      addTests('when array values are not strings', '_', [1, 2, 3]);
+      addTests('when join value is not a string', {toString: function() {return '-';}}, [1, 2, 3]);
+
+
+      testCurriedFunction('join', join, [', ', [4, 5, 6]]);
     });
   };
 
