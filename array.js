@@ -1161,6 +1161,29 @@
     });
 
 
+    /*
+     * flatten: Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.
+     *          Note that flatten only strips off one layer. Throws a TypeError if the supplied value is not an array/string, or if
+     *          any of the values within it are not an array/string.
+     *
+     */
+
+    var flattenFn = function(soFar, current) {
+      current = checkArrayLike(current);
+
+      return concat(soFar, current);
+    };
+
+
+    var flatten = curry(function(arr) {
+      arr = checkArrayLike(arr);
+      if (typeof(arr) === 'string')
+        throw new TypeError('Value is not an array');
+
+      return foldl(flattenFn, [], arr);
+    });
+
+
     var exported = {
       append: append,
       concat: concat,
@@ -1176,6 +1199,7 @@
       findFrom: findFrom,
       findFromWith: findFromWith,
       findWith: findWith,
+      flatten: flatten,
       foldl: foldl,
       foldl1: foldl1,
       foldr: foldr,

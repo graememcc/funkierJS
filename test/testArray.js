@@ -33,7 +33,7 @@
                              'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
                              'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
                              'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith',
-                             'replaceAll', 'replaceAllWith', 'join'];
+                             'replaceAll', 'replaceAllWith', 'join', 'flatten'];
 
     describeModule('array', array, expectedObjects, expectedFunctions);
 
@@ -4729,6 +4729,119 @@
 
 
       testCurriedFunction('join', join, [', ', [4, 5, 6]]);
+    });
+
+
+    var flattenSpec = {
+      name: 'flatten',
+      arity: 1,
+      restrictions: [['array']],
+      validArguments: [[[[1, 2], [3, 4]]]]
+    };
+
+
+    describeFunction(flattenSpec, array.flatten, function(flatten) {
+      var notArray = [3, true, undefined, null, {}, function() {}];
+
+      notArray.forEach(function(val, i) {
+        it('Throws if any element not an array (' + (3 * i + 1) + ')', function() {
+          var arr = [val, [1, 2], [3, 4]];
+          var fn = function() {
+            flatten(arr);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws if any element not an array (' + (3 * i + 2) + ')', function() {
+          var arr = [[1, 2], val, [3, 4]];
+          var fn = function() {
+            flatten(arr);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws if any element not an array (' + (3 * i + 3) + ')', function() {
+          var arr = [[1, 2], [3, 4], val];
+          var fn = function() {
+            flatten(arr);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      it('Returns empty array when supplied empty array ', function() {
+        expect(flatten([])).to.deep.equal([]);
+      });
+
+
+      var addTests = function(message, original) {
+        it('Result is an array ' + message, function() {
+          var data = original.slice();
+          var result = flatten(data);
+
+          expect(Array.isArray(data)).to.be.true;
+        });
+
+
+        it('Result has correct length ' + message, function() {
+          var data = original.slice();
+          var expected = array.sum(array.map(array.length, original.slice()));
+          var flattened = flatten(data);
+
+          expect(flattened.length).to.equal(expected);
+        });
+
+
+        it('Result has correct contents ' + message, function() {
+          var data = original.slice();
+          var flattened = flatten(data);
+          var offset = 0;
+
+          var result = data.every(function(val) {
+            val = splitIfNecessary(val);
+            var result = val.every(function(val2, j) {
+              return flattened[offset + j] === val2;
+            });
+
+            offset += val.length;
+            return result;
+          });
+        });
+      };
+
+
+      addTests('for normal case', [[1, 2], [3, 4], [5, 6]]);
+      addTests('for singleton', [[1]]);
+      addTests('when some values are strings', [[1, 2], 'abc', 'funkier', [5, 6]]);
+      addTests('when all values are strings', ['funkierJS', 'is', 'the', 'best']);
+
+
+      it('Only removes one layer (1)', function() {
+        var data = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
+        var flattened = flatten(data);
+        var result = flattened.every(function(val, i) {
+          return Array.isArray(val) && val === data[Math.floor(i / 2)][i % 2];
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Only removes one layer (2)', function() {
+        var data = [['funkier', 'is'], ['the', 'best']];
+        var flattened = flatten(data);
+        var result = flattened.every(function(val, i) {
+          return typeof(val) === 'string' && val === data[Math.floor(i / 2)][i % 2];
+        });
+
+        expect(result).to.be.true;
+      });
     });
   };
 
