@@ -74,7 +74,7 @@
       if (length === 0) {
         var result = function() {
           // Don't simply return fn: need to discard any arguments
-          return fn();
+          return fn.apply(this);
         };
 
         Object.defineProperty(result, arityProp, {value: 0});
@@ -92,10 +92,10 @@
 
         // If we have enough arguments, call the underlying function
         if (args.length === length)
-          return fn.apply(null, args);
+          return fn.apply(this, args);
 
         // We don't have enough arguments. Bind those that we already have
-        var newFn = fn.bind.apply(fn, [null].concat(args));
+        var newFn = fn.bind.apply(fn, [this].concat(args));
         var argsNeeded = length - args.length;
 
         // Continue currying if we can't yet return a function of length 1

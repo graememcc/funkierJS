@@ -81,6 +81,33 @@
 
         expect(curry(f)).to.equal(f);
       });
+
+
+      it('Currying preserves execution context (1)', function() {
+        var f = curry(function(a, b) {return this;});
+        var context = {f: f};
+        var result = context.f(1, 2);
+
+        expect(result).to.equal(context);
+      });
+
+
+      it('Currying preserves execution context (2)', function() {
+        var f = curry(function(a, b) {return this;});
+        var context = {f: f};
+        var result = context.f(1)(2);
+
+        expect(result).to.equal(context);
+      });
+
+
+      it('Currying preserves execution context (3)', function() {
+        var f = curry(function() {return this;});
+        var context = {f: f};
+        var result = context.f();
+
+        expect(result).to.equal(context);
+      });
     });
 
 
@@ -206,6 +233,33 @@
         var f = curryWithArity(1, function(a, b) {});
 
         expect(curryWithArity(1, f)).to.equal(f);
+      });
+
+
+      it('Currying preserves execution context (1)', function() {
+        var f = curryWithArity(1, function(a, b) {return this;});
+        var context = {f: f};
+        var result = context.f(1, 2);
+
+        expect(result).to.equal(context);
+      });
+
+
+      it('Currying preserves execution context (2)', function() {
+        var f = curryWithArity(3, function(a, b) {return this;});
+        var context = {f: f};
+        var result = context.f(1)(2)(3);
+
+        expect(result).to.equal(context);
+      });
+
+
+      it('Currying preserves execution context (3)', function() {
+        var f = curryWithArity(0, function(a, b) {return this;});
+        var context = {f: f};
+        var result = context.f();
+
+        expect(result).to.equal(context);
       });
     });
 
