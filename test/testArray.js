@@ -74,14 +74,18 @@
 
 
     // Several functions should throw when the first parameter is negative or NaN
-    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter) {
-      it('Throws when ' + paramName + ' is negative', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
-        };
+    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, acceptNegative) {
+      acceptNegative = acceptNegative || false;
 
-        expect(fn).to.throw(TypeError);
-      });
+      if (!acceptNegative) {
+        it('Throws when ' + paramName + ' is negative', function() {
+          var fn = function() {
+            fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      }
 
 
       it('Throws when ' + paramName + ' is NaN', function() {
@@ -1678,36 +1682,33 @@
 
 
     describeFunction(takeSpec, array.take, function(take) {
-      addBadNumberTests('count', take, [], [[1, 2, 3]]);
-      addBadNumberTests('count', take, [], ['abc']);
+      addBadNumberTests('count', take, [], [[1, 2, 3]], true);
+      addBadNumberTests('count', take, [], ['abc'], true);
+      addReturnsSameTypeTests(take, [1]);
+      addNoModificationOfOriginalTests(take, [1]);
+      addReturnsEmptyOnEmptyTests(take, [1]);
 
 
-      it('Returns empty array when count is 0 for array (1)', function() {
-        var result = take(0, [2, 3, 4]);
+      var addExpectEmptyTest = function(message, count, original) {
+        var isArray = typeof(original) !== 'string';
 
-        expect(result).to.deep.equal([]);
-      });
+        it('Returns empty ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
+          var data = original.slice();
+          var result = take(count, data);
 
-
-      it('Returns empty array when count is 0 for array (2)', function() {
-        var result = take(0, []);
-
-        expect(result).to.deep.equal([]);
-      });
+          expect(result).to.deep.equal(isArray ? [] : '');
+        });
+      };
 
 
-      it('Returns empty string when count is 0 for string (1)', function() {
-        var result = take(0, 'funkier');
-
-        expect(result).to.deep.equal('');
-      });
-
-
-      it('Returns empty string when count is 0 for string (2)', function() {
-        var result = take(0, '');
-
-        expect(result).to.deep.equal('');
-      });
+      addExpectEmptyTest('count is 0 for array', 0, [2, 3, 4]);
+      addExpectEmptyTest('count is 0 for empty array', 0, []);
+      addExpectEmptyTest('count is negative for array', -1, [3, 4, 5]);
+      addExpectEmptyTest('count is negative for empty array', -1, []);
+      addExpectEmptyTest('count is 0 for string', 0, 'funkier');
+      addExpectEmptyTest('count is 0 for empty string', 0, '');
+      addExpectEmptyTest('count is negative for string', -1, 'abc');
+      addExpectEmptyTest('count is negative for empty string', -1, '');
 
 
       var addCorrectEntryTests = function(message, count, arrData, strData) {
@@ -1733,10 +1734,6 @@
       addCorrectEntryTests('count === length', 3, [{}, {}, {}], 'abc');
       addCorrectEntryTests('count > length', 4, [3, 4, 5], 'x');
 
-      addReturnsSameTypeTests(take, [1]);
-      addNoModificationOfOriginalTests(take, [1]);
-      addReturnsEmptyOnEmptyTests(take, [1]);
-
 
       testCurriedFunction('take', take, [1, [1, 2, 3]]);
     });
@@ -1751,40 +1748,33 @@
 
 
     describeFunction(dropSpec, array.drop, function(drop) {
-      addBadNumberTests('count', drop, [], [[1, 2, 3]]);
-      addBadNumberTests('count', drop, [], ['abc']);
+      addBadNumberTests('count', drop, [], [[1, 2, 3]], true);
+      addBadNumberTests('count', drop, [], ['abc'], true);
+      addReturnsSameTypeTests(drop, [1]);
+      addNoModificationOfOriginalTests(drop, [1]);
+      addReturnsEmptyOnEmptyTests(drop, [1]);
 
 
-      it('Returns empty array when count is 0 for array (1)', function() {
-        var original = [2, 3, 4];
-        var result = drop(0, original);
+      var addExpectFullTest = function(message, count, original) {
+        var isArray = typeof(original) !== 'string';
 
-        expect(result).to.deep.equal(original);
-      });
+        it('Returns copy of ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
+          var data = original.slice();
+          var result = drop(count, data);
 
-
-      it('Returns empty array when count is 0 for array (2)', function() {
-        var original = [];
-        var result = drop(0, original);
-
-        expect(result).to.deep.equal(original);
-      });
+          expect(result).to.deep.equal(data);
+        });
+      };
 
 
-      it('Returns empty string when count is 0 for string (1)', function() {
-        var original = 'funkier';
-        var result = drop(0, original);
-
-        expect(result).to.deep.equal(original);
-      });
-
-
-      it('Returns empty string when count is 0 for string (2)', function() {
-        var original = '';
-        var result = drop(0, original);
-
-        expect(result).to.deep.equal(original);
-      });
+      addExpectFullTest('count is 0 for array', 0, [2, 3, 4]);
+      addExpectFullTest('count is 0 for empty array', 0, []);
+      addExpectFullTest('count is negative for array', -1, [3, 4, 5]);
+      addExpectFullTest('count is negative for empty array', -1, []);
+      addExpectFullTest('count is 0 for string', 0, 'funkier');
+      addExpectFullTest('count is 0 for empty string', 0, '');
+      addExpectFullTest('count is negative for string', -1, 'abc');
+      addExpectFullTest('count is negative for empty string', -1, '');
 
 
       var addCorrectEntryTests = function(message, count, arrData, strData) {
@@ -1823,9 +1813,6 @@
       addCorrectEntryTests('count < length', 1, [1, 2, 3], 'funkier');
       addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], 'abc');
       addEmptyAfterDropTests('count > length', 4, [3, 4, 5], 'x');
-      addReturnsSameTypeTests(drop, [1]);
-      addNoModificationOfOriginalTests(drop, [1]);
-      addReturnsEmptyOnEmptyTests(drop, [1]);
 
 
       testCurriedFunction('drop', drop, [1, [1, 2, 3]]);

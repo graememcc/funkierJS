@@ -17,6 +17,7 @@
     var callPropWithArity = object.callPropWithArity;
 
     var utils = require('./utils');
+    var checkIntegral = utils.checkIntegral;
     var checkPositiveIntegral = utils.checkPositiveIntegral;
     var checkArrayLike = utils.checkArrayLike;
 
@@ -368,13 +369,16 @@
 
 
     /*
-     * take: Takes a count, and an array or string. Returns an array or string containing the first count elements of the given array or string.
-     *       Throws if the last argument is not an array or string.
+     * take: Takes a count, and an array or string. Returns an array or string containing the first count elements of
+     *       the given array or string. Throws a TypeError if the count is not integral, or if the last argument is
+     *       not an array or string.
      *
      */
 
     var take = curry(function(count, arr) {
-      count = checkPositiveIntegral(count, 'Invalid count for take');
+      count = checkIntegral(count, 'Invalid count for take');
+      if (count < 0)
+        count = 0;
 
       arr = checkArrayLike(arr);
 
@@ -391,13 +395,16 @@
 
 
     /*
-     * drop: Takes a count, and an array or string. Returns an array or string with the first count elements of the given array or string removed.
-     *       Throws if the last argument is not an array or string.
+     * drop: Takes a count, and an array or string. Returns an array or string containing the first count elements
+     *       removed from the given array or string. Throws a TypeError if the count is not integral, or if the last
+     *       argument is not an array or string.
      *
      */
 
     var drop = curry(function(count, arr) {
-      count = checkPositiveIntegral(count, 'Invalid count for drop');
+      count = checkIntegral(count, 'Invalid count for drop');
+      if (count < 0)
+        count = 0;
 
       arr = checkArrayLike(arr);
 
@@ -420,6 +427,9 @@
      */
 
     var init = curry(function(arr) {
+      if (arr.length === 0)
+        throw new TypeError('Cannot take init of empty array/string');
+
       return take(length(arr) - 1, arr);
     });
 
