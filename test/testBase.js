@@ -25,12 +25,18 @@
     describeModule('base', base, expectedObjects, expectedFunctions);
 
 
-    // Many of the tests use curry and id: let's pull them out for convenience
+    // Many of the tests use curry, id and getRealArity: let's pull them out for convenience
     var curry = base.curry;
     var id = base.id;
+    var getRealArity = base.getRealArity;
 
 
     describe('curry', function() {
+      it('Has correct arity', function() {
+        expect(getRealArity(curry)).to.equal(1);
+      });
+
+
       // We shall test curry with binary, ternary, and quarternary functions
       var testFuncs = [
         {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
@@ -114,6 +120,11 @@
     describe('curryWithArity', function() {
       var curryWithArity = base.curryWithArity;
       var fromCharCodes = String.fromCharCode;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(curryWithArity)).to.equal(2);
+      });
 
 
       it('Currying a function of length 0 to 0 returns a function of length 0', function() {
@@ -266,6 +277,11 @@
 
     describe('compose', function() {
       var compose = base.compose;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(compose)).to.equal(2);
+      });
 
 
       it('Throws if the first function has arity 0', function() {
@@ -452,7 +468,7 @@
       var id = base.id;
 
       it('Has correct arity', function() {
-        expect(id.length).to.equal(1);
+        expect(getRealArity(id)).to.equal(1);
       });
 
 
@@ -487,7 +503,7 @@
 
 
       it('Has correct arity', function() {
-        expect(constant.length).to.equal(1);
+        expect(getRealArity(constant)).to.equal(2);
       });
 
 
@@ -541,7 +557,7 @@
 
 
       it('Has correct arity', function() {
-        expect(constant0.length).to.equal(1);
+        expect(getRealArity(constant0)).to.equal(1);
       });
 
 
@@ -585,6 +601,11 @@
 
     describe('composeMany', function() {
       var composeMany = base.composeMany;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(composeMany)).to.equal(1);
+      });
 
 
       it('Throws if called with empty array', function() {
@@ -800,7 +821,7 @@
 
 
       it('Has correct arity', function() {
-        expect(flip.length).to.equal(1);
+        expect(getRealArity(flip)).to.equal(1);
       });
 
 
@@ -901,6 +922,11 @@
       var applyFunc = base.applyFunc;
 
 
+      it('Has correct arity', function() {
+        expect(getRealArity(applyFunc)).to.equal(2);
+      });
+
+
       it('Calls f with x (1)', function() {
         var f = function(x) {f.args = [].slice.call(arguments);};
         f.args = null;
@@ -982,6 +1008,11 @@
 
     describe('sectionRight', function() {
       var sectionRight = base.sectionRight;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(sectionRight)).to.equal(2);
+      });
 
 
       it('Throws if f is not binary (1)', function() {
@@ -1092,6 +1123,11 @@
       var equals = base.equals;
 
 
+      it('Has correct arity', function() {
+        expect(getRealArity(equals)).to.equal(2);
+      });
+
+
       equalityTests.forEach(function(test) {
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
@@ -1121,6 +1157,11 @@
 
     describe('strictEquals', function() {
       var strictEquals = base.strictEquals;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(strictEquals)).to.equal(2);
+      });
 
 
       equalityTests.forEach(function(test) {
@@ -1154,6 +1195,11 @@
       var notEqual = base.notEqual;
 
 
+      it('Has correct arity', function() {
+        expect(getRealArity(notEqual)).to.equal(2);
+      });
+
+
       equalityTests.forEach(function(test) {
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
@@ -1183,6 +1229,11 @@
 
     describe('strictNotEqual', function() {
       var strictNotEqual = base.strictNotEqual;
+
+
+      it('Has correct arity', function() {
+        expect(getRealArity(strictNotEqual)).to.equal(2);
+      });
 
 
       equalityTests.forEach(function(test) {
@@ -1469,7 +1520,6 @@
     describe('permuteLeft', function() {
       var permuteLeft = base.permuteLeft;
       var curryWithArity = base.curryWithArity;
-      var getRealArity = base.getRealArity;
 
 
       it('Has correct arity', function() {
@@ -1646,7 +1696,6 @@
     describe('permuteRight', function() {
       var permuteRight = base.permuteRight;
       var curryWithArity = base.curryWithArity;
-      var getRealArity = base.getRealArity;
 
 
       it('Has correct arity', function() {
