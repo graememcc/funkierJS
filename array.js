@@ -45,7 +45,7 @@
      */
 
     var getIndex = curry(function(i, a) {
-      i = checkPositiveIntegral(i);
+      i = checkPositiveIntegral(i, 'Index out of bounds');
       if (i >= a.length)
         throw new TypeError('Index out of bounds');
 
@@ -80,7 +80,7 @@
      */
 
     var replicate = curry(function(l, value) {
-      l = checkPositiveIntegral(l);
+      l = checkPositiveIntegral(l, 'Replicate count invalid');
 
       var result = [];
 
@@ -374,7 +374,7 @@
      */
 
     var take = curry(function(count, arr) {
-      count = checkPositiveIntegral(count);
+      count = checkPositiveIntegral(count, 'Invalid count for take');
 
       arr = checkArrayLike(arr);
 
@@ -397,7 +397,7 @@
      */
 
     var drop = curry(function(count, arr) {
-      count = checkPositiveIntegral(count);
+      count = checkPositiveIntegral(count, 'Invalid count for drop');
 
       arr = checkArrayLike(arr);
 
@@ -482,8 +482,8 @@
      */
 
     var slice = curry(function(from, to, arr) {
-      from = checkPositiveIntegral(from);
-      to = checkPositiveIntegral(to);
+      from = checkPositiveIntegral(from, 'Invalid from position for slice');
+      to = checkPositiveIntegral(to, 'Invalid to position for slice');
 
       return take(to - from, drop(from, arr));
     });
@@ -901,7 +901,7 @@
      */
 
     var insert = curry(function(index, val, arr) {
-      index = checkPositiveIntegral(index);
+      index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index > arr.length)
         throw new TypeError('Index out of bounds');
 
@@ -923,7 +923,7 @@
      */
 
     var remove = curry(function(index, arr) {
-      index = checkPositiveIntegral(index);
+      index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index >= arr.length)
         throw new TypeError('Index out of bounds');
 
@@ -943,7 +943,7 @@
      */
 
     var replace = curry(function(index, val, arr) {
-      index = checkPositiveIntegral(index);
+      index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index >= arr.length)
         throw new TypeError('Index out of bounds');
 
