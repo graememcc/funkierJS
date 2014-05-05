@@ -21,6 +21,9 @@
     var checkPositiveIntegral = utils.checkPositiveIntegral;
     var checkArrayLike = utils.checkArrayLike;
 
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
+
     var pair = require('./pair');
     var Pair = pair.Pair;
     var fst = pair.fst;
@@ -92,8 +95,24 @@
     });
 
 
-    // Utility function for generating functions
-    var makeArrayPropCaller = function(arity, prop, fArity, options) {
+    /*
+     * A number of functions are essentially wrappers around array primitives that take a function.
+     * All these functions would, if written seperately, have a similar blueprint:
+     *
+     * - Check the first argument is a function of the correct arity
+     * - Check the last argument is an array or string, and split it if it was a string
+     * - Call the prop of the last argument, with the other arguments as parameters
+     * - Optionally put the string back together
+     *
+     * This function encapsulates this boilerplate. It takes the following parameters:
+     * - arity: How many arguments the prop should be called with (this allows creation of versions
+     *          that call the prop with or without optional arguments - e.g. reduce
+     * - prop: The string name of the property to call
+     * - options: Whether the function should be a fixed arity, a minimum arity, the exception messages etc.
+     *
+     */
+
+    var makeArrayPropCaller = function(arity, prop, options) {
       options = options || {};
 
       return curryWithArity(arity, function() {
@@ -102,20 +121,34 @@
         var arr = last(args);
         var wasString = false;
 
-        arr = checkArrayLike(arr);
-        if (typeof(f) !== 'function')
-          throw new TypeError('Called with invalid arguments');
+        // Is the array really an array
+        var arrCheckOptions = {};
+        if ('aMessage' in options)
+          arrCheckOptions.message = options.aMessage;
+        arr = checkArrayLike(arr, arrCheckOptions);
+
+        // Is the function really a suitable function?
+        var fArity = 0;
+        var fCheckOptions = {};
+        if ('fixedArity' in options) {
+          fCheckOptions.arity = options.fixedArity;
+          fArity = options.fixedArity;
+        } else if ('minimumArity' in options) {
+          fCheckOptions.arity = options.minimumArity;
+          fCheckOptions.minimum = true;
+          fArity = options.minimumArity;
+        }
+        if ('fMessage' in options)
+          fCheckOptions.message = options.fMessage;
+
+        f = checkFunction(f, fCheckOptions);
 
         if (typeof(arr) === 'string') {
           wasString = true;
           arr = arr.split('');
         }
 
-        if ('fixedArity' in options && getRealArity(f) !== options.fixedArity)
-          throw new TypeError('Called with invalid arguments');
-        else if ('minimumArity' in options && getRealArity(f) < options.minimumArity)
-          throw new TypeError('Called with invalid arguments');
-
+        // Ensure the function only gets called with as many parameters as were specified
         var fn = curryWithArity(fArity, function() {
           var args = [].slice.call(arguments);
           return f.apply(null, args);
@@ -140,7 +173,9 @@
      *
      */
 
-    var map = makeArrayPropCaller(2, 'map', 1, {minimumArity : 1});
+    var map = makeArrayPropCaller(2, 'map',
+               {minimumArity : 1, aMessage: 'Value to be mapped over is not an array/string',
+                                  fMessage: 'Mapping function must be a function with arity at least 1'});
 
 
     /*
@@ -150,7 +185,9 @@
      *
      */
 
-    var each = makeArrayPropCaller(2, 'forEach', 1);
+    var each = makeArrayPropCaller(2, 'forEach',
+               {minimumArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'forEach function must be a function with arity at least 1'});
 
 
     /*
@@ -160,7 +197,9 @@
      *
      */
 
-    var filter = makeArrayPropCaller(2, 'filter', 1, {fixedArity: 1, returnSameType: true});
+    var filter = makeArrayPropCaller(2, 'filter',
+                 {aMessage: 'Value to be filtered is not an array/string',
+                  fMessage: 'Predicate must be a function of arity 1', fixedArity: 1, returnSameType: true});
 
 
     /*
@@ -173,7 +212,9 @@
      *
      */
 
-    var foldl = makeArrayPropCaller(3, 'reduce', 2, {fixedArity: 2});
+    var foldl = makeArrayPropCaller(3, 'reduce',
+                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
 
 
     /*
@@ -186,7 +227,9 @@
      *
      */
 
-    var foldl1 = makeArrayPropCaller(2, 'reduce', 2, {fixedArity: 2});
+    var foldl1 = makeArrayPropCaller(2, 'reduce',
+                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
 
 
     /*
@@ -199,7 +242,9 @@
      *
      */
 
-    var foldr = makeArrayPropCaller(3, 'reduceRight', 2, {fixedArity: 2});
+    var foldr = makeArrayPropCaller(3, 'reduceRight',
+                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
 
 
     /*
@@ -212,7 +257,9 @@
      *
      */
 
-    var foldr1 = makeArrayPropCaller(2, 'reduceRight', 2, {fixedArity: 2});
+    var foldr1 = makeArrayPropCaller(2, 'reduceRight',
+                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
 
 
     /*
@@ -222,7 +269,9 @@
      *        1, or if the second argument is not an array or string.
      */
 
-    var every = makeArrayPropCaller(2, 'every', 1, {fixedArity: 1});
+    var every = makeArrayPropCaller(2, 'every',
+                 {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Predicate must be a function of arity 1'});
 
 
     /*
@@ -232,7 +281,9 @@
      *       1, or if the second argument is not an array or string.
      */
 
-    var some = makeArrayPropCaller(2, 'some', 1, {fixedArity: 1});
+    var some = makeArrayPropCaller(2, 'some',
+                 {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Predicate must be a function of arity 1'});
 
 
     /*
@@ -511,8 +562,7 @@
      */
 
     var takeWhile = curry(function(p, source) {
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
-        throw new TypeError('Value is not a predicate function');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       source = checkArrayLike(source, {message: 'takeWhile: source is not an array/string'});
 
@@ -543,8 +593,7 @@
      */
 
     var dropWhile = curry(function(p, source) {
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
-        throw new TypeError('Value is not a predicate function');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       source = checkArrayLike(source, {message: 'dropWhile: source is not an array/string'});
 
@@ -701,8 +750,7 @@
 
     var findWith = curry(function(p, haystack) {
       haystack = checkArrayLike(haystack, {message: 'findWith: haystack must be an array/string'});
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
-        throw new TypeError('Value is not a predicate function');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       var found = false;
       for (var i = 0, l = haystack.length; !found && i < l; i++)
@@ -722,8 +770,7 @@
 
     var findFromWith = curry(function(p, index, haystack) {
       haystack = checkArrayLike(haystack, {message: 'findWithFrom: haystack must be an array/string'});
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
-        throw new TypeError('Value is not a predicate function');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       var found = false;
       for (var i = index, l = haystack.length; !found && i < l; i++)
@@ -762,8 +809,7 @@
 
     var occurrencesWith = curry(function(p, haystack) {
       haystack = checkArrayLike(haystack, {message: 'occurrencesWith: haystack must be an array/string'});
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1)
-        throw new TypeError('Value is not a predicate function');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       var result = [];
       for (var i = 0, l = haystack.length; i < l; i++)
@@ -787,8 +833,7 @@
       a = checkArrayLike(a, {message: 'First source value is not an array/string'});
       b = checkArrayLike(b, {message: 'Second source value is not an array/string'});
 
-      if (typeof(f) !== 'function' || getRealArity(f) < 2)
-        throw new TypeError('Value is not a function of arity 2');
+      f = checkFunction(f, {arity: 2, minimum: true, message: 'Constructor must be a function with arity at least 2'});
 
       var len = Math.min(a.length, b.length);
 
@@ -861,12 +906,11 @@
     });
 
 
-    var nubWith = curry(function(f, arr) {
+    var nubWith = curry(function(p, arr) {
       arr = checkArrayLike(arr);
-      if (typeof(f) !== 'function' || getRealArity(f) !== 2)
-        throw new TypeError('Value is not a function of arity 2');
+      p = checkFunction(p, {arity: 2, message: 'Predicate must be a function of arity 2'});
 
-      var fn = nubWithFn(f);
+      var fn = nubWithFn(p);
       return foldl(fn, Array.isArray(arr) ? [] : '', arr);
     });
 
@@ -904,7 +948,7 @@
      *
      */
 
-    var sortWith = makeArrayPropCaller(2, 'sort', 2, {fixedArity: 2, returnSameType: true});
+    var sortWith = makeArrayPropCaller(2, 'sort', {fixedArity: 2, returnSameType: true});
 
 
     /*
@@ -984,19 +1028,14 @@
      *
      */
 
-    var removeOneWith = curry(function(f, arr) {
-      if (typeof(f) !== 'function')
-        throw new TypeError('Value is not a function');
-
-      if (getRealArity(f) !== 1)
-        throw new TypeError('Function has incorrect arity');
-
+    var removeOneWith = curry(function(p, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
       arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
 
       var found = false;
       var i = 0;
       while (!found && i < arr.length) {
-        if (f(arr[i])) {
+        if (p(arr[i])) {
           found = true;
         } else {
           i++;
@@ -1079,17 +1118,12 @@
      */
 
     var replaceOneWith = curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
       arr = checkArrayLike(arr, {message: 'replaceOneWith: Value to be modified is not an array/string'});
       if (Array.isArray(arr))
         replacement = [replacement];
       else
         replacement = replacement.toString();
-
-      if (typeof(p) !== 'function')
-        throw new TypeError('Value is not a function');
-
-      if (getRealArity(p) !== 1)
-        throw new TypeError('Function has incorrect arity');
 
       var found = false;
       var i = 0;
@@ -1116,14 +1150,8 @@
      */
 
     var replaceAllWith = curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
       arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
-      if (typeof(p) !== 'function')
-        throw new TypeError('Value is not a function');
-
-      if (getRealArity(p) !== 1)
-        throw new TypeError('Function has incorrect arity');
-
-      arr = checkArrayLike(arr);
       if (Array.isArray(arr))
         replacement = [replacement];
       else

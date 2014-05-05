@@ -359,7 +359,7 @@
       });
 
 
-      it('Returns empty array when called with empty string', function() {
+      it('Returns empty string when called with empty string', function() {
         var original = '';
         var result = fnUnderTest.apply(null, argsBefore.concat([original]));
 
