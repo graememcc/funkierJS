@@ -5,11 +5,16 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
-    var utils = require('./utils');
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;
     var getRealArity = base.getRealArity;
+
+    var utils = require('./utils');
     var valueStringifier = utils.valueStringifier;
+    var checkArrayLike = utils.checkArrayLike;
+
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
 
 
     /*
@@ -120,8 +125,9 @@
      */
 
     var makeMaybeReturner = curry(function(sentinels, f) {
-      if (!Array.isArray(sentinels) || typeof(f) !== 'function')
-        throw new TypeError('makeMaybeReturner called with invalid arguments');
+      sentinels = checkArrayLike(sentinels, {noStrings: true,
+                                             message: 'Sentinels must be an array'});
+      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
@@ -146,8 +152,8 @@
      */
 
     var makePredMaybeReturner = curry(function(p, f) {
-      if (typeof(p) !== 'function' || getRealArity(p) !== 1 || typeof(f) !== 'function')
-        throw new TypeError('makePredMaybeReturner called with invalid arguments');
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
@@ -170,8 +176,7 @@
      */
 
     var makeThrowMaybeReturner = curry(function(f) {
-      if (typeof(f) !== 'function')
-        throw new TypeError('makeThrowMaybeReturner called with invalid arguments');
+      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);

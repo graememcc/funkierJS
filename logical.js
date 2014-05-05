@@ -8,6 +8,9 @@
     var curry = base.curry;
     var getRealArity = base.getRealArity;
 
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
+
 
     /*
      * not: returns the boolean negation of the given argument
@@ -58,9 +61,7 @@
      */
 
     var notPred = function(pred) {
-      var predLen = getRealArity(pred);
-      if (predLen !== 1)
-        throw new TypeError('notPred called with function of arity ' + predLen);
+      pred = checkFunction(pred, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       return curry(function(x) {
         return !pred(x);
@@ -76,10 +77,8 @@
      */
 
     var andPred = curry(function(pred1, pred2) {
-      var predLen1 = getRealArity(pred1);
-      var predLen2 = getRealArity(pred2);
-      if (predLen1 !== 1 || predLen2 !== 1)
-         throw new TypeError('andPred called with function of arity ' + (predLen1 !== 1 ? predLen1 : predLen2));
+      pred1 = checkFunction(pred1, {arity: 1, message: 'First predicate must be a function of arity 1'});
+      pred2 = checkFunction(pred2, {arity: 1, message: 'Second predicate must be a function of arity 1'});
 
       return curry(function(x) {
         return pred1(x) && pred2(x);
@@ -95,10 +94,8 @@
      */
 
     var orPred = curry(function(pred1, pred2) {
-      var predLen1 = getRealArity(pred1);
-      var predLen2 = getRealArity(pred2);
-      if (predLen1 !== 1 || predLen2 !== 1)
-         throw new TypeError('orPred called with function of arity ' + (predLen1 !== 1 ? predLen1 : predLen2));
+      pred1 = checkFunction(pred1, {arity: 1, message: 'First predicate must be a function of arity 1'});
+      pred2 = checkFunction(pred2, {arity: 1, message: 'Second predicate must be a function of arity 1'});
 
       return curry(function(x) {
         return pred1(x) || pred2(x);
@@ -113,10 +110,8 @@
      */
 
     var xorPred = curry(function(pred1, pred2) {
-      var predLen1 = getRealArity(pred1);
-      var predLen2 = getRealArity(pred2);
-      if (predLen1 !== 1 || predLen2 !== 1)
-         throw new TypeError('orPred called with function of arity ' + (predLen1 !== 1 ? predLen1 : predLen2));
+      pred1 = checkFunction(pred1, {arity: 1, message: 'First predicate must be a function of arity 1'});
+      pred2 = checkFunction(pred2, {arity: 1, message: 'Second predicate must be a function of arity 1'});
 
       return curry(function(x) {
         return xor(pred1(x), pred2(x));

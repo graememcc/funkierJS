@@ -5,11 +5,15 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
-    var object = require('./object');
     var curry = base.curry;
+    var flip = base.flip;
+
+    var object = require('./object');
     var callProp = object.callProp;
     var callPropWithArity = object.callPropWithArity;
-    var flip = base.flip;
+
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
 
 
     /*
@@ -156,7 +160,8 @@
      */
 
     var replaceOneStringWith = curry(function(from, to, s) {
-      if ((from instanceof RegExp) || (!(to instanceof Function)))
+      to = checkFunction(to, {arity: 1, minimum: true, message: 'to must be a function of arity 1'});
+      if ((from instanceof RegExp))
         throw new TypeError('replaceOneStringWith called with invalid types');
 
       return s.replace(from, to);
@@ -238,6 +243,7 @@
      */
 
     var replaceOneRegExpWith = curry(function(from, to, s) {
+      to = checkFunction(to, {arity: 1, minimum: true, message: 'to must be a function of arity 1'});
       if (!(from instanceof RegExp) || !(to instanceof Function))
         throw new TypeError('replaceOneRegExpWith called with invalid types');
 

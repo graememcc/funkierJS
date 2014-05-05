@@ -7,6 +7,9 @@
     var base = require('./base');
     var curry = base.curry;
 
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
+
 
     /* Combinators exports the traditional S, K, and I combinators */
 
@@ -48,6 +51,9 @@
      */
 
     var S = curry(function(x, y, z) {
+      x = checkFunction(x);
+      y = checkFunction(y);
+
       x = curry(x);
       y = curry(y);
       return x(z)(y(z));

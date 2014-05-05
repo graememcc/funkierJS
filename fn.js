@@ -12,6 +12,9 @@
     var utils = require('./utils');
     var checkArrayLike = utils.checkArrayLike;
 
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
+
 
     /*
      * bindWithContext: A curried version of Function.prototype.bind.
@@ -23,8 +26,7 @@
      */
 
     var bindWithContext = curry(function(obj, f) {
-      if (typeof(f) !== 'function')
-        throw new TypeError('Value is not a function');
+      f = checkFunction(f);
 
       var realArity = getRealArity(f);
       return curryWithArity(realArity, function() {
@@ -45,8 +47,7 @@
      */
 
     var bindWithContextAndArity = curry(function(obj, arity, f) {
-      if (typeof(f) !== 'function')
-        throw new TypeError('Value is not a function');
+      f = checkFunction(f);
 
       return curryWithArity(arity, function() {
         var args = [].slice.call(arguments);
@@ -71,8 +72,8 @@
      */
 
     var pre = curry(function(g, f) {
-      if (typeof(g) !== 'function' || typeof(f) !== 'function')
-        throw new TypeError('Value is not a function');
+      g = checkFunction(g, {message: 'Pre value must be a function'});
+      f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
@@ -99,8 +100,8 @@
      */
 
     var post = curry(function(g, f) {
-      if (typeof(g) !== 'function' || typeof(f) !== 'function')
-        throw new TypeError('Value is not a function');
+      g = checkFunction(g, {message: 'Post value must be a function'});
+      f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
@@ -138,8 +139,7 @@
      */
 
     var fixpoint = curry(function(a, f) {
-      if (getRealArity(f) !== 1)
-        throw new TypeError('Cannot compute fixpoint of function with arity !== 1');
+      f = checkFunction(f, {arity: 1, message: 'Value must be a function of arity 1'});
 
       var result = f(a);
       var calls = 1;
