@@ -111,6 +111,8 @@
       if (Array.isArray(v))
         return true;
 
+      return false;
+      // XXX For future use
       if (!v.hasOwnProperty('length'))
         return false;
 
@@ -124,9 +126,12 @@
      *
      */
 
-    var checkArrayLike = function(v) {
-      if (!isArrayLike(v))
-        throw new TypeError('Value is not a string or array');
+    var checkArrayLike = function(v, options) {
+      var options = options || {};
+      var message = options.message || 'Value is not a string or array';
+
+      if (!isArrayLike(v, options.noStrings))
+        throw new TypeError(message);
 
       return (typeof(v) === 'string' ? '' : []).slice.call(v);
     };

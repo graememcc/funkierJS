@@ -65,7 +65,7 @@
       {name: 'array', value: [1, 2], result: true},
       {name: 'undefined', value: undefined, result: false},
       {name: 'null', value: null, result: false},
-      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
+      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: false}
     ];
 
 
@@ -98,13 +98,13 @@
     });
 
 
-    var calSpec = {
-      name: 'checkArrayLike',
-      arity: 1
-    };
+
+    // We deliberately use describe rather than our own describeFunction here
+    // due to the optional parameter
+    describe('checkArrayLike', function() {
+      var checkArrayLike = utils.checkArrayLike;
 
 
-    describeFunction(calSpec, utils.checkArrayLike, function(checkArrayLike) {
       arrayLikeTests.forEach(function(t) {
         var name = t.name;
 
@@ -116,6 +116,8 @@
 
           if (t.result) {
             expect(fn).to.not.throw(TypeError);
+            // This manual deep-equality test is needed for when we start accepting
+            // array like objects
             for (var i = 0, l = t.value.length; i < t; i++)
               expect(v[i] === t.value[i]).to.be.true;
 
@@ -127,6 +129,46 @@
             expect(fn).to.throw(TypeError);
           }
         });
+
+
+        if (t.result)
+          return;
+
+
+        it('Returns correct exception for ' + name, function() {
+          var message = 'This was an error';
+          var fn = function() {
+            checkArrayLike(t.value, {message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      });
+
+
+      it('Doesn\'t accept strings when relevant parameter passed in (1)', function() {
+        var fn = function() {
+          checkArrayLike('abc', {noStrings: true});
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Doesn\'t accept strings when relevant parameter passed in (2)', function() {
+        var message = 'Noooo, no strings here!';
+        var fn = function() {
+          checkArrayLike('abc', {noStrings: true, message: message});
+        };
+
+        expect(fn).to.throw(message);
+      });
+
+
+      it('Accepts strings when relevant parameter explicitly passed in', function() {
+        var s = checkArrayLike('abc', {noStrings: false});
+
+        expect(s).to.equal('abc');
       });
     });
 
