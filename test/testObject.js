@@ -253,7 +253,7 @@
       it('Works correctly (3)', function() {
         var Constructor = function() {};
         var Proto = function() {};
-        Constructor.prototype = new Proto();
+        Constructor.prototype = Proto.prototype;
         var obj = new Constructor();
 
         expect(instanceOf(Proto, obj)).to.be.true;
@@ -325,7 +325,7 @@
       it('Works correctly (3)', function() {
         var Constructor = function() {};
         var Proto = function() {};
-        Constructor.prototype = new Proto();
+        Constructor.prototype = Proto.prototype
         var obj = new Constructor();
 
         expect(isPrototypeOf(Proto.prototype, obj)).to.be.true;
