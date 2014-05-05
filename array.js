@@ -102,10 +102,10 @@
         var arr = last(args);
         var wasString = false;
 
-        if (typeof(f) !== 'function' || (!Array.isArray(arr) && typeof(arr) !== 'string'))
+        arr = checkArrayLike(arr);
+        if (typeof(f) !== 'function')
           throw new TypeError('Called with invalid arguments');
 
-        arr = checkArrayLike(arr);
         if (typeof(arr) === 'string') {
           wasString = true;
           arr = arr.split('');
@@ -504,26 +504,26 @@
 
 
     /*
-     * takeWhile: Takes a predicate function p, and an array or string. Returns a new array or string containing the initial members of the
-     *            given array/string for which the predicate returned true. Throws a TypeError if p is not a function of arity 1, or if the
-     *            given value is not an array or string.
+     * takeWhile: Takes a predicate function p, and source, which should be an array or string. Returns a new array or
+     *            string containing the initial members of the given array/string for which the predicate returned true.
+     *            Throws a TypeError if p is not a function of arity 1, or if the source value is not an array/string.
      *
      */
 
-    var takeWhile = curry(function(p, arr) {
+    var takeWhile = curry(function(p, source) {
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
-      arr = checkArrayLike(arr);
+      source = checkArrayLike(source, {message: 'takeWhile: source is not an array/string'});
 
       var result = [];
-      var wasString = typeof(arr) === 'string';
-      var l = arr.length;
+      var wasString = typeof(source) === 'string';
+      var l = source.length;
       var done = false;
 
       for (var i = 0; !done && i < l; i++) {
-        if (p(arr[i]))
-          result.push(arr[i]);
+        if (p(source[i]))
+          result.push(source[i]);
         else
           done = true;
       }
@@ -535,26 +535,27 @@
 
 
     /*
-     * dropWhile: Takes a predicate function p, and an array or string. Returns a new array or string containing the members of the array/string
-     *            after the initial members for which the predicate returned true have been removed. Throws a TypeError if p is not a function
-     *            of arity 1, or if the given value is not an array or string.
+     * dropWhile: Takes a predicate function p, and source, an array or string. Returns a new array or string containing
+     *            the remaining members our source upon removing the initial elements for which the predicate function
+     *            returned true. Throws a TypeError if p is not a function of arity 1, or if the given value is not an
+     *            array or string.
      *
      */
 
-    var dropWhile = curry(function(p, arr) {
+    var dropWhile = curry(function(p, source) {
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
-      arr = checkArrayLike(arr);
+      source = checkArrayLike(source, {message: 'dropWhile: source is not an array/string'});
 
-      var l = arr.length;
+      var l = source.length;
       var done = false;
 
       var i = 0;
-      while (i < arr.length && p(arr[i]))
+      while (i < source.length && p(source[i]))
         i += 1;
 
-      return arr.slice(i);
+      return source.slice(i);
     });
 
 
@@ -599,8 +600,8 @@
      */
 
     var concat = curry(function(left, right) {
-      left = checkArrayLike(left);
-      right = checkArrayLike(right);
+      left = checkArrayLike(left, {message: 'concat: First value is not an array/string'});
+      right = checkArrayLike(right, {message: 'concat: Second value is not an array/string'});
 
       if (typeof(left) !== typeof(right)) {
         if (Array.isArray(left))
@@ -626,14 +627,15 @@
 
 
     /*
-     * intersperse: Takes a value, and an array or string, and returns a new array or string with the value in between each pair
-     *              of elements of the original. Throws if the second argument is not an array/string.
+     * intersperse: Takes a value, and an array or string, and returns a new array or string with the value in between
+     *              each pair of elements of the original. Throws a TypeError if the second argument is not an
+     *              array/string.
      *
      * Note: if the second parameter is a string, the first parameter will be coerced to a string.
      */
 
     var intersperse = curry(function(val, arr) {
-      arr = checkArrayLike(arr);
+      arr = checkArrayLike(arr, {message: 'intersperse: Cannot operate on non-arraylike value'});
 
       var wasString = false;
       if (typeof(arr) === 'string') {
@@ -690,59 +692,60 @@
 
 
     /*
-     * findWith: Takes a predicate function p of arity 1, and an array or string. Searches for the value—tested using the given
-     *           function—and returns the index of the first match, or -1 if the value is not present. Throws if the first
-     *           parameter is not a predicate function of arity 1, or the last parameter is not an array or string.
+     * findWith: Takes a predicate function p of arity 1, and haystack, an array or string. Searches for the
+     *           value—tested by the given function—and returns the index of the first match, or -1 if the value
+     *           is not present. Throws a TypeError if the first parameter is not a predicate function of arity 1,
+     *           or if the haystack parameter is not an array/string.
      *
      */
 
-    var findWith = curry(function(p, arr) {
-      arr = checkArrayLike(arr);
+    var findWith = curry(function(p, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'findWith: haystack must be an array/string'});
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
       var found = false;
-      for (var i = 0, l = arr.length; !found && i < l; i++)
-        found = p(arr[i]);
+      for (var i = 0, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
 
       return found ? i - 1 : -1;
     });
 
 
     /*
-     * findFromWith: Takes a predicate function p of arity 1, and an array or string. Searches for the value—tested using
-     *               the given function—from the given index, and returns the index of the first match, or -1 if the value
-     *               is not present. Throws if the first parameter is not a predicate function of arity 1, or the last
-     *               parameter is not an array or string.
+     * findFromWith: Takes a predicate function p of arity 1, and haystack, an array or string. Searches for the
+     *               value—tested by the given function—from the given index, and returns the index of the first match,
+     *               or -1 if the value is not present. Throws a TypeError if the first parameter is not a predicate
+     *               function of arity 1, or the haystack parameter is not an array or string.
      *
      */
 
-    var findFromWith = curry(function(p, index, arr) {
-      arr = checkArrayLike(arr);
+    var findFromWith = curry(function(p, index, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'findWithFrom: haystack must be an array/string'});
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
       var found = false;
-      for (var i = index, l = arr.length; !found && i < l; i++)
-        found = p(arr[i]);
+      for (var i = index, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
 
       return found ? i - 1 : -1;
     });
 
 
     /*
-     * occurrences: Takes a value, and an array or string. Searches for all occurrences of the value—tested using strict
-     *              equality—and returns an array containing all indices into the array/string where the value can be found.
-     *              Throws if the last parameter is not an array/string.
+     * occurrences: Takes a value—needle—and haystack, an array or string. Searches for all occurrences of the
+     *              value—tested for strict equality—and returns an array containing all the indices into haystack
+     *              where the values may be found. Throws a TypeError if the haystack parameter is not an array/string.
      *
      */
 
-    var occurrences = curry(function(val, arr) {
-      arr = checkArrayLike(arr);
+    var occurrences = curry(function(val, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'occurrences: haystack must be an array/string'});
 
       var result = [];
-      for (var i = 0, l = arr.length; i < l; i++)
-        if (arr[i] === val)
+      for (var i = 0, l = haystack.length; i < l; i++)
+        if (haystack[i] === val)
           result.push(i);
 
       return result;
@@ -750,21 +753,21 @@
 
 
     /*
-     * occurrencesWith: Takes a predicate function p, and an array or string. Searches for all occurrences of the value—tested
-     *                  using the given predicate—and returns an array containing all indices into the array/string where the
-     *                  value can be found. Throws if the first parameter is not a predicate function of arity 1, or if the last
-     *                  parameter is not an array/string.
+     * occurrencesWith: Takes a predicate function p, and haystack, an array or string. Searches for all occurrences of
+     *                  the value—tested by the given predicate—and returns an array containing all the indices into
+     *                  haystack where the predicate holds. Throws a TypeError if p is not a predicate function of
+     *                  arity 1, or if the haystack parameter is not an array/string.
      *
      */
 
-    var occurrencesWith = curry(function(p, arr) {
-      arr = checkArrayLike(arr);
+    var occurrencesWith = curry(function(p, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'occurrencesWith: haystack must be an array/string'});
       if (typeof(p) !== 'function' || getRealArity(p) !== 1)
         throw new TypeError('Value is not a predicate function');
 
       var result = [];
-      for (var i = 0, l = arr.length; i < l; i++)
-        if (p(arr[i]))
+      for (var i = 0, l = haystack.length; i < l; i++)
+        if (p(haystack[i]))
           result.push(i);
 
       return result;
@@ -775,14 +778,15 @@
      * zipWith: Takes a function of arity 2, and a two arrays/strings, a and b, and returns a new array. The new array
      *          has the same length as the smaller of the two arguments. Each element is the result of calling the
      *          supplied function with the elements at the corresponding position in the original arrays/strings.
-     *          Throws if the first argument is not an argument of arity at least 2, or if neither of the last two arguments
-     *          is an array.
+     *          Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the
+     *          last two arguments is an array/string.
      *
      */
 
     var zipWith = curry(function(f, a, b) {
-      a = checkArrayLike(a);
-      b = checkArrayLike(b);
+      a = checkArrayLike(a, {message: 'First source value is not an array/string'});
+      b = checkArrayLike(b, {message: 'Second source value is not an array/string'});
+
       if (typeof(f) !== 'function' || getRealArity(f) < 2)
         throw new TypeError('Value is not a function of arity 2');
 
@@ -799,7 +803,7 @@
     /*
      * zip: Takes two arrays/strings, a and b, and returns a new array. The new array has the same length as the
      *      smaller of the two arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i]
-     *      for each position i in the result. Throws if neither argument is an array or string.
+     *      for each position i in the result. Throws a TypeError if neither argument is an array or string.
      *
      */
 
@@ -813,11 +817,10 @@
      *
      */
 
-    var unzip = curry(function(arr) {
-      if (!Array.isArray(arr))
-        throw new TypeError('Value is not an array');
+    var unzip = curry(function(source) {
+      source = checkArrayLike(source, {noStrings: true, message: 'Source value is not an array'});
 
-      return Pair(map(fst, arr), map(snd, arr));
+      return Pair(map(fst, source), map(snd, source));
     });
 
 
@@ -915,11 +918,10 @@
      */
 
     var insert = curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'insert: Recipient is not an array/string'});
       index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index > arr.length)
         throw new TypeError('Index out of bounds');
-
-      arr = checkArrayLike(arr);
 
       if (Array.isArray(arr))
         return arr.slice(0, index).concat([val]).concat(arr.slice(index));
@@ -937,11 +939,11 @@
      */
 
     var remove = curry(function(index, arr) {
+      arr = checkArrayLike(arr, {message: 'remove: Value to be modified is not an array/string'});
       index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index >= arr.length)
         throw new TypeError('Index out of bounds');
 
-      arr = checkArrayLike(arr);
 
       return arr.slice(0, index).concat(arr.slice(index + 1));
     });
@@ -957,11 +959,11 @@
      */
 
     var replace = curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'replace: Value to be modified is not an array/string'});
       index = checkPositiveIntegral(index, 'Index out of bounds');
       if (index >= arr.length)
         throw new TypeError('Index out of bounds');
 
-      arr = checkArrayLike(arr);
       arr = arr.slice();
 
       if (Array.isArray(arr)) {
@@ -989,7 +991,7 @@
       if (getRealArity(f) !== 1)
         throw new TypeError('Function has incorrect arity');
 
-      arr = checkArrayLike(arr);
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
 
       var found = false;
       var i = 0;
@@ -1046,7 +1048,7 @@
      */
 
     var replaceOne = curry(function(val, replacement, arr) {
-      arr = checkArrayLike(arr);
+      arr = checkArrayLike(arr, {message: 'replaceOne: Value to be modified is not an array/string'});
       if (Array.isArray(arr))
         replacement = [replacement];
       else
@@ -1077,17 +1079,17 @@
      */
 
     var replaceOneWith = curry(function(p, replacement, arr) {
+      arr = checkArrayLike(arr, {message: 'replaceOneWith: Value to be modified is not an array/string'});
+      if (Array.isArray(arr))
+        replacement = [replacement];
+      else
+        replacement = replacement.toString();
+
       if (typeof(p) !== 'function')
         throw new TypeError('Value is not a function');
 
       if (getRealArity(p) !== 1)
         throw new TypeError('Function has incorrect arity');
-
-      arr = checkArrayLike(arr);
-      if (Array.isArray(arr))
-        replacement = [replacement];
-      else
-        replacement = replacement.toString();
 
       var found = false;
       var i = 0;
@@ -1114,6 +1116,7 @@
      */
 
     var replaceAllWith = curry(function(p, replacement, arr) {
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
       if (typeof(p) !== 'function')
         throw new TypeError('Value is not a function');
 
@@ -1167,9 +1170,7 @@
      */
 
     var join = curry(function(sep, arr) {
-      arr = checkArrayLike(arr);
-      if (typeof(arr) === 'string')
-        throw new TypeError('Value is not an array');
+      arr = checkArrayLike(arr, {noStrings: true, message: 'join: Value to be joined is not an array'});
 
       return arr.join(sep);
     });
@@ -1190,9 +1191,7 @@
 
 
     var flatten = curry(function(arr) {
-      arr = checkArrayLike(arr);
-      if (typeof(arr) === 'string')
-        throw new TypeError('Value is not an array');
+      arr = checkArrayLike(arr, {noStrings: true, message: 'Value to be flattened is not an array'});
 
       return foldl(flattenFn, [], arr);
     });
