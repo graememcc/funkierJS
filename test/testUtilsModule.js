@@ -16,7 +16,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
-                             'checkPositiveIntegral'];
+                             'checkIntegral', 'checkPositiveIntegral'];
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
@@ -154,70 +154,114 @@
     });
 
 
-    var cpiSpec = {
-      name: 'checkPositiveIntegral',
-      arity: 1
+    // The following arrays are for generating tests that exercise checkIntegral/checkPositiveIntegral
+
+    var notNumericTests = [
+      {name: 'string', value: 'a'},
+      {name: 'function', value: function() {}},
+      {name: 'object', value: {}},
+      {name: 'array', value: [1, 2]},
+      {name: 'undefined', value: undefined}
+    ];
+
+
+    var nonIntegralTests = [
+      {name: 'NaN', value: NaN, result: false},
+      {name: 'negative infinity', value: Number.NEGATIVE_INFINITY, result: false},
+      {name: 'positive infinity', value: Number.POSITIVE_INFINITY, result: false},
+      {name: 'negative float', value: -1.1, result: false},
+      {name: 'float', value: 2.2, result: false},
+      {name: 'string containing float', value: '0.1', result: false},
+      {name: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}, result: false},
+    ];
+
+
+    var positiveIntegralTests = [
+      {name: 'integer', value: 2, result: true},
+      {name: 'null', value: null, result: true}, // null coerces to 0
+      {name: 'true', value: true, result: true}, // booleans should coerce to numbers
+      {name: 'false', value: false, result: true},
+      {name: 'string containing positive integer', value: '1', result: true},
+      {name: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}, result: true},
+    ];
+
+
+    var negativeIntegralTests = [
+      {name: 'negative integer', value: -5, result: false},
+      {name: 'string containing negative integer', value: '-1', result: true},
+      {name: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}, result: true},
+    ];
+
+
+    // All the tests for the numeric tests will have the same shape, and use the same data
+    var addNumericTests = function(fnUnderTest, positiveOnly) {
+      var addOne = function(name, value, ok) {
+        it('Behaves correctly for ' + name, function() {
+          var result = null;
+          var fn = function() {
+            result = fnUnderTest(value);
+          };
+
+          if (!ok) {
+            expect(fn).to.throw(TypeError);
+          } else {
+            expect(fn).to.not.throw(TypeError);
+            expect(result).to.equal(value - 0);
+          }
+        });
+
+
+        if (ok)
+          return;
+
+
+        it('Returns correct exception for ' + name, function() {
+          var message = 'This was an error';
+          var fn = function() {
+            fnUnderTest(value, message);
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      notNumericTests.forEach(function(t) {
+        addOne(t.name, t.value, false);
+      });
+
+
+      nonIntegralTests.forEach(function(t) {
+        addOne(t.name, t.value, false);
+      });
+
+
+      positiveIntegralTests.forEach(function(t) {
+        addOne(t.name, t.value, true);
+      });
+
+
+      negativeIntegralTests.forEach(function(t) {
+        addOne(t.name, t.value, !positiveOnly);
+      });
     };
 
 
-    describeFunction(cpiSpec, utils.checkPositiveIntegral, function(checkPositiveIntegral) {
-      var definitelyNotTests = [
-        {name: 'string', value: 'a'},
-        {name: 'function', value: function() {}},
-        {name: 'object', value: {}},
-        {name: 'array', value: [1, 2]},
-        {name: 'undefined', value: undefined}
-      ];
+    // We deliberately use describe rather than our own describeFunction here
+    // due to the optional parameter
+    describe('checkIntegral', function() {
+      var checkIntegral = utils.checkIntegral;
 
 
-      definitelyNotTests.forEach(function(t) {
-        var name = t.name;
-
-        it('Behaves correctly for ' + name, function() {
-          var fn = function() {
-            checkPositiveIntegral(t.value);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-      });
+      addNumericTests(checkIntegral, false);
+    });
 
 
-      var numericTests = [
-        {name: 'NaN', value: NaN, result: false},
-        {name: 'negative infinity', value: Number.NEGATIVE_INFINITY, result: false},
-        {name: 'positive infinity', value: Number.POSITIVE_INFINITY, result: false},
-        {name: 'negative float', value: -1.1, result: false},
-        {name: 'float', value: 2.2, result: false},
-        {name: 'null', value: null, result: true}, // null coerces to 0
-        {name: 'true', value: true, result: true}, // booleans should coerce to numbers
-        {name: 'false', value: false, result: true},
-        {name: 'string containing float', value: '0.1', result: false},
-        {name: 'string containing integer', value: '1', result: true},
-        {name: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}, result: false},
-        {name: 'object evaluating to integer', value: {valueOf: function() {return 2;}}, result: true},
-        {name: 'negative integer', value: -5, result: false},
-        {name: 'integer', value: 2, result: true}
-      ];
+    describe('checkPositiveIntegral', function() {
+      var checkPositiveIntegral = utils.checkPositiveIntegral;
 
 
-      numericTests.forEach(function(t) {
-        var name = t.name;
-
-        it('Behaves correctly for ' + name, function() {
-          var b;
-          var fn = function() {
-            b = checkPositiveIntegral(t.value);
-          };
-
-          if (t.result) {
-            expect(fn).to.not.throw(TypeError);
-            expect(b === t.value - 0).to.be.true;
-          } else {
-            expect(fn).to.throw(TypeError);
-          }
-        });
-      });
+      addNumericTests(checkPositiveIntegral, true);
     });
   };
 

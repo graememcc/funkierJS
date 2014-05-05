@@ -38,19 +38,38 @@
     };
 
 
-    /* checkPositiveIntegral: takes a number and throw if it is not integral, otherwise
-     *                        return it.
+    /* checkIntegral: Takes a value and an optional error message. Throws a TypeError, with the given error
+     *                if specified, when the value cannot be coerced to an integer, and returns the coerced
+     *                integer in all other cases.
      *
      */
 
-    var checkPositiveIntegral = function(n) {
+    var checkIntegral = function(n, message) {
+      message = message || 'Value is not an integer';
       n = n - 0;
 
-      if (isNaN(n) || !isFinite(n) || n < 0)
-        throw new TypeError('Value is not a positive integer');
+      if (isNaN(n) || !isFinite(n))
+        throw new TypeError(message);
 
       if (n !== Math.floor(n) || n !== Math.ceil(n))
-        throw new TypeError('Value is not a positive integer');
+        throw new TypeError(message);
+
+      return n;
+    };
+
+
+    /* checkPositiveIntegral: Takes a value and an optional error message. Throws a TypeError, with the given error
+     *                        if specified, when the value cannot be coerced to a positive integer, and returns the
+     *                        coerced integer in all other cases.
+     *
+     */
+
+    var checkPositiveIntegral = function(n, message) {
+      message = message || 'Value is not a positive integer';
+      n = checkIntegral(n, message);
+
+      if (n < 0)
+        throw new TypeError(message);
 
       return n;
     };
@@ -112,6 +131,7 @@
 
     var exported = {
       checkArrayLike: checkArrayLike,
+      checkIntegral: checkIntegral,
       checkPositiveIntegral: checkPositiveIntegral,
       isArrayLike: isArrayLike,
       isObjectLike: isObjectLike,
