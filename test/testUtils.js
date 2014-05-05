@@ -418,7 +418,6 @@
     // the 'curry' function. The same checks apply when testing other library functions that we expect
     // to be curried. We generate these tests automatically.
     var testCurriedFunction = function(message, curried, originalArgs, original) {
-
       // Many of the functions being tested will themselves return functions. This means we generally
       // won't be able to test equality of return values. If originalArgs is an array, then we assume
       // that the function under test does indeed return a primitive value. Otherwise, we assume it is
@@ -451,15 +450,13 @@
         // have already tested the function with all arguments supplied
         if (curried !== original) {
           var length = curriedArgs.length;
-          if (length === 1) {
-            it(message + ' final curried function returns correct value',
-                callWithRemaining(curried, curriedArgs, expected, thenArgs));
-            return;
-          }
 
-          // Can call with all remaining values and get final value?
-          it(message + ' called with all remaining arguments returns correct value',
-              callWithRemaining(curried, curriedArgs, expected, thenArgs));
+          var postMessage = length === 1 ? ' final curried function returns correct value' :
+                                           ' called with all remaining arguments returns correct value';
+          it(message + postMessage, callWithRemaining(curried, curriedArgs, expected, thenArgs));
+
+          if (length === 1)
+            return;
         }
 
         // Perform these tests again with various numbers of arguments applied
