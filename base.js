@@ -3,7 +3,6 @@
 
 
   var makeModule = function(require, exports) {
-
     // Property that will be installed on all curried functions reflecting 'real' arity.
     // When we attach this property to the curried functions, we will use Object.defineProperty.
     // This is a minor hack to prevent the property showing up when the functions are logged

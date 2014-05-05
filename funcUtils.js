@@ -1,10 +1,6 @@
 (function() {
   "use strict";
 
-  var base = require('./base');
-  var getRealArity = base.getRealArity;
-
-
   /*
    * A collection of internal utilities. Not exported to consumers.
    *
@@ -16,6 +12,8 @@
 
 
   var makeModule = function(require, exports) {
+    var base = require('./base');
+    var getRealArity = base.getRealArity;
 
 
     /*

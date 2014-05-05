@@ -9,8 +9,6 @@
 
 
   var makeModule = function(require, exports) {
-
-
     /*
      * valueStringifier: Returns a string representation of the given value.
      *

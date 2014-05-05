@@ -3,7 +3,6 @@
 
 
   var makeModule = function(require, exports) {
-
     var base = require('./base');
     var curry = base.curry;
     var curryWithArity = base.curryWithArity;

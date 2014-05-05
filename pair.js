@@ -3,10 +3,10 @@
 
 
   var makeModule = function(require, exports) {
-
     var base = require('./base');
-    var utils = require('./utils');
     var curry = base.curry;
+
+    var utils = require('./utils');
     var valueStringifier = utils.valueStringifier;
 
 
