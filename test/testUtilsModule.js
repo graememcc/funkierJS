@@ -69,13 +69,12 @@
     ];
 
 
-    var ialSpec = {
-      name: 'isArrayLike',
-      arity: 1
-    };
+    // We deliberately use describe rather than our own describeFunction here
+    // due to the optional parameter
+    describe('isArrayLike', function() {
+      var isArrayLike = utils.isArrayLike;
 
 
-    describeFunction(ialSpec, utils.isArrayLike, function(isArrayLike) {
       arrayLikeTests.forEach(function(t) {
         var name = t.name;
 
@@ -85,6 +84,16 @@
 
           expect(b).to.equal(expected);
         });
+      });
+
+
+      it('Behaves correctly with string when noStrings parameter explicitly false', function() {
+        expect(isArrayLike('a', false)).to.be.true;
+      });
+
+
+      it('Behaves correctly with string when noStrings parameter explicitly true', function() {
+        expect(isArrayLike('a', true)).to.be.false;
       });
     });
 

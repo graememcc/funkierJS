@@ -93,14 +93,17 @@
 
 
     /*
-     * isArrayLike: returns true if the given value is a string, array, or 'array-like', and
-     *              false otherwise.
+     * isArrayLike: returns true if the given value is a string, array, or 'array-like', and false otherwise.
+     *              Takes an optional 'noStrings' argument: strings will not be considered 'array-like' when
+     *              this is true.
      *
      */
 
-    var isArrayLike = function(v) {
+    var isArrayLike = function(v, noStrings) {
+      noStrings = noStrings || false;
+
       if (typeof(v) === 'string')
-        return true;
+        return !noStrings;
 
       if (typeof(v) !== 'object' || v === null)
         return false;
