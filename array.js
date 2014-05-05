@@ -1080,36 +1080,6 @@
 
 
     /*
-     * replaceOne: Takes a value, a replacement value, and an array/string. Returns a new array/string where the first
-     *             occurrence of the given value—checked for strict equality—is replaced with the given replacement.
-     *             Throws a TypeError if the last parameter is not an array/string.
-     *
-     */
-
-    var replaceOne = curry(function(val, replacement, arr) {
-      arr = checkArrayLike(arr, {message: 'replaceOne: Value to be modified is not an array/string'});
-      if (Array.isArray(arr))
-        replacement = [replacement];
-      else
-        replacement = replacement.toString();
-
-      var found = false;
-      var i = 0;
-      while (!found && i < arr.length) {
-        if (arr[i] === val)
-          found = true;
-        else
-          i++;
-      }
-
-      if (!found)
-        return arr.slice();
-
-      return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
-    });
-
-
-    /*
      * replaceOneWith: Takes a predicate function of arity 1, a replacement value, and an array/string. Returns a
      *                 new array/string where the first value for which the given predicate returned true has been
      *                 replaced with the given replacement. Throws if the first argument is not a function, if the
@@ -1119,7 +1089,7 @@
 
     var replaceOneWith = curry(function(p, replacement, arr) {
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
-      arr = checkArrayLike(arr, {message: 'replaceOneWith: Value to be modified is not an array/string'});
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
       if (Array.isArray(arr))
         replacement = [replacement];
       else
@@ -1138,6 +1108,18 @@
         return arr.slice();
 
       return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    });
+
+
+    /*
+     * replaceOne: Takes a value, a replacement value, and an array/string. Returns a new array/string where the first
+     *             occurrence of the given value—checked for strict equality—is replaced with the given replacement.
+     *             Throws a TypeError if the last parameter is not an array/string.
+     *
+     */
+
+    var replaceOne = curry(function(val, replacement, arr) {
+      return replaceOneWith(base.strictEquals(val), replacement, arr);
     });
 
 
