@@ -28,6 +28,17 @@
 
 
     /*
+     * toLocaleString: A wrapper around Object.prototype.toString. Takes a value, and calls toLocaleString on the
+     *                 given value.
+     *
+     */
+
+    var toLocaleString = function(val) {
+      return val.toLocaleString();
+    };
+
+
+    /*
      * toCharCode: A curried wrapper around String.charCodeAt. Takes an index,
      *             and a string, and returns the Unicode value of the character.
      *
@@ -414,6 +425,7 @@
       test: test,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,
+      toLocaleString: toLocaleString,
       toLocaleUpperCase: toLocaleUpperCase,
       toLowerCase: toLowerCase,
       toUpperCase: toUpperCase,

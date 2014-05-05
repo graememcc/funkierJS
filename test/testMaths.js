@@ -23,8 +23,7 @@
                              'rightShift', 'rightShiftZero', 'bitwiseAnd',
                              'bitwiseOr', 'bitwiseXor', 'bitwiseNot', 'min', 'max',
                              'toFixed', 'toExponential', 'toPrecision',
-                             'toBaseAndString', 'stringToInt', 'numToLocaleString',
-                             'even', 'odd'];
+                             'toBaseAndString', 'stringToInt', 'even', 'odd'];
     describeModule('maths', maths, expectedObjects, expectedFunctions);
 
 
@@ -270,24 +269,6 @@
       name: 'numToLocaleString',
       arity: 1
     };
-
-
-    describeFunction(numToLocaleStringSpec, maths.numToLocaleString, function(numToLocaleString) {
-      it('Returns a string', function() {
-        var n = 1;
-        var result = numToLocaleString(n);
-
-        expect(result).to.be.a('string');
-      });
-
-
-      it('Returns a string', function() {
-        var n = 1000;
-        var result = numToLocaleString(n);
-
-        expect(result).to.equal(n.toLocaleString());
-      });
-    });
 
 
     var addEvenOddTests = function(desc, fnUnderTest, isEven) {

@@ -5,9 +5,10 @@
   var makeModule = function(require, exports) {
 
     var base = require('./base');
-    var object = require('./object');
     var curry = base.curry;
     var flip = base.flip;
+
+    var object = require('./object');
     var callProp = object.callProp;
     var callPropWithArity = object.callPropWithArity;
 
@@ -278,15 +279,6 @@
 
 
     /*
-     * numToLocaleString: a wrapper around Number.prototype.toLocaleString. Takes a number, and returns
-     *                    a string representation of the number, formatted according to locale conventions.
-     *
-     */
-
-    var numToLocaleString = callProp('toLocaleString');
-
-
-    /*
      * even: Returns true if the given value is divisible by 2, and false otherwise.
      *
      */
@@ -325,7 +317,6 @@
       min: min,
       max: max,
       multiply: multiply,
-      numToLocaleString: numToLocaleString,
       odd: odd,
       rem: rem,
       rightShift: rightShift,

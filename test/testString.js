@@ -23,7 +23,7 @@
                              'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
                              'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
                              'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
-                             'matchesFrom', 'firstMatch', 'firstMatchFrom'];
+                             'matchesFrom', 'firstMatch', 'firstMatchFrom', 'toLocaleString'];
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
@@ -60,6 +60,44 @@
         var a = {toString: function() {return 'foo';}};
 
         expect(toString(a)).to.equal(a.toString());
+      });
+    });
+
+
+    var toLocaleStringSpec = {
+      name: 'toLocaleString',
+      arity: 1
+    };
+
+
+    describeFunction(toLocaleStringSpec, string.toLocaleString, function(toLocaleString) {
+      var testData = [
+        {name: 'number', value: 1000},
+        {name: 'string', value: 'a'},
+        {name: 'boolean', value: true},
+        {name: 'function', value: function() {}},
+        {name: 'object', value: {}},
+        {name: 'array', value: [1]},
+        {name: 'date', value: new Date(2000, 0, 0)}
+      ];
+
+
+      var makeToLocaleStringTest = function(val) {
+        return function() {
+          expect(toLocaleString(val)).to.equal(val.toLocaleString());
+        };
+      };
+
+
+      testData.forEach(function(tData) {
+        it('Works correctly for ' + tData.name, makeToLocaleStringTest(tData.value));
+      });
+
+
+      it('Works correctly for object with custom toLocaleString', function() {
+        var a = {toLocaleString: function() {return 'foo';}};
+
+        expect(toLocaleString(a)).to.equal(a.toLocaleString());
       });
     });
 

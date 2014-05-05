@@ -192,16 +192,6 @@
 
     /*
      *
-     * toLocaleTimeString: A wrapper around Date.prototype.toLocaleTimeString. Takes a date object, and returns
-     *                     a string representing the time portion of the object, formatted according to locale conventions.
-     *
-     */
-
-    var toLocaleTimeString = callProp('toLocaleTimeString');
-
-
-    /*
-     *
      * toDateString: A wrapper around Date.prototype.toDateString. Takes a date object, and returns
      *              and returns a string representing the date portion of the object.
      *
@@ -911,7 +901,6 @@
       toEpochMilliseconds: toEpochMilliseconds,
       toISOString: toISOString,
       toLocaleDateString: toLocaleDateString,
-      toLocaleTimeString: toLocaleTimeString,
       toTimeString: toTimeString,
       toUTCString: toUTCString
     };

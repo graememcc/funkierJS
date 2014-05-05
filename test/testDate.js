@@ -23,16 +23,15 @@
                              'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
                              'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
                              'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
-                             'toLocaleTimeString', 'toDateString', 'toTimeString',
-                             'toISOString', 'toUTCString', 'setDayOfMonth', 'setFullYear', 'setHours',
-                             'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds', 'setTimeSinceEpoch',
-                             'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
-                             'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours', 'safeSetMilliseconds',
-                             'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds', 'safeSetUTCHours',
-                             'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
-                             'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString', 'makeDateFromString',
-                             'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
-                             'makeSecondDate', 'makeMillisecondDate'];
+                             'toDateString', 'toTimeString', 'toISOString', 'toUTCString', 'setDayOfMonth',
+                             'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds',
+                             'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
+                             'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours',
+                             'safeSetMilliseconds', 'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds',
+                             'safeSetUTCHours', 'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth',
+                             'safeSetUTCSeconds', 'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString',
+                             'makeDateFromString', 'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate',
+                             'makeHourDate', 'makeMinuteDate', 'makeSecondDate', 'makeMillisecondDate'];
 
     describeModule('date', date, expectedObjects, expectedFunctions);
 
@@ -84,7 +83,6 @@
     makeUnaryDateTest('getUTCMonth', date.getUTCMonth, 'getUTCMonth');
     makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, 'getUTCSeconds');
     makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, 'toLocaleDateString');
-    makeUnaryDateTest('toLocaleTimeString', date.toLocaleTimeString, 'toLocaleTimeString');
     makeUnaryDateTest('toDateString', date.toDateString, 'toDateString');
     makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
     makeUnaryDateTest('toISOString', date.toISOString, 'toISOString');
