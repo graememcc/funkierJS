@@ -132,7 +132,7 @@
       });
 
 
-      it('curryWithArity returns a function of length 1 when a function of length 0 is curried to a length > 0', function() {
+      it('Returns a function of length 1 when a function of length 0 is curried to a length > 0', function() {
         var f = function() {};
         var curried = curryWithArity(1, f);
 
@@ -140,7 +140,7 @@
       });
 
 
-      it('curryWithArity returns a function of length 0 when a function of length > 0 is curried to length 0', function() {
+      it('Returns a function of length 0 when a function of length > 0 is curried to length 0', function() {
         var f = function(a, b, c) {};
         var curried = curryWithArity(0, f);
 
@@ -268,7 +268,7 @@
       var compose = base.compose;
 
 
-      it('composition throws if the first function has arity 0', function() {
+      it('Throws if the first function has arity 0', function() {
         var f = function() {return 3;};
         var g = function(x) {return x + 1;};
 
@@ -280,7 +280,7 @@
       });
 
 
-      it('compose composes two functions correctly (1)', function() {
+      it('Composes two functions correctly (1)', function() {
         var f = function(x) {return x + 2;};
         var g = function(x) {return x + 1;};
         var composition = compose(f, g);
@@ -289,7 +289,7 @@
       });
 
 
-      it('compose composes two functions correctly (2)', function() {
+      it('Composes two functions correctly (2)', function() {
         var f = function(x) {return x + 3;};
         var g = function(x) {return x + 2;};
         var composition = compose(f, g);
@@ -298,7 +298,7 @@
       });
 
 
-      it('compose calls the second function first', function() {
+      it('Calls the second function first', function() {
         var f = function(x) {return x * 2;};
         var g = function(x) {return x + 1;};
         var composition = compose(f, g);
@@ -326,7 +326,7 @@
       });
 
 
-      it('composition works if the second function has arity 0 (1)', function() {
+      it('Works if the second function has arity 0 (1)', function() {
         var f = function(x) {return x + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
@@ -335,7 +335,7 @@
       });
 
 
-      it('composition works if the second function has arity 0 (2)', function() {
+      it('Works if the second function has arity 0 (2)', function() {
         var f = function(x, y) {return x + y + 1;};
         var g = function() {return 3;};
         var composition = compose(f, g);
@@ -345,7 +345,7 @@
       });
 
 
-      it('composition curries first function if it has arity > 1', function() {
+      it('Curries first function if it has arity > 1', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var composition = compose(f, g);
@@ -355,7 +355,7 @@
       });
 
 
-      it('composition partially applies first function correctly if it has arity > 1 (1)', function() {
+      it('Partially applies first function correctly if it has arity > 1 (1)', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
@@ -365,7 +365,7 @@
       });
 
 
-      it('composition partially applies first function correctly if it has arity > 1 (2)', function() {
+      it('Partially applies first function correctly if it has arity > 1 (2)', function() {
         var f = curry(function(a, b) {return a + b;});
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
@@ -375,7 +375,7 @@
       });
 
 
-      it('composition applies first function when all arguments supplied and first function has arity > 1 (1)', function() {
+      it('Applies first function when all arguments supplied and first function has arity > 1 (1)', function() {
         var f = function(a, b) {return a + b;};
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
@@ -385,7 +385,7 @@
       });
 
 
-      it('composition applies first function when all arguments supplied and first function has arity > 1 (2)', function() {
+      it('Applies first function when all arguments supplied and first function has arity > 1 (2)', function() {
         var f = curry(function(a, b) {return a + b;});
         var g = function(x) {return x + 1;};
         var expected = f(g(1), 1);
@@ -395,7 +395,7 @@
       });
 
 
-      it('composition curries second function if it has arity > 1', function() {
+      it('Curries second function if it has arity > 1', function() {
         var id = function(x) {return x;};
         var g = function(x, y) {return x + 1;};
         var composition = compose(id, g);
@@ -405,7 +405,7 @@
       });
 
 
-      it('composition partially applies second function correctly if it has arity > 1', function() {
+      it('Partially applies second function correctly if it has arity > 1', function() {
         var id = function(x) {return x;};
         var g = function(x, y) {return x + 1;};
         var composition = compose(id, g);
@@ -451,7 +451,7 @@
     describe('id', function() {
       var id = base.id;
 
-      it('id has arity 1', function() {
+      it('Has correct arity', function() {
         expect(id.length).to.equal(1);
       });
 
@@ -471,11 +471,11 @@
         var name = test.name;
         var value = test.value;
 
-        it('id works correctly for value of type ' + name, function() {
+        it('Works correctly for value of type ' + name, function() {
           expect(id(value)).to.equal(value);
         });
 
-        it('id ignores superfluous arguments for value of type ' + name, function() {
+        it('Ignores superfluous arguments for value of type ' + name, function() {
           expect(id(value, 'x')).to.equal(value);
         });
       });
@@ -486,7 +486,7 @@
       var constant = base.constant;
 
 
-      it('constant has arity 1', function() {
+      it('Has correct arity', function() {
         expect(constant.length).to.equal(1);
       });
 
@@ -502,7 +502,7 @@
         {name: 'function', value: function(a, b) {}}
       ];
 
-      it('constant returns a function of arity 1', function() {
+      it('Returns a function of arity 1', function() {
         tests.forEach(function(test) {
           expect(constant(test.value).length).to.equal(1);
         });
@@ -513,18 +513,18 @@
         var name = test.name;
         var value = test.value;
 
-        it('constant works correctly for value of type ' + name, function() {
+        it('Works correctly for value of type ' + name, function() {
           tests.forEach(function(test) {
             expect(constant(value, test.value)).to.equal(value);
           });
         });
 
-        it('constant ignores superfluous arguments for value of type ' + name, function() {
+        it('Ignores superfluous arguments for value of type ' + name, function() {
           var fn = constant(value);
           expect(fn(value, 'x')).to.equal(value);
         });
 
-        it('constant returns value immediately when called with two arguments, with first of type ' + name, function() {
+        it('Returns value immediately when called with two arguments, with first of type ' + name, function() {
           expect(constant(value, 'x')).to.equal(value);
         });
 
@@ -540,7 +540,7 @@
       var constant0 = base.constant0;
 
 
-      it('constant0 has arity 1', function() {
+      it('Has correct arity', function() {
         expect(constant0.length).to.equal(1);
       });
 
@@ -556,7 +556,7 @@
         {name: 'function', value: function(a, b) {}}
       ];
 
-      it('constant0 returns a function of arity 0', function() {
+      it('Returns a function of arity 0', function() {
         tests.forEach(function(test) {
           expect(constant0(test.value).length).to.equal(0);
         });
@@ -567,7 +567,7 @@
         var name = test.name;
         var value = test.value;
 
-        it('constant0 works correctly for value of type ' + name, function() {
+        it('Works correctly for value of type ' + name, function() {
           var fn = constant0(value);
 
           tests.forEach(function(test) {
@@ -575,7 +575,7 @@
           });
         });
 
-        it('constant0 ignores superfluous arguments for value of type ' + name, function() {
+        it('Ignores superfluous arguments for value of type ' + name, function() {
           var fn = constant0(value);
           expect(fn('x')).to.equal(value);
         });
@@ -587,7 +587,7 @@
       var composeMany = base.composeMany;
 
 
-      it('composeMany throws if called with empty array', function() {
+      it('Throws if called with empty array', function() {
           var fn = function() {
             var composition = composeMany([]);
           };
@@ -611,11 +611,11 @@
 
 
       for (var i = 0; i < 3; i++)
-        it('composeMany throws if function other than last has zero arity ' + (i + 1),
+        it('Throws if function other than last has zero arity ' + (i + 1),
            makeZeroArityTest(i));
 
 
-      it('composeMany returns curried original function if supplied one function of arity 0', function() {
+      it('Returns curried original function if supplied one function of arity 0', function() {
         var f = function() {return [].slice.call(arguments);};
         var g = composeMany([f]);
 
@@ -625,7 +625,7 @@
       });
 
 
-      it('composeMany returns original function if supplied curried function of arity 0', function() {
+      it('Returns original function if supplied curried function of arity 0', function() {
         var f = curry(function() {return [].slice.call(arguments);});
         var g = composeMany([f]);
 
@@ -633,7 +633,7 @@
       });
 
 
-      it('composeMany returns curried original function if supplied one function of arity 1', function() {
+      it('Returns curried original function if supplied one function of arity 1', function() {
         var f = function(x) {return [].slice.call(arguments);};
         var g = composeMany([f]);
 
@@ -643,7 +643,7 @@
       });
 
 
-      it('composeMany returns original function if supplied curried function of arity 1', function() {
+      it('Returns original function if supplied curried function of arity 1', function() {
         var f = curry(function(x) {return [].slice.call(arguments);});
         var g = composeMany([f]);
 
@@ -651,7 +651,7 @@
       });
 
 
-      it('composeMany returns curried original function if supplied one function of arity > 1', function() {
+      it('Returns curried original function if supplied one function of arity > 1', function() {
         var f = function(x, y) {return x + y;};
         var g = composeMany([f]);
 
@@ -662,7 +662,7 @@
       });
 
 
-      it('composeMany acts like compose when called with two functions (1)', function() {
+      it('Acts like compose when called with two functions (1)', function() {
         var compose = base.compose;
         var f = function(x) {return x + 1;};
         var g = function(x) {return x * 2;};
@@ -674,7 +674,7 @@
       });
 
 
-      it('composeMany acts like compose when called with two functions (2)', function() {
+      it('Acts like compose when called with two functions (2)', function() {
         var compose = base.compose;
         var f = function(x, y) {return x + y + 1;};
         var g = function(x) {return x * 2;};
@@ -688,7 +688,7 @@
       });
 
 
-      it('composeMany works correctly (1)', function() {
+      it('Works correctly (1)', function() {
         var composed = composeMany([id, id, id]);
 
         expect(composed.length).to.equal(1);
@@ -696,7 +696,7 @@
       });
 
 
-      it('composeMany works correctly (2)', function() {
+      it('Works correctly (2)', function() {
         var args = [
           function(x) {return x + 3},
           function(x) {return x + 2},
@@ -709,7 +709,7 @@
       });
 
 
-      it('composeMany composes in right direction (1)', function() {
+      it('Composes in right direction (1)', function() {
         var args = [
           function(x) {return x + 'three';},
           function(x) {return x + 'two';},
@@ -721,7 +721,7 @@
       });
 
 
-      it('composeMany composes in right direction (2)', function() {
+      it('Composes in right direction (2)', function() {
         var args = [
           function(x) {return x.concat([3]);},
           function(x) {return x.concat([2]);},
@@ -733,7 +733,7 @@
       });
 
 
-      it('composeMany returns function with correct arity (1)', function() {
+      it('Returns function with correct arity (1)', function() {
         var args = [
           function(x) {return x + 1;},
           id,
@@ -745,7 +745,7 @@
       });
 
 
-      it('composeMany returns function with correct arity (2)', function() {
+      it('Returns function with correct arity (2)', function() {
         var args = [
           function(x, y, z) {return x + 1;},
           id,
@@ -791,7 +791,7 @@
       var flip = base.flip;
 
 
-      it('flip has arity 1', function() {
+      it('Has correct arity', function() {
         expect(flip.length).to.equal(1);
       });
 
@@ -870,7 +870,7 @@
       });
 
 
-      it('flip works correctly (1)', function() {
+      it('Works correctly (1)', function() {
         var f = function(x, y) {return [].slice.call(arguments);};
         var flipped = flip(f);
 
@@ -879,7 +879,7 @@
       });
 
 
-      it('flip works correctly (2)', function() {
+      it('Works correctly (2)', function() {
         var f = curry(function(x, y) {return [].slice.call(arguments);});
         var flipped = flip(f);
 
@@ -1088,20 +1088,20 @@
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
 
-        it('equals is correct for value of type ' + type + ' when testing value with itself',
+        it('Correct for value of type ' + type + ' when testing value with itself',
            makeEqualityTest(equals, true, val, val));
 
         var coercible = test.coercible;
         coercible.forEach(function(cVal) {
           var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('equals is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
              makeEqualityTest(equals, true, val, cVal));
         });
 
         var notEqual = test.notEqual;
         notEqual.forEach(function(nVal) {
           var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('equals is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
              makeEqualityTest(equals, false, val, nVal));
         });
 
@@ -1119,20 +1119,20 @@
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
 
-        it('strictEquals is correct for value of type ' + type + ' when testing value with itself',
+        it('Correct for value of type ' + type + ' when testing value with itself',
            makeEqualityTest(strictEquals, true, val, val));
 
         var coercible = test.coercible;
         coercible.forEach(function(cVal) {
           var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('strictEquals is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
              makeEqualityTest(strictEquals, false, val, cVal));
         });
 
         var notEqual = test.notEqual;
         notEqual.forEach(function(nVal) {
           var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('strictEquals is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
              makeEqualityTest(strictEquals, false, val, nVal));
         });
 
@@ -1150,20 +1150,20 @@
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
 
-        it('notEqual is correct for value of type ' + type + ' when testing value with itself',
+        it('Correct for value of type ' + type + ' when testing value with itself',
            makeEqualityTest(notEqual, false, val, val));
 
         var coercible = test.coercible;
         coercible.forEach(function(cVal) {
           var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('notEqual is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
              makeEqualityTest(notEqual, false, val, cVal));
         });
 
         var notEquals = test.notEqual;
         notEquals.forEach(function(nVal) {
           var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('notEqual is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
              makeEqualityTest(notEqual, true, val, nVal));
         });
 
@@ -1181,20 +1181,20 @@
         var val = test.value;
         var type = val !== null ? typeof(val) : 'null';
 
-        it('strictNotEqual is correct for value of type ' + type + ' when testing value with itself',
+        it('Correct for value of type ' + type + ' when testing value with itself',
            makeEqualityTest(strictNotEqual, false, val, val));
 
         var coercible = test.coercible;
         coercible.forEach(function(cVal) {
           var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('strictNotEqual is correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
              makeEqualityTest(strictNotEqual, true, val, cVal));
         });
 
         var notEqual = test.notEqual;
         notEqual.forEach(function(nVal) {
           var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('strictNotEqual is correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
              makeEqualityTest(strictNotEqual, true, val, nVal));
         });
 
@@ -1402,21 +1402,21 @@
       var curryWithArity = base.curryWithArity;
 
 
-      it('getRealArity works correctly for an uncurried function (1)', function() {
+      it('Works correctly for an uncurried function (1)', function() {
         var fn = function() {};
 
         expect(getRealArity(fn)).to.equal(fn.length);
       });
 
 
-      it('getRealArity works correctly for an uncurried function (2)', function() {
+      it('Works correctly for an uncurried function (2)', function() {
         var fn = function(x, y) {};
 
         expect(getRealArity(fn)).to.equal(fn.length);
       });
 
 
-      it('getRealArity works correctly for a curried function (1)', function() {
+      it('Works correctly for a curried function (1)', function() {
         var fn = function(x, y) {};
         var curried = curry(fn);
 
@@ -1424,7 +1424,7 @@
       });
 
 
-      it('getRealArity works correctly for a curried function (2)', function() {
+      it('Works correctly for a curried function (2)', function() {
         var fn = function(x, y) {};
         var curryTo = 0;
         var curried = curryWithArity(curryTo, fn);
@@ -1433,7 +1433,7 @@
       });
 
 
-      it('getRealArity reports arguments outstanding for partially applied function (1)', function() {
+      it('Reports arguments outstanding for partially applied function (1)', function() {
         var fn = function(x, y, z) {};
         var curried = curry(fn);
 
@@ -1441,7 +1441,7 @@
       });
 
 
-      it('getRealArity reports arguments outstanding for partially applied function (2)', function() {
+      it('Reports arguments outstanding for partially applied function (2)', function() {
         var fn = function(x, y, z) {};
         var curried = curry(fn);
 
@@ -1449,7 +1449,7 @@
       });
 
 
-      it('getRealArity reports arguments outstanding for partially applied function (3)', function() {
+      it('Reports arguments outstanding for partially applied function (3)', function() {
         var fn = function(x, y, z) {};
         var curried = curry(fn);
 
@@ -1464,7 +1464,7 @@
       var getRealArity = base.getRealArity;
 
 
-      it('permuteLeft has arity 1', function() {
+      it('Has correct arity', function() {
         expect(getRealArity(permuteLeft)).to.equal(1);
       });
 
@@ -1641,7 +1641,7 @@
       var getRealArity = base.getRealArity;
 
 
-      it('permuteRight has arity 1', function() {
+      it('Has correct arity', function() {
         expect(getRealArity(permuteRight)).to.equal(1);
       });
 
