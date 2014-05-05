@@ -662,6 +662,14 @@
       });
 
 
+      it('Returns original function if supplied one curried function of real arity > 1', function() {
+        var f = curry(function(x, y) {return x + y;});
+        var g = composeMany([f]);
+
+        expect(g).to.equal(f);
+      });
+
+
       it('Acts like compose when called with two functions (1)', function() {
         var compose = base.compose;
         var f = function(x) {return x + 1;};
