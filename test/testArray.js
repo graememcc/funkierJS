@@ -1573,54 +1573,25 @@
 
 
     describeFunction(rangeStepSpec, array.rangeStep, function(rangeStep) {
-      it('Throws if b < a, and step positive', function() {
-        var fn = function() {
-          rangeStep(1, 1, 0);
-        };
+      var addBadRangeTest = function(message, a, step, b) {
+        it('Throws if ' + message, function() {
+          var fn = function() {
+            rangeStep(a, step, b);
+          };
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if b > a, and step negative', function() {
-        var fn = function() {
-          rangeStep(1, -1, 10);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
+          expect(fn).to.throw(TypeError);
+        });
+      };
 
 
-      it('Throws if b < a, and step zero', function() {
-        var fn = function() {
-          rangeStep(1, 0, 0);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if b > a, and step zero', function() {
-        var fn = function() {
-          rangeStep(1, 0, 10);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Returns empty array if b === a (1)', function() {
-        var result = rangeStep(1, 1, 1);
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Returns empty array if b === a (2)', function() {
-        var result = rangeStep(1, -1, 1);
-
-        expect(result).to.deep.equal([]);
-      });
+      addBadRangeTest('b < a, and step posaddBadRangeTestive', 1, 1, 0);
+      addBadRangeTest('b < a, and step zero', 1, 0, 0);
+      addBadRangeTest('b < a, and step not finaddBadRangeTeste (1)', 1, Number.POSITIVE_INFINITY, 0);
+      addBadRangeTest('b < a, and step not finaddBadRangeTeste (2)', 1, Number.NEGATIVE_INFINITY, 0);
+      addBadRangeTest('b > a, and step posaddBadRangeTestive', 1, -1, 10);
+      addBadRangeTest('b > a, and step zero', 1, 0, 10);
+      addBadRangeTest('b > a, and step not finaddBadRangeTeste (1)', 1, Number.POSITIVE_INFINITY, 10);
+      addBadRangeTest('b > a, and step not finaddBadRangeTeste (2)', 1, Number.NEGATIVE_INFINITY, 10);
 
 
       it('Works correctly (1)', function() {
@@ -1639,7 +1610,7 @@
       it('Works correctly (2)', function() {
         var a = 15.2;
         var step = -1.1;
-        var b = 1.1
+        var b = 1.1;
         var arr = rangeStep(a, step, b);
         var result = arr.every(function(val, i) {
           return (i === 0 && val === a) || (val === arr[i - 1] + step);
@@ -1662,10 +1633,20 @@
       it('Does not include right-hand limit (2)', function() {
         var a = 15.2;
         var step = -1.1;
-        var b = 1.1
+        var b = 1.1;
         var arr = rangeStep(a, step, b);
 
         expect(array.last(arr) > b).to.be.true;
+      });
+
+
+      it('Empty if a === b', function() {
+        var a = 1;
+        var step = 1;
+        var b = 1;
+        var arr = rangeStep(a, step, b);
+
+        expect(arr).to.deep.equal([]);
       });
 
 

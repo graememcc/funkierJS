@@ -351,14 +351,18 @@
 
 
     /*
-     * rangeStep: Takes three numbers, a, step and b. Returns an array containing the arithmetic sequence of elements from a up to but not
-     *            including b, the difference between each element being step. Throws a TypeError if the sequence will not terminate.
+     * rangeStep: Takes three numbers, a, step and b. Returns an array containing the arithmetic sequence of elements
+     *            from a up to but not including b, the difference between each element being step. Throws a TypeError
+     *            if the sequence will not terminate.
      *
      */
 
     var rangeStep = curry(function(a, step, b) {
       if ((step > 0 && b < a) || (step < 0 && b > a) || (step === 0 && b !== a))
         throw new TypeError('Incorrect bounds for range');
+
+      if (!isFinite(step))
+        throw new TypeError('step must be finite');
 
       var result = [];
       for (var i = a; a < b ? i < b : i > b; i += step)
