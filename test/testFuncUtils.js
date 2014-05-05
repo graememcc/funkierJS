@@ -11,11 +11,10 @@
 
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
-    var describeFunction = testUtils.describeFunction;
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['isFunction'];
+    var expectedFunctions = ['checkFunction'];
     describeModule('funcUtils', funcUtils, expectedObjects, expectedFunctions);
 
 
@@ -39,24 +38,112 @@
 
 
     // We cannot use describeFunction from testUtils due to the optional parameter
-    describe('isFunction', function() {
-      var isFunction = funcUtils.isFunction;
+    describe('checkFunction', function() {
+      var checkFunction = funcUtils.checkFunction;
 
 
       nonFunctions.forEach(function(test) {
-        it('Works correctly for value of type ' + test.name, function() {
-          var b = isFunction(test.value);
+        it('Throws for value of type ' + test.name, function() {
+          var fn = function() {
+            checkFunction(test.value);
+          };
 
-          expect(b).to.be.false;
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws with correct message value of type ' + test.name, function() {
+          var message = 'That ain\'t no stinking function!';
+          var fn = function() {
+            checkFunction(test.value, {message: message});
+          };
+
+          expect(fn).to.throw(message);
         });
       });
 
 
       funcs.forEach(function(f) {
         it('Works correctly for function of arity ' + f.length, function() {
-          var b = isFunction(f);
+          var g = checkFunction(f);
 
-          expect(b).to.be.true;
+          expect(g).to.equal(f);
+        });
+      });
+
+
+      var addBadArityTest = function(arity, f) {
+        it('Throws for function of arity ' + f.length + ' when arity is ' + arity, function() {
+          var fn = function() {
+            checkFunction(f, {arity: arity});
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws with correct message for disallowed arity ' + f.length, function() {
+          var message = 'That ain\'t the right stinking function!';
+          var fn = function() {
+            checkFunction(f, {arity: arity, message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      var addBadMinArityTest = function(arity, f) {
+        it('Throws for function of arity ' + f.length + ' when minimum arity is ' + arity, function() {
+          var fn = function() {
+            checkFunction(f, {arity: arity, minimum: true});
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws with correct message for disallowed arity ' + f.length + ' below minimum ' + arity, function() {
+          var message = 'That ain\'t the right stinking function!';
+          var fn = function() {
+            checkFunction(f, {arity: arity, message: message, minimum: true});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      var addGoodArityTest = function(arity, f, isMin) {
+        isMin = isMin || false;
+
+
+        it('Doesn\'t throw for function of arity ' + f.length + ' when ' + (isMin ? 'minimum ' : '') + 'arity is ' + arity, function() {
+          var result = null;
+          var fn = function() {
+            var options = isMin ? {arity: arity, minimum: true} : {arity: arity};
+            result = checkFunction(f, options);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+          expect(result).to.equal(f);
+        });
+      };
+
+
+      funcs.forEach(function(_, arity) {
+        funcs.forEach(function(f) {
+          if (f.length === arity)
+            addGoodArityTest(arity, f);
+          else
+            addBadArityTest(arity, f);
+
+          if (arity > 0) {
+            if (f.length >= arity)
+              addGoodArityTest(arity, f, true);
+            else
+              addBadMinArityTest(arity, f);
+          }
         });
       });
     });
