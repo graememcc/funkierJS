@@ -57,12 +57,12 @@
 
 
     /*
-     * pre: takes two functions g, and f, and returns a new function
-     *      with the same arity as f. When this new function is called, it will first
-     *      call g with a single argument: an array containing all the arguments the
-     *      function was called with. When g finishes executing, f will be called with
-     *      those arguments, and a null execution context. f's return value will be
-     *      returned. Throws if either argument is not a function.
+     * pre: takes two functions g, and f, and returns a new function with the same arity as the original function
+     *      f. When this new function is called, it will first call g, with the same execution context, and a
+     *      single argument: an array containing all the arguments the function was called with. When g returns,
+     *      its return value will be discarded, and f will be called with the same execution context and invoked
+     *      with the same arguments as the new function. The return value from f will be returned. Throws a TypeError
+     *      if neither of the given values are functions.
      *
      * For example, you might log function calls as follows:
      * var logger = function(args) {console.log('plus called with ', args.join(', '));};
@@ -77,20 +77,19 @@
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
-        g(args);
-        return f.apply(null, args);
+        g.call(this, args);
+        return f.apply(this, args);
       });
     });
 
 
     /*
-     * post: takes two functions g, and f, and returns a new function
-     *       with the same arity as f. When this new function is called, it will first
-     *       call f with a null execution context and the given arguments, and then
-     *       call g with two arguments: the first argument will be an array containing
-     *       the arguments the function was called with, and the second argument will be
-     *       the value returned by f. f's return value will be returned. Throws if either
-     *       argument is not a function.
+     * post: takes two functions g, and f, and returns a new function with the same arity as the original function
+     *       f. When this new function is called, it will first call f, with the same execution context and arguments
+     *       that the new function is called with. Its return value will be saved. Next, g will be called, with the same
+     *       execution context, and two arguments: an array containing the arguments to f, and f's return value. Ant value
+     *       returned from g will be discarded, and f's return value will be returned. Throws a TypeError if either of the
+     *       given values are not functions.
      *
      * For example, you might log function calls as follows:
      * var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
@@ -105,23 +104,25 @@
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
-        var result = f.apply(null, args);
-        g(args, result);
+        var result = f.apply(this, args);
+        g.call(this, args, result);
         return result;
       });
     });
 
 
     /*
-     * wrap: takes 3 functions, before, after and f. Returns a new function with the same arity
-     *       as f. When called, the following will happen in sequence:
-     *       - before will be called with the given arguments
-     *       - f will be called with the given arguments, and a null execution context
-     *       - after will be called with 2 arguments: an array containing the given arguments, and
-     *           f's result
+     * wrap: takes 3 functions, before, after and f. Returns a new function with the same arity as f. When called, the
+     *       following will happen in sequence:
+     *       - before will be called with the execution context of the new function and one argument: an array containing
+     *           the arguments the new function was invoked with
+     *       - f will be called with the execution context that the new function was called with, and the same arguments
+     *       - after will be called with the original execution context and two arguments: an array containing the
+     *           arguments the new function was called with, and f's result
      *       - f's result will be returned
+     *       Throws a TypeError if any argument is not a function.
      *
-     * This function is equivalent to calling post and pre on some function.
+     * This function is equivalent to calling post and pre on some function. 
      *
      */
     var wrap = curry(function(before, after, f) {

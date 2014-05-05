@@ -131,7 +131,7 @@
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
-        var result = f.apply(null, arguments);
+        var result = f.apply(this, arguments);
 
         if (sentinels.indexOf(result) !== -1)
           return Nothing;
@@ -157,7 +157,7 @@
 
       return curryWithArity(getRealArity(f), function() {
         var args = [].slice.call(arguments);
-        var result = f.apply(null, arguments);
+        var result = f.apply(this, arguments);
 
         if (!p(result))
           return Nothing;
@@ -182,7 +182,7 @@
         var args = [].slice.call(arguments);
 
         try {
-          var result = f.apply(null, arguments);
+          var result = f.apply(this, arguments);
           return Just(result);
         } catch (e) {
           return Nothing;

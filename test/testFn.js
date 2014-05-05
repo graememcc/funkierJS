@@ -249,15 +249,29 @@
       });
 
 
-      it('Calls the original function with null execution context', function() {
+      it('Calls the original function with preserved execution context', function() {
         var f = function(x, y) {f.exc = this;};
         f.exc = undefined;
         var g = function() {};
         var newFn = pre(g, f);
         var args = ['a', 'b'];
-        newFn.apply({}, args);
+        var obj = {};
+        newFn.apply(obj, args);
 
-        expect(f.exc === null).to.be.true;
+        expect(f.exc).to.equal(obj);
+      });
+
+
+      it('Calls the pre function with preserved execution context', function() {
+        var g = function() {g.exc = this;};
+        g.exc = undefined;
+        var f = function() {};
+        var newFn = pre(g, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(g.exc).to.equal(obj);
       });
 
 
@@ -385,15 +399,29 @@
       });
 
 
-      it('Calls the original function with null execution context', function() {
+      it('Calls the original function with preserved execution context', function() {
         var f = function(x, y) {f.exc = this;};
         f.exc = undefined;
         var g = function() {};
         var newFn = post(g, f);
         var args = ['a', 'b'];
-        newFn.apply({}, args);
+        var obj = {};
+        newFn.apply(obj, args);
 
-        expect(f.exc === null).to.be.true;
+        expect(f.exc).to.equal(obj);
+      });
+
+
+      it('Calls the pre function with preserved execution context', function() {
+        var g = function() {g.exc = this;};
+        g.exc = undefined;
+        var f = function() {};
+        var newFn = post(g, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(g.exc).to.equal(obj);
       });
 
 
@@ -581,16 +609,45 @@
       });
 
 
-      it('Calls the original function with null execution context', function() {
+      it('Calls the original function with preserved execution context', function() {
         var f = function(x, y) {f.exc = this;};
         f.exc = undefined;
         var pre = function() {};
         var post = function() {};
         var newFn = wrap(pre, post, f);
         var args = ['a', 'b'];
-        newFn.apply({}, args);
+        var obj = {};
+        newFn.apply(obj, args);
 
-        expect(f.exc === null).to.be.true;
+        expect(f.exc).to.equal(obj);
+      });
+
+
+      it('Calls the pre function with preserved execution context', function() {
+        var pre = function() {pre.exc = this;};
+        pre.exc = undefined;
+        var post = function() {};
+        var f = function() {};
+        var newFn = wrap(pre, post, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(pre.exc).to.equal(obj);
+      });
+
+
+      it('Calls the post function with preserved execution context', function() {
+        var post = function() {post.exc = this;};
+        post.exc = undefined;
+        var pre = function() {};
+        var f = function() {};
+        var newFn = wrap(pre, post, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(post.exc).to.equal(obj);
       });
 
 

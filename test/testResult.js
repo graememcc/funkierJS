@@ -393,6 +393,17 @@
         expect(f.called).to.be.true;
         expect(f.args).to.deep.equal(['a']);
       });
+
+
+      it('Returned function preserves execution context', function() {
+        var f = function() {f.exc = this;};
+        f.exc = undefined;
+        var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
+        var obj = {};
+        newFn.apply(obj);
+
+        expect(f.exc).to.equal(obj);
+      });
     };
 
 
