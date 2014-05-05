@@ -24,7 +24,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'repeat', 'map', 'each', 'filter',
+    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'replicate', 'map', 'each', 'filter',
                              'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
                              'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
                              'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
@@ -518,17 +518,17 @@
     makeElementSelectorTest('last', array.last, false);
 
 
-    var repeatSpec = {
-      name: 'repeatSpec',
+    var replicateSpec = {
+      name: 'replicate',
       arity: 2
     };
 
 
-    describeFunction(repeatSpec, array.repeat, function(repeat) {
+    describeFunction(replicateSpec, array.replicate, function(replicate) {
       it('Returns array (1)', function() {
         var howMany = 10;
         var obj = 'a';
-        var result = repeat(howMany, obj);
+        var result = replicate(howMany, obj);
 
         expect(Array.isArray(result)).to.be.true;
       });
@@ -537,7 +537,7 @@
       it('Returns array (2)', function() {
         var howMany = 1;
         var obj = 2;
-        var result = repeat(howMany, obj);
+        var result = replicate(howMany, obj);
 
         expect(Array.isArray(result)).to.be.true;
       });
@@ -546,7 +546,7 @@
       it('Returned array has correct length (1)', function() {
         var howMany = 10;
         var obj = 'a';
-        var result = repeat(howMany, obj);
+        var result = replicate(howMany, obj);
 
         expect(result.length).to.equal(howMany);
       });
@@ -555,7 +555,7 @@
       it('Returned array has correct length (2)', function() {
         var howMany = 1;
         var obj = 2;
-        var result = repeat(howMany, obj);
+        var result = replicate(howMany, obj);
 
         expect(result.length).to.equal(howMany);
       });
@@ -564,7 +564,7 @@
       it('Returned array\'s elements strictly equal parameter (1)', function() {
         var howMany = 10;
         var obj = 'a';
-        var result = repeat(howMany, obj).every(function(e) {
+        var result = replicate(howMany, obj).every(function(e) {
           return e === obj;
         });
 
@@ -575,7 +575,7 @@
       it('Returned array\'s elements strictly equal parameter (2)', function() {
         var howMany = 10;
         var obj = {};
-        var result = repeat(howMany, obj).every(function(e) {
+        var result = replicate(howMany, obj).every(function(e) {
           return e === obj;
         });
 
@@ -584,15 +584,15 @@
 
 
       it('Works when count is zero', function() {
-        var result = repeat(0, 'a');
+        var result = replicate(0, 'a');
 
         expect(result).to.deep.equal([]);
       });
 
 
-      addBadNumberTests('length', repeat, [], ['a']);
-      addBadNumberTests('length', repeat, [], [1]);
-      testCurriedFunction('repeat', repeat, [1, 1]);
+      addBadNumberTests('length', replicate, [], ['a']);
+      addBadNumberTests('length', replicate, [], [1]);
+      testCurriedFunction('replicate', replicate, [1, 1]);
     });
 
 
@@ -4854,7 +4854,7 @@
       name: 'flattenMap',
       arity: 2,
       restrictions: [['function'], ['array', 'string']],
-      validArguments: [[array.repeat(2)], [[1, 2, 3], 'abc']]
+      validArguments: [[array.replicate(2)], [[1, 2, 3], 'abc']]
     };
 
 
@@ -4872,8 +4872,8 @@
 
 
       addTest('(1)', array.range(1), [2, 3, 4, 5]);
-      addTest('(2)', array.repeat(2), 'abc');
-      addTest('for singleton', array.repeat(1), [1]);
+      addTest('(2)', array.replicate(2), 'abc');
+      addTest('for singleton', array.replicate(1), [1]);
 
 
       it('Throws if the function does not return an array/string', function() {

@@ -74,12 +74,12 @@
 
 
     /*
-     * repeat: Takes a length and a value, and returns an array of the given length, where
-     *         each element is the given value. Throws if the given length is negative.
+     * replicate: Takes a length and a value, and returns an array of the given length, where
+     *            each element is the given value. Throws if the given length is negative.
      *
      */
 
-    var repeat = curry(function(l, value) {
+    var replicate = curry(function(l, value) {
       l = checkPositiveIntegral(l);
 
       var result = [];
@@ -1244,12 +1244,12 @@
       removeAllWith: removeAllWith,
       removeOne: removeOne,
       removeOneWith: removeOneWith,
-      repeat: repeat,
       replace: replace,
       replaceAll: replaceAll,
       replaceAllWith: replaceAllWith,
       replaceOne: replaceOne,
       replaceOneWith: replaceOneWith,
+      replicate: replicate,
       reverse: reverse,
       slice: slice,
       some: some,
