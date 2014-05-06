@@ -17,6 +17,7 @@
     var testCurriedFunction = testUtils.testCurriedFunction;
     var getRealArity = base.getRealArity;
     var alwaysTrue = base.constant(true);
+    var alwaysFalse = base.constant(false);
     var Pair = pair.Pair;
     var isPair = pair.isPair;
     var fst = pair.fst;
@@ -597,6 +598,10 @@
 
 
     describeFunction(eachSpec, array.each, function(each) {
+      addFuncCalledWithSpecificArityTests(each, 1);
+      addCalledWithEveryMemberTests(each);
+
+
       it('Returns undefined when called with an array', function() {
         var result = each(base.id, ['a', 1, true]);
 
@@ -609,10 +614,6 @@
 
         expect(result === undefined).to.be.true;
       });
-
-
-      addFuncCalledWithSpecificArityTests(each, 1);
-      addCalledWithEveryMemberTests(each);
 
 
       testCurriedFunction('each', each, [base.id, [1, 2]]);
@@ -628,40 +629,6 @@
 
 
     describeFunction(filterSpec, array.filter, function(filter) {
-      it('Returned array has correct length when called with an array (1)', function() {
-        var arr = [2, null];
-        var result = filter(alwaysTrue, arr);
-
-        expect(result.length).to.equal(arr.length);
-      });
-
-
-      it('Returned array has correct length when called with an array (2)', function() {
-        var arr = [1, 2, 3, 4];
-        var f = function(x) {return x % 2 === 0;};
-        var result = filter(f, arr);
-
-        expect(result.length).to.equal(2);
-      });
-
-
-      it('Returned string has correct length when called with a string (1)', function() {
-        var s = 'abc';
-        var result = filter(alwaysTrue, s);
-
-        expect(result.length).to.equal(s.length);
-      });
-
-
-      it('Returned array has correct length when called with an array (2)', function() {
-        var s = 'banana';
-        var f = function(c) {return c  === 'a';};
-        var result = filter(f, s);
-
-        expect(result.length).to.equal(3);
-      });
-
-
       addReturnsSameTypeTests(filter, [alwaysTrue]);
       addAcceptsOnlyFixedArityTests(filter, 1);
       addFuncCalledWithSpecificArityTests(filter, 1);
@@ -670,66 +637,82 @@
       addReturnsEmptyOnEmptyTests(filter, [alwaysTrue]);
 
 
-      it('Returned array correct when called with an array (1)', function() {
-        var arr = [2, null];
-        var result = filter(alwaysTrue, arr);
+      var addTests = function(message, f, originalData, expectedResult) {
+        it('Returned value has correct length when ' + message + ' (1)', function() {
+          var data = originalData.slice();
+          var result = filter(alwaysTrue, data);
 
-        expect(result).to.deep.equal(arr);
-      });
-
-
-      it('Returned array correct when called with an array (2)', function() {
-        var arr = [1, 2, 3, 4];
-        var f = function(x) {return x % 2 !== 0;};
-        var result = filter(f, arr);
-
-        expect(result).to.deep.equal([1, 3]);
-      });
+          expect(result.length).to.equal(data.length);
+        });
 
 
-      it('Returned string correct when called with a string (1)', function() {
-        var s = 'abc';
-        var result = filter(alwaysTrue, s);
+        it('Returned value has correct length when ' + message + ' (2)', function() {
+          var data = originalData.slice();
+          var result = filter(alwaysFalse, data);
 
-        expect(result).to.equal(s);
-      });
-
-
-      it('Returned array has correct length when called with an array (2)', function() {
-        var s = 'banana';
-        var f = function(c) {return c  !== 'a';};
-        var result = filter(f, s);
-
-        expect(result).to.equal('bnn');
-      });
+          expect(result.length).to.equal(0);
+        });
 
 
-      it('Preserves order when called with an array', function() {
-        var a = [1, 2, 3, 4, 5, 6];
-        var f = function(x) {return x % 2 !== 0;};
-        var result = true;
-        var filtered = filter(f, a);
-        for (var i = 1, l = filtered.length; i < l; i++) {
-          if (a.indexOf(filtered[i - 1]) > a.indexOf(filtered[i]))
-            result = false;
-        }
+        it('Returned value has correct length when ' + message + ' (3)', function() {
+          var data = originalData.slice();
+          var result = filter(f, data);
 
-        expect(result).to.be.true;
-      });
+          expect(result.length).to.equal(expectedResult.length);
+        });
 
 
-      it('Preserves order when called with an string', function() {
-        var s = 'funkier';
-        var f = function(x) {return 'aeiou'.indexOf(x) === 1;};
-        var result = true;
-        var filtered = filter(f, s);
-        for (var i = 1, l = filtered.length; i < l; i++) {
-          if (s.indexOf(filtered[i - 1]) > s.indexOf(filtered[i]))
-            result = false;
-        }
+        it('Returned value correct when ' + message + ' (1)', function() {
+          var data = originalData.slice();
+          var result = filter(alwaysTrue, data);
 
-        expect(result).to.be.true;
-      });
+          expect(result).to.deep.equal(data);
+        });
+
+
+        it('Returned value correct when ' + message + ' (2)', function() {
+          var data = originalData.slice();
+          var result = filter(alwaysFalse, data);
+
+          expect(result).to.deep.equal(typeof(data) === 'string' ? '' : []);
+        });
+
+
+        it('Returned value correct when ' + message + ' (3)', function() {
+          var data = originalData.slice();
+          var result = filter(f, data);
+
+          expect(result).to.deep.equal(expectedResult);
+        });
+
+
+        it('Preserves order when ' + message, function() {
+          var data = originalData.slice();
+          var filtered = filter(f, data);
+          filtered = splitIfNecessary(filtered);
+
+          var searchFrom = 0;
+          var result = filtered.every(function(val, i) {
+            if (i === 0) {
+              searchFrom = data.indexOf(val) + 1;
+              return true; //vacuously true
+            }
+
+            // searchFrom is the position immediately after the location of the previous value.
+            // If ordering was preserved, there should be an occurrence of the current value
+            // at that position or somewhere after
+            searchFrom = data.indexOf(val, searchFrom) + 1;
+
+            return searchFrom !== 0;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('called with an array', function(x) {return x % 2 === 0;}, [1, 2, 3, 4], [2, 4]);
+      addTests('called with a string', function(c) {return c !== 'a';}, 'banana', 'bnn');
 
 
       it('Returned elements are precisely those from the original array', function() {
@@ -3301,7 +3284,7 @@
       addTests('string with multiple duplicates', oneVowel, 'bananae', 4);
 
 
-      testCurriedFunction('nubWith', nubWith, [alwaysFalse, 'funkier']);
+      testCurriedFunction('nubWith', nubWith, [function(x, y) {return false;}, 'funkier']);
     });
 
 
