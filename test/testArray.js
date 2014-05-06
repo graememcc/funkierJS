@@ -1260,6 +1260,28 @@
     makeSumProductTests('product', array.product, false);
 
 
+    // element and elementWith share common behaviours. The next two functions are used
+    // for generating these tests
+    var addElementNotFoundTest = function(fnUnderTest, message, value, originalData) {
+      it('Returns false when ' + message, function() {
+        var data = originalData.slice();
+        var result = fnUnderTest(value, data);
+
+        expect(result).to.be.false;
+      });
+    };
+
+
+    var addElementFoundTest = function(fnUnderTest, message, value, originalData) {
+      it('Returns true when ' + message, function() {
+        var data = originalData.slice();
+        var result = fnUnderTest(value, data);
+
+        expect(result).to.be.true;
+      });
+    };
+
+
     var elementSpec = {
       name: 'element',
       arity: 2,
@@ -1269,38 +1291,17 @@
 
 
     describeFunction(elementSpec, array.element, function(element) {
-      var addNotFoundTest = function(message, value, originalData) {
-        it('Returns false when ' + message, function() {
-          var data = originalData.slice();
-          var result = element(value, data);
+      addElementNotFoundTest(element, 'array empty', 2, []);
+      addElementNotFoundTest(element, 'string empty', 'a', '');
+      addElementNotFoundTest(element, 'element not present in array', 5, [1, 3, 4]);
+      addElementNotFoundTest(element, 'element not present in string', 'd', 'abc');
+      addElementNotFoundTest(element, 'identical element not in array', {foo: 1},
+                                      [{foo: 1}, {foo: 1}, {foo: 1}]);
 
-          expect(result).to.be.false;
-        });
-      };
-
-
-      addNotFoundTest('array empty', 2, []);
-      addNotFoundTest('string empty', 'a', '');
-      addNotFoundTest('element not present in array', 5, [1, 3, 4]);
-      addNotFoundTest('element not present in string', 'd', 'abc');
-      addNotFoundTest('identical element not in array', {foo: 1},
-                      [{foo: 1}, {foo: 1}, {foo: 1}]);
-
-
-      var addFoundTest = function(message, value, originalData) {
-        it('Returns true when ' + message, function() {
-          var data = originalData.slice();
-          var result = element(value, data);
-
-          expect(result).to.be.true;
-        });
-      };
-
-
-      addFoundTest('element present in array', 6, [1, 6, 4]);
-      addFoundTest('element present in string', 'b', 'abc');
+      addElementFoundTest(element, 'element present in array', 6, [1, 6, 4]);
+      addElementFoundTest(element, 'element present in string', 'b', 'abc');
       var obj = {foo: 1};
-      addFoundTest('identical element in array', obj, [{foo: 1}, {foo: 1}, obj]);
+      addElementFoundTest(element, 'identical element in array', obj, [{foo: 1}, {foo: 1}, obj]);
 
 
       testCurriedFunction('element', element, [2, [1, 2, 3]]);
@@ -1308,7 +1309,7 @@
 
 
     var elementWithSpec = {
-      name: 'element',
+      name: 'elementWith',
       arity: 2,
       restrictions: [['function'], ['array', 'string']],
       validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc']]
@@ -1319,52 +1320,17 @@
       addAcceptsOnlyFixedArityTests(elementWith, 1);
 
 
-      it('Returns correct result for empty arrays', function() {
-        var f = function(x) {return true;};
-        var result = elementWith(f, []);
+      addElementNotFoundTest(elementWith, 'array is empty', alwaysTrue, []);
+      addElementNotFoundTest(elementWith, 'string is empty', alwaysTrue, '');
+      addElementNotFoundTest(elementWith, 'array predicate returns false', function(x) {return x.foo === 5;},
+                                          [{foo: 1}, {foo: 4}, {foo: 3}]);
+      addElementNotFoundTest(elementWith, 'string predicate returns false', function(x) {return x >= '0' && x <= '9';},
+                                          'abcde');
 
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result for empty strings', function() {
-        var f = function(x) {return true;};
-        var result = elementWith(f, '');
-
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result when elementWith does not match elements in array', function() {
-        var f = function(x) {return 'foo' in x && x.foo === 5;};
-        var result = elementWith(f, [{foo: 1}, {foo: 3}, {foo: 4}]);
-
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result when elementWith does not match elements in string', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var result = elementWith(f, 'bcd');
-
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result when elementWith matches element in array', function() {
-        var f = function(x) {return 'foo' in x && x.foo === 7;};
-        var result = elementWith(f, [{foo: 1}, {foo: 7}, {foo: 4}]);
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Returns correct result when elementWith matches element in string', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var result = elementWith(f, 'bc7d');
-
-        expect(result).to.be.true;
-      });
+      addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7},
+                                       [{foo: 1}, {foo: 7}, {foo: 4}]);
+      addElementFoundTest(elementWith, 'predicate matches element in string', function(x) {return x >= '0' && x <= '9';},
+                                          'abc8de');
 
 
       testCurriedFunction('elementWith', elementWith, [function(x) {return true;}, [1, 2, 3]]);
