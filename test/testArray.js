@@ -1269,64 +1269,38 @@
 
 
     describeFunction(elementSpec, array.element, function(element) {
-      it('Returns correct result for empty arrays', function() {
-        var result = element(2, []);
+      var addNotFoundTest = function(message, value, originalData) {
+        it('Returns false when ' + message, function() {
+          var data = originalData.slice();
+          var result = element(value, data);
 
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result for empty strings', function() {
-        var result = element('a', '');
-
-        expect(result).to.be.false;
-      });
+          expect(result).to.be.false;
+        });
+      };
 
 
-      it('Returns correct result when element not present in array', function() {
-        var result = element(5, [1, 3, 4]);
-
-        expect(result).to.be.false;
-      });
-
-
-      it('Returns correct result when element not present in string', function() {
-        var result = element('e', 'bcd');
-
-        expect(result).to.be.false;
-      });
+      addNotFoundTest('array empty', 2, []);
+      addNotFoundTest('string empty', 'a', '');
+      addNotFoundTest('element not present in array', 5, [1, 3, 4]);
+      addNotFoundTest('element not present in string', 'd', 'abc');
+      addNotFoundTest('identical element not in array', {foo: 1},
+                      [{foo: 1}, {foo: 1}, {foo: 1}]);
 
 
-      it('Returns correct result when element present in array', function() {
-        var result = element(6, [1, 6, 4]);
+      var addFoundTest = function(message, value, originalData) {
+        it('Returns true when ' + message, function() {
+          var data = originalData.slice();
+          var result = element(value, data);
 
-        expect(result).to.be.true;
-      });
-
-
-      it('Returns correct result when element not present in string', function() {
-        var result = element('c', 'bcd');
-
-        expect(result).to.be.true;
-      });
+          expect(result).to.be.true;
+        });
+      };
 
 
-      it('Tests with identity for arrays (1)', function() {
-        var obj = {foo: 1};
-        var a = [{foo: 1}, {foo: 1}, {foo: 1}];
-        var result = element(obj, a);
-
-        expect(result).to.be.false;
-      });
-
-
-      it('Tests with identity for arrays (2)', function() {
-        var obj = {foo: 1};
-        var a = [{foo: 1}, {foo: 1}, {foo: 1}, obj];
-        var result = element(obj, a);
-
-        expect(result).to.be.true;
-      });
+      addFoundTest('element present in array', 6, [1, 6, 4]);
+      addFoundTest('element present in string', 'b', 'abc');
+      var obj = {foo: 1};
+      addFoundTest('identical element in array', obj, [{foo: 1}, {foo: 1}, obj]);
 
 
       testCurriedFunction('element', element, [2, [1, 2, 3]]);
