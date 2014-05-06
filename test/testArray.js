@@ -307,15 +307,15 @@
     // Several functions expect that the result should be distinct from the original
     // value, not harming the original value in any way
     var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore) {
-      var addOne = function(type, testData) {
+      var addOne = function(type, originalData) {
         it('Doesn\'t modify original ' + type + ' value', function() {
-          var original = testData.slice();
-          var copy = testData.slice();
-          var fnResult = fnUnderTest.apply(null, argsBefore.concat([original]));
-          var stillSameLength = original.length === copy.length;
-          original = splitIfNecessary(original);
+          var data = originalData.slice();
+          var copy = data.slice();
+          var fnResult = fnUnderTest.apply(null, argsBefore.concat([data]));
+          var stillSameLength = data.length === copy.length;
+          data = splitIfNecessary(data);
 
-          var result = original.every(function(v, i) {
+          var result = data.every(function(v, i) {
             return copy[i] === v;
           });
 
@@ -331,9 +331,10 @@
 
     // Several functions expect the return type to be the same as the final argument
     var addReturnsSameTypeTests = function(fnUnderTest, argsBefore) {
-      var addOne = function(type, testData) {
+      var addOne = function(type, originalData) {
         it('Returns ' + type + ' when called with ' + type, function() {
-          var result = fnUnderTest.apply(null, argsBefore.concat([testData]));
+          var data = originalData.slice();
+          var result = fnUnderTest.apply(null, argsBefore.concat([data]));
 
           if (type === 'array')
             expect(Array.isArray(result)).to.be.true;
@@ -945,7 +946,7 @@
 
 
       var curriedArgs = is1Func ? [function(x, y) {return 42;}, [1, 2]] :
-                                   [function(x, y) {return 42;}, 0, [1, 2]];
+                                  [function(x, y) {return 42;}, 0, [1, 2]];
 
       testCurriedFunction(desc, fnUnderTest, curriedArgs);
     };
@@ -1143,34 +1144,36 @@
       describe(spec, fnUnderTest, function(fnUnderTest) {
         var okVal = !trigger;
 
-        var addPrematureTests = function(type, num, val) {
+        var addPrematureTests = function(type, num, originalData) {
           it('Stops prematurely when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var calls = 0;
             var f = function(x) {
               calls += 1;
-              if (calls === val.length - 1)
+              if (calls === data.length - 1)
                 return trigger;
               return okVal;
             }
-            fnUnderTest(f, val);
+            fnUnderTest(f, data);
 
-            expect(calls).to.equal(val.length - 1);
+            expect(calls).to.equal(data.length - 1);
           });
 
 
           it('Called with correct values when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var vals = [];
             var calls = 0;
             var f = function(x) {
               vals.push(x);
               calls += 1;
-              if (calls === val.length - 1)
+              if (calls === data.length - 1)
                 return trigger;
               return okVal;
             }
-            fnUnderTest(f, val);
+            fnUnderTest(f, data);
             var result = vals.every(function(elem, i) {
-              return val[i] === elem;
+              return data[i] === elem;
             });
 
             expect(result).to.be.true;
@@ -1178,34 +1181,37 @@
 
 
           it('Returns correctly when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var calls = 0;
             var f = function(x) {
               calls += 1;
-              if (calls === val.length - 1)
+              if (calls === data.length - 1)
                 return trigger;
               return okVal;
             }
-            var result = fnUnderTest(f, val);
+            var result = fnUnderTest(f, data);
 
             expect(result).to.equal(trigger);
           });
         };
 
 
-        var addNormalTests = function(type, num, val) {
+        var addNormalTests = function(type, num, originalData) {
           it('Called with all values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var calls = 0;
             var f = function(x) {
               calls += 1;
               return okVal;
             }
-            fnUnderTest(f, val);
+            fnUnderTest(f, data);
 
-            expect(calls).to.equal(val.length);
+            expect(calls).to.equal(data.length);
           });
 
 
           it('Called with correct values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var vals = [];
             var calls = 0;
             var f = function(x) {
@@ -1213,9 +1219,9 @@
               calls += 1;
               return okVal;
             }
-            fnUnderTest(f, val);
+            fnUnderTest(f, data);
             var result = vals.every(function(elem, i) {
-              return val[i] === elem;
+              return data[i] === elem;
             });
 
             expect(result).to.be.true;
@@ -1223,21 +1229,22 @@
 
 
           it('Returns correctly when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+            var data = originalData.slice();
             var calls = 0;
             var f = function(x) {
               calls += 1;
               return okVal;
             }
-            var result = fnUnderTest(f, val);
+            var result = fnUnderTest(f, data);
 
             expect(result).to.equal(okVal);
           });
         };
 
 
-        var addShortCircuitTests = function(type, num, val) {
-          addPrematureTests(type, num, val);
-          addNormalTests(type, num, val);
+        var addShortCircuitTests = function(type, num, testData) {
+          addPrematureTests(type, num, testData);
+          addNormalTests(type, num, testData);
         };
 
 
@@ -1693,8 +1700,9 @@
 
 
       var addCorrectEntryTests = function(message, count, arrData, strData) {
-        var addTest = function(typeMessage, data) {
+        var addTest = function(typeMessage, originalData) {
           it('Works correctly when ' + message + typeMessage, function() {
+            var data = originalData.slice();
             var arr = take(count, data);
             arr = splitIfNecessary(arr);
 
@@ -1736,11 +1744,11 @@
       addReturnsEmptyOnEmptyTests(drop, [1]);
 
 
-      var addExpectFullTest = function(message, count, original) {
+      var addExpectFullTest = function(message, count, originalData) {
         var isArray = typeof(original) !== 'string';
 
         it('Returns copy of ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var result = drop(count, data);
 
           expect(result).to.deep.equal(data);
@@ -1759,8 +1767,9 @@
 
 
       var addCorrectEntryTests = function(message, count, arrData, strData) {
-        var addTest = function(typeMessage, data) {
+        var addTest = function(typeMessage, originalData) {
           it('Works correctly when ' + message + typeMessage, function() {
+            var data = originalData.slice();
             var arr = drop(count, data);
             arr = splitIfNecessary(arr);
 
@@ -1778,8 +1787,9 @@
 
 
       var addEmptyAfterDropTests = function(message, count, arrData, strData) {
-        var addTest = function(type, typeMessage, data) {
+        var addTest = function(type, typeMessage, originalData) {
           it('Returns empty ' + type + ' when ' + message + typeMessage, function() {
+            var data = originalData.slice();
             var result = drop(count, data);
 
             expect(result).to.deep.equal(type === 'array' ? [] : '');
@@ -1815,8 +1825,9 @@
 
 
         var addTests = function(type, tests) {
-          var addOne = function(data, count) {
+          var addOne = function(originalData, count) {
             it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
+              var data = originalData.slice();
               var result = fnUnderTest(data);
 
               expect(result.length).equal(data.length - 1);
@@ -1824,6 +1835,7 @@
 
 
             it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var data = originalData.slice();
               var arr = fnUnderTest(data);
               arr = splitIfNecessary(arr);
 
@@ -1858,8 +1870,9 @@
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var addTests = function(type, tests) {
-          var addOneSet = function(data, count) {
+          var addOneSet = function(originalData, count) {
             it('Returns array when called with ' + type + '(' + count + ')', function() {
+              var data = originalData.slice();
               var result = fnUnderTest(data);
 
               expect(Array.isArray(result)).to.be.true;
@@ -1867,6 +1880,7 @@
 
 
             it('Returns elements of type ' + type + ' when called with ' + type + '(' + count + ')', function() {
+              var data = originalData.slice();
               var result = fnUnderTest(data).every(function(val) {
                 if (type === 'array')
                   return Array.isArray(val);
@@ -1878,6 +1892,7 @@
 
 
             it('Returns ' + type + ' of correct length when called with ' + type + '(' + count + ')', function() {
+              var data = originalData.slice();
               var result = fnUnderTest(data);
 
               expect(result.length).equal(data.length + 1);
@@ -1885,6 +1900,7 @@
 
 
             it('Elements have correct length when called with ' + type + '(' + count + ')', function() {
+              var data = originalData.slice();
               var result = fnUnderTest(data).every(function(val, i) {
                 return val.length === (fnUnderTest === array.tails ? data.length - i : i);
               });
@@ -1894,6 +1910,7 @@
 
 
             it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var data = originalData.slice();
               var arr = fnUnderTest(data);
               var result = arr.every(function(val, i) {
                 val = splitIfNecessary(val);
@@ -1932,35 +1949,35 @@
 
 
     describeFunction(copySpec, array.copy, function(copy) {
-      var addTests = function(message, data) {
+      var addTests = function(message, originalData) {
         it('Returns a copy ' + message, function() {
-          var original = data.slice();
-          var result = copy(original) === original;
+          var data = originalData.slice();
+          var result = copy(data) === data;
 
           expect(result).to.be.false;
         });
 
 
         it('Has correct length ' + message, function() {
-          var original = data.slice();
-          var result = copy(original).length === original.length;
+          var data = originalData.slice();
+          var result = copy(data).length === data.length;
 
           expect(result).to.be.true;
         });
 
 
         it('Works correctly ' + message, function() {
-          var original = data.slice();
-          var result = copy(original);
+          var data = originalData.slice();
+          var result = copy(data);
 
-          expect(result).to.deep.equal(original);
+          expect(result).to.deep.equal(data);
         });
 
 
         it('Shallow copies members ' + message, function() {
-          var original = data.slice();
-          var result = copy(original).every(function(val, i) {
-            return val === original[i];
+          var data = originalData.slice();
+          var result = copy(data).every(function(val, i) {
+            return val === data[i];
           });
 
           expect(result).to.be.true;
@@ -2006,22 +2023,22 @@
 
 
       var addTests = function(message, from, to, arrData, strData) {
-        var addOne = function(type, data) {
+        var addOne = function(type, originalData) {
           it('Result has correct length when ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var result = slice(from, to, original).length === Math.min(original.length - from, to - from);
+            var data = originalData.slice();
+            var result = slice(from, to, data).length === Math.min(data.length - from, to - from);
 
             expect(result).to.be.true;
           });
 
 
           it('Result has correct values when ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var newVal = slice(from, to, original);
+            var data = originalData.slice();
+            var newVal = slice(from, to, data);
             newVal = splitIfNecessary(newVal);
 
             var result = newVal.every(function(val, i) {
-              return val === original[from + i];
+              return val === data[from + i];
             });
 
             expect(result).to.be.true;
@@ -2074,20 +2091,21 @@
         }
 
 
-        var addTests = function(type, message, predicate, expectedLength, data) {
+        var addTests = function(type, message, predicate, expectedLength, originalData) {
           it('Result has correct length ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var length = isTakeWhile ? expectedLength : original.length - expectedLength;
-            var result = fnUnderTest(predicate, original).length === length;
+            var data = originalData.slice();
+            var length = isTakeWhile ? expectedLength : data.length - expectedLength;
+            var result = fnUnderTest(predicate, data).length === length;
 
             expect(result).to.be.true;
           });
 
 
           it('Predicate only called as often as needed ' + message + ' for ' + type, function() {
+            var data = originalData.slice();
             var newPredicate = function(x) {newPredicate.called += 1; return predicate(x);};
             newPredicate.called = 0;
-            fnUnderTest(newPredicate, data.slice());
+            fnUnderTest(newPredicate, data);
             var result = newPredicate.called === expectedLength + (expectedLength === data.length ? 0 : 1);
 
             expect(result).to.be.true;
@@ -2095,12 +2113,12 @@
 
 
           it('Result has correct members ' + message + ' for ' + type, function() {
-            var original = data.slice();
-            var arr = fnUnderTest(predicate, original);
+            var data = originalData.slice();
+            var arr = fnUnderTest(predicate, originalData);
             arr = splitIfNecessary(arr);
 
             var result = arr.every(function(val, i) {
-              return val === original[isTakeWhile ? i : i + expectedLength];
+              return val === data[isTakeWhile ? i : i + expectedLength];
             });
 
             expect(result).to.be.true;
@@ -2141,30 +2159,30 @@
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var addTests = function(arrData, strData) {
-          var addOne = function(type, message, val, data) {
+          var addOne = function(type, message, val, originalData) {
             it('Result has correct length ' + message + ' for ' + type, function() {
-              var original = data.slice();
-              var result = fnUnderTest(val, original).length === original.length + 1;
+              var data = originalData.slice();
+              var result = fnUnderTest(val, data).length === data.length + 1;
 
               expect(result).to.be.true;
             });
 
 
             it('Result has correct values ' + message + ' for ' + type, function() {
-              var original = data.slice();
-              var newVal = fnUnderTest(val, original);
+              var data = originalData.slice();
+              var newVal = fnUnderTest(val, data);
               newVal = splitIfNecessary(newVal);
 
               var prependCheck = function(v, i) {
                 if (i === 0)
                   return v === val;
-                return v === original[i - 1];
+                return v === data[i - 1];
               };
 
               var appendCheck = function(v, i) {
-                if (i === original.length)
+                if (i === data.length)
                   return v === val;
-                return v === original[i];
+                return v === data[i];
               };
 
               var result = newVal.every(isPrepend ? prependCheck : appendCheck);
@@ -2317,8 +2335,9 @@
 
 
     describeFunction(intersperseSpec, array.intersperse, function(intersperse) {
-      var addDegenerateTest = function(message, val) {
+      var addDegenerateTest = function(message, originalData) {
         it('Works correctly ' + message, function() {
+          var val = originalData.slice();
           var result = intersperse(',', val);
 
           expect(result).to.deep.equal(val);
@@ -2332,21 +2351,23 @@
       addDegenerateTest('for single element string', 'a');
 
 
-      var addTests = function(message, val) {
+      var addTests = function(message, originalData) {
         it('Result has correct length ' + message, function() {
-          var result = intersperse(',', val);
+          var data = originalData.slice();
+          var result = intersperse(',', data);
 
-          expect(result.length).to.equal(val.length + (val.length - 1));
+          expect(result.length).to.equal(data.length + (data.length - 1));
         });
 
 
         it('Result has original values at correct positions ' + message, function() {
-          var interspersed = intersperse(',', val);
+          var data = originalData.slice();
+          var interspersed = intersperse(',', data);
           interspersed = splitIfNecessary(interspersed);
           var result = interspersed.every(function(v, i) {
             if (i % 2 === 1) return true;
 
-            return v === val[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -2354,8 +2375,9 @@
 
 
         it('Result has interspersed values at correct positions ' + message, function() {
+          var data = originalData.slice();
           var intersperseValue = ':';
-          var interspersed = intersperse(',', val);
+          var interspersed = intersperse(',', data);
           interspersed = splitIfNecessary(interspersed);
           var result = interspersed.every(function(v, i) {
             if (i % 2 === 0) return true;
@@ -2386,23 +2408,23 @@
       addReturnsSameTypeTests(reverse, []);
 
 
-      var addTests = function(message, data) {
+      var addTests = function(message, originalData) {
         it('Returns value with same length as original ' + message, function() {
-          var original = data.slice();
-          var expected = original.length;
-          var result = reverse(original);
+          var data = originalData.slice();
+          var expected = data.length;
+          var result = reverse(data);
 
           expect(result.length).to.equal(expected);
         });
 
 
         it('Returns correct result ' + message, function() {
-          var original = data.slice();
-          var originalLength = original.length - 1;
-          var reversed = reverse(original);
+          var data = originalData.slice();
+          var originalLength = data.length - 1;
+          var reversed = reverse(data);
           reversed = splitIfNecessary(reversed);
           var result = reversed.every(function(v, i) {
-            return v === original[originalLength - i];
+            return v === data[originalLength - i];
           });
 
           expect(result).to.be.true;
@@ -2419,11 +2441,12 @@
 
     var addFindTest = function(message, fnUnderTest, args, expected) {
       var val = args[0];
-      var data = args[args.length - 1];
+      var originalData = args[args.length - 1];
 
       it(message, function() {
-        var original = data.slice();
-        var result = fnUnderTest.apply(null, args);
+        var data = originalData.slice();
+        var argData = args.slice();
+        var result = fnUnderTest.apply(null, argData);
 
         expect(result).to.equal(expected);
         if (result !== -1)
@@ -2871,8 +2894,9 @@
       });
 
 
-      var addTest = function(message, val, data) {
+      var addTest = function(message, val, originalData) {
         it('Returns an array ' + message, function() {
+          var data = originalData.slice();
           var result = occurrences(val, data);
 
           expect(Array.isArray(result)).to.be.true;
@@ -2880,6 +2904,7 @@
 
 
         it('Returned values are valid indices ' + message, function() {
+          var data = originalData.slice();
           var result = occurrences(val, data).every(function(i) {
             return i >= 0 && i < data.length && data[i] === val;
           });
@@ -2889,9 +2914,9 @@
 
 
         it('No indices missing ' + message, function() {
-          var original = splitIfNecessary(data);
+          var data = splitIfNecessary(originalData.slice());
           var found = occurrences(val, data);
-          var result = original.every(function(v, i) {
+          var result = data.every(function(v, i) {
             if (found.indexOf(i) !== -1) return true;
             return v !== val;
           });
@@ -2984,8 +3009,9 @@
       });
 
 
-      var addTest = function(message, p, data) {
+      var addTest = function(message, p, originalData) {
         it('Returns an array ' + message, function() {
+          var data = originalData.slice();
           var result = occurrencesWith(p, data);
 
           expect(Array.isArray(result)).to.be.true;
@@ -3008,6 +3034,7 @@
 
 
         it('Returned values are valid indices ' + message, function() {
+          var data = originalData.slice();
           var result = occurrencesWith(p, data).every(function(i) {
             return i >= 0 && i < data.length && p(data[i]);
           });
@@ -3017,9 +3044,9 @@
 
 
         it('No indices missing ' + message, function() {
-          var original = splitIfNecessary(data);
+          var data = splitIfNecessary(originalData.slice());
           var found = occurrencesWith(p, data);
-          var result = original.every(function(v, i) {
+          var result = data.every(function(v, i) {
             if (found.indexOf(i) !== -1) return true;
             return p(v) === false;
           });
@@ -3219,18 +3246,18 @@
       addReturnsSameTypeTests(nub, []);
 
 
-      var addTests = function(message, data, expectedLength) {
+      var addTests = function(message, originalData, expectedLength) {
         it('Length is correct for ' + message, function() {
-          var original = data.slice();
-          var result = nub(original).length;
+          var data = originalData.slice();
+          var result = nub(data).length;
 
           expect(result).to.equal(expectedLength);
         });
 
 
         it('Each value only occurs once for ' + message, function() {
-          var original = data.slice();
-          var unique = nub(original);
+          var data = originalData.slice();
+          var unique = nub(data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val) {
             return array.occurrences(val, unique).length === 1;
@@ -3241,11 +3268,11 @@
 
 
         it('Each value came from original for ' + message, function() {
-          var original = data.slice();
-          var unique = nub(original);
+          var data = originalData.slice();
+          var unique = nub(data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val) {
-            return original.indexOf(val) !== -1;
+            return data.indexOf(val) !== -1;
           });
 
           expect(result).to.be.true;
@@ -3253,13 +3280,13 @@
 
 
         it('Ordering maintained from original for ' + message, function() {
-          var original = data.slice();
-          var unique = nub(original);
+          var data = originalData.slice();
+          var unique = nub(data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val, i) {
             if (i === 0) return true; // vacuously true
 
-            return original.indexOf(unique[i - 1]) < original.indexOf(val);
+            return data.indexOf(unique[i - 1]) < data.indexOf(val);
           });
 
           expect(result).to.be.true;
@@ -3304,31 +3331,31 @@
       addFuncCalledWithSpecificArityTests(nubWith, 2);
 
 
-      var addTests = function(message, f, data, expectedLength) {
+      var addTests = function(message, f, originalData, expectedLength) {
         it('Length is correct for ' + message, function() {
-          var original = data.slice();
-          var result = nubWith(f, original).length;
+          var data = originalData.slice();
+          var result = nubWith(f, data).length;
 
           expect(result).to.equal(expectedLength);
         });
 
 
         it('Predicate function called as often as required for ' + message, function() {
-          var original = data.slice();
+          var data = originalData.slice();
           var p = function(x, y) {
             p.called += 1;
             return f(x, y);
           };
           p.called = 0;
-          nubWith(p, original);
+          nubWith(p, data);
 
-          expect(p.called).to.be.at.most(original.length * (original.length - 1) / 2);
+          expect(p.called).to.be.at.most(data.length * (data.length - 1) / 2);
         });
 
 
         it('Each value only occurs once for ' + message, function() {
-          var original = data.slice();
-          var unique = nubWith(f, original);
+          var data = originalData.slice();
+          var unique = nubWith(f, data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val, i) {
             return unique.every(function(val2, j) {
@@ -3346,11 +3373,11 @@
 
 
         it('Each value came from original for ' + message, function() {
-          var original = data.slice();
-          var unique = nubWith(f, original);
+          var data = originalData.slice();
+          var unique = nubWith(f, data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val) {
-            return original.indexOf(val) !== -1;
+            return data.indexOf(val) !== -1;
           });
 
           expect(result).to.be.true;
@@ -3358,13 +3385,13 @@
 
 
         it('Ordering maintained from original for ' + message, function() {
-          var original = data.slice();
-          var unique = nubWith(f, original);
+          var data = originalData.slice();
+          var unique = nubWith(f, data);
           unique = splitIfNecessary(unique);
           var result = unique.every(function(val, i) {
             if (i === 0) return true; // vacuously true
 
-            return original.indexOf(unique[i - 1]) <= original.indexOf(val);
+            return data.indexOf(unique[i - 1]) <= data.indexOf(val);
           });
 
           expect(result).to.be.true;
@@ -3410,24 +3437,24 @@
       addReturnsSameTypeTests(sort, []);
 
 
-      var addTests = function(message, data) {
+      var addTests = function(message, originalData) {
         it('Length is correct for ' + message, function() {
-          var original = data.slice();
-          var result = sort(original).length;
+          var data = originalData.slice();
+          var result = sort(data).length;
 
-          expect(result).to.equal(original.length);
+          expect(result).to.equal(data.length);
         });
 
 
         it('Each value came from original for ' + message, function() {
-          var original = data.slice();
-          var sorted = sort(original);
+          var data = originalData.slice();
+          var sorted = sort(data);
           sorted = splitIfNecessary(sorted);
           var result = sorted.every(function(val) {
             var ourOccurrences = array.occurrences(val, sorted).length;
-            var originalOccurrences = array.occurrences(val, original).length;
+            var originalOccurrences = array.occurrences(val, data).length;
 
-            return original.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
           });
 
           expect(result).to.be.true;
@@ -3435,8 +3462,8 @@
 
 
         it('Ordering correct for ' + message, function() {
-          var original = data.slice();
-          var sorted = sort(original);
+          var data = originalData.slice();
+          var sorted = sort(data);
           sorted = splitIfNecessary(sorted);
           var result = sorted.every(function(val, i) {
             if (i === 0) return true; // vacuously true
@@ -3480,24 +3507,24 @@
       addFuncCalledWithSpecificArityTests(sortWith, 2);
 
 
-      var addTests = function(message, f, data) {
+      var addTests = function(message, f, originalData) {
         it('Length is correct for ' + message, function() {
-          var original = data.slice();
-          var result = sortWith(f, original).length;
+          var data = originalData.slice();
+          var result = sortWith(f, data).length;
 
-          expect(result).to.equal(original.length);
+          expect(result).to.equal(data.length);
         });
 
 
         it('Each value came from original for ' + message, function() {
-          var original = data.slice();
-          var sorted = sortWith(f, original);
+          var data = originalData.slice();
+          var sorted = sortWith(f, data);
           sorted = splitIfNecessary(sorted);
           var result = sorted.every(function(val) {
             var ourOccurrences = array.occurrences(val, sorted).length;
-            var originalOccurrences = array.occurrences(val, original).length;
+            var originalOccurrences = array.occurrences(val, data).length;
 
-            return original.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
           });
 
           expect(result).to.be.true;
@@ -3505,8 +3532,8 @@
 
 
         it('Ordering correct for ' + message, function() {
-          var original = data.slice();
-          var sorted = sortWith(f, original);
+          var data = originalData.slice();
+          var sorted = sortWith(f, data);
           sorted = splitIfNecessary(sorted);
           var result = sorted.every(function(val, i) {
             if (i === 0) return true; // vacuously true
@@ -3592,9 +3619,9 @@
       });
 
 
-      var addTests = function(message, data) {
+      var addTests = function(message, original) {
         it('Returns a pair for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = unzip(arr);
 
           expect(isPair(result)).to.be.true;
@@ -3602,7 +3629,7 @@
 
 
         it('First element is an array for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = Array.isArray(fst(unzip(arr)));
 
           expect(result).to.be.true;
@@ -3610,7 +3637,7 @@
 
 
         it('Second element is an array for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = Array.isArray(snd(unzip(arr)));
 
           expect(result).to.be.true;
@@ -3618,7 +3645,7 @@
 
 
         it('First element has correct length for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = fst(unzip(arr)).length === arr.length;
 
           expect(result).to.be.true;
@@ -3626,7 +3653,7 @@
 
 
         it('Second element has correct length for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = snd(unzip(arr)).length === arr.length;
 
           expect(result).to.be.true;
@@ -3634,7 +3661,7 @@
 
 
         it('Doesn\'t affect the original ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = unzip(arr) !== arr;
 
           expect(result).to.be.true;
@@ -3642,7 +3669,7 @@
 
 
         it('First element correct for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = fst(unzip(arr)).every(function(val, i) {
             return fst(arr[i]) === val;
           });
@@ -3652,7 +3679,7 @@
 
 
         it('Second element correct for ' + message, function() {
-          var arr = data.slice();
+          var arr = original.slice();
           var result = snd(unzip(arr)).every(function(val, i) {
             return snd(arr[i]) === val;
           });
@@ -3720,27 +3747,27 @@
       addReturnsSameTypeTests(insert, [0, 'a']);
 
 
-      var addTests = function(message, index, val, data) {
+      var addTests = function(message, index, val, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = insert(index, val, original);
+          var data = originalData.slice();
+          var result = insert(index, val, data);
 
-          expect(result.length).to.equal(original.length + 1);
+          expect(result.length).to.equal(data.length + 1);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = insert(index, val, original);
+          var data = originalData.slice();
+          var newVal = insert(index, val, data);
           newVal = splitIfNecessary(newVal);
           var result = newVal.every(function(v, i) {
             if (i < index)
-              return v === original[i];
+              return v === data[i];
 
             if (i === index)
               return v === val;
 
-            return v === original[i - 1];
+            return v === data[i - 1];
           });
 
           expect(result).to.be.true;
@@ -3823,24 +3850,24 @@
       addReturnsSameTypeTests(remove, [0]);
 
 
-      var addTests = function(message, index, data) {
+      var addTests = function(message, index, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = remove(index, original);
+          var data = originalData.slice();
+          var result = remove(index, data);
 
-          expect(result.length).to.equal(original.length - 1);
+          expect(result.length).to.equal(data.length - 1);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = remove(index, original);
+          var data = originalData.slice();
+          var newVal = remove(index, data);
           newVal = splitIfNecessary(newVal);
           var result = newVal.every(function(v, i) {
             if (i < index)
-              return v === original[i];
+              return v === data[i];
 
-            return v === original[i + 1];
+            return v === data[i + 1];
           });
 
           expect(result).to.be.true;
@@ -3915,22 +3942,22 @@
       addReturnsSameTypeTests(replace, [0, 'a']);
 
 
-      var addTests = function(message, index, val, data) {
+      var addTests = function(message, index, val, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = replace(index, val, original);
+          var data = originalData.slice();
+          var result = replace(index, val, data);
 
-          expect(result.length).to.equal(original.length);
+          expect(result.length).to.equal(data.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = replace(index, val, original);
+          var data = originalData.slice();
+          var newVal = replace(index, val, data);
           newVal = splitIfNecessary(newVal);
           var result = newVal.every(function(v, i) {
             if (i !== index)
-              return v === original[i];
+              return v === data[i];
 
             return v === val;
           });
@@ -3962,21 +3989,21 @@
     });
 
 
-    var addCommonRemoveNotFoundTests = function(message, fnUnderTest, val, data) {
+    var addCommonRemoveNotFoundTests = function(message, fnUnderTest, val, originalData) {
       it('Returned value is the correct length ' + message, function() {
-        var original = data.slice();
-        var result = fnUnderTest(val, original);
+        var data = originalData.slice();
+        var result = fnUnderTest(val, data);
 
-        expect(result.length).to.equal(original.length);
+        expect(result.length).to.equal(data.length);
       });
 
 
       it('Returned value has correct elements ' + message, function() {
-        var original = data.slice();
-        var newVal = fnUnderTest(val, original);
+        var data = originalData.slice();
+        var newVal = fnUnderTest(val, data);
         newVal = splitIfNecessary(newVal);
         var result = newVal.every(function(v, i) {
-          return v === original[i];
+          return v === data[i];
         });
 
         expect(result).to.be.true;
@@ -4037,27 +4064,27 @@
       addReturnsSameTypeTests(removeOne, [0]);
 
 
-      var addTests = function(message, val, data) {
+      var addTests = function(message, val, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeOne(val, original);
+          var data = originalData.slice();
+          var result = removeOne(val, data);
 
-          expect(result.length).to.equal(original.length - 1);
+          expect(result.length).to.equal(data.length - 1);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeOne(val, original);
+          var data = originalData.slice();
+          var newVal = removeOne(val, data);
           newVal = splitIfNecessary(newVal);
           var deletionSpotFound = false;
           var result = newVal.every(function(v, i) {
-            if (deletionSpotFound || original[i] === val) {
+            if (deletionSpotFound || data[i] === val) {
               deletionSpotFound = true;
-              return v === original[i + 1];
+              return v === data[i + 1];
             }
 
-            return v === original[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -4067,9 +4094,9 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has one less occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalCount = array.occurrences(val, original).length;
-          var newVal = removeOne(val, original);
+          var data = originalData.slice();
+          var originalCount = array.occurrences(val, data).length;
+          var newVal = removeOne(val, data);
           var newCount = array.occurrences(val, newVal).length;
 
           expect(newCount).to.equal(originalCount - 1);
@@ -4078,9 +4105,9 @@
 
         // And likewise...
         it('Removes first occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrences(val, original);
-          var newVal = removeOne(val, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrences(val, data);
+          var newVal = removeOne(val, data);
           var newOcc = array.occurrences(val, newVal);
 
           if (originalOcc.length === 1)
@@ -4113,27 +4140,27 @@
       addFuncCalledWithSpecificArityTests(removeOneWith, 1);
 
 
-      var addTests = function(message, f, data) {
+      var addTests = function(message, f, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = removeOneWith(f, original);
+          var data = originalData.slice();
+          var result = removeOneWith(f, data);
 
-          expect(result.length).to.equal(original.length - 1);
+          expect(result.length).to.equal(data.length - 1);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeOneWith(f, original);
+          var data = originalData.slice();
+          var newVal = removeOneWith(f, data);
           newVal = splitIfNecessary(newVal);
           var deletionSpotFound = false;
           var result = newVal.every(function(v, i) {
-            if (deletionSpotFound || f(original[i])) {
+            if (deletionSpotFound || f(data[i])) {
               deletionSpotFound = true;
-              return v === original[i + 1];
+              return v === data[i + 1];
             }
 
-            return v === original[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -4143,9 +4170,9 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has one less occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalCount = array.occurrencesWith(f, original).length;
-          var newVal = removeOneWith(f, original);
+          var data = originalData.slice();
+          var originalCount = array.occurrencesWith(f, data).length;
+          var newVal = removeOneWith(f, data);
           var newCount = array.occurrencesWith(f, newVal).length;
 
           expect(newCount).to.equal(originalCount - 1);
@@ -4154,9 +4181,9 @@
 
         // And likewise...
         it('Removes first occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrencesWith(f, original);
-          var newVal = removeOneWith(f, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrencesWith(f, data);
+          var newVal = removeOneWith(f, data);
           var newOcc = array.occurrencesWith(f, newVal);
 
           if (originalOcc.length === 1)
@@ -4187,26 +4214,26 @@
       addReturnsSameTypeTests(removeAll, [0]);
 
 
-      var addTests = function(message, val, data) {
+      var addTests = function(message, val, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var occurrences = array.occurrences(val, original);
-          var result = removeAll(val, original);
+          var data = originalData.slice();
+          var occurrences = array.occurrences(val, data);
+          var result = removeAll(val, data);
 
-          expect(result.length).to.equal(original.length - occurrences.length);
+          expect(result.length).to.equal(data.length - occurrences.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAll(val, original);
+          var data = originalData.slice();
+          var newVal = removeAll(val, data);
           newVal = splitIfNecessary(newVal);
           var offset = 0;
           var result = newVal.every(function(v, i) {
-            while (original[i + offset] === val)
+            while (data[i + offset] === val)
                offset += 1;
 
-            return original[i + offset] === v;
+            return data[i + offset] === v;
           });
 
           expect(result).to.be.true;
@@ -4216,8 +4243,8 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has no occurrences of value ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAll(val, original);
+          var data = originalData.slice();
+          var newVal = removeAll(val, data);
           var newCount = array.occurrences(val, newVal).length;
 
           expect(newCount).to.equal(0);
@@ -4249,26 +4276,26 @@
       addFuncCalledWithSpecificArityTests(removeAllWith, 1);
 
 
-      var addTests = function(message, f, data) {
+      var addTests = function(message, f, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var originalCount = array.occurrencesWith(f, original).length;
-          var result = removeAllWith(f, original);
+          var data = originalData.slice();
+          var originalCount = array.occurrencesWith(f, data).length;
+          var result = removeAllWith(f, data);
 
-          expect(result.length).to.equal(original.length - originalCount);
+          expect(result.length).to.equal(data.length - originalCount);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAllWith(f, original);
+          var data = originalData.slice();
+          var newVal = removeAllWith(f, data);
           newVal = splitIfNecessary(newVal);
           var offset = 0;
           var result = newVal.every(function(v, i) {
-            while (f(original[i + offset]))
+            while (f(data[i + offset]))
                offset += 1;
 
-            return original[i + offset] === v;
+            return data[i + offset] === v;
           });
 
           expect(result).to.be.true;
@@ -4278,8 +4305,8 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has no occurrences of value ' + message, function() {
-          var original = data.slice();
-          var newVal = removeAllWith(f, original);
+          var data = originalData.slice();
+          var newVal = removeAllWith(f, data);
           var newCount = array.occurrencesWith(f, newVal).length;
 
           expect(newCount).to.equal(0);
@@ -4296,21 +4323,21 @@
     });
 
 
-    var addCommonReplaceNotFoundTests = function(message, fnUnderTest, val, newVal, data) {
+    var addCommonReplaceNotFoundTests = function(message, fnUnderTest, val, newVal, originalData) {
       it('Returned value is the correct length ' + message, function() {
-        var original = data.slice();
-        var result = fnUnderTest(val, newVal, original);
+        var data = originalData.slice();
+        var result = fnUnderTest(val, newVal, data);
 
-        expect(result.length).to.equal(original.length);
+        expect(result.length).to.equal(data.length);
       });
 
 
       it('Returned value has correct elements ' + message, function() {
-        var original = data.slice();
-        var replaced = fnUnderTest(val, newVal, original);
+        var data = originalData.slice();
+        var replaced = fnUnderTest(val, newVal, data);
         replaced = splitIfNecessary(replaced);
         var result = replaced.every(function(v, i) {
-          return v === original[i];
+          return v === data[i];
         });
 
         expect(result).to.be.true;
@@ -4359,27 +4386,27 @@
       addReturnsSameTypeTests(replaceOne, [0, 1]);
 
 
-      var addTests = function(message, val, newVal, data) {
+      var addTests = function(message, val, newVal, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = replaceOne(val, newVal, original);
+          var data = originalData.slice();
+          var result = replaceOne(val, newVal, data);
 
-          expect(result.length).to.equal(original.length);
+          expect(result.length).to.equal(data.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceOne(val, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceOne(val, newVal, data);
           replaced = splitIfNecessary(replaced);
           var found = false;
           var result = replaced.every(function(v, i) {
-            if (!found && original[i] === val) {
+            if (!found && data[i] === val) {
               found = true;
               return v === newVal;
             }
 
-            return v === original[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -4389,9 +4416,9 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has one less occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalCount = array.occurrences(val, original).length;
-          var replaced = replaceOne(val, newVal, original);
+          var data = originalData.slice();
+          var originalCount = array.occurrences(val, data).length;
+          var replaced = replaceOne(val, newVal, data);
           var newCount = array.occurrences(val, replaced).length;
 
           expect(newCount).to.equal(originalCount - 1);
@@ -4400,9 +4427,9 @@
 
         // And likewise...
         it('Replaces first occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrences(val, original);
-          var replaced = replaceOne(val, newVal, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrences(val, data);
+          var replaced = replaceOne(val, newVal, data);
           var newOcc = array.occurrences(newVal, replaced);
 
           expect(newOcc[0]).to.equal(originalOcc[0]);
@@ -4432,27 +4459,27 @@
       addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a']);
 
 
-      var addTests = function(message, f, newVal, data) {
+      var addTests = function(message, f, newVal, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = replaceOneWith(f, newVal, original);
+          var data = originalData.slice();
+          var result = replaceOneWith(f, newVal, data);
 
-          expect(result.length).to.equal(original.length);
+          expect(result.length).to.equal(data.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceOneWith(f, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceOneWith(f, newVal, data);
           replaced = splitIfNecessary(replaced);
           var found = false;
           var result = replaced.every(function(v, i) {
-            if (!found && f(original[i])) {
+            if (!found && f(data[i])) {
               found = true;
               return v === newVal;
             }
 
-            return v === original[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -4462,9 +4489,9 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has one less occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalCount = array.occurrencesWith(f, original).length;
-          var replaced = replaceOneWith(f, newVal, original);
+          var data = originalData.slice();
+          var originalCount = array.occurrencesWith(f, data).length;
+          var replaced = replaceOneWith(f, newVal, data);
           var newCount = array.occurrencesWith(f, replaced).length;
 
           expect(newCount).to.equal(originalCount - 1);
@@ -4473,9 +4500,9 @@
 
         // And likewise...
         it('Replaces first occurrence of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrencesWith(f, original);
-          var replaced = replaceOneWith(f, newVal, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrencesWith(f, data);
+          var replaced = replaceOneWith(f, newVal, data);
           var newOcc = array.occurrencesWith(f, replaced);
 
           if (originalOcc.length === 1)
@@ -4506,24 +4533,24 @@
       addReturnsSameTypeTests(replaceAll, [0, 1]);
 
 
-      var addTests = function(message, val, newVal, data) {
+      var addTests = function(message, val, newVal, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = replaceAll(val, newVal, original);
+          var data = originalData.slice();
+          var result = replaceAll(val, newVal, data);
 
-          expect(result.length).to.equal(original.length);
+          expect(result.length).to.equal(data.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceAll(val, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceAll(val, newVal, data);
           replaced = splitIfNecessary(replaced);
           var result = replaced.every(function(v, i) {
-            if (original[i] === val)
+            if (data[i] === val)
               return v === newVal;
 
-            return v === original[i];
+            return v === data[i];
           });
 
           expect(result).to.be.true;
@@ -4533,8 +4560,8 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has no occurrences of value ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceAll(val, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceAll(val, newVal, data);
           var newCount = array.occurrences(val, replaced).length;
 
           expect(newCount).to.equal(0);
@@ -4543,9 +4570,9 @@
 
         // And likewise...
         it('Replaces all occurrences of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrences(val, original);
-          var replaced = replaceAll(val, newVal, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrences(val, data);
+          var replaced = replaceAll(val, newVal, data);
           var newOcc = array.occurrences(newVal, replaced);
           var result = newOcc.every(function(idx, i) {
             return idx === originalOcc[i];
@@ -4578,24 +4605,24 @@
       addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e']);
 
 
-      var addTests = function(message, f, newVal, data) {
+      var addTests = function(message, f, newVal, originalData) {
         it('Returned value is the correct length ' + message, function() {
-          var original = data.slice();
-          var result = replaceAllWith(f, newVal, original);
+          var data = originalData.slice();
+          var result = replaceAllWith(f, newVal, data);
 
-          expect(result.length).to.equal(original.length);
+          expect(result.length).to.equal(data.length);
         });
 
 
         it('Returned value has correct elements ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceAllWith(f, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceAllWith(f, newVal, data);
           replaced = splitIfNecessary(replaced);
           var result = replaced.every(function(v, i) {
-            if (f(original[i]))
+            if (f(data[i]))
                return v === newVal;
 
-            return original[i] === v;
+            return data[i] === v;
           });
 
           expect(result).to.be.true;
@@ -4605,8 +4632,8 @@
         // Although any errors would be caught by the previous test, I prefer to
         // make this explicit
         it('Returned value has no occurrences of value ' + message, function() {
-          var original = data.slice();
-          var replaced = replaceAllWith(f, newVal, original);
+          var data = originalData.slice();
+          var replaced = replaceAllWith(f, newVal, data);
           var newCount = array.occurrencesWith(f, replaced).length;
 
           expect(newCount).to.equal(0);
@@ -4615,9 +4642,9 @@
 
         // And likewise...
         it('Replaces all occurrences of value ' + message, function() {
-          var original = data.slice();
-          var originalOcc = array.occurrencesWith(f, original);
-          var replaced = replaceAllWith(f, newVal, original);
+          var data = originalData.slice();
+          var originalOcc = array.occurrencesWith(f, data);
+          var replaced = replaceAllWith(f, newVal, data);
           var newOcc = array.occurrences(newVal, replaced);
           var result = newOcc.every(function(idx, i) {
             return idx === originalOcc[i];
@@ -4658,9 +4685,9 @@
       });
 
 
-      var addTests = function(message, str, original) {
+      var addTests = function(message, str, originalData) {
         it('Returns a string ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var result = join(str, data);
 
           expect(result).to.be.a('string');
@@ -4668,7 +4695,7 @@
 
 
         it('Returned value is correct ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var joined = join(str, data);
           var s = str.toString();
           var l = s.length;
@@ -4753,9 +4780,9 @@
       });
 
 
-      var addTests = function(message, original) {
+      var addTests = function(message, originalData) {
         it('Result is an array ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var result = flatten(data);
 
           expect(Array.isArray(data)).to.be.true;
@@ -4763,8 +4790,8 @@
 
 
         it('Result has correct length ' + message, function() {
-          var data = original.slice();
-          var expected = array.sum(array.map(array.length, original.slice()));
+          var data = originalData.slice();
+          var expected = array.sum(array.map(array.length, data.slice()));
           var flattened = flatten(data);
 
           expect(flattened.length).to.equal(expected);
@@ -4772,7 +4799,7 @@
 
 
         it('Result has correct contents ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var flattened = flatten(data);
           var offset = 0;
 
@@ -4830,8 +4857,9 @@
       addAcceptsOnlyFixedArityTests(flattenMap, 1, [], false, base.constant([]));
 
 
-      var addTest = function(message, f, data) {
+      var addTest = function(message, f, originalData) {
         it('Works correctly ' + message, function() {
+          var data = originalData.slice();
           var result = flattenMap(f, data);
 
           expect(result).to.deep.equal(array.flatten(array.map(f, data)));
