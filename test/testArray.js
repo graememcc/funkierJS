@@ -1337,6 +1337,39 @@
     });
 
 
+    // The two range functions have some common behaviours: the value returned should be empty if the limits are equal,
+    // and the right-hand limit should not be included
+    var addCommonRangeTests = function(fnUnderTest, hasStep) {
+      hasStep = hasStep || false;
+
+
+      it('Returns empty array if b === a', function() {
+        var args = hasStep ? [1, 1, 1] : [1, 1];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Does not include right-hand limit (1)', function() {
+        var b = 10;
+        var args = hasStep ? [0, 1, b] : [0, b];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(array.last(result) < b).to.be.true;
+      });
+
+
+      it('Does not include right-hand limit (2)', function() {
+        var b = 15.2;
+        var args = hasStep ? [1.1, 1.1, b] : [1.1, b];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(array.last(result) < b).to.be.true;
+      });
+    };
+
+
     var rangeSpec = {
       name: 'range',
       arity: 2
@@ -1344,19 +1377,15 @@
 
 
     describeFunction(rangeSpec, array.range, function(range) {
+      addCommonRangeTests(range);
+
+
       it('Throws if b < a', function() {
         var fn = function() {
           range(1, 0);
         };
 
         expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Returns empty array if b === a', function() {
-        var result = range(1, 1);
-
-        expect(result).to.deep.equal([]);
       });
 
 
@@ -1384,35 +1413,20 @@
       });
 
 
-      it('Does not include right-hand limit (1)', function() {
-        var a = 0;
-        var b = 10;
-        var arr = range(a, b);
-
-        expect(array.last(arr) < b).to.be.true;
-      });
-
-
-      it('Does not include right-hand limit (2)', function() {
-        var a = 1.1;
-        var b = 15.2;
-        var arr = range(a, b);
-
-        expect(array.last(arr) < b).to.be.true;
-      });
-
-
       testCurriedFunction('range', array.range, [1, 5]);
     });
 
 
     var rangeStepSpec = {
-      name: 'rangeSpec',
+      name: 'rangeStep',
       arity: 3
     };
 
 
     describeFunction(rangeStepSpec, array.rangeStep, function(rangeStep) {
+      addCommonRangeTests(rangeStep, true);
+
+
       var addBadRangeTest = function(message, a, step, b) {
         it('Throws if ' + message, function() {
           var fn = function() {
@@ -1424,14 +1438,14 @@
       };
 
 
-      addBadRangeTest('b < a, and step posaddBadRangeTestive', 1, 1, 0);
+      addBadRangeTest('b < a, and step positive', 1, 1, 0);
       addBadRangeTest('b < a, and step zero', 1, 0, 0);
-      addBadRangeTest('b < a, and step not finaddBadRangeTeste (1)', 1, Number.POSITIVE_INFINITY, 0);
-      addBadRangeTest('b < a, and step not finaddBadRangeTeste (2)', 1, Number.NEGATIVE_INFINITY, 0);
-      addBadRangeTest('b > a, and step posaddBadRangeTestive', 1, -1, 10);
+      addBadRangeTest('b < a, and step not finite (1)', 1, Number.POSITIVE_INFINITY, 0);
+      addBadRangeTest('b < a, and step not finite (2)', 1, Number.NEGATIVE_INFINITY, 0);
+      addBadRangeTest('b > a, and step positive', 1, -1, 10);
       addBadRangeTest('b > a, and step zero', 1, 0, 10);
-      addBadRangeTest('b > a, and step not finaddBadRangeTeste (1)', 1, Number.POSITIVE_INFINITY, 10);
-      addBadRangeTest('b > a, and step not finaddBadRangeTeste (2)', 1, Number.NEGATIVE_INFINITY, 10);
+      addBadRangeTest('b > a, and step not finite (1)', 1, Number.POSITIVE_INFINITY, 10);
+      addBadRangeTest('b > a, and step not finite (2)', 1, Number.NEGATIVE_INFINITY, 10);
 
 
       it('Works correctly (1)', function() {
@@ -1460,33 +1474,23 @@
       });
 
 
-      it('Does not include right-hand limit (1)', function() {
-        var a = 0;
-        var step = 2;
-        var b = 10;
-        var arr = rangeStep(a, step, b);
-
-        expect(array.last(arr) < b).to.be.true;
-      });
-
-
-      it('Does not include right-hand limit (2)', function() {
-        var a = 15.2;
-        var step = -1.1;
-        var b = 1.1;
-        var arr = rangeStep(a, step, b);
-
-        expect(array.last(arr) > b).to.be.true;
-      });
-
-
-      it('Empty if a === b', function() {
+      it('Empty if a === b, and step incorrect', function() {
         var a = 1;
-        var step = 1;
+        var step = 0;
         var b = 1;
         var arr = rangeStep(a, step, b);
 
         expect(arr).to.deep.equal([]);
+      });
+
+
+      it('Does not include right-hand limit (3)', function() {
+        var a = 20;
+        var step = -1;
+        var b = 10;
+        var result = rangeStep(a, step, b);
+
+        expect(array.last(result) > b).to.be.true;
       });
 
 
