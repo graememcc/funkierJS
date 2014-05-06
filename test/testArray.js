@@ -401,61 +401,48 @@
 
 
     describeFunction(getIndexSpec, array.getIndex, function(getIndex) {
-      it('Works for arrays (1)', function() {
-        var a = [1, 7, 0, 42];
-        var result = getIndex(1, a);
-
-        expect(result).to.equal(a[1]);
-      });
-
-
-      it('Works for arrays (2)', function() {
-        var a = [1, 7, 0, 42];
-        var result = getIndex(0, a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      it('Throws for values outside range (1)', function() {
-        var a = [1, 2, 3];
-        var fn = function() {
-          getIndex(4, a);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Works for strings (1)', function() {
-        var a = 'dcba';
-        var result = getIndex(1, a);
-
-        expect(result).to.equal(a[1]);
-      });
-
-
-      it('Works for strings (2)', function() {
-        var a = 'funkier';
-        var result = getIndex(0, a);
-
-        expect(result).to.equal(a[0]);
-      });
-
-
-      it('Throws for values outside range (2)', function() {
-        var a = 'abc';
-        var fn = function() {
-          getIndex(4, a);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       addThrowsOnEmptyTests(getIndex, [0]);
       addBadNumberTests('index', getIndex, [], [[1, 2, 3]]);
       addBadNumberTests('index', getIndex, [], ['abc']);
+
+
+      var addTests = function(originalData) {
+        if (originalData.length < 3)
+          throw new Error('Test generation function for getIndex requires test data of length ' + originalData.length);
+        var typeString = typeof(originalData) === 'string' ? 'string' : 'array';
+
+
+        it('Works for ' + typeString + ' (1)', function() {
+          var data = originalData.slice();
+          var result = getIndex(0, data);
+
+          expect(result).to.equal(data[0]);
+        });
+
+
+        it('Works for ' + typeString + ' (2)', function() {
+          var data = originalData.slice();
+          var result = getIndex(2, data);
+
+          expect(result).to.equal(data[2]);
+        });
+
+
+        it('Throws when ' + typeString + ' indices outside range', function() {
+          var data = originalData.slice();
+          var fn = function() {
+            getIndex(data.length, data);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addTests([1, 7, 0, 42]);
+      addTests('funkier');
+
+
       testCurriedFunction('getIndex', getIndex, [1, ['a', 'b']]);
     });
 
