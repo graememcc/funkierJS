@@ -3360,46 +3360,32 @@
     describeFunction(insertSpec, array.insert, function(insert) {
       addBadNumberTests('index', insert, [], ['a', [1, 2, 3]]);
       addBadNumberTests('index', insert, [], ['a', 'bcd']);
-
-
-      it('Throws if index > length (1)', function() {
-        var fn = function() {
-          insert(4, 'a', [1, 2, 3]);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index > length (2)', function() {
-        var fn = function() {
-          insert(10, 'a', 'bcde');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Does not throw if index === length (1)', function() {
-        var fn = function() {
-          insert(3, 'a', [1, 2, 3]);
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
-      it('Does not throw if index === length (2)', function() {
-        var fn = function() {
-          insert(4, 'a', 'bcde');
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
       addNoModificationOfOriginalTests(insert, [0, 'a']);
       addReturnsSameTypeTests(insert, [0, 'a']);
+
+
+      var addIndexTest = function(message, index, val, originalData, dontThrow) {
+        dontThrow = dontThrow || false;
+
+
+        it((!dontThrow ? 'Does not throw' : 'Throws') + ' when ' + message, function() {
+          var data = originalData.slice();
+          var fn = function() {
+            insert(index, val, data);
+          };
+
+          if (dontThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addIndexTest('index > length (array)', 4, 1, [1, 2]);
+      addIndexTest('index > length (string)', 10, 'a', 'bcde');
+      addIndexTest('index === length (array)', 2, 1, [1, 2], true);
+      addIndexTest('index === length (string)', 4, 'a', 'bcde', true);
 
 
       var addTests = function(message, index, val, originalData) {
@@ -3452,6 +3438,31 @@
     });
 
 
+    // remove and replace both throw when index >= length
+    var addCommonRemoveReplaceTests = function(fnUnderTest, argsBetween) {
+      argsBetween = argsBetween || [];
+
+
+      var addTest = function(message, index, originalData) {
+        it('Throws if index >= length ' + message, function() {
+          var data = originalData.slice();
+          var args = [index].concat(argsBetween).concat([data]);
+          var fn = function() {
+            fnUnderTest.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addTest('for array (1)', 4, [1, 2, 3]);
+      addTest('for array (2)', 3, [2, 3, 4]);
+      addTest('for string (1)', 4, 'abc');
+      addTest('for string (2)', 3, 'bcd');
+    };
+
+
     var removeSpec = {
       name: 'remove',
       arity: 2,
@@ -3463,46 +3474,9 @@
     describeFunction(removeSpec, array.remove, function(remove) {
       addBadNumberTests('index', remove, [], [[1, 2, 3]]);
       addBadNumberTests('index', remove, [], ['bcd']);
-
-
-      it('Throws if index >= length (1)', function() {
-        var fn = function() {
-          remove(4, [1, 2, 3]);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (2)', function() {
-        var fn = function() {
-          remove(3, [1, 2, 3]);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (3)', function() {
-        var fn = function() {
-          remove(10, 'bcde');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (4)', function() {
-        var fn = function() {
-          remove(4, 'bcde');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       addNoModificationOfOriginalTests(remove, [0]);
       addReturnsSameTypeTests(remove, [0]);
+      addCommonRemoveReplaceTests(remove);
 
 
       var addTests = function(message, index, originalData) {
@@ -3555,46 +3529,9 @@
     describeFunction(replaceSpec, array.replace, function(replace) {
       addBadNumberTests('index', replace, [], [1, [1, 2, 3]]);
       addBadNumberTests('index', replace, [], ['a', 'bcd']);
-
-
-      it('Throws if index >= length (1)', function() {
-        var fn = function() {
-          replace(4, 0, [1, 2, 3]);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (2)', function() {
-        var fn = function() {
-          replace(3, 0, [1, 2, 3]);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (3)', function() {
-        var fn = function() {
-          replace(10, 'a', 'bcde');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if index >= length (4)', function() {
-        var fn = function() {
-          replace(4, 'a', 'bcde');
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       addNoModificationOfOriginalTests(replace, [0, 'a']);
       addReturnsSameTypeTests(replace, [0, 'a']);
+      addCommonRemoveReplaceTests(replace, [1]);
 
 
       var addTests = function(message, index, val, originalData) {
