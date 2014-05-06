@@ -1514,11 +1514,11 @@
       addReturnsEmptyOnEmptyTests(take, [1]);
 
 
-      var addExpectEmptyTest = function(message, count, original) {
-        var isArray = typeof(original) !== 'string';
+      var addExpectEmptyTest = function(message, count, originalData) {
+        var isArray = typeof(originalData) !== 'string';
 
         it('Returns empty ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
-          var data = original.slice();
+          var data = originalData.slice();
           var result = take(count, data);
 
           expect(result).to.deep.equal(isArray ? [] : '');
