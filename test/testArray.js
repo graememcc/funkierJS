@@ -732,6 +732,9 @@
 
     var addCommonFoldTests = function(desc, fnUnderTest, is1Func, isRTL) {
       var betweenArgs = is1Func ? [] : [0];
+      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, betweenArgs);
+      addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
+      addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
 
 
       var addCalledWithAccumulatorTest = function(source, type) {
@@ -764,9 +767,6 @@
       };
 
 
-      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, betweenArgs);
-      addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
-      addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
       addCalledWithAccumulatorTest([1, 2, 3], 'array');
       addCalledWithAccumulatorTest('123', 'string');
 
@@ -1024,30 +1024,39 @@
         var addPrematureTests = function(type, num, originalData) {
           it('Stops prematurely when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
             var data = originalData.slice();
+
+            // We use a function that is expected to return the short-circuit trigger after length - 2 calls. If the
+            // function under tests works correctly, this function should not be called again, and calls should still
+            // equal data.length - 2
             var calls = 0;
             var f = function(x) {
               calls += 1;
-              if (calls === data.length - 1)
+              if (calls === data.length - 2)
                 return trigger;
               return okVal;
             }
+
             fnUnderTest(f, data);
 
-            expect(calls).to.equal(data.length - 1);
+            expect(calls).to.equal(data.length - 2);
           });
 
 
           it('Called with correct values when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
             var data = originalData.slice();
+
+            // This function ensures the function under test traverses the array in order, starting at element 0
+            // equal data.length - 2
             var vals = [];
             var calls = 0;
             var f = function(x) {
-              vals.push(x);
               calls += 1;
+              vals.push(x);
               if (calls === data.length - 1)
                 return trigger;
               return okVal;
             }
+
             fnUnderTest(f, data);
             var result = vals.every(function(elem, i) {
               return data[i] === elem;
@@ -1057,8 +1066,9 @@
           });
 
 
-          it('Returns correctly when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+          it('Returns correct value when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
             var data = originalData.slice();
+
             var calls = 0;
             var f = function(x) {
               calls += 1;
@@ -1066,6 +1076,7 @@
                 return trigger;
               return okVal;
             }
+
             var result = fnUnderTest(f, data);
 
             expect(result).to.equal(trigger);
@@ -1076,11 +1087,13 @@
         var addNormalTests = function(type, num, originalData) {
           it('Called with all values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
             var data = originalData.slice();
+
             var calls = 0;
             var f = function(x) {
               calls += 1;
               return okVal;
             }
+
             fnUnderTest(f, data);
 
             expect(calls).to.equal(data.length);
@@ -1089,6 +1102,7 @@
 
           it('Called with correct values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
             var data = originalData.slice();
+
             var vals = [];
             var calls = 0;
             var f = function(x) {
@@ -1096,7 +1110,9 @@
               calls += 1;
               return okVal;
             }
+
             fnUnderTest(f, data);
+
             var result = vals.every(function(elem, i) {
               return data[i] === elem;
             });
