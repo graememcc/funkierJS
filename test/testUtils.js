@@ -52,13 +52,13 @@
     };
 
 
-    var nonPrimDict = {'null': 'object', 'array': 'object', 'integer': 'number'};
+    var nonPrimDict = {'null': 'object', 'array': 'object', 'integer': 'number', 'positive': 'number'};
     var nonPrimToPrim = function(nP) {
       return nonPrimDict[nP];
     };
 
 
-    var typeclasses = ['integer'];
+    var typeclasses = ['integer', 'positive'];
     var isTypeClass = function(restriction) {
       return typeclasses.indexOf(restriction) !== -1;
     };
@@ -127,13 +127,13 @@
     // every time, in case the function modifies values in some way.
     var makeBogusFor = function(resSpec) {
       var primBogus = [
-        {name: 'number', article: 'a ', value: 2, typeclasses: ['integer']},
-        {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer']},
-        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer']},
+        {name: 'number', article: 'a ', value: 2, typeclasses: ['integer', 'positive']},
+        {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer', 'positive']},
+        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer', 'positive']},
         {name: 'undefined', article: '', value: undefined, typeclasses: []},
-        {name: 'null', article: '', value: null, typeclasses: ['integer']},
+        {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive']},
         {name: 'function', article: 'a ', value: function() {}, typeclasses: []},
-        {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer']},
+        {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer', 'positive']},
         {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: []}
       ];
 
@@ -157,8 +157,9 @@
         return {valueOf: function() {return val;}};
       };
 
+      // Add typeclass specific bogus arguments
 
-      if (resSpec === 'integer') {
+      if (resSpec === 'integer' || resSpec === 'positive') {
         primBogus.push({name: 'positive float', article: 'a ', value: 1.1});
         primBogus.push({name: 'negative float', article: 'a ', value: -1.1});
         primBogus.push({name: 'positive infinity', article: '', value: Number.POSITIVE_INFINITY});
@@ -174,6 +175,12 @@
         primBogus.push({name: 'object that coerces to negative infinity', article: 'an ',
                         value: badObjectMaker(Number.NEGATIVE_INFINITY)});
         primBogus.push({name: 'object that coerces to NaN', article: 'an ', value: badObjectMaker(NaN)});
+      }
+
+      if (resSpec === 'positive') {
+        primBogus.push({name: 'negative integer', article: 'a ', value: -1});
+        primBogus.push({name: 'string that coerces to a negative integer', article: 'a ', value: '-2'});
+        primBogus.push({name: 'object that coerces to a negative integer', article: 'a ', value: badObjectMaker(-3)});
       }
 
       return primBogus;

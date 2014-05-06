@@ -48,6 +48,7 @@
      */
 
     var getIndex = curry(function(i, a) {
+      a = checkArrayLike(a);
       i = checkPositiveIntegral(i, 'Index out of bounds');
       if (i >= a.length)
         throw new TypeError('Index out of bounds');
@@ -736,7 +737,12 @@
      *
      */
 
-    var findFrom = callPropWithArity('indexOf', 2);
+    var findFrom = curry(function(val, from, arr) {
+      arr = checkArrayLike(arr);
+      from = checkPositiveIntegral(from, {message: 'Index must be a positive integer'});
+
+      return arr.indexOf(val, from);
+    });
 
 
     /*
@@ -748,7 +754,7 @@
      */
 
     var findWith = curry(function(p, haystack) {
-      haystack = checkArrayLike(haystack, {message: 'findWith: haystack must be an array/string'});
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       var found = false;
@@ -768,7 +774,8 @@
      */
 
     var findFromWith = curry(function(p, index, haystack) {
-      haystack = checkArrayLike(haystack, {message: 'findWithFrom: haystack must be an array/string'});
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
+      index = checkPositiveIntegral(index, {message: 'Index must be a non-negative integer'});
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
 
       var found = false;

@@ -417,14 +417,14 @@
 
     var getIndexSpec = {
       name: 'getIndex',
-      arity: 2
+      arity: 2,
+      restrictions: [['positive'], ['array', 'string']],
+      validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(getIndexSpec, array.getIndex, function(getIndex) {
       addThrowsOnEmptyTests(getIndex, [0]);
-      addBadNumberTests('index', getIndex, [], [[1, 2, 3]]);
-      addBadNumberTests('index', getIndex, [], ['abc']);
 
 
       var addTests = function(originalData) {
@@ -503,15 +503,13 @@
 
     var replicateSpec = {
       name: 'replicate',
-      arity: 2
+      arity: 2,
+      restrictions: [['positive'], []],
+      validArguments: [[1], ['a']]
     };
 
 
     describeFunction(replicateSpec, array.replicate, function(replicate) {
-      addBadNumberTests('length', replicate, [], ['a']);
-      addBadNumberTests('length', replicate, [], [1]);
-
-
       var addTests = function(message, count, data) {
         it('Returns array ' + message, function() {
           var result = replicate(count, data);
@@ -1846,14 +1844,12 @@
     var sliceSpec = {
       name: 'slice',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
+      restrictions: [['positive'], ['positive'], ['array', 'string']],
       validArguments: [[0], [1], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(sliceSpec, array.slice, function(slice) {
-      addBadNumberTests('from', slice, [], [1, 'abc']);
-      addBadNumberTests('to', slice, [0], ['abc']);
       addReturnsSameTypeTests(slice, [0, 1]);
       addNoModificationOfOriginalTests(slice, []);
       addNoModificationOfOriginalTests(slice, []);
@@ -2334,7 +2330,7 @@
     var findFromSpec = {
       name: 'findFrom',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
+      restrictions: [[], ['positive'], ['array', 'string']],
       validArguments: [[1], [1], [[2, 3], '234']]
     };
 
@@ -2463,7 +2459,7 @@
     var findFromWithSpec = {
       name: 'findFromWith',
       arity: 3,
-      restrictions: [['function'], [], ['array', 'string']],
+      restrictions: [['function'], ['positive'], ['array', 'string']],
       validArguments: [[alwaysTrue], [1], [[1, 2], 'abc']]
     };
 
@@ -3359,14 +3355,12 @@
     var insertSpec = {
       name: 'insert',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
+      restrictions: [['positive'], [], ['array', 'string']],
       validArguments: [[0], ['1'], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(insertSpec, array.insert, function(insert) {
-      addBadNumberTests('index', insert, [], ['a', [1, 2, 3]]);
-      addBadNumberTests('index', insert, [], ['a', 'bcd']);
       addNoModificationOfOriginalTests(insert, [0, 'a']);
       addReturnsSameTypeTests(insert, [0, 'a']);
 
@@ -3473,14 +3467,12 @@
     var removeSpec = {
       name: 'remove',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [['positive'], ['array', 'string']],
       validArguments: [[0], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(removeSpec, array.remove, function(remove) {
-      addBadNumberTests('index', remove, [], [[1, 2, 3]]);
-      addBadNumberTests('index', remove, [], ['bcd']);
       addNoModificationOfOriginalTests(remove, [0]);
       addReturnsSameTypeTests(remove, [0]);
       addCommonRemoveReplaceTests(remove);
@@ -3528,14 +3520,12 @@
     var replaceSpec = {
       name: 'replace',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
+      restrictions: [['positive'], [], ['array', 'string']],
       validArguments: [[0], ['a'], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(replaceSpec, array.replace, function(replace) {
-      addBadNumberTests('index', replace, [], [1, [1, 2, 3]]);
-      addBadNumberTests('index', replace, [], ['a', 'bcd']);
       addNoModificationOfOriginalTests(replace, [0, 'a']);
       addReturnsSameTypeTests(replace, [0, 'a']);
       addCommonRemoveReplaceTests(replace, [1]);
