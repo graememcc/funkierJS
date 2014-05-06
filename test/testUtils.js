@@ -52,9 +52,15 @@
     };
 
 
-    var nonPrimDict = {'null': 'object', 'array': 'object'};
+    var nonPrimDict = {'null': 'object', 'array': 'object', 'integer': 'number'};
     var nonPrimToPrim = function(nP) {
       return nonPrimDict[nP];
+    };
+
+
+    var typeclasses = ['integer'];
+    var isTypeClass = function(restriction) {
+      return typeclasses.indexOf(restriction) !== -1;
     };
 
 
@@ -119,17 +125,58 @@
 
     // Generates an array of possible bogus values. We want a fresh array
     // every time, in case the function modifies values in some way.
-    var allBogus = function() {
-      return [
-        {name: 'number', article: 'a ', value: 2},
-        {name: 'boolean', article: 'a ', value: true},
-        {name: 'string', article: 'a ', value: 'c'},
-        {name: 'undefined', article: '', value: undefined},
-        {name: 'null', article: '', value: null},
-        {name: 'function', article: 'a ', value: function() {}},
-        {name: 'object', article: 'an ', value: {foo: 4}},
-        {name: 'array', article: 'an ', value: [4, 5, 6]}
+    var makeBogusFor = function(resSpec) {
+      var primBogus = [
+        {name: 'number', article: 'a ', value: 2, typeclasses: ['integer']},
+        {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer']},
+        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer']},
+        {name: 'undefined', article: '', value: undefined, typeclasses: []},
+        {name: 'null', article: '', value: null, typeclasses: ['integer']},
+        {name: 'function', article: 'a ', value: function() {}, typeclasses: []},
+        {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer']},
+        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: []}
       ];
+
+      primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
+
+      // If the restriction is a constructor function, then all of the above will be bogus
+      if (resSpec.length === 1 && typeof(resSpec[0]) === 'function')
+        return primBogus;
+
+      // If the restriction is not a typeclass, then we're done. This assumes we already checked
+      // that typeclasses restrictions only appear in arrays of length 1
+      if (resSpec.length > 1 || !isTypeClass(resSpec[0]))
+        return primBogus;
+
+      resSpec = resSpec[0];
+
+      // Filter on the members of the typeclass
+      primBogus = primBogus.filter(function(val) {return val.typeclasses.indexOf(resSpec) === -1;});
+
+      var badObjectMaker = function(val) {
+        return {valueOf: function() {return val;}};
+      };
+
+
+      if (resSpec === 'integer') {
+        primBogus.push({name: 'positive float', article: 'a ', value: 1.1});
+        primBogus.push({name: 'negative float', article: 'a ', value: -1.1});
+        primBogus.push({name: 'positive infinity', article: '', value: Number.POSITIVE_INFINITY});
+        primBogus.push({name: 'negative infinity', article: '', value: Number.NEGATIVE_INFINITY});
+        primBogus.push({name: 'NaN', article: '', value: NaN});
+        primBogus.push({name: 'string that coerces to NaN', article: 'a ', value: 'abc'});
+        primBogus.push({name: 'string that coerces to float', article: 'a ', value: '1.1'});
+        primBogus.push({name: 'string that coerces to negative float', article: 'a ', value: '-1.1'});
+        primBogus.push({name: 'object that coerces to float', article: 'an ', value: badObjectMaker(1.1)});
+        primBogus.push({name: 'object that coerces to negative float', article: 'an ', value: badObjectMaker(-1.1)});
+        primBogus.push({name: 'object that coerces to infinity', article: 'an ',
+                        value: badObjectMaker(Number.POSITIVE_INFINITY)});
+        primBogus.push({name: 'object that coerces to negative infinity', article: 'an ',
+                        value: badObjectMaker(Number.NEGATIVE_INFINITY)});
+        primBogus.push({name: 'object that coerces to NaN', article: 'an ', value: badObjectMaker(NaN)});
+      }
+
+      return primBogus;
     };
 
 
@@ -183,14 +230,16 @@
 
       restrictions.forEach(function(resSpec, i) {
         resSpec.forEach(function(r, j) {
+          // If a function accepts a specific type of object e.g. RegExp, then that should be the only possible
+          // restriction for that position: we shouldn't have e.g. this can be a RegExp or a boolean.
           if (typeof(r) === 'function' && resSpec.length > 1) {
-            // If a function accepts a specific type of object e.g. RegExp, then that should be the only possible
-            // restriction for that position: we shouldn't have e.g. this can be a RegExp or a boolean.
-
-            throw new Error(name + ' Spec ' + i + ' incorrect. Specific object type should be isolated!');
+            throw new Error(name + ' Spec ' + i + ' incorrect. A constructor must be the only restriction for that parameter!');
           } else if (typeof(r) === 'string') {
-            // The good arg at this position should have the right type!
+            // If the restriction is a typeclass, it should be the only one
+            if (isTypeClass(r) && resSpec.length > 1)
+              throw new Error(name + ' Spec ' + i + ' incorrect. A typeclass must be the only restriction for that parameter!');
 
+            // The valid argument at this position should have the right type!
             var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
             if (typeof(goodArgs[i][j]) !== t)
               throw new Error(name + ' spec: "good argument" of incorrect type for ' + i + ' ' + j + ', expected ' +
@@ -210,10 +259,7 @@
         var good = constructGoodArgsFor(goodArgs, i);
         var l = good.length;
 
-        var bogusArgs = allBogus();
-        bogusArgs = bogusArgs.filter(function(b) {
-          return resSpec.indexOf(b.name) === -1;
-        });
+        var bogusArgs = makeBogusFor(resSpec);
 
         bogusArgs.forEach(function(bogus) {
           good.forEach(function(goodDescriptor, j) {
@@ -223,7 +269,7 @@
             if (typeof(args[idx]) === 'object' && args[idx] !== null && 'reset' in args[idx])
               args[idx] = args[idx].reset();
 
-            var message = ' (' + (j + 1) + ')';
+            var message = good.length === 1 ? '' : ' (' + (j + 1) + ')';
             it('Throws when the ' + posString + 'parameter is ' + bogus.article + bogus.name + message, function() {
               var fn = function() {
                 fnUnderTest.apply(null, args);

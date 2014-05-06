@@ -1518,14 +1518,12 @@
     var takeSpec = {
       name: 'take',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [['integer'], ['array', 'string']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(takeSpec, array.take, function(take) {
-      addBadNumberTests('count', take, [], [[1, 2, 3]], true);
-      addBadNumberTests('count', take, [], ['abc'], true);
       addReturnsSameTypeTests(take, [1]);
       addNoModificationOfOriginalTests(take, [1]);
       addReturnsEmptyOnEmptyTests(take, [1]);
@@ -1585,14 +1583,12 @@
     var dropSpec = {
       name: 'drop',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [['integer'], ['array', 'string']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(dropSpec, array.drop, function(drop) {
-      addBadNumberTests('count', drop, [], [[1, 2, 3]], true);
-      addBadNumberTests('count', drop, [], ['abc'], true);
       addReturnsSameTypeTests(drop, [1]);
       addNoModificationOfOriginalTests(drop, [1]);
       addReturnsEmptyOnEmptyTests(drop, [1]);
