@@ -376,34 +376,21 @@
 
 
     describeFunction(lengthSpec, array.length, function(length) {
-      it('Works for arrays (1)', function() {
-        expect(length([1])).to.equal(1);
-      });
+      var addOne = function(message, originalData) {
+        it('Works ' + message, function() {
+          var data = originalData.slice();
+
+          expect(length(data)).to.equal(data.length);
+        });
+      };
 
 
-      it('Works for arrays (2)', function() {
-        expect(length([1, 3, 2])).to.equal(3);
-      });
-
-
-      it('Works for empty arrays', function() {
-        expect(length([])).to.equal(0);
-      });
-
-
-      it('Works for strings (1)', function() {
-        expect(length(['1'])).to.equal(1);
-      });
-
-
-      it('Works for strings (2)', function() {
-        expect(length('abc')).to.equal(3);
-      });
-
-
-      it('Works for empty strings', function() {
-        expect(length('')).to.equal(0);
-      });
+      addOne('empty arrays', []);
+      addOne('arrays (1)', [1]);
+      addOne('arrays (2)', [2, 3]);
+      addOne('empty strings', '');
+      addOne('strings (1)', 'a');
+      addOne('strings (2)', 'bcd');
     });
 
 
