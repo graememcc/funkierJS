@@ -534,75 +534,45 @@
 
 
     describeFunction(mapSpec, array.map, function(map) {
-      it('Returns an array when called with an array', function() {
-        var result = map(base.id, ['a', 1, true]);
-
-        expect(Array.isArray(result)).to.be.true;
-      });
-
-
-      it('Returns an array when called with a string', function() {
-        var result = map(base.id, 'abc');
-
-        expect(Array.isArray(result)).to.be.true;
-      });
-
-
-      it('Returned array has correct length for array', function() {
-        var arr = [2, null];
-        var result = map(base.id, arr);
-
-        expect(result.length).to.equal(arr.length);
-      });
-
-
-      it('Retured array has correct length for string', function() {
-        var s = 'dcba';
-        var result = map(base.id, s);
-
-        expect(result.length).to.equal(s.length);
-      });
-
-
       addFuncCalledWithSpecificArityTests(map, 1);
       addAcceptsOnlyFixedArityTests(map, 1, [], true);
       addCalledWithEveryMemberTests(map);
 
 
-      it('Returned array correct for array', function() {
-        var arr = [1, 2, 3];
-        var f = function(x) {return x + 1;};
-        var result = map(f, arr).every(function(val, i) {
-          return val === f(arr[i]);
+      var addTests = function(message, f, originalData) {
+        it('Returns an array when ', function() {
+          var data = originalData.slice();
+          var result = map(f, data);
+
+          expect(Array.isArray(result)).to.be.true;
         });
 
-        expect(result).to.be.true;
-      });
 
+        it('Returned array has correct length when ' + message, function() {
+          var data = originalData.slice();
+          var result = map(f, data);
 
-      it('Returned array correct for string', function() {
-        var arr = 'bdc';
-        var f = function(x) {return x.toUpperCase();};
-        var result = map(f, arr).every(function(val, i) {
-          return val === f(arr[i]);
+          expect(result.length).to.equal(data.length);
         });
 
-        expect(result).to.be.true;
-      });
+
+        it('Returned array correct when ' + message, function() {
+          var data = originalData.slice();
+          var result = map(f, data).every(function(val, i) {
+            return val === f(data[i]);
+          });
+
+          expect(result).to.be.true;
+        });
+      };
 
 
-      it('Returns empty array when called with empty array', function() {
-        var result = map(function(x) {}, []);
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Returns empty array when called with empty string', function() {
-        var result = map(function(x) {}, '');
-
-        expect(result).to.deep.equal([]);
-      });
+      addTests('called with array (1)', base.id, [1, true, null, undefined]);
+      addTests('called with array (2)', function(x) {return x + 1;}, [2, 3, 4]);
+      addTests('called with empty array', function(x) {return 42;}, []);
+      addTests('called with strings (1)', function(x) {return x.toUpperCase();}, 'funkier');
+      addTests('called with strings (2)', function(x) {return x.charCodeAt(0);}, 'abc');
+      addTests('called with empty string', function(x) {return true;}, '');
 
 
       it('Array contains partially applied functions if supplied function arity > 1', function() {
