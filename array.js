@@ -1020,16 +1020,15 @@
 
 
     /*
-     * removeOneWith: Takes a predicate function of arity 1, and an array or string. Returns a new array/string with the
-     *                first value for which the function returns true removed from the array. Throws a TypeError if the
-     *                given predicate is not a function, or does not have arity 1, or if the last parameter is not an
-     *                array/string.
+     * removeOneWith: Takes a predicate function of arity 1, and an array. Returns a new array with the first value
+     *                for which the function returns true removed from the array. Throws a TypeError if the given
+     *                predicate is not a function, or does not have arity 1, or if the last parameter is not an array.
      *
      */
 
     var removeOneWith = curry(function(p, arr) {
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
-      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array', noStrings: true});
 
       var found = false;
       var i = 0;
@@ -1049,9 +1048,8 @@
 
 
     /*
-     * removeOne: Takes a value, and an array or string. Returns a new array/string with the first occurrence of the
-     *            value—checked for strict equality— removed from the array. Throws a TypeError if the last argument
-     *            is not an array/string.
+     * removeOne: Takes a value, and an array. Returns a new array with the first occurrence of the value—checked for
+     *            strict equality— removed from the array. Throws a TypeError if the last argument is not an array.
      *
      */
 
@@ -1059,40 +1057,45 @@
 
 
     /*
-     * removeAll: Takes a value, and an array or string. Returns a new array/string with all occurrences of the
-     *            given value—checked for strict equality—removed from the array. Throws a TypeError if the last
-     *            argument is not an array/string.
+     * removeAll: Takes a value, and an array. Returns a new array with all occurrences of the given value—checked for
+     *            strict equality—removed from the array. Throws a TypeError if the last argument is not an array.
      */
 
-    var removeAll = base.composeMany([filter, notPred, strictEquals]);
+    var removeAll = curry(function(val, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      var pred = notPred(strictEquals(val));
+      return filter(pred, arr);
+    });
 
 
     /*
-     * removeAllWith: Takes a predicate function of arity 1, and an array or string. Returns a new array/string
-     *                with values for which the function returns true removed from the array. Throws a TypeError
-     *                if the first argument is not a predicate function of arity 1, or if the last parameter is
-     *                not an array/string.
+     * removeAllWith: Takes a predicate function of arity 1, and an array. Returns a new array with values for which
+     *                the function returns true removed from the array. Throws a TypeError if the first argument is not
+     *                a predicate function of arity 1, or if the last parameter is not an array.
      *
      */
 
-    var removeAllWith = base.compose(filter, notPred);
+    var removeAllWith = curry(function(pred, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      var pred = notPred(pred);
+      return filter(pred, arr);
+    });
 
 
     /*
-     * replaceOneWith: Takes a predicate function of arity 1, a replacement value, and an array/string. Returns a
-     *                 new array/string where the first value for which the given predicate returned true has been
-     *                 replaced with the given replacement. Throws if the first argument is not a function, if the
-     *                 function does not have arity 1, or if the last parameter is not an array/string.
+     * replaceOneWith: Takes a predicate function of arity 1, a replacement value, and an array. Returns a new array
+     *                 where the first value for which the given predicate returned true has been replaced with the
+     *                 given replacement. Throws if the first argument is not a function, if the function does not
+     *                 have arity 1, or if the last parameter is not an array.
      *
      */
 
     var replaceOneWith = curry(function(p, replacement, arr) {
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
-      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
-      if (Array.isArray(arr))
-        replacement = [replacement];
-      else
-        replacement = replacement.toString();
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string', noStrings: true});
+      replacement = [replacement];
 
       var found = false;
       var i = 0;
@@ -1111,9 +1114,9 @@
 
 
     /*
-     * replaceOne: Takes a value, a replacement value, and an array/string. Returns a new array/string where the first
-     *             occurrence of the given value—checked for strict equality—is replaced with the given replacement.
-     *             Throws a TypeError if the last parameter is not an array/string.
+     * replaceOne: Takes a value, a replacement value, and an array. Returns a new array where the first occurrence of
+     *             the given value—checked for strict equality—is replaced with the given replacement. Throws a
+     *             TypeError if the last parameter is not an array.
      *
      */
 
@@ -1123,36 +1126,29 @@
 
 
     /*
-     * replaceAllWith: Takes a predicate function of arity 1, a replacement value, and an array/string. Returns a new
-     *                 array/string where thenew array/string where all values for which the predicate returned true
-     *                 have been replaced with the given replacement. Throws a TypeError if the first parameter is not
-     *                 a function of arity 1, or if the last parameter is not an array/string.
+     * replaceAllWith: Takes a predicate function of arity 1, a replacement value, and an array. Returns a new array
+     *                 where thenew array/string where all values for which the predicate returned true have been
+     *                 replaced with the given replacement. Throws a TypeError if the first parameter is not a
+     *                 function of arity 1, or if the last parameter is not an array.
      *
      */
 
     var replaceAllWith = curry(function(p, replacement, arr) {
       p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
-      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array/string'});
-      if (Array.isArray(arr))
-        replacement = [replacement];
-      else
-        replacement = replacement.toString();
+      arr = checkArrayLike(arr, {message: 'Value to be modified is not an array', noStrings: true});
+      replacement = [replacement];
 
       var result = arr.slice();
       var i = 0;
 
       while (i < arr.length) {
-        if (!p(arr[i])) {
+        if (!p(result[i])) {
           i += 1;
           continue;
         }
 
         result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
-
-        if (Array.isArray(arr))
-          i += 1;
-        else
-          i += replacement.length;
+        i += 1;
       }
 
       return result;
@@ -1160,9 +1156,9 @@
 
 
     /*
-     * replaceAll: Takes a value, a replacement value, and an array/string. Returns a new array/string where the
-     *             new array/string where all occurrences of the given value—checked for strict equality—have been
-     *             replaced with the given replacement. Throws if the last parameter is not an array/string.
+     * replaceAll: Takes a value, a replacement value, and an array. Returns a new array where all occurrences of the
+     *             given value—checked for strict equality—have been replaced with the given replacement. Throws if
+     *             the last parameter is not an array.
      *
      */
 

@@ -133,10 +133,12 @@
 
 
     // Several functions require that the first parameter is a function with a specific arity
-    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, argsBetween, isMinimum, validFunction) {
-      argsBetween = argsBetween || [];
-      validFunction = validFunction || null;
-      isMinimum = isMinimum || false;
+    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, options) {
+      var options = options || {};
+      var argsBetween = options.argsBetween || [];
+      var validFunction = options.validFunction || null;
+      var isMinimum = options.isMinimum || false;
+      var arrayOnly = options.arrayOnly || false;
 
       var funcs = [
         function() {},
@@ -179,19 +181,21 @@
 
 
       addTestsForType('array', [1, 2, 3]);
-      addTestsForType('string', 'abc');
+      if (!arrayOnly)
+        addTestsForType('string', 'abc');
     };
 
 
     // Several functions expect the first argument to be a function that should be always be called with a
     // specific number of arguments
-    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween) {
+    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween, arrayOnly) {
       // None of the functions in array need more than 2 arguments: throw at test generation stage if I get
       // this wrong
       if (requiredArgs > 2)
         throw new Error('Incorrect test: addFuncCalledWithSpecificArityTests called with ' + requiredArgs);
 
       argsBetween = argsBetween || [];
+      arrayOnly = arrayOnly || false;
 
       var addTestsForType = function(type, originalData) {
         it('Function called with correct number of arguments when called with ' + type, function() {
@@ -222,7 +226,8 @@
 
 
       addTestsForType('array', [1, 2, 3]);
-      addTestsForType('string', 'abc');
+      if (!arrayOnly)
+        addTestsForType('string', 'abc');
     };
 
 
@@ -313,7 +318,9 @@
 
     // Several functions expect that the result should be distinct from the original
     // value, not harming the original value in any way
-    var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore) {
+    var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore, arrayOnly) {
+      arrayOnly = arrayOnly || false;
+
       var addOne = function(type, originalData) {
         it('Doesn\'t modify original ' + type + ' value', function() {
           var data = originalData.slice();
@@ -332,12 +339,15 @@
 
 
       addOne('array', [{foo: 1}, {foo: 2}, {bar: 3}]);
-      addOne('string', 'ab01cd');
+      if (!arrayOnly)
+        addOne('string', 'ab01cd');
     };
 
 
     // Several functions expect the return type to be the same as the final argument
-    var addReturnsSameTypeTests = function(fnUnderTest, argsBefore) {
+    var addReturnsSameTypeTests = function(fnUnderTest, argsBefore, arrayOnly) {
+      arrayOnly = arrayOnly || false;
+
       var addOne = function(type, originalData) {
         it('Returns ' + type + ' when called with ' + type, function() {
           var data = originalData.slice();
@@ -351,7 +361,8 @@
       };
 
       addOne('array', [{foo: 1}]);
-      addOne('string', 'abc');
+      if (!arrayOnly)
+        addOne('string', 'abc');
     };
 
 
@@ -545,7 +556,7 @@
 
     describeFunction(mapSpec, array.map, function(map) {
       addFuncCalledWithSpecificArityTests(map, 1);
-      addAcceptsOnlyFixedArityTests(map, 1, [], true);
+      addAcceptsOnlyFixedArityTests(map, 1, {isMinimum: true});
       addCalledWithEveryMemberTests(map);
       addReturnsEmptyOnEmptyTests(map, [function(x) {return 42;}], true);
 
@@ -740,7 +751,7 @@
 
     var addCommonFoldTests = function(desc, fnUnderTest, is1Func, isRTL) {
       var betweenArgs = is1Func ? [] : [0];
-      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, betweenArgs);
+      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, {argsBetween: betweenArgs});
       addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
       addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
 
@@ -2462,7 +2473,7 @@
 
 
     describeFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
-      addAcceptsOnlyFixedArityTests(findFromWith, 1, [1]);
+      addAcceptsOnlyFixedArityTests(findFromWith, 1, {argsBetween: [1]});
       addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
 
 
@@ -2837,7 +2848,7 @@
       addDegenerateTests('both empty', [], []);
 
 
-      addAcceptsOnlyFixedArityTests(zipWith, 2, [[4, 5, 6]], true);
+      addAcceptsOnlyFixedArityTests(zipWith, 2, {argsBetween: [[4, 5, 6]], isMinimum: true});
       addFuncCalledWithSpecificArityTests(zipWith, 2, [['a', 'b', 'c']]);
 
 
@@ -3593,7 +3604,6 @@
       it('Returned value has correct elements ' + message, function() {
         var data = originalData.slice();
         var newVal = fnUnderTest(val, data);
-        newVal = splitIfNecessary(newVal);
         var result = newVal.every(function(v, i) {
           return v === data[i];
         });
@@ -3605,19 +3615,13 @@
 
     var addCommonRemoveValTests = function(testAdder, fnUnderTest) {
       testAdder('for array', 2, [1, 2, 3]);
-      testAdder('for string', 'b', 'abc');
       testAdder('for array when value matches last entry', 3, [1, 2, 3]);
-      testAdder('for string when value matches last entry', 'c', 'abc');
       testAdder('for array when value matches first entry', 1, [1, 2, 3]);
-      testAdder('for string when value matches first entry', 'a', 'abc');
       testAdder('for singleton array when value matches', 1, [1]);
-      testAdder('for singleton string when value matches', 'a', 'a');
       testAdder('for array with multiple matches', 1, [1, 2, 3, 1]);
-      testAdder('for string with multiple matches', 'a', 'abca');
 
 
       addCommonRemoveNotFoundTests('for array when value not found', fnUnderTest, 4, [1, 2, 3]);
-      addCommonRemoveNotFoundTests('for string when value not found', fnUnderTest, 'd', 'abc');
       var obj = {foo: 42};
       addCommonRemoveNotFoundTests('for array when value not strictly equal', fnUnderTest, obj,
                        [{foo: 1}, {foo: 42}, {foo: 3}]);
@@ -3627,33 +3631,27 @@
 
     var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
       testAdder('for array', fooIs42, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      testAdder('for string', base.equals('b'), 'abc');
       testAdder('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
-      testAdder('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
       testAdder('for array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
-      testAdder('for string when value matches first entry', function(x) {return x < 'b';}, 'abc');
       testAdder('for singleton array when value matches', base.equals(1), [1]);
-      testAdder('for singleton string when value matches', base.equals('a'), 'a');
       testAdder('for array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
-      testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'abca');
 
       addCommonRemoveNotFoundTests('for array when value not found', fnUnderTest,
                              function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addCommonRemoveNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'abc');
     };
 
 
     var removeOneSpec = {
       name: 'removeOne',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
-      validArguments: [[2], [[1, 2, 3], 'abc']]
+      restrictions: [[], ['array']],
+      validArguments: [[2], [[1, 2, 3]]]
     };
 
 
     describeFunction(removeOneSpec, array.removeOne, function(removeOne) {
-      addNoModificationOfOriginalTests(removeOne, [0]);
-      addReturnsSameTypeTests(removeOne, [0]);
+      addNoModificationOfOriginalTests(removeOne, [0], true);
+      addReturnsSameTypeTests(removeOne, [0], true);
 
 
       var addTests = function(message, val, originalData) {
@@ -3668,7 +3666,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var newVal = removeOne(val, data);
-          newVal = splitIfNecessary(newVal);
+
           var deletionSpotFound = false;
           var result = newVal.every(function(v, i) {
             if (deletionSpotFound || data[i] === val) {
@@ -3720,16 +3718,16 @@
     var removeOneWithSpec = {
       name: 'removeOneWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
-      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
+      restrictions: [['function'], ['array']],
+      validArguments: [[alwaysTrue], [[1, 2, 3]]]
     };
 
 
     describeFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
-      addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue]);
-      addReturnsSameTypeTests(removeOneWith, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(removeOneWith, 1);
-      addFuncCalledWithSpecificArityTests(removeOneWith, 1);
+      addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue], true);
+      addReturnsSameTypeTests(removeOneWith, [alwaysTrue], true);
+      addAcceptsOnlyFixedArityTests(removeOneWith, 1, {arrayOnly: true});
+      addFuncCalledWithSpecificArityTests(removeOneWith, 1, [], true);
 
 
       var addTests = function(message, f, originalData) {
@@ -3744,7 +3742,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var newVal = removeOneWith(f, data);
-          newVal = splitIfNecessary(newVal);
+
           var deletionSpotFound = false;
           var result = newVal.every(function(v, i) {
             if (deletionSpotFound || f(data[i])) {
@@ -3796,14 +3794,14 @@
     var removeAllSpec = {
       name: 'removeAll',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
-      validArguments: [[2], [[1, 2, 3], 'abc']]
+      restrictions: [[], ['array']],
+      validArguments: [[2], [[1, 2, 3]]]
     };
 
 
     describeFunction(removeAllSpec, array.removeAll, function(removeAll) {
-      addNoModificationOfOriginalTests(removeAll, [0]);
-      addReturnsSameTypeTests(removeAll, [0]);
+      addNoModificationOfOriginalTests(removeAll, [0], true);
+      addReturnsSameTypeTests(removeAll, [0], true);
 
 
       var addTests = function(message, val, originalData) {
@@ -3819,7 +3817,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var newVal = removeAll(val, data);
-          newVal = splitIfNecessary(newVal);
+
           var offset = 0;
           var result = newVal.every(function(v, i) {
             while (data[i + offset] === val)
@@ -3846,7 +3844,6 @@
 
       addCommonRemoveValTests(addTests, removeAll);
       addTests('for array with all matches', 1, [1, 1, 1, 1]);
-      addTests('for string with all matches', 'a', 'aaaa');
 
 
       testCurriedFunction('removeAll', removeAll, [0, [1, 2, 3]]);
@@ -3856,16 +3853,16 @@
     var removeAllWithSpec = {
       name: 'removeAllWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
-      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
+      restrictions: [['function'], ['array']],
+      validArguments: [[alwaysTrue], [[1, 2, 3]]]
     };
 
 
     describeFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
-      addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue]);
-      addReturnsSameTypeTests(removeAllWith, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(removeAllWith, 1);
-      addFuncCalledWithSpecificArityTests(removeAllWith, 1);
+      addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue], true);
+      addReturnsSameTypeTests(removeAllWith, [alwaysTrue], true);
+      addAcceptsOnlyFixedArityTests(removeAllWith, 1, {arrayOnly: true});
+      addFuncCalledWithSpecificArityTests(removeAllWith, 1, [], true);
 
 
       var addTests = function(message, f, originalData) {
@@ -3881,7 +3878,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var newVal = removeAllWith(f, data);
-          newVal = splitIfNecessary(newVal);
+
           var offset = 0;
           var result = newVal.every(function(v, i) {
             while (f(data[i + offset]))
@@ -3908,7 +3905,6 @@
 
       addCommonRemoveWithTests(addTests, removeAllWith);
       addTests('for array where every value matches', base.constant(true), [1, 2, 3, 4]);
-      addTests('for string where every value matches', base.constant(true), 'abcd');
 
 
       testCurriedFunction('removeAllWith', removeAllWith, [base.constant(true), [1, 2, 3]]);
@@ -3927,7 +3923,7 @@
       it('Returned value has correct elements ' + message, function() {
         var data = originalData.slice();
         var replaced = fnUnderTest(val, newVal, data);
-        replaced = splitIfNecessary(replaced);
+
         var result = replaced.every(function(v, i) {
           return v === data[i];
         });
@@ -3939,13 +3935,10 @@
 
     var addCommonReplaceValTests = function(testAdder, fnUnderTest) {
       testAdder('for array', 2, 4, [1, 2, 3]);
-      testAdder('for string', 'b', 'd', 'abc');
       testAdder('for array with multiple matches', 1, 4, [1, 2, 3, 1]);
-      testAdder('for string with multiple matches', 'a', 'd', 'abca');
 
 
       addCommonReplaceNotFoundTests('for array when value not found', fnUnderTest, 4, 5, [1, 2, 3]);
-      addCommonReplaceNotFoundTests('for string when value not found', fnUnderTest, 'd', 'e', 'abc');
       var obj = {foo: 42};
       addCommonReplaceNotFoundTests('for array when value not strictly equal', fnUnderTest, obj, {foo: 52},
                        [{foo: 1}, {foo: 42}, {foo: 3}]);
@@ -3955,27 +3948,24 @@
 
     var addCommonReplaceWithTests = function(testAdder, fnUnderTest) {
       testAdder('for array', fooIs42, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      testAdder('for string', base.equals('b'), 'd', 'abc');
       testAdder('for array with multiple matches', function(x) {return x < 10;}, 11, [1, 2, 3, 1]);
-      testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'e', 'abca');
 
       addCommonReplaceNotFoundTests('for array when value not found', fnUnderTest,
                              function(x) {return x.foo === 4;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-      addCommonReplaceNotFoundTests('for string when value not found', fnUnderTest, base.constant(false), 'd', 'abc');
     };
 
 
     var replaceOneSpec = {
       name: 'replaceOne',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
-      validArguments: [[2], [4], [[1, 2, 3], 'abc']]
+      restrictions: [[], [], ['array']],
+      validArguments: [[2], [4], [[1, 2, 3]]]
     };
 
 
     describeFunction(replaceOneSpec, array.replaceOne, function(replaceOne) {
-      addNoModificationOfOriginalTests(replaceOne, [0, 1]);
-      addReturnsSameTypeTests(replaceOne, [0, 1]);
+      addNoModificationOfOriginalTests(replaceOne, [0, 1], true);
+      addReturnsSameTypeTests(replaceOne, [0, 1], true);
 
 
       var addTests = function(message, val, newVal, originalData) {
@@ -3990,7 +3980,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var replaced = replaceOne(val, newVal, data);
-          replaced = splitIfNecessary(replaced);
+
           var found = false;
           var result = replaced.every(function(v, i) {
             if (!found && data[i] === val) {
@@ -4039,16 +4029,16 @@
     var replaceOneWithSpec = {
       name: 'replaceOneWith',
       arity: 3,
-      restrictions: [['function'], [], ['array', 'string']],
-      validArguments: [[alwaysTrue], [1], [[1, 2, 3], 'abc']]
+      restrictions: [['function'], [], ['array']],
+      validArguments: [[alwaysTrue], [1], [[1, 2, 3]]]
     };
 
 
     describeFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
-      addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1]);
-      addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a']);
-      addAcceptsOnlyFixedArityTests(replaceOneWith, 1, ['a']);
-      addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a']);
+      addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1], true);
+      addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a'], true);
+      addAcceptsOnlyFixedArityTests(replaceOneWith, 1, {argsBetween: ['a'], arrayOnly: true});
+      addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a'], true);
 
 
       var addTests = function(message, f, newVal, originalData) {
@@ -4063,7 +4053,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var replaced = replaceOneWith(f, newVal, data);
-          replaced = splitIfNecessary(replaced);
+
           var found = false;
           var result = replaced.every(function(v, i) {
             if (!found && f(data[i])) {
@@ -4115,14 +4105,14 @@
     var replaceAllSpec = {
       name: 'replaceAll',
       arity: 3,
-      restrictions: [[], [], ['array', 'string']],
-      validArguments: [[2], [4], [[1, 2, 3], 'abc']]
+      restrictions: [[], [], ['array']],
+      validArguments: [[2], [4], [[1, 2, 3]]]
     };
 
 
     describeFunction(replaceAllSpec, array.replaceAll, function(replaceAll) {
-      addNoModificationOfOriginalTests(replaceAll, [0, 1]);
-      addReturnsSameTypeTests(replaceAll, [0, 1]);
+      addNoModificationOfOriginalTests(replaceAll, [0, 1], true);
+      addReturnsSameTypeTests(replaceAll, [0, 1], true);
 
 
       var addTests = function(message, val, newVal, originalData) {
@@ -4137,7 +4127,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var replaced = replaceAll(val, newVal, data);
-          replaced = splitIfNecessary(replaced);
+
           var result = replaced.every(function(v, i) {
             if (data[i] === val)
               return v === newVal;
@@ -4185,16 +4175,16 @@
     var replaceAllWithSpec = {
       name: 'replaceAllWith',
       arity: 3,
-      restrictions: [['function'], [], ['array', 'string']],
-      validArguments: [[alwaysTrue], ['e'], [[1, 2, 3], 'abc']]
+      restrictions: [['function'], [], ['array']],
+      validArguments: [[alwaysTrue], ['e'], [[1, 2, 3]]]
     };
 
 
     describeFunction(replaceAllWithSpec, array.replaceAllWith, function(replaceAllWith) {
-      addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e']);
-      addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e']);
-      addAcceptsOnlyFixedArityTests(replaceAllWith, 1, ['e']);
-      addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e']);
+      addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e'], true);
+      addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e'], true);
+      addAcceptsOnlyFixedArityTests(replaceAllWith, 1, {argsBetween: ['e'], arrayOnly: true});
+      addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e'], true);
 
 
       var addTests = function(message, f, newVal, originalData) {
@@ -4209,7 +4199,7 @@
         it('Returned value has correct elements ' + message, function() {
           var data = originalData.slice();
           var replaced = replaceAllWith(f, newVal, data);
-          replaced = splitIfNecessary(replaced);
+
           var result = replaced.every(function(v, i) {
             if (f(data[i]))
                return v === newVal;
@@ -4249,7 +4239,6 @@
 
       addCommonReplaceWithTests(addTests, replaceAllWith);
       addTests('for array where every value matches', function(x) {return x < 5;}, 5, [1, 2, 3, 4]);
-      addTests('for string where every value matches', function(x) {return x < 'e';}, 'e', 'abcd');
 
 
       testCurriedFunction('replaceAllWith', replaceAllWith, [base.constant(true), 4, [1, 2, 3]]);
@@ -4446,7 +4435,7 @@
 
 
     describeFunction(flattenMapSpec, array.flattenMap, function(flattenMap) {
-      addAcceptsOnlyFixedArityTests(flattenMap, 1, [], false, base.constant([]));
+      addAcceptsOnlyFixedArityTests(flattenMap, 1, {validFunction: base.constant([])});
 
 
       var addTest = function(message, f, originalData) {
