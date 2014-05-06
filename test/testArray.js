@@ -357,7 +357,10 @@
 
     // Several functions should yield the empty array/string when called with an empty
     // array/string
-    var addReturnsEmptyOnEmptyTests = function(fnUnderTest, argsBefore) {
+    var addReturnsEmptyOnEmptyTests = function(fnUnderTest, argsBefore, alwaysArray) {
+      alwaysArray = alwaysArray || false;
+
+
       it('Returns empty array when called with empty array', function() {
         var original = [];
         var result = fnUnderTest.apply(null, argsBefore.concat([original]));
@@ -367,11 +370,11 @@
       });
 
 
-      it('Returns empty string when called with empty string', function() {
+      it('Returns empty ' + (alwaysArray ? 'array' : 'string') + ' when called with empty string', function() {
         var original = '';
         var result = fnUnderTest.apply(null, argsBefore.concat([original]));
 
-        expect(result).to.deep.equal('');
+        expect(result).to.deep.equal(alwaysArray ? [] : '');
       });
     };
 
@@ -544,6 +547,7 @@
       addFuncCalledWithSpecificArityTests(map, 1);
       addAcceptsOnlyFixedArityTests(map, 1, [], true);
       addCalledWithEveryMemberTests(map);
+      addReturnsEmptyOnEmptyTests(map, [function(x) {return 42;}], true);
 
 
       var addTests = function(message, f, originalData) {
@@ -576,10 +580,8 @@
 
       addTests('called with array (1)', base.id, [1, true, null, undefined]);
       addTests('called with array (2)', function(x) {return x + 1;}, [2, 3, 4]);
-      addTests('called with empty array', function(x) {return 42;}, []);
       addTests('called with strings (1)', function(x) {return x.toUpperCase();}, 'funkier');
       addTests('called with strings (2)', function(x) {return x.charCodeAt(0);}, 'abc');
-      addTests('called with empty string', function(x) {return true;}, '');
 
 
       it('Array contains partially applied functions if supplied function arity > 1', function() {
@@ -2566,32 +2568,24 @@
 
 
     describeFunction(occurrencesSpec, array.occurrences, function(occurrences) {
-      it('Returns empty array when called with empty array', function() {
-        var result = occurrences(1, []);
-
-        expect(result).to.deep.equal([]);
-      });
+      addReturnsEmptyOnEmptyTests(occurrences, ['z'], true);
 
 
-      it('Returns empty array when called with empty string', function() {
-        var result = occurrences(1, '');
-
-        expect(result).to.deep.equal([]);
-      });
+      var addEmptyWhenNotFoundTest = function(val, originalData) {
+        var isArray = typeof(originalData) !== 'string';
 
 
-      it('Returns empty array when value not found (array)', function() {
-        var result = occurrences(1, [2, 3, 4]);
+        it('Returns empty array when value not found (' + (isArray ? 'array' : 'string') + ')', function() {
+          var data = originalData.slice();
+          var result = occurrences(val, data);
 
-        expect(result).to.deep.equal([]);
-      });
+          expect(result).to.deep.equal([]);
+        });
+      };
 
 
-      it('Returns empty array when value not found (string)', function() {
-        var result = occurrences('a', 'funkier');
-
-        expect(result).to.deep.equal([]);
-      });
+      addEmptyWhenNotFoundTest(1, [2, 3, 4]);
+      addEmptyWhenNotFoundTest('a', 'bcd');
 
 
       var addTest = function(message, val, originalData) {
@@ -2649,67 +2643,13 @@
 
     describeFunction(occurrencesWithSpec, array.occurrencesWith, function(occurrencesWith) {
       addAcceptsOnlyFixedArityTests(occurrencesWith, 1);
+      addReturnsEmptyOnEmptyTests(occurrencesWith, [alwaysTrue], true);
 
 
-      it('Returns empty array when called with empty array', function() {
-        var result = occurrencesWith(alwaysTrue, []);
-
-        expect(result).to.deep.equal([]);
-      });
+      var addTests = function(message, p, originalData, isNotFound) {
+        isNotFound = isNotFound || false;
 
 
-      it('Returns empty array when called with empty string', function() {
-        var result = occurrencesWith(alwaysTrue, '');
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Returns empty array when value not found (array)', function() {
-        var result = occurrencesWith(base.constant(false), [2, 3, 4]);
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Function called for every element when not found (array)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = [1, 2, 3];
-        var index = 1;
-        occurrencesWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
-        });
-
-        expect(f.called.length).to.equal(arr.length);
-        expect(result).to.be.true;
-      });
-
-
-      it('Returns empty array when value not found (string)', function() {
-        var result = occurrencesWith(base.constant(false), 'funkier');
-
-        expect(result).to.deep.equal([]);
-      });
-
-
-      it('Function called for every element when not found (string)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = 'abcde';
-        var index = 1;
-        occurrencesWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
-        });
-
-        expect(f.called.length).to.equal(arr.length);
-        expect(result).to.be.true;
-      });
-
-
-      var addTest = function(message, p, originalData) {
         it('Returns an array ' + message, function() {
           var data = originalData.slice();
           var result = occurrencesWith(p, data);
@@ -2718,17 +2658,29 @@
         });
 
 
+        if (isNotFound) {
+          it('Returns empty array ' + message, function() {
+            var data = originalData.slice();
+            var result = occurrencesWith(base.constant(false), data);
+
+            expect(result).to.deep.equal([]);
+          });
+        }
+
+
         it('Function called for every element ' + message, function() {
           var f = function(x) {f.called.push(x); return p(x);};
           f.called = [];
-          var arr = 'abcde';
+
+          var data = originalData.slice();
           var index = 1;
-          occurrencesWith(f, arr);
+          occurrencesWith(f, data);
+
           var result = f.called.every(function(v, i) {
-            return v === arr[i];
+            return v === data[i];
           });
 
-          expect(f.called.length).to.equal(arr.length);
+          expect(f.called.length).to.equal(data.length);
           expect(result).to.be.true;
         });
 
@@ -2746,6 +2698,7 @@
         it('No indices missing ' + message, function() {
           var data = splitIfNecessary(originalData.slice());
           var found = occurrencesWith(p, data);
+
           var result = data.every(function(v, i) {
             if (found.indexOf(i) !== -1) return true;
             return p(v) === false;
@@ -2756,12 +2709,14 @@
       };
 
 
-      addTest('for array (1)', base.strictEquals(1), [2, 1, 3]);
-      addTest('for array (2)', base.strictEquals(1), [2, 1, 1, 3, 1]);
-      addTest('for array (3)', function(x) {return x.foo = 3;},
+      addTests('for array when value not found', alwaysFalse, [1, 2, 3]);
+      addTests('for string when value not found', alwaysFalse, 'funkier');
+      addTests('for array (1)', base.strictEquals(1), [2, 1, 3]);
+      addTests('for array (2)', base.strictEquals(1), [2, 1, 1, 3, 1]);
+      addTests('for array (3)', function(x) {return x.foo = 3;},
               [{foo: 3}, {foo: 42}, {foo: 3}, {foo: 3}, {foo: undefined}]);
-      addTest('for string (1)', base.strictEquals('a'), 'ban');
-      addTest('for string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
+      addTests('for string (1)', base.strictEquals('a'), 'ban');
+      addTests('for string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
 
 
       testCurriedFunction('occurrencesWith', occurrencesWith, [alwaysTrue, [1, 2, 3]]);
