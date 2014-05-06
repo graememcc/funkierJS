@@ -2305,24 +2305,19 @@
 
 
     describeFunction(isEmptySpec, array.isEmpty, function(isEmpty) {
-      it('Works for an empty array', function() {
-        expect(isEmpty([])).to.be.true;
-      });
+      var addOne = function(message, originalData) {
+        it('Works for ' + message, function() {
+          var data = originalData.slice();
+
+          expect(isEmpty(data)).to.equal(data.length === 0);
+        });
+      };
 
 
-      it('Works for an empty string', function() {
-        expect(isEmpty('')).to.be.true;
-      });
-
-
-      it('Works for non-empty array', function() {
-        expect(isEmpty([1, 2])).to.be.false;
-      });
-
-
-      it('Works for an non-empty string', function() {
-        expect(isEmpty('a')).to.be.false;
-      });
+      addOne('an empty array', []);
+      addOne('an empty string', '');
+      addOne('a non-empty array', [1, 2]);
+      addOne('a non-empty string', 'a');
     });
 
 
