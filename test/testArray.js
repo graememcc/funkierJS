@@ -39,6 +39,12 @@
     describeModule('array', array, expectedObjects, expectedFunctions);
 
 
+    // Many of the predicate functions on strings are tested with the following predicate
+    var isDigit = function(x) {return x >= '0' && x <= '9';};
+    // and likewise the array tests regularly use this test
+    var fooIs42 = function(x) {return x.foo === 42;};
+
+
     // Many functions split string arguments in order to run a test using every
     var splitIfNecessary = function(val) {
       if (typeof(val) === 'string')
@@ -1324,13 +1330,11 @@
       addElementNotFoundTest(elementWith, 'string is empty', alwaysTrue, '');
       addElementNotFoundTest(elementWith, 'array predicate returns false', function(x) {return x.foo === 5;},
                                           [{foo: 1}, {foo: 4}, {foo: 3}]);
-      addElementNotFoundTest(elementWith, 'string predicate returns false', function(x) {return x >= '0' && x <= '9';},
-                                          'abcde');
+      addElementNotFoundTest(elementWith, 'string predicate returns false', isDigit, 'abcde');
 
       addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7},
                                        [{foo: 1}, {foo: 7}, {foo: 4}]);
-      addElementFoundTest(elementWith, 'predicate matches element in string', function(x) {return x >= '0' && x <= '9';},
-                                          'abc8de');
+      addElementFoundTest(elementWith, 'predicate matches element in string', isDigit, 'abc8de');
 
 
       testCurriedFunction('elementWith', elementWith, [function(x) {return true;}, [1, 2, 3]]);
@@ -1969,7 +1973,7 @@
         addTests('array', '(2)', function(x) {return x % 2 === 0;}, 3, [2, 4, 6, 1, 5]);
         addTests('array', '(3)', alwaysTrue, 5, [2, 4, 6, 1, 5]);
         addTests('string', '(1)', function(x) {return x  === ' ';}, 3, '   funkier');
-        addTests('string', '(2)', function(x) {return x >= '0' && x <= '9';}, 2, '09abc');
+        addTests('string', '(2)', isDigit, 2, '09abc');
         addTests('string', '(3)', alwaysTrue, 5, 'abcde');
         addNoModificationOfOriginalTests(fnUnderTest, [alwaysTrue]);
 
@@ -2382,16 +2386,12 @@
                   [alwaysFalse, 'funkier'], -1);
 
       var fooArr1 = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
-      addFindTest('Works correctly when value present in array', findWith,
-                  [function(x) {return x.foo === 42;}, fooArr1], 1);
-      addFindTest('Works correctly when value present in string', findWith,
-                  [function(x) {return x >= '0' && x <= '9';}, 'ab0cd'], 2);
+      addFindTest('Works correctly when value present in array', findWith, [fooIs42, fooArr1], 1);
+      addFindTest('Works correctly when value present in string', findWith, [isDigit, 'ab0cd'], 2);
 
       var fooArr2 = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
-      addFindTest('Returns first index of first match in array', findWith,
-                  [function(x) {return x.foo === 42;}, fooArr2], 2);
-      addFindTest('Returns first index of first match in string', findWith,
-                  [function(x) {return x >= '0' && x <= '9';}, 'abc01d2'], 3);
+      addFindTest('Returns first index of first match in array', findWith, [fooIs42, fooArr2], 2);
+      addFindTest('Returns first index of first match in string', findWith, [isDigit, 'abc01d2'], 3);
 
 
       var addCalledWithEveryNotFoundTest = function(originalData) {
@@ -2443,8 +2443,7 @@
       };
 
 
-      addCalledOnlyAsOftenAsNecessaryTest(function(x) {return x.foo === 42;},
-                                          [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]);
+      addCalledOnlyAsOftenAsNecessaryTest(fooIs42,[{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]);
       addCalledOnlyAsOftenAsNecessaryTest(function(x) {return x < 'a';}, 'abCde');
 
 
@@ -2465,182 +2464,93 @@
       addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
 
 
-      it('Function never called with empty array', function() {
-        var f = function(x) {f.called += 1; return true;};
-        f.called = 0;
-        findFromWith(f, 1, []);
+      var addNeverCalledOnEmptyTest = function(originalData) {
+        var isArray = typeof(value) !== 'string';
 
-        expect(f.called).to.equal(0);
-      });
+        it('Function never called with empty ' + (isArray ? 'array ' : 'string'), function() {
+          var data = originalData.slice();
+          var f = function(x) {f.called += 1; return true;};
+          f.called = 0;
+          findFromWith(f, 1, data);
 
-
-      it('Works correctly with empty arrays', function() {
-        var result = findFromWith(alwaysTrue, 1, []);
-
-        expect(result).to.equal(-1);
-      });
-
-
-      it('Function never called with empty string', function() {
-        var f = function(x) {f.called += 1; return true;};
-        f.called = 0;
-        findFromWith(f, 1, '');
-
-        expect(f.called).to.equal(0);
-      });
-
-
-      it('Works correctly with empty string', function() {
-        var result = findFromWith(alwaysTrue, 1, '');
-
-        expect(result).to.equal(-1);
-      });
-
-
-      it('Function called with every element from position if not found (array)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = [2, 3, 4];
-        var index = 1;
-        findFromWith(f, index, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i + index];
+          expect(f.called).to.equal(0);
         });
-
-        expect(f.called.length).to.equal(arr.length - index);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly if value never found from position (array)', function() {
-        var result = findFromWith(base.constant(false), 1, [1, 2, 3]);
+      addNeverCalledOnEmptyTest([]);
+      addNeverCalledOnEmptyTest('');
+      addFindTest('Works correctly when array empty', findFromWith, [alwaysTrue, 1, []], -1);
+      addFindTest('Works correctly when string empty', findFromWith, [alwaysTrue, 1, ''], -1);
+      addFindTest('Works correctly if value not present from position (array)', findFromWith,
+                  [function(x) {return x < 3;}, 2, [1, 2, 3, 4, 5]], -1);
+      addFindTest('Works correctly if value not present from position (string)', findFromWith,
+                  [function(x) {return x < 'd';}, 3, 'abdefg'], -1);
+      addFindTest('Works correctly if index >= array.length', findFromWith, [alwaysTrue, 4, [1, 2, 3]], -1);
+      addFindTest('Works correctly if index >= string.length', findFromWith, [alwaysTrue, 5, 'abc'], -1);
 
-        expect(result).to.equal(-1);
-      });
+      var fooArr1 = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
+      addFindTest('Works correctly when value present in array', findFromWith, [fooIs42, 1, fooArr1], 1);
+      addFindTest('Works correctly when value present in string', findFromWith, [isDigit, 1, 'ab0cd'], 2);
+
+      var fooArr2 = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+      addFindTest('Returns first match from position in array', findFromWith, [fooIs42, 1, fooArr2], 2);
+      addFindTest('Returns first match from position in string', findFromWith, [isDigit, 2, 'abc01d'], 3);
+
+      var fooArr3 = [{foo: 42}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+      addFindTest('Ignores earlier occurrences in array', findFromWith, [fooIs42, 1, fooArr2], 2);
+      addFindTest('Ignores earlier occurrences in string', findFromWith, [isDigit, 2, 'a1c0d'], 3);
 
 
-      it('Function called with every element from position if not found (string)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = 'funkier';
-        var index = 2;
-        findFromWith(f, index, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i + index];
+      var addCalledWithEveryNotFoundTest = function(index, originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Function called with every element from position if not found (' + (isArray ? 'array' : 'string') + ')', function() {
+          var f = function(x) {f.called.push(x); return false;};
+          f.called = [];
+
+          var data = originalData.slice();
+          findFromWith(f, index, data);
+
+          var result = f.called.every(function(v, i) {
+            return v === data[i + index];
+          });
+
+          expect(f.called.length).to.equal(data.length - index);
+          expect(result).to.be.true;
         });
-
-        expect(f.called.length).to.equal(arr.length - index);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly if value never found from position (string)', function() {
-        var result = findFromWith(base.constant(false), 1, 'def');
-
-        expect(result).to.equal(-1);
-      });
+      addCalledWithEveryNotFoundTest(1, [2, 3, 4]);
+      addCalledWithEveryNotFoundTest(2, 'funkier');
 
 
-      it('Function called only as often as necessary when found from position (array)', function() {
-        var f = function(x) {f.called.push(x); return x.foo === 42;};
-        f.called = [];
-        var arr = [{foo: 1}, {foo: 3}, {foo: 7}, {foo: 5}, {foo: 42}, {foo: 6}];
-        var index = 3;
-        findFromWith(f, index, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i + index];
+      var addCalledAsNecessaryTest = function(predicate, index, originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Function called only as often as necessary when found from position (' + (isArray ? 'array' : 'string') + ')', function() {
+          var f = function(x) {f.called.push(x); return predicate(x);};
+          f.called = [];
+
+          var data = originalData.slice();
+          var idx = findFromWith(f, index, data);
+
+          var result = f.called.every(function(v, i) {
+            return v === data[i + index];
+          });
+
+          expect(f.called.length).to.equal(idx - index + 1);
+          expect(result).to.be.true;
         });
-
-        expect(f.called.length).to.equal(2);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly when value present (array)', function() {
-        var f = function(x) {return x.foo === 42;};
-        var arr = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
-        var result = findFromWith(f, 1, arr);
-
-        expect(result).to.equal(1);
-      });
-
-
-      it('Returns first index (array)', function() {
-        var f = function(x) {return x.foo === 42;};
-        var arr = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
-        var result = findFromWith(f, 1, arr);
-
-        expect(result).to.equal(2);
-      });
-
-
-      it('Ignores earlier occurrences (array)', function() {
-        var f = function(x) {return x.foo === 42;};
-        var arr = [{foo: 42}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
-        var result = findFromWith(f, 1, arr);
-
-        expect(result).to.equal(2);
-      });
-
-
-      it('Works correctly if index >= array length', function() {
-        var f = alwaysTrue;
-        var arr = [1, 2, 3];
-        var result = findFromWith(f, 4, arr);
-
-        expect(result).to.equal(-1);
-      });
-
-
-      it('Function called only as often as necessary when found (string)', function() {
-        var f = function(x) {f.called.push(x); return x >= '0' && x <= '9';};
-        f.called = [];
-        var arr = 'ab0cd';
-        var index = 1;
-        findFromWith(f, index, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i + index];
-        });
-
-        expect(f.called.length).to.equal(2);
-        expect(result).to.be.true;
-      });
-
-
-      it('Works correctly when value present (string)', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var arr = 'ab0cd';
-        var result = findFromWith(f, 1, arr);
-
-        expect(result).to.equal(2);
-      });
-
-
-      it('Returns first index (array)', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var arr = 'a0c1d';
-        var result = findFromWith(f, 1, arr);
-
-        expect(result).to.equal(1);
-      });
-
-
-      it('Ignores earlier matches (array)', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var arr = 'a0c1d';
-        var result = findFromWith(f, 2, arr);
-
-        expect(result).to.equal(3);
-      });
-
-
-      it('Works correctly if index >= string length', function() {
-        var f = alwaysTrue;
-        var arr = 'abc';
-        var result = findFromWith(f, 7, arr);
-
-        expect(result).to.equal(-1);
-      });
+      addCalledAsNecessaryTest(function(x) {return x.foo = 5;}, 2,
+                               [{foo: 1}, {foo: 2}, {foo: 3}, {foo: 1}, {foo: 5}, {foo: 4}]);
+      addCalledAsNecessaryTest(isDigit, 1, 'ab0cd');
 
 
       testCurriedFunction('findFromWith', findFromWith, [alwaysTrue, 1, 'funkier']);
@@ -3824,7 +3734,7 @@
 
 
     var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
-      testAdder('for array', function(x) {return x.foo === 42;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for array', fooIs42, [{foo: 1}, {foo: 42}, {foo: 3}]);
       testAdder('for string', base.equals('b'), 'abc');
       testAdder('for array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
       testAdder('for string when value matches last entry', function(x) {return x >= 'c';}, 'abc');
@@ -4152,7 +4062,7 @@
 
 
     var addCommonReplaceWithTests = function(testAdder, fnUnderTest) {
-      testAdder('for array', function(x) {return x.foo === 42;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('for array', fooIs42, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
       testAdder('for string', base.equals('b'), 'd', 'abc');
       testAdder('for array with multiple matches', function(x) {return x < 10;}, 11, [1, 2, 3, 1]);
       testAdder('for string with multiple matches', function(x) {return x < 'd';}, 'e', 'abca');
