@@ -487,73 +487,40 @@
 
 
     describeFunction(replicateSpec, array.replicate, function(replicate) {
-      it('Returns array (1)', function() {
-        var howMany = 10;
-        var obj = 'a';
-        var result = replicate(howMany, obj);
-
-        expect(Array.isArray(result)).to.be.true;
-      });
-
-
-      it('Returns array (2)', function() {
-        var howMany = 1;
-        var obj = 2;
-        var result = replicate(howMany, obj);
-
-        expect(Array.isArray(result)).to.be.true;
-      });
-
-
-      it('Returned array has correct length (1)', function() {
-        var howMany = 10;
-        var obj = 'a';
-        var result = replicate(howMany, obj);
-
-        expect(result.length).to.equal(howMany);
-      });
-
-
-      it('Returned array has correct length (2)', function() {
-        var howMany = 1;
-        var obj = 2;
-        var result = replicate(howMany, obj);
-
-        expect(result.length).to.equal(howMany);
-      });
-
-
-      it('Returned array\'s elements strictly equal parameter (1)', function() {
-        var howMany = 10;
-        var obj = 'a';
-        var result = replicate(howMany, obj).every(function(e) {
-          return e === obj;
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Returned array\'s elements strictly equal parameter (2)', function() {
-        var howMany = 10;
-        var obj = {};
-        var result = replicate(howMany, obj).every(function(e) {
-          return e === obj;
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Works when count is zero', function() {
-        var result = replicate(0, 'a');
-
-        expect(result).to.deep.equal([]);
-      });
-
-
       addBadNumberTests('length', replicate, [], ['a']);
       addBadNumberTests('length', replicate, [], [1]);
+
+
+      var addTests = function(message, count, data) {
+        it('Returns array ' + message, function() {
+          var result = replicate(count, data);
+
+          expect(Array.isArray(result)).to.be.true;
+        });
+
+
+        it('Returned array has correct length ' + message, function() {
+          var result = replicate(count, data);
+
+          expect(result.length).to.equal(count);
+        });
+
+
+        it('Returned array\'s elements strictly equal parameter ' + message, function() {
+          var result = replicate(count, data).every(function(e) {
+            return e === data;
+          });
+
+          expect(result).to.be.true;
+        });
+      };
+
+
+      addTests('(1)', 1, 'a');
+      addTests('(2)', 10, {});
+      addTests('when count is zero', 0, 2);
+
+
       testCurriedFunction('replicate', replicate, [1, 1]);
     });
 
