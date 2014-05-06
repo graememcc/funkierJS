@@ -456,39 +456,22 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        it('Works for arrays (1)', function() {
-          var a = [1, 7, 0, 42];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
-        });
-
-
-        it('Works for arrays (2)', function() {
-          var a = [42];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
-        });
-
-
-        it('Works for strings (1)', function() {
-          var a = 'dcba';
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
-        });
-
-
-        it('Works for strings (2)', function() {
-          var a = 'funkier';
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(a[isFirst ? 0 : a.length - 1]);
-        });
-
-
         addThrowsOnEmptyTests(fnUnderTest, []);
+
+        var addOne = function(message, originalData) {
+          it('Works for ' + message, function() {
+            var data = originalData.slice();
+            var result = fnUnderTest(data);
+
+            expect(result).to.equal(data[isFirst ? 0 : data.length - 1]);
+          });
+        };
+
+
+        addOne('arrays (1)', [1]);
+        addOne('arrays (2)', [2, 3]);
+        addOne('strings (1)', 'a');
+        addOne('strings (2)', 'funkier');
       });
     };
 
