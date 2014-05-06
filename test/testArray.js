@@ -1841,22 +1841,26 @@
     describeFunction(sliceSpec, array.slice, function(slice) {
       addBadNumberTests('from', slice, [], [1, 'abc']);
       addBadNumberTests('to', slice, [0], ['abc']);
+      addReturnsSameTypeTests(slice, [0, 1]);
+      addNoModificationOfOriginalTests(slice, []);
+      addNoModificationOfOriginalTests(slice, []);
 
 
-      it('Returns empty array if from <= length', function() {
-        var original = [1, 2, 3];
-        var result = slice(4, 5, original);
-
-        expect(result).to.deep.equal([]);
-      });
+      var addEmptyTests = function(originalData) {
+        var isArray = typeof(originalData) !== 'string';
 
 
-      it('Returns empty string if from <= length', function() {
-        var original = 'abc';
-        var result = slice(4, 5, original);
+        it('Returns empty ' + (isArray ? 'array' : 'string') + ' if from <= length', function() {
+          var data = originalData.slice();
+          var result = slice(4, 5, data);
 
-        expect(result).to.deep.equal('');
-      });
+          expect(result).to.deep.equal(isArray ? [] : '');
+        });
+      };
+
+
+      addEmptyTests([1, 2, 3]);
+      addEmptyTests('abc');
 
 
       var addTests = function(message, from, to, arrData, strData) {
@@ -1890,9 +1894,6 @@
       addTests('to > len', 1, 5, [1, 2, 3, 4], 'abcd');
       addTests('to === len', 1, 4, [2, 3, 4, 5], 'efgh');
       addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], 'abcd');
-      addReturnsSameTypeTests(slice, [0, 1]);
-      addNoModificationOfOriginalTests(slice, []);
-      addNoModificationOfOriginalTests(slice, []);
 
 
       testCurriedFunction('slice', slice, [1, 2, 'funkier']);
@@ -2062,7 +2063,7 @@
     describeFunction(concatSpec, array.concat, function(concat) {
       var addTests = function(arrData, strData) {
         var addOne = function(type, message, left, right) {
-          // Can't use the global test generation here
+          // Can't use the global test generation here because we take two arrays
           it('Result has type ' + type + ' ' + message + ' for ' + type, function() {
             var first = left.slice();
             var second = right.slice();
@@ -2281,8 +2282,13 @@
         var result = fnUnderTest.apply(null, argData);
 
         expect(result).to.equal(expected);
-        if (result !== -1)
-          expect(data[result]).to.equal(val);
+        if (result !== -1) {
+          if (typeof(val) !== 'function') {
+            expect(data[result]).to.equal(val);
+          } else {
+            expect(val(data[result])).to.be.true;
+          }
+        }
       });
     };
 
@@ -2352,142 +2358,94 @@
       addFuncCalledWithSpecificArityTests(findWith, 1);
 
 
-      it('Function never called with empty array', function() {
-        var f = function(x) {f.called += 1; return true;};
-        f.called = 0;
-        findWith(f, []);
+      var addNeverCalledOnEmptyTest = function(originalData) {
+        var isArray = typeof(value) !== 'string';
 
-        expect(f.called).to.equal(0);
-      });
+        it('Function never called with empty ' + (isArray ? 'array ' : 'string'), function() {
+          var data = originalData.slice();
+          var f = function(x) {f.called += 1; return true;};
+          f.called = 0;
+          findWith(f, data);
 
-
-      it('Works correctly with empty arrays', function() {
-        var result = findWith(alwaysTrue, []);
-
-        expect(result).to.equal(-1);
-      });
-
-
-      it('Function never called with empty string', function() {
-        var f = function(x) {f.called += 1; return true;};
-        f.called = 0;
-        findWith(f, '');
-
-        expect(f.called).to.equal(0);
-      });
-
-
-      it('Works correctly with empty string', function() {
-        var result = findWith(alwaysTrue, '');
-
-        expect(result).to.equal(-1);
-      });
-
-
-      it('Function called with every element if not found (array)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = [2, 3, 4];
-        findWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
+          expect(f.called).to.equal(0);
         });
-
-        expect(f.called.length).to.equal(arr.length);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly if value never found (array)', function() {
-        var result = findWith(base.constant(false), [1, 2, 3]);
+      addNeverCalledOnEmptyTest([]);
+      addNeverCalledOnEmptyTest('');
+      addFindTest('Works correctly when array empty', findWith, [alwaysTrue, []], -1);
+      addFindTest('Works correctly when string empty', findWith, [alwaysTrue, ''], -1);
+      addFindTest('Works correctly when value not found in array', findWith,
+                  [alwaysFalse, [1, 2, 3]], -1);
+      addFindTest('Works correctly when value not found in string', findWith,
+                  [alwaysFalse, 'funkier'], -1);
 
-        expect(result).to.equal(-1);
-      });
+      var fooArr1 = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
+      addFindTest('Works correctly when value present in array', findWith,
+                  [function(x) {return x.foo === 42;}, fooArr1], 1);
+      addFindTest('Works correctly when value present in string', findWith,
+                  [function(x) {return x >= '0' && x <= '9';}, 'ab0cd'], 2);
+
+      var fooArr2 = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
+      addFindTest('Returns first index of first match in array', findWith,
+                  [function(x) {return x.foo === 42;}, fooArr2], 2);
+      addFindTest('Returns first index of first match in string', findWith,
+                  [function(x) {return x >= '0' && x <= '9';}, 'abc01d2'], 3);
 
 
-      it('Function called with every element if not found (string)', function() {
-        var f = function(x) {f.called.push(x); return false;};
-        f.called = [];
-        var arr = 'funkier';
-        findWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
+      var addCalledWithEveryNotFoundTest = function(originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Function called with every element if not found (' + (isArray ? 'array' : 'string') + ')', function() {
+          // The function records every argument it is called with. This should equal the original data
+          var f = function(x) {f.called.push(x); return false;};
+          f.called = [];
+
+          var data = originalData.slice();
+          findWith(f, data);
+
+          var result = f.called.every(function(v, i) {
+            return v === data[i];
+          });
+
+          expect(f.called.length).to.equal(data.length);
+          expect(result).to.be.true;
         });
-
-        expect(f.called.length).to.equal(arr.length);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly if value never found (string)', function() {
-        var result = findWith(base.constant(false), 'def');
-
-        expect(result).to.equal(-1);
-      });
+      addCalledWithEveryNotFoundTest([1, 2, 3]);
+      addCalledWithEveryNotFoundTest('funkier');
 
 
-      it('Function called only as often as necessary when found (array)', function() {
-        var f = function(x) {f.called.push(x); return x.foo === 42;};
-        f.called = [];
-        var arr = [{foo: 1}, {foo: 3}, {foo: 7}, {foo: 5}, {foo: 42}, {foo: 6}];
-        findWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
+      var addCalledOnlyAsOftenAsNecessaryTest = function(predicate, originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Function called only as often as necessary when found (' + (isArray ? 'array' : 'string') + ')', function() {
+          // Create a new predicate function that records the values it's called with, then defers to
+          // the supplied predicate. We can then confirm we iterated from left to right.
+          var f = function(x) {f.called.push(x); return predicate(x);};
+          f.called = [];
+
+          var data = originalData.slice();
+          var index = findWith(f, data);
+
+          var result = f.called.every(function(v, i) {
+            return v === data[i];
+          });
+
+          expect(f.called.length).to.equal(index + 1);
+          expect(result).to.be.true;
         });
-
-        expect(f.called.length).to.equal(5);
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Works correctly when value present (array)', function() {
-        var f = function(x) {return x.foo === 42;};
-        var arr = [{foo: 1}, {foo: 42}, {foo: 7}, {foo: 5}, {foo: 3}, {foo: 6}];
-        var result = findWith(f, arr);
-
-        expect(result).to.equal(1);
-      });
-
-
-      it('Returns first index (array)', function() {
-        var f = function(x) {return x.foo === 42;};
-        var arr = [{foo: 1}, {foo: 7}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 6}];
-        var result = findWith(f, arr);
-
-        expect(result).to.equal(2);
-      });
-
-
-      it('Function called only as often as necessary when found (string)', function() {
-        var f = function(x) {f.called.push(x); return x >= '0' && x <= '9';};
-        f.called = [];
-        var arr = 'ab0cd';
-        findWith(f, arr);
-        var result = f.called.every(function(v, i) {
-          return v === arr[i];
-        });
-
-        expect(f.called.length).to.equal(3);
-        expect(result).to.be.true;
-      });
-
-
-      it('Works correctly when value present (string)', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var arr = 'ab0cd';
-        var result = findWith(f, arr);
-
-        expect(result).to.equal(2);
-      });
-
-
-      it('Returns first index (array)', function() {
-        var f = function(x) {return x >= '0' && x <= '9';};
-        var arr = 'a0c1d';
-        var result = findWith(f, arr);
-
-        expect(result).to.equal(1);
-      });
+      addCalledOnlyAsOftenAsNecessaryTest(function(x) {return x.foo === 42;},
+                                          [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]);
+      addCalledOnlyAsOftenAsNecessaryTest(function(x) {return x < 'a';}, 'abCde');
 
 
       testCurriedFunction('findWith', findWith, [alwaysTrue, 'funkier']);
