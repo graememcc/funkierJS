@@ -80,58 +80,6 @@
     };
 
 
-    // Several functions should throw when the first parameter is negative or NaN
-    var addBadNumberTests = function(paramName, fnUnderTest, argsBefore, argsAfter, acceptNegative) {
-      acceptNegative = acceptNegative || false;
-
-      if (!acceptNegative) {
-        it('Throws when ' + paramName + ' is negative', function() {
-          var fn = function() {
-            fnUnderTest.apply(null, argsBefore.concat([-1]).concat(argsAfter));
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-      }
-
-
-      it('Throws when ' + paramName + ' is NaN', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([NaN]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws when ' + paramName + ' is positive infinity', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([Number.POSITIVE_INFINITY]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws when ' + paramName + ' is negative infinity', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([Number.NEGATIVE_INFINITY]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws when ' + paramName + ' is not integral', function() {
-        var fn = function() {
-          fnUnderTest.apply(null, argsBefore.concat([1.2]).concat(argsAfter));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-    };
-
-
     // Several functions require that the first parameter is a function with a specific arity
     var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, options) {
       var options = options || {};
