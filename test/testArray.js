@@ -1069,6 +1069,17 @@
     makeArrayBooleanTest('some', array.some, true);
 
 
+    // The "work correctly" tests for max/min/sum/product are the same shape
+    var addSpecialFoldsTest = function(fnUnderTest, message, originalData, expected) {
+      it('Works correctly for ' + message, function() {
+        var data = originalData.slice();
+        var result = fnUnderTest(data);
+
+        expect(result).to.equal(expected);
+      });
+    };
+
+
     var makeMinMaxTests = function(desc, fnUnderTest, isMax) {
       var spec = {
         name: desc,
@@ -1082,36 +1093,10 @@
         addThrowsOnEmptyTests(fnUnderTest, []);
 
 
-        it('Works correctly for array (1)', function() {
-          var a = [3, 1, 2, 42, 6];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(isMax ? 42 : 1);
-        });
-
-
-        it('Works correctly for array (2)', function() {
-          var a = [2];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(2);
-        });
-
-
-        it('Works correctly for string (1)', function() {
-          var s = 'bad0Z9w';
-          var result = fnUnderTest(s);
-
-          expect(result).to.equal(isMax ? 'w' : '0');
-        });
-
-
-        it('Works correctly for string (2)', function() {
-          var s = ['e'];
-          var result = fnUnderTest(s);
-
-          expect(result).to.equal('e');
-        });
+        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [3, 1, 2, 42, 6], isMax ? 42 : 1);
+        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
+        addSpecialFoldsTest(fnUnderTest, 'for string (1)', 'bad0Z9w', isMax ? 'w' : '0');
+        addSpecialFoldsTest(fnUnderTest, 'for string (2)', 'e', 'e');
       });
     };
 
@@ -1139,28 +1124,9 @@
         });
 
 
-        it('Works correctly for array (1)', function() {
-          var a = [1, 2, 3, 4];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(isSum ? 10 : 24);
-        });
-
-
-        it('Works correctly for array (2)', function() {
-          var a = [2];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(2);
-        });
-
-
-        it('Works correctly for empty arrays', function() {
-          var a = [];
-          var result = fnUnderTest(a);
-
-          expect(result).to.equal(isSum ? 0 : 1);
-        });
+        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [1, 2, 3, 4], isSum ? 10 : 24);
+        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
+        addSpecialFoldsTest(fnUnderTest, 'for empty array', [], isSum ? 0 : 1);
       });
     };
 
