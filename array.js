@@ -37,7 +37,11 @@
      *
      */
 
-    var length = extract('length');
+    var length = curry(function(arr) {
+      arr = checkArrayLike(arr, {message: 'Value must be arraylike'});
+
+      return arr.length;
+    });
 
 
     /*

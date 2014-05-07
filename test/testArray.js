@@ -286,7 +286,9 @@
 
     var lengthSpec = {
       name: 'length',
-      arity: 1
+      arity: 1,
+      restrictions: [['arraylike']],
+      validArguments: [[[1, 2, 3], 'abc']]
     };
 
 
