@@ -68,7 +68,7 @@
     };
 
 
-    var typeclasses = ['integer', 'positive'];
+    var typeclasses = ['integer', 'positive', 'arraylike'];
     var isTypeClass = function(restriction) {
       if (typeclasses.indexOf(restriction) !== -1)
         return true;
@@ -144,12 +144,12 @@
       var primBogus = [
         {name: 'number', article: 'a ', value: 2, typeclasses: ['integer', 'positive']},
         {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer', 'positive']},
-        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer', 'positive']},
+        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer', 'positive', 'arraylike']},
         {name: 'undefined', article: '', value: undefined, typeclasses: []},
         {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive']},
         {name: 'function', article: 'a ', value: function() {}, typeclasses: ['function']},
         {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer', 'positive']},
-        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: []}
+        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: ['arraylike']}
       ];
 
       primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
@@ -290,10 +290,19 @@
               throw new Error(name + ' Spec ' + i + ' incorrect. A typeclass must be the only restriction for that parameter!');
 
             // The valid argument at this position should have the right type!
-            var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
-            if (typeof(goodArgs[i][j]) !== t)
-              throw new Error(name + ' spec: "good argument" of incorrect type for ' + i + ' ' + j + ', expected ' +
-                             t + ' and found ' + typeof(goodArgs[i][j]) + ' ' + goodArgs[i][j]);
+            if (r !== 'arraylike') {
+              var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
+              if (typeof(goodArgs[i][j]) !== t)
+                throw new Error(name + ' spec: "good argument" of incorrect type for ' + i + ' ' + j + ', expected ' +
+                               t + ' and found ' + typeof(goodArgs[i][j]) + ' ' + goodArgs[i][j]);
+            } else {
+              if (goodArgs[i].length !== 2)
+                throw new Error(name + ' spec: not enough valid arguments for arraylike parameter ' + i);
+
+              var goodArgsType = goodArgs[i].map(function(x) {return Array.isArray(x) ? 'array' : typeof(x);});
+              if (goodArgsType.indexOf('array') === -1 || goodArgsType.indexOf('string') === -1)
+                throw new Error(name + ' spec: wrong type of valid arguments for arraylike parameter ' + i);
+            }
           }
         });
       });

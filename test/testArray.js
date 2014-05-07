@@ -312,7 +312,7 @@
     var getIndexSpec = {
       name: 'getIndex',
       arity: 2,
-      restrictions: [['positive'], ['array', 'string']],
+      restrictions: [['positive'], ['arraylike']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
@@ -441,7 +441,7 @@
     var mapSpec = {
       name: 'map',
       arity: 2,
-      restrictions: [['function: minarity 1'], ['array', 'string']],
+      restrictions: [['function: minarity 1'], ['arraylike']],
       validArguments: [[function() {}], [['a'], 'a']]
     };
 
@@ -502,7 +502,7 @@
     var eachSpec = {
       name: 'each',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function'], ['arraylike']],
       validArguments: [[function() {}], [['a'], 'a']]
     };
 
@@ -533,7 +533,7 @@
     var filterSpec = {
       name: 'filter',
       arity: 2,
-      restrictions: [['function: arity 1'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['arraylike']],
       validArguments: [[function(x) {}], [['a'], 'a']]
     };
 
@@ -740,7 +740,7 @@
     var foldlSpec = {
       name: 'foldl',
       arity: 3,
-      restrictions: [['function: arity 2'], [], ['array', 'string']],
+      restrictions: [['function: arity 2'], [], ['arraylike']],
       validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc']]
     };
 
@@ -785,7 +785,7 @@
     var foldl1Spec = {
       name: 'foldl1',
       arity: 2,
-      restrictions: [['function: arity 2'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['arraylike']],
       validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc']]
     };
 
@@ -830,7 +830,7 @@
     var foldrSpec = {
       name: 'foldr',
       arity: 3,
-      restrictions: [['function: arity 2'], [], ['array', 'string']],
+      restrictions: [['function: arity 2'], [], ['arraylike']],
       validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc']]
     };
 
@@ -875,7 +875,7 @@
     var foldr1Spec = {
       name: 'foldr1',
       arity: 2,
-      restrictions: [['function: arity 2'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['arraylike']],
       validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc']]
     };
 
@@ -921,7 +921,7 @@
       var spec = {
         name: desc,
         arity: 2,
-        restrictions: [['function: arity 1'], ['array', 'string']],
+        restrictions: [['function: arity 1'], ['arraylike']],
         validArguments: [[function(x) {}], [[1, 2], 'ab']]
       };
 
@@ -1071,7 +1071,7 @@
       var spec = {
         name: desc,
         arity: 1,
-        restrictions: [['array', 'string']],
+        restrictions: [['arraylike']],
         validArguments: [[[1, 2], 'ab']]
       };
 
@@ -1192,7 +1192,7 @@
     var elementSpec = {
       name: 'element',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [[], ['arraylike']],
       validArguments: [['a'], [['a', 'b', 'c'], 'abc']]
     };
 
@@ -1218,7 +1218,7 @@
     var elementWithSpec = {
       name: 'elementWith',
       arity: 2,
-      restrictions: [['function: arity 1'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['arraylike']],
       validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc']]
     };
 
@@ -1403,7 +1403,7 @@
     var takeSpec = {
       name: 'take',
       arity: 2,
-      restrictions: [['integer'], ['array', 'string']],
+      restrictions: [['integer'], ['arraylike']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
@@ -1468,7 +1468,7 @@
     var dropSpec = {
       name: 'drop',
       arity: 2,
-      restrictions: [['integer'], ['array', 'string']],
+      restrictions: [['integer'], ['arraylike']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
@@ -1549,7 +1549,7 @@
       var spec = {
         name: desc,
         arity: 1,
-        restrictions: [['array', 'string']],
+        restrictions: [['arraylike']],
         validArguments: [[[1, 2, 3], 'abc']]
       };
 
@@ -1598,7 +1598,7 @@
       var spec = {
         name: desc,
         arity: 1,
-        restrictions: [['array', 'string']],
+        restrictions: [['arraylike']],
         validArguments: [[[1, 2, 3], 'abc']]
       };
 
@@ -1678,7 +1678,7 @@
     var copySpec = {
       name: 'copy',
       arity: 1,
-      restrictions: [['array', 'string']],
+      restrictions: [['arraylike']],
       validArguments: [[[1, 2], 'abc']]
     };
 
@@ -1731,7 +1731,7 @@
     var sliceSpec = {
       name: 'slice',
       arity: 3,
-      restrictions: [['positive'], ['positive'], ['array', 'string']],
+      restrictions: [['positive'], ['positive'], ['arraylike']],
       validArguments: [[0], [1], [[1, 2, 3], 'abc']]
     };
 
@@ -1803,7 +1803,7 @@
       var spec = {
         name: desc,
         arity: 2,
-        restrictions: [['function: arity 1'], ['array', 'string']],
+        restrictions: [['function: arity 1'], ['arraylike']],
         validArguments: [[function(x) {return true;}], [[1, 2, 3], 'abc']]
       };
 
@@ -1885,7 +1885,7 @@
       var spec = {
         name: desc,
         arity: 2,
-        restrictions: [[], ['array', 'string']],
+        restrictions: [[], ['arraylike']],
         validArguments: [[1], [[1, 2, 3], 'abc']]
       };
 
@@ -1950,7 +1950,7 @@
     var concatSpec = {
       name: 'concat',
       arity: 2,
-      restrictions: [['array', 'string'], ['array', 'string']],
+      restrictions: [['arraylike'], ['arraylike']],
       validArguments: [[[1, 2], 'abc'], [[1, 2, 3], 'abc']]
     };
 
@@ -2032,7 +2032,7 @@
     var isEmptySpec = {
       name: 'empty',
       arity: 1,
-      restrictions: [['array', 'string']],
+      restrictions: [['arraylike']],
       validArguments: [[[], '']]
     };
 
@@ -2057,7 +2057,7 @@
     var intersperseSpec = {
       name: 'intersperse',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [[], ['arraylike']],
       validArguments: [[','], [[1, 2], 'abc']]
     };
 
@@ -2126,7 +2126,7 @@
     var reverseSpec = {
       name: 'reverse',
       arity: 1,
-      restrictions: [['array', 'string']],
+      restrictions: [['arraylike']],
       validArguments: [[[1, 2], 'ab']]
     };
 
@@ -2191,7 +2191,7 @@
     var findSpec = {
       name: 'find',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [[], ['arraylike']],
       validArguments: [[1], [[2, 3], '234']]
     };
 
@@ -2216,7 +2216,7 @@
     var findFromSpec = {
       name: 'findFrom',
       arity: 3,
-      restrictions: [[], ['positive'], ['array', 'string']],
+      restrictions: [[], ['positive'], ['arraylike']],
       validArguments: [[1], [1], [[2, 3], '234']]
     };
 
@@ -2243,7 +2243,7 @@
     var findWithSpec = {
       name: 'findWith',
       arity: 2,
-      restrictions: [['function: arity 1'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['arraylike']],
       validArguments: [[alwaysTrue], [[1, 2], 'abc']]
     };
 
@@ -2344,7 +2344,7 @@
     var findFromWithSpec = {
       name: 'findFromWith',
       arity: 3,
-      restrictions: [['function: arity 1'], ['positive'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['positive'], ['arraylike']],
       validArguments: [[alwaysTrue], [1], [[1, 2], 'abc']]
     };
 
@@ -2449,7 +2449,7 @@
     var occurrencesSpec = {
       name: 'occurrences',
       arity: 2,
-      restrictions: [[], ['array', 'string']],
+      restrictions: [[], ['arraylike']],
       validArguments: [[1], [[1, 2, 3], 'abc']]
     };
 
@@ -2523,7 +2523,7 @@
     var occurrencesWithSpec = {
       name: 'occurrencesWith',
       arity: 2,
-      restrictions: [['function: arity 1'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['arraylike']],
       validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
     };
 
@@ -2612,7 +2612,7 @@
     var zipSpec = {
       name: 'zip',
       arity: 2,
-      restrictions: [['array', 'string'], ['array', 'string']],
+      restrictions: [['arraylike'], ['arraylike']],
       validArguments: [[[1, 2], 'abc'], [[3, 4, 5], 'def']]
     };
 
@@ -2703,7 +2703,7 @@
     var zipWithSpec = {
       name: 'zipWith',
       arity: 3,
-      restrictions: [['function: minarity 2'], ['array', 'string'], ['array', 'string']],
+      restrictions: [['function: minarity 2'], ['arraylike'], ['arraylike']],
       validArguments: [[function(x, y) {return x + y;}], [[1, 2], 'abc'], [[3, 4, 5], 'def']]
     };
 
@@ -2775,7 +2775,7 @@
     var nubSpec = {
       name: 'nub',
       arity: 1,
-      restrictions: [['array', 'string']],
+      restrictions: [['arraylike']],
       validArguments: [[[1, 2], 'abc']]
     };
 
@@ -2855,7 +2855,7 @@
     var nubWithSpec = {
       name: 'nubWith',
       arity: 2,
-      restrictions: [['function: arity 2'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['arraylike']],
       validArguments: [[function(x, y) {return false;}], [[1, 2, 3], 'abcd']]
     };
 
@@ -2965,7 +2965,7 @@
     var sortSpec = {
       name: 'sort',
       arity: 1,
-      restrictions: [['array', 'string']],
+      restrictions: [['arraylike']],
       validArguments: [[[1, 2, 3], 'abc']]
     };
 
@@ -3032,7 +3032,7 @@
     var sortWithSpec = {
       name: 'sortWith',
       arity: 2,
-      restrictions: [['function: arity 2'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['arraylike']],
       validArguments: [[function(x, y) {return -1;}], [[1, 2, 3], 'abc']]
     };
 
@@ -3235,7 +3235,7 @@
     var insertSpec = {
       name: 'insert',
       arity: 3,
-      restrictions: [['positive'], [], ['array', 'string']],
+      restrictions: [['positive'], [], ['arraylike']],
       validArguments: [[0], ['1'], [[1, 2, 3], 'abc']]
     };
 
@@ -3347,7 +3347,7 @@
     var removeSpec = {
       name: 'remove',
       arity: 2,
-      restrictions: [['positive'], ['array', 'string']],
+      restrictions: [['positive'], ['arraylike']],
       validArguments: [[0], [[1, 2, 3], 'abc']]
     };
 
@@ -3400,7 +3400,7 @@
     var replaceSpec = {
       name: 'replace',
       arity: 3,
-      restrictions: [['positive'], [], ['array', 'string']],
+      restrictions: [['positive'], [], ['arraylike']],
       validArguments: [[0], ['a'], [[1, 2, 3], 'abc']]
     };
 
@@ -4291,7 +4291,7 @@
     var flattenMapSpec = {
       name: 'flattenMap',
       arity: 2,
-      restrictions: [['function: arity 1'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['arraylike']],
       validArguments: [[array.replicate(2)], [[1, 2, 3], 'abc']]
     };
 
