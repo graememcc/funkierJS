@@ -80,60 +80,6 @@
     };
 
 
-    // Several functions require that the first parameter is a function with a specific arity
-    var addAcceptsOnlyFixedArityTests = function(fnUnderTest, requiredArity, options) {
-      var options = options || {};
-      var argsBetween = options.argsBetween || [];
-      var validFunction = options.validFunction || null;
-      var isMinimum = options.isMinimum || false;
-      var arrayOnly = options.arrayOnly || false;
-
-      var funcs = [
-        function() {},
-        function(x) {},
-        function(x, y) {},
-        function(x, y, z) {},
-        function(w, x, y, z) {}
-      ];
-
-      var addTestsForType = function(type, originalData) {
-        funcs.forEach(function(f, i) {
-          if ((!isMinimum && i !== requiredArity) || (isMinimum && i < requiredArity)) {
-            it('Throws when called with ' + type + ' and function of arity ' + i, function() {
-              var data = originalData.slice();
-
-              var fn = function() {
-                fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
-              };
-
-              expect(fn).to.throw(TypeError);
-            });
-
-            return;
-          }
-          it('Does not throw when called with ' + type + ' and function of arity ' + i, function() {
-            var data = originalData.slice();
-
-            // The following is needed for flattenMap, whose function must return an array
-            if (!isMinimum && validFunction !== null)
-              f = validFunction;
-
-            var fn = function() {
-              fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
-            };
-
-            expect(fn).to.not.throw(TypeError);
-          });
-        });
-      };
-
-
-      addTestsForType('array', [1, 2, 3]);
-      if (!arrayOnly)
-        addTestsForType('string', 'abc');
-    };
-
-
     // Several functions expect the first argument to be a function that should be always be called with a
     // specific number of arguments
     var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween, arrayOnly) {
@@ -495,14 +441,13 @@
     var mapSpec = {
       name: 'map',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: minarity 1'], ['array', 'string']],
       validArguments: [[function() {}], [['a'], 'a']]
     };
 
 
     describeFunction(mapSpec, array.map, function(map) {
       addFuncCalledWithSpecificArityTests(map, 1);
-      addAcceptsOnlyFixedArityTests(map, 1, {isMinimum: true});
       addCalledWithEveryMemberTests(map);
       addReturnsEmptyOnEmptyTests(map, [function(x) {return 42;}], true);
 
@@ -2758,7 +2703,7 @@
     var zipWithSpec = {
       name: 'zipWith',
       arity: 3,
-      restrictions: [['function'], ['array', 'string'], ['array', 'string']],
+      restrictions: [['function: minarity 2'], ['array', 'string'], ['array', 'string']],
       validArguments: [[function(x, y) {return x + y;}], [[1, 2], 'abc'], [[3, 4, 5], 'def']]
     };
 
@@ -2778,7 +2723,6 @@
       addDegenerateTests('both empty', [], []);
 
 
-      addAcceptsOnlyFixedArityTests(zipWith, 2, {argsBetween: [[4, 5, 6]], isMinimum: true});
       addFuncCalledWithSpecificArityTests(zipWith, 2, [['a', 'b', 'c']]);
 
 

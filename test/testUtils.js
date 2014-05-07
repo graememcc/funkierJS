@@ -211,9 +211,16 @@
 
       var arityResults = /function:\s+arity\s+(\d+)/.exec(resSpec);
       if (arityResults && arityResults.length > 0) {
-        arityResults[1] = arityResults[1] - 0;
+        var arity = arityResults[1] - 0;
         for (var i = 0, l = bogusFuncs.length; i < l; i++) {
-          if (i !== arityResults[1])
+          if (i !== arity)
+            primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
+        }
+      } else {
+        var minArityResults = /function:\s+minarity\s+(\d+)/.exec(resSpec);
+        if (minArityResults && minArityResults.length > 0) {
+          var minArity = minArityResults[1] - 0;
+          for (var i = 0; i < minArity; i++)
             primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
         }
       }
