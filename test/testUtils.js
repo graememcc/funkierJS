@@ -46,6 +46,11 @@
     };
 
 
+    var isFuncTypeClass = function(tc) {
+      return /^function:\s+/.test(tc);
+    };
+
+
     var prims = ['number', 'boolean', 'undefined', 'object', 'string', 'function'];
     var isPrimitiveType = function(t) {
       return prims.indexOf(t) !== -1;
@@ -54,13 +59,23 @@
 
     var nonPrimDict = {'null': 'object', 'array': 'object', 'integer': 'number', 'positive': 'number'};
     var nonPrimToPrim = function(nP) {
-      return nonPrimDict[nP];
+      if (nP in nonPrimDict)
+        return nonPrimDict[nP];
+      if (isFuncTypeClass(nP))
+        return 'function';
+
+      throw new Error('testUtils typechecking: unrecognised non-primitive' + nP);
     };
 
 
     var typeclasses = ['integer', 'positive'];
     var isTypeClass = function(restriction) {
-      return typeclasses.indexOf(restriction) !== -1;
+      if (typeclasses.indexOf(restriction) !== -1)
+        return true;
+      if (isFuncTypeClass(restriction))
+        return true;
+
+      return false;
     };
 
 
@@ -132,7 +147,7 @@
         {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer', 'positive']},
         {name: 'undefined', article: '', value: undefined, typeclasses: []},
         {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive']},
-        {name: 'function', article: 'a ', value: function() {}, typeclasses: []},
+        {name: 'function', article: 'a ', value: function() {}, typeclasses: ['function']},
         {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer', 'positive']},
         {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: []}
       ];
@@ -151,6 +166,7 @@
       resSpec = resSpec[0];
 
       // Filter on the members of the typeclass
+      var toFilter = isFuncTypeClass(resSpec) ? 'function' : resSpec;
       primBogus = primBogus.filter(function(val) {return val.typeclasses.indexOf(resSpec) === -1;});
 
       var badObjectMaker = function(val) {
@@ -182,6 +198,26 @@
         primBogus.push({name: 'string that coerces to a negative integer', article: 'a ', value: '-2'});
         primBogus.push({name: 'object that coerces to a negative integer', article: 'a ', value: badObjectMaker(-3)});
       }
+
+
+      var bogusFuncs = [
+        function() {},
+        function(x) {},
+        function(x, y) {},
+        function(x, y, z) {},
+        function(w, x, y, z) {}
+      ];
+
+
+      var arityResults = /function:\s+arity\s+(\d+)/.exec(resSpec);
+      if (arityResults && arityResults.length > 0) {
+        arityResults[1] = arityResults[1] - 0;
+        for (var i = 0, l = bogusFuncs.length; i < l; i++) {
+          if (i !== arityResults[1])
+            primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
+        }
+      }
+
 
       return primBogus;
     };

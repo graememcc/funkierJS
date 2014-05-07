@@ -588,14 +588,13 @@
     var filterSpec = {
       name: 'filter',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['array', 'string']],
       validArguments: [[function(x) {}], [['a'], 'a']]
     };
 
 
     describeFunction(filterSpec, array.filter, function(filter) {
       addReturnsSameTypeTests(filter, [alwaysTrue]);
-      addAcceptsOnlyFixedArityTests(filter, 1);
       addFuncCalledWithSpecificArityTests(filter, 1);
       addCalledWithEveryMemberTests(filter);
       addNoModificationOfOriginalTests(filter, [alwaysTrue]);
@@ -697,7 +696,6 @@
 
     var addCommonFoldTests = function(desc, fnUnderTest, is1Func, isRTL) {
       var betweenArgs = is1Func ? [] : [0];
-      addAcceptsOnlyFixedArityTests(fnUnderTest, 2, {argsBetween: betweenArgs});
       addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
       addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
 
@@ -797,7 +795,7 @@
     var foldlSpec = {
       name: 'foldl',
       arity: 3,
-      restrictions: [['function'], [], ['array', 'string']],
+      restrictions: [['function: arity 2'], [], ['array', 'string']],
       validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc']]
     };
 
@@ -842,7 +840,7 @@
     var foldl1Spec = {
       name: 'foldl1',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['array', 'string']],
       validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc']]
     };
 
@@ -887,7 +885,7 @@
     var foldrSpec = {
       name: 'foldr',
       arity: 3,
-      restrictions: [['function'], [], ['array', 'string']],
+      restrictions: [['function: arity 2'], [], ['array', 'string']],
       validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc']]
     };
 
@@ -932,7 +930,7 @@
     var foldr1Spec = {
       name: 'foldr1',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['array', 'string']],
       validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc']]
     };
 
@@ -978,7 +976,7 @@
       var spec = {
         name: desc,
         arity: 2,
-        restrictions: [['function'], ['array', 'string']],
+        restrictions: [['function: arity 1'], ['array', 'string']],
         validArguments: [[function(x) {}], [[1, 2], 'ab']]
       };
 
@@ -1106,7 +1104,6 @@
         };
 
 
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 1);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
         addPrematureEndTests(fnUnderTest, trigger);
         addRunsToEndTests(fnUnderTest, trigger);
@@ -1276,15 +1273,12 @@
     var elementWithSpec = {
       name: 'elementWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['array', 'string']],
       validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc']]
     };
 
 
     describeFunction(elementWithSpec, array.elementWith, function(elementWith) {
-      addAcceptsOnlyFixedArityTests(elementWith, 1);
-
-
       addElementNotFoundTest(elementWith, 'array is empty', alwaysTrue, []);
       addElementNotFoundTest(elementWith, 'string is empty', alwaysTrue, '');
       addElementNotFoundTest(elementWith, 'array predicate returns false', function(x) {return x.foo === 5;},
@@ -1864,13 +1858,12 @@
       var spec = {
         name: desc,
         arity: 2,
-        restrictions: [['function'], ['array', 'string']],
+        restrictions: [['function: arity 1'], ['array', 'string']],
         validArguments: [[function(x) {return true;}], [[1, 2, 3], 'abc']]
       };
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        addAcceptsOnlyFixedArityTests(fnUnderTest, 1);
         addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
         addReturnsSameTypeTests(fnUnderTest, [alwaysTrue]);
         addReturnsEmptyOnEmptyTests(fnUnderTest, [alwaysTrue]);
@@ -2305,13 +2298,12 @@
     var findWithSpec = {
       name: 'findWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['array', 'string']],
       validArguments: [[alwaysTrue], [[1, 2], 'abc']]
     };
 
 
     describeFunction(findWithSpec, array.findWith, function(findWith) {
-      addAcceptsOnlyFixedArityTests(findWith, 1);
       addFuncCalledWithSpecificArityTests(findWith, 1);
 
 
@@ -2407,13 +2399,12 @@
     var findFromWithSpec = {
       name: 'findFromWith',
       arity: 3,
-      restrictions: [['function'], ['positive'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['positive'], ['array', 'string']],
       validArguments: [[alwaysTrue], [1], [[1, 2], 'abc']]
     };
 
 
     describeFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
-      addAcceptsOnlyFixedArityTests(findFromWith, 1, {argsBetween: [1]});
       addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
 
 
@@ -2587,13 +2578,12 @@
     var occurrencesWithSpec = {
       name: 'occurrencesWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['array', 'string']],
       validArguments: [[alwaysTrue], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(occurrencesWithSpec, array.occurrencesWith, function(occurrencesWith) {
-      addAcceptsOnlyFixedArityTests(occurrencesWith, 1);
       addReturnsEmptyOnEmptyTests(occurrencesWith, [alwaysTrue], true);
 
 
@@ -2921,7 +2911,7 @@
     var nubWithSpec = {
       name: 'nubWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['array', 'string']],
       validArguments: [[function(x, y) {return false;}], [[1, 2, 3], 'abcd']]
     };
 
@@ -2933,7 +2923,6 @@
       addReturnsEmptyOnEmptyTests(nubWith, [alwaysFalse]);
       addNoModificationOfOriginalTests(nubWith, [alwaysFalse]);
       addReturnsSameTypeTests(nubWith, [alwaysFalse]);
-      addAcceptsOnlyFixedArityTests(nubWith, 2);
       addFuncCalledWithSpecificArityTests(nubWith, 2);
 
 
@@ -3099,7 +3088,7 @@
     var sortWithSpec = {
       name: 'sortWith',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 2'], ['array', 'string']],
       validArguments: [[function(x, y) {return -1;}], [[1, 2, 3], 'abc']]
     };
 
@@ -3109,7 +3098,6 @@
       addReturnsEmptyOnEmptyTests(sortWith, [normalCompare]);
       addNoModificationOfOriginalTests(sortWith, [normalCompare]);
       addReturnsSameTypeTests(sortWith, [normalCompare]);
-      addAcceptsOnlyFixedArityTests(sortWith, 2);
       addFuncCalledWithSpecificArityTests(sortWith, 2);
 
 
@@ -3652,7 +3640,7 @@
     var removeOneWithSpec = {
       name: 'removeOneWith',
       arity: 2,
-      restrictions: [['function'], ['array']],
+      restrictions: [['function: arity 1'], ['array']],
       validArguments: [[alwaysTrue], [[1, 2, 3]]]
     };
 
@@ -3660,7 +3648,6 @@
     describeFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
       addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue], true);
       addReturnsSameTypeTests(removeOneWith, [alwaysTrue], true);
-      addAcceptsOnlyFixedArityTests(removeOneWith, 1, {arrayOnly: true});
       addFuncCalledWithSpecificArityTests(removeOneWith, 1, [], true);
 
 
@@ -3787,7 +3774,7 @@
     var removeAllWithSpec = {
       name: 'removeAllWith',
       arity: 2,
-      restrictions: [['function'], ['array']],
+      restrictions: [['function: arity 1'], ['array']],
       validArguments: [[alwaysTrue], [[1, 2, 3]]]
     };
 
@@ -3795,7 +3782,6 @@
     describeFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
       addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue], true);
       addReturnsSameTypeTests(removeAllWith, [alwaysTrue], true);
-      addAcceptsOnlyFixedArityTests(removeAllWith, 1, {arrayOnly: true});
       addFuncCalledWithSpecificArityTests(removeAllWith, 1, [], true);
 
 
@@ -3963,7 +3949,7 @@
     var replaceOneWithSpec = {
       name: 'replaceOneWith',
       arity: 3,
-      restrictions: [['function'], [], ['array']],
+      restrictions: [['function: arity 1'], [], ['array']],
       validArguments: [[alwaysTrue], [1], [[1, 2, 3]]]
     };
 
@@ -3971,7 +3957,6 @@
     describeFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
       addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1], true);
       addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a'], true);
-      addAcceptsOnlyFixedArityTests(replaceOneWith, 1, {argsBetween: ['a'], arrayOnly: true});
       addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a'], true);
 
 
@@ -4109,7 +4094,7 @@
     var replaceAllWithSpec = {
       name: 'replaceAllWith',
       arity: 3,
-      restrictions: [['function'], [], ['array']],
+      restrictions: [['function: arity 1'], [], ['array']],
       validArguments: [[alwaysTrue], ['e'], [[1, 2, 3]]]
     };
 
@@ -4117,7 +4102,6 @@
     describeFunction(replaceAllWithSpec, array.replaceAllWith, function(replaceAllWith) {
       addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e'], true);
       addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e'], true);
-      addAcceptsOnlyFixedArityTests(replaceAllWith, 1, {argsBetween: ['e'], arrayOnly: true});
       addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e'], true);
 
 
@@ -4363,15 +4347,12 @@
     var flattenMapSpec = {
       name: 'flattenMap',
       arity: 2,
-      restrictions: [['function'], ['array', 'string']],
+      restrictions: [['function: arity 1'], ['array', 'string']],
       validArguments: [[array.replicate(2)], [[1, 2, 3], 'abc']]
     };
 
 
     describeFunction(flattenMapSpec, array.flattenMap, function(flattenMap) {
-      addAcceptsOnlyFixedArityTests(flattenMap, 1, {validFunction: base.constant([])});
-
-
       var addTest = function(message, f, originalData) {
         it('Works correctly ' + message, function() {
           var data = originalData.slice();
