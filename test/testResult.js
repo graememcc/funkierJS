@@ -6,17 +6,20 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var result = require('../result');
+
+    var base = require('../base');
+    var getRealArity = base.getRealArity;
+
     var utils = require('../utils');
+    var valueStringifier = utils.valueStringifier;
 
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var getRealArity = base.getRealArity;
-    var valueStringifier = utils.valueStringifier;
+    var makeArrayLike = testUtils.makeArrayLike;
 
 
     var expectedObjects = ['Result'];
@@ -410,8 +413,8 @@
     var returnerSpec = {
       name: 'makeResultReturner',
       arity: 2,
-      restrictions: [['array'], ['function']],
-      validArguments: [[[]], [function() {}]]
+      restrictions: [['strictarraylike'], ['function']],
+      validArguments: [[[], makeArrayLike()], [function() {}]]
     };
 
 

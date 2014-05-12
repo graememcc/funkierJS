@@ -6,15 +6,17 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var fn = require('../fn');
+
+    var base = require('../base');
+    var getRealArity = base.getRealArity;
 
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var getRealArity = base.getRealArity;
+    var makeArrayLike = testUtils.makeArrayLike;
 
 
     var expectedObjects = [];
@@ -940,8 +942,8 @@
     var callWithContextSpec = {
       name: 'callWithContext',
       arity: 3,
-      restrictions: [[], ['array'], ['function']],
-      validArguments: [[{}], [[]], [function() {}]]
+      restrictions: [[], ['strictarraylike'], ['function']],
+      validArguments: [[{}], [[], makeArrayLike()], [function() {}]]
     };
 
 

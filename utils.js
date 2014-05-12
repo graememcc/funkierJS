@@ -109,13 +109,12 @@
       if (Array.isArray(v))
         return true;
 
-      return false;
-      // XXX For future use
       if (!v.hasOwnProperty('length'))
         return false;
 
       var l = v.length;
-      return v.hasOwnProperty('0') && v.hasOwnProperty('' + (l - 1));
+
+      return l === 0 || (v.hasOwnProperty('0') && v.hasOwnProperty('' + (l - 1)));
     };
 
 
@@ -131,7 +130,13 @@
       if (!isArrayLike(v, options.noStrings))
         throw new TypeError(message);
 
-      return (typeof(v) === 'string' ? '' : []).slice.call(v);
+      // We allow an optional 'dontSlice' option for arrays and arraylikes. For example,
+      // when implementing length, there is no need to copy the object, we can just read
+      // the property
+      if (typeof(v) === 'string' || ('dontSlice' in options && options.dontSlice))
+        return v;
+
+      return [].slice.call(v);
     };
 
 

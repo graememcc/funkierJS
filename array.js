@@ -540,7 +540,11 @@
      *
      */
 
-    var copy = callProp('slice');
+    var copy = curry(function(arr) {
+      arr = checkArrayLike(arr);
+
+      return arr.slice();
+    });
 
 
     /*

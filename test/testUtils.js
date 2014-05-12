@@ -68,7 +68,7 @@
     };
 
 
-    var typeclasses = ['integer', 'positive', 'arraylike'];
+    var typeclasses = ['integer', 'positive', 'arraylike', 'strictarraylike'];
     var isTypeClass = function(restriction) {
       if (typeclasses.indexOf(restriction) !== -1)
         return true;
@@ -149,7 +149,8 @@
         {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive']},
         {name: 'function', article: 'a ', value: function() {}, typeclasses: ['function']},
         {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer', 'positive']},
-        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: ['arraylike']}
+        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: ['arraylike', 'strictarraylike']},
+        {name: 'arraylike', article: 'an ', value: {'0': 1, '1': 2, 'length': 2}, typeclasses: ['arraylike', 'strictarraylike']}
       ];
 
       primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
@@ -265,12 +266,12 @@
 
       var arity = getRealArity(fnUnderTest);
       if (restrictions.length !== arity)
-        throw new Error('You haven\'t supplied enough restrictions: ' + name + ' has arity ' + arity +
+        throw new Error('You haven\'t supplied the correct amount of restrictions: ' + name + ' has arity ' + arity +
                         ' and you supplied ' + restrictions.length);
 
       if (goodArgs.length !== arity)
-        throw new Error('You haven\'t supplied enough correct arguments: ' + name + ' has arity ' + arity +
-                        ' and you supplied ' + restrictions.length);
+        throw new Error('You haven\'t supplied the correct amount of good arguments: ' + name + ' has arity ' + arity +
+                        ' and you supplied ' + goodArgs.length);
 
       goodArgs.forEach(function(g, i) {
         if (g.length === 0)
@@ -290,17 +291,23 @@
               throw new Error(name + ' Spec ' + i + ' incorrect. A typeclass must be the only restriction for that parameter!');
 
             // The valid argument at this position should have the right type!
-            if (r !== 'arraylike') {
+            if (r !== 'arraylike' && r !== 'strictarraylike') {
               var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
               if (typeof(goodArgs[i][j]) !== t)
                 throw new Error(name + ' spec: "good argument" of incorrect type for ' + i + ' ' + j + ', expected ' +
                                t + ' and found ' + typeof(goodArgs[i][j]) + ' ' + goodArgs[i][j]);
             } else {
-              if (goodArgs[i].length !== 2)
-                throw new Error(name + ' spec: not enough valid arguments for arraylike parameter ' + i);
+              // We need to handle the 'arraylike' and 'strictarraylike' type restrictions separately, as one typeclass
+              // should correspond to 3 validArguments
 
               var goodArgsType = goodArgs[i].map(function(x) {return Array.isArray(x) ? 'array' : typeof(x);});
-              if (goodArgsType.indexOf('array') === -1 || goodArgsType.indexOf('string') === -1)
+              var correctLength = r === 'arraylike' ? 3 : 2;
+
+              if (goodArgs[i].length !== correctLength)
+                throw new Error(name + ' spec: not enough valid arguments for arraylike parameter ' + i);
+
+              if (goodArgsType.indexOf('array') === -1 || goodArgsType.indexOf('object') === -1 ||
+                  (correctLength === 3 && goodArgsType.indexOf('string') === -1))
                 throw new Error(name + ' spec: wrong type of valid arguments for arraylike parameter ' + i);
             }
           }
@@ -346,11 +353,41 @@
       var args = [].slice.call(arguments);
 
       var result = {};
+      if (args.length === 1 && typeof(args[0]) === 'object' && ('length' in args[0])) {
+        // We've been passed an arraylike: copy it
+        for (var k in args[0])
+          result[k] = args[0][k];
+
+        return result;
+      }
+
       args.forEach(function(arg, i) {
         result[i] = arg;
       });
 
       result.length = args.length;
+
+      // We provide every, indexOf and slice for testing convenience
+      result.every = function() {
+        return [].every.apply(this, arguments);
+      };
+
+      result.slice = function() {
+        return makeArrayLike(this);
+      };
+
+
+      result.indexOf = function(val, from) {
+        from = from || 0;
+
+        for (var i = from, l = this.length; i < l; i++)
+          if (this[i] === val)
+            return i;
+
+        return -1;
+      };
+
+
       return result;
     };
 

@@ -65,7 +65,7 @@
       {name: 'array', value: [1, 2], result: true},
       {name: 'undefined', value: undefined, result: false},
       {name: 'null', value: null, result: false},
-      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: false}
+      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
     ];
 
 
@@ -105,43 +105,78 @@
       var checkArrayLike = utils.checkArrayLike;
 
 
-      arrayLikeTests.forEach(function(t) {
-        var name = t.name;
+      var shouldFail = arrayLikeTests.filter(function(test) {return test.result === false;});
+      var shouldPass = arrayLikeTests.filter(function(test) {return test.result === true;});
+
+      shouldFail.forEach(function(test) {
+        var name = test.name;
+
 
         it('Behaves correctly for ' + name, function() {
-          var v;
           var fn = function() {
-            v = checkArrayLike(t.value);
+            checkArrayLike(test.value);
           };
 
-          if (t.result) {
-            expect(fn).to.not.throw(TypeError);
-            // This manual deep-equality test is needed for when we start accepting
-            // array like objects
-            for (var i = 0, l = t.value.length; i < t; i++)
-              expect(v[i] === t.value[i]).to.be.true;
-
-            if (t.name === 'string')
-              expect(v === t.value).to.be.true;
-            else
-              expect(v !== t.value).to.be.true;
-          } else {
-            expect(fn).to.throw(TypeError);
-          }
+          expect(fn).to.throw(TypeError);
         });
-
-
-        if (t.result)
-          return;
 
 
         it('Returns correct exception for ' + name, function() {
           var message = 'This was an error';
           var fn = function() {
-            checkArrayLike(t.value, {message: message});
+            checkArrayLike(test.value, {message: message});
           };
 
           expect(fn).to.throw(message);
+        });
+      });
+
+
+      shouldPass.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Doesn\'t throw for ' + name, function() {
+          var fn = function() {
+            checkArrayLike(test.value);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+
+
+        it('Behaves correctly when dontSlice in options ' + name, function() {
+          var v = checkArrayLike(test.value, {dontSlice: true});
+
+          expect(v).to.equal(test.value);
+        });
+
+
+        it('Behaves correctly when dontSlice explicitly false in options ' + name, function() {
+          var v = checkArrayLike(test.value, {dontSlice: false});
+
+          if (name === 'string') {
+            expect(v).to.equal(test.value);
+          } else {
+            expect(v).to.not.equal(test.value);
+            // Need to manually check deep equality due to arraylikes being transformed to arrays
+            for (var i = 0, l = test.value.length; i < l; i++)
+              expect(v[i] === test.value[i]).to.be.true;
+          }
+        });
+
+
+        it('Behaves correctly when dontSlice not in options ' + name, function() {
+          var v = checkArrayLike(test.value);
+
+          if (name === 'string') {
+            expect(v).to.equal(test.value);
+          } else {
+            expect(v).to.not.equal(test.value);
+            // Need to manually check deep equality due to arraylikes being transformed to arrays
+            for (var i = 0, l = test.value.length; i < l; i++)
+              expect(v[i] === test.value[i]).to.be.true;
+          }
         });
       });
 
