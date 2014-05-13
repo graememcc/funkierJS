@@ -168,7 +168,7 @@
 
       // Filter on the members of the typeclass
       var toFilter = isFuncTypeClass(resSpec) ? 'function' : resSpec;
-      primBogus = primBogus.filter(function(val) {return val.typeclasses.indexOf(resSpec) === -1;});
+      primBogus = primBogus.filter(function(val) {return val.typeclasses.indexOf(toFilter) === -1;});
 
       var badObjectMaker = function(val) {
         return {valueOf: function() {return val;}};
