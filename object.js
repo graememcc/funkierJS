@@ -371,7 +371,7 @@
     var modifyOrThrow = curry(function(prop, val, obj) {
       // Return straight away if the property doesn't exist
       if (!hasOwnProperty(prop, obj))
-        throw new TypeError('Attempt to modify non-existant property');
+        throw new TypeError('Attempt to modify non-existent property');
 
       return setOrThrow(prop, val, obj);
     });
@@ -456,7 +456,7 @@
     var deletePropOrThrow = curry(function(prop, obj) {
       // Even simpler still!
       if (!hasOwnProperty(prop, obj))
-        throw new TypeError('Attempt to delete non-existant property');
+        throw new TypeError('Attempt to delete non-existent property');
 
       delete obj[prop];
       return obj;
