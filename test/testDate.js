@@ -6,7 +6,6 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var date = require('../date');
 
     // Import utility functions
@@ -36,7 +35,7 @@
     describeModule('date', date, expectedObjects, expectedFunctions);
 
 
-    var makeUnaryDateTest = function(desc, fnUnderTest, verifier, noRestrictions) {
+    var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
       var spec = {
         name: desc,
         arity: 1,
@@ -46,20 +45,17 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        it('Works correctly (1)', function() {
-          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-          var result = fnUnderTest(testDate);
+        var addOne = function(message, date) {
+          it('Works correctly ' + message, function() {
+            var result = fnUnderTest(date);
 
-          expect(result).to.equal(testDate[verifier]());
-        });
+            expect(result).to.equal(date[verifier]());
+          });
+        };
 
 
-        it('Works correctly (2)', function() {
-          var d = new Date();
-          var result = fnUnderTest(d);
-
-          expect(result).to.equal(d[verifier]());
-        });
+        addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
+        addOne('(2)', new Date());
       });
     };
 
@@ -89,6 +85,7 @@
     makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
 
 
+    // XXX Remove desc parameter when testCurriedFunction's desc becomes optional
     var makeBasicSetterTests = function(desc, fnUnderTest, verifier) {
       it('Returns the date', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
@@ -98,23 +95,19 @@
       });
 
 
-      it('Works correctly (1)', function() {
-        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-        var newVal = 2;
-        var result = fnUnderTest(2, testDate);
+      var addOne = function(message, date) {
+        it('Works correctly ' + message, function() {
+          var current = verifier(date);
+          var newVal = current > 1 ? current - 1 : current + 1;
+          var result = fnUnderTest(newVal, date);
 
-        expect(verifier(result)).to.equal(newVal);
-      });
+          expect(verifier(result)).to.equal(newVal);
+        });
+      };
 
 
-      it('Works correctly (2)', function() {
-        var d = new Date();
-        var current = verifier(d);
-        var newVal = current > 1 ? current - 1 : current + 1;
-        var result = fnUnderTest(newVal, d);
-
-        expect(verifier(result)).to.equal(newVal);
-      });
+      addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
+      addOne('(2)', new Date());
 
 
       // fnUnderTest should have arity 2, so should be curried
@@ -271,8 +264,31 @@
       date.safeSetUTCMonth, date.getUTCDayOfMonth);
 
 
+    // Can't really write meaningful tests for this
     var gctsSpec = {name: 'getCurrentTimeString', arity: 0};
     describeFunction(gctsSpec, date.getCurrentTimeString, function() {});
+
+
+    var addDateMakerTests = function(fnUnderTest, sourceFields) {
+      var addOne = function(message, field, date) {
+        it('Works correctly ' + message, function() {
+          var result = fnUnderTest(date[field]());
+
+          expect(result).to.be.an.instanceOf(Date);
+          expect(result).to.deep.equal(date);
+        });
+      };
+
+      sourceFields.forEach(function(field, i) {
+        // Hack to allow deep equal checks: Dates created with toString have ms at 0
+        var d = new Date();
+        d.setMilliseconds(0);
+
+        [new Date(2000, 0, 1, 0, 0, 0, 0), d].forEach(function(date, j) {
+          addOne('(' + (2 * i + j + 1) + ')', field, date);
+        });
+      });
+    };
 
 
     var mdfsSpec = {
@@ -284,22 +300,7 @@
 
 
     describeFunction(mdfsSpec, date.makeDateFromString, function(makeDateFromString) {
-      it('Works correctly (1)', function() {
-        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-        var result = makeDateFromString(testDate.toString());
-
-        expect(result).to.be.an.instanceOf(Date);
-        expect(result).to.deep.equal(testDate);
-      });
-
-
-      it('Works correctly (2)', function() {
-        var testDate = new Date();
-        var result = makeDateFromString(testDate.toISOString());
-
-        expect(result).to.be.an.instanceOf(Date);
-        expect(result).to.deep.equal(testDate);
-      });
+      addDateMakerTests(makeDateFromString, ['toString', 'toISOString']);
 
 
       it('Throws for unparsable string', function() {
@@ -321,22 +322,7 @@
 
 
     describeFunction(mdfnSpec, date.makeDateFromMilliseconds, function(makeDateFromMilliseconds) {
-      it('Works correctly (1)', function() {
-        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-        var result = makeDateFromMilliseconds(testDate.getTime());
-
-        expect(result).to.be.an.instanceOf(Date);
-        expect(result).to.deep.equal(testDate);
-      });
-
-
-      it('Works correctly (2)', function() {
-        var testDate = new Date();
-        var result = makeDateFromMilliseconds(testDate.getTime());
-
-        expect(result).to.be.an.instanceOf(Date);
-        expect(result).to.deep.equal(testDate);
-      });
+      addDateMakerTests(makeDateFromMilliseconds, ['getTime']);
 
 
       it('Throws for invalid value', function() {
