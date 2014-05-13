@@ -6,8 +6,10 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var combinators = require('../combinators');
+
+    var base = require('../base');
+    var id = base.id;
 
     // Import utility functions
     var testUtils = require('./testUtils');
@@ -35,8 +37,8 @@
 
 
     describe('I', function() {
-      it('Is a synonym for base.id', function() {
-        expect(combinators.combinators.I).to.equal(base.id);
+      it('Is a synonym for id', function() {
+        expect(combinators.combinators.I).to.equal(id);
       });
     });
 
@@ -75,80 +77,49 @@
           it('Works correctly for value of type ' + name + ' and ' + t2.name, function() {
             expect(Ky(value, t2.value)).to.equal(t2.value);
           });
-
-
-          testCurriedFunction('Ky of type ' + name + ' and ' + t2.name, Ky, [value, t2.value]);
         });
       });
+
+
+      testCurriedFunction('Ky', Ky, [1, {}]);
     });
 
 
     var SSpec = {
       name: 'S',
       arity: 3,
-      restrictions: [['function'], ['function'], []],
-      validArguments: [[function(x) {return base.id;}], [base.id], [2]]
+      restrictions: [['function: minarity 1'], ['function: minarity 1'], []],
+      validArguments: [[function(x) {return id;}], [id], [2]]
     };
 
     describeFunction(SSpec, combinators.combinators.S, function(S) {
-      var nonFunctions = [
-        {name: 'null', value: null},
-        {name: 'undefined', value: undefined},
-        {name: 'number', value: 42},
-        {name: 'string', value: 'functional'},
-        {name: 'boolean', value: 'true'},
-        {name: 'array', value: [1, 2, 3]},
-        {name: 'object', value: {foo: 1, bar: 'a'}}
-      ];
-
-
-      nonFunctions.forEach(function(nonFn) {
-        it('Throws if first argument not a function', function() {
-          var fn = function() {
-            S(nonFn.value, function() {}, 1);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-
-
-        it('Throws if second argument not a function', function() {
-          var fn = function() {
-            S(function() {}, nonFn.value, 1);
-          };
-
-          expect(fn).to.throw(TypeError);
-        });
-      });
-
-
       it('Calls first argument with third argument', function() {
+        var called = false;
+        var args = null;
         var f = function(x) {
-          f.called = true;
-          f.args = x;
-          return function(x) {return x;};
+          called = true;
+          args = x;
+          return id;
         };
-        f.called = false;
-        f.args = null;
-        S(f, function(x) {return x;}, 1);
+        S(f, id, 1);
 
-        expect(f.called).to.be.true;
-        expect(f.args).to.equal(1);
+        expect(called).to.be.true;
+        expect(args).to.equal(1);
       });
 
 
       it('Calls second argument with third argument', function() {
+        var called = false;
+        var args = null;
         var f = function(x) {
-          f.called = true;
-          f.args = x;
-          return function(x) {return x;};
+          called = true;
+          args = x;
+          return x;
         };
-        f.called = false;
-        f.args = null;
-        S(function(x) {return base.id;}, f, 1);
+        S(function(x) {return id;}, f, 1);
 
-        expect(f.called).to.be.true;
-        expect(f.args).to.equal(1);
+        expect(called).to.be.true;
+        expect(args).to.equal(1);
       });
 
 
@@ -162,19 +133,29 @@
       });
 
 
-      it('Calls result of first function with result of second function', function() {
-        var f = function(x) {
-          f.called = true;
-          f.args = x;
+      it('Throws if first function doesn\'t return function of arity 1', function() {
+        var f = function(x) {return function() {};};
+        var fn = function() {
+          S(f, f, 1);
         };
-        f.called = false;
-        f.args = null;
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Calls result of first function with result of second function', function() {
+        var called = false;
+        var args = null;
+        var f = function(x) {
+          called = true;
+          args = x;
+        };
         var g = function(x) {return f;};
         var h = function(x) {return x + 2;};
         S(g, h, 1);
 
-        expect(f.called).to.be.true;
-        expect(f.args).to.equal(h(1));
+        expect(called).to.be.true;
+        expect(args).to.equal(h(1));
       });
 
 
@@ -182,8 +163,6 @@
         var f = function(x) {
           return x * 10;
         };
-        f.called = false;
-        f.args = null;
         var g = function(x) {return f;};
         var h = function(x) {return x + 2;};
         var result = S(g, h, 1);
@@ -204,18 +183,7 @@
 
 
       it('Curries functions if necessary (2)', function() {
-        var f = function(x, y) {
-          return x + y;
-        };
-        var g = function(x) {return x * 3;};
-        var result = S(f, g, 4);
-
-        expect(result).to.equal(f(4, g(4)));
-      });
-
-
-      it('Curries functions if necessary (3)', function() {
-        var f = function() {return base.id;};
+        var f = function(x) {return id;};
         var g = function(x, y) {return x;};
         var result1 = S(f, g, 2);
         var result2 = result1(5);
@@ -224,17 +192,7 @@
       });
 
 
-      it('Curries functions if necessary (4)', function() {
-        var f = function() {return base.id;};
-        var g = function(x, y) {return y;};
-        var result1 = S(f, g, 2);
-        var result2 = result1(5);
-
-        expect(result2).to.equal(5);
-      });
-
-
-      testCurriedFunction('S', S, [function(x, y) {return x + y;}, base.id, 4]);
+      testCurriedFunction('S', S, [function(x, y) {return x + y;}, id, 4]);
     });
   };
 

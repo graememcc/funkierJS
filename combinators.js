@@ -37,12 +37,11 @@
 
 
     /*
-     * S: Sxyz = (xz)(yz). Takes two functions and an argument. Calls the first
-     *    argument with the third. This must yield a new function. The second
-     *    argument is also called with the third, and this result is fed to the
-     *    function returned from the first argument. The result of this call is
-     *    returned. Throws if the first two arguments are not functions, or if
-     *    the value returned from the first function is itself not a function.
+     * S: Sxyz = (xz)(yz). Takes two functions and an argument. Calls the first argument with the third. This must
+     *    yield a new function. The second argument is also called with the third, and this result is fed to the
+     *    function returned from the first argument, and this result is returned. Throws a TypeError if either of the
+     *    first two arguments are not functions, if those functions don't have arity of at least 1, or if the value
+     *    returned from the first function is itself not a function of arity at least 1.
      *
      * Note: Functions of arity > 1 can be passed in: they will be curried if
      * necessary.
@@ -50,12 +49,15 @@
      */
 
     var S = curry(function(x, y, z) {
-      x = checkFunction(x);
-      y = checkFunction(y);
+      x = checkFunction(x, {arity: 1, minimum: true});
+      y = checkFunction(y, {arity: 1, minimum: true});
 
       x = curry(x);
       y = curry(y);
-      return x(z)(y(z));
+
+      var newFn = checkFunction(x(z), {arity: 1, minimum: true,
+                                       message: 'First function did not return function of arity ≥ 1'});
+      return newFn(y(z));
     });
 
 
