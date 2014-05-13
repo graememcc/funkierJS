@@ -10,6 +10,7 @@
 
     var base = require('../base');
     var getRealArity = base.getRealArity;
+    var isArray = base.isArray;
     var alwaysTrue = base.constant(true);
     var alwaysFalse = base.constant(false);
 
@@ -54,7 +55,7 @@
         val = val.split('');
 
       // Turn arraylikes into real arrays
-      if (!Array.isArray(val))
+      if (!isArray(val))
         return [].slice.call(val);
 
       return val;
@@ -291,7 +292,7 @@
           var result = fnUnderTest.apply(null, argsBefore.concat([data]));
 
           if (type !== 'string')
-            expect(Array.isArray(result)).to.be.true;
+            expect(isArray(result)).to.be.true;
           else
             expect(typeof(result)).to.equal('string');
         });
@@ -380,8 +381,7 @@
         if (originalData.length < 3)
           throw new Error('Test generation for getIndex requires test data of length ' + originalData.length);
 
-        var typeString = typeof(originalData) === 'string' ? 'string' :
-                         Array.isArray(originalData) ? 'array' : 'arraylike';
+        var typeString = typeof(originalData) === 'string' ? 'string' : isArray(originalData) ? 'array' : 'arraylike';
 
 
         it('Works for ' + typeString + ' (1)', function() {
@@ -467,7 +467,7 @@
         it('Returns array ' + message, function() {
           var replicated = replicate(count, data);
 
-          expect(Array.isArray(replicated)).to.be.true;
+          expect(isArray(replicated)).to.be.true;
         });
 
 
@@ -519,7 +519,7 @@
           var data = sliceIfNecessary(originalData);
           var mapped = map(f, data);
 
-          expect(Array.isArray(mapped)).to.be.true;
+          expect(isArray(mapped)).to.be.true;
         });
 
 
@@ -1499,7 +1499,7 @@
               var data = sliceIfNecessary(originalData);
               var result = fnUnderTest(data);
 
-              expect(Array.isArray(result)).to.be.true;
+              expect(isArray(result)).to.be.true;
             });
 
 
@@ -1507,7 +1507,7 @@
               var data = sliceIfNecessary(originalData);
               var elementsHaveCorrectType = fnUnderTest(data).every(function(val) {
                 if (expectedType === 'array')
-                  return Array.isArray(val);
+                  return isArray(val);
                 return typeof(val) === 'string';
                });
 
@@ -1872,7 +1872,7 @@
           var result = concat(first, second);
 
           if (expectedType === 'array')
-            expect(Array.isArray(result)).to.be.true;
+            expect(isArray(result)).to.be.true;
           else
             expect(result).to.be.a('string');
         });
@@ -2202,7 +2202,7 @@
 
     var addFindPredicateCalledWithEveryNotFoundTest = function(fnUnderTest, fnArgs) {
       var originalData = fnArgs[fnArgs.length - 1];
-      var message = Array.isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
+      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
 
 
       it('Function called with every element if not found (' + message + ')', function() {
@@ -2228,7 +2228,7 @@
 
     var addFindPredicateCalledOnlyAsOftenAsNecessaryTest = function(fnUnderTest, fnArgs) {
       var originalData = fnArgs[fnArgs.length - 1];
-      var message = Array.isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
+      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
 
 
       it('Function called only as often as necessary when found (' + message + ')', function() {
@@ -2406,7 +2406,7 @@
 
 
       var addEmptyWhenNotFoundTest = function(val, data) {
-        var message = Array.isArray(data) ? 'array' : typeof(data) === 'string' ? 'string' : 'arraylike';
+        var message = isArray(data) ? 'array' : typeof(data) === 'string' ? 'string' : 'arraylike';
 
 
         it('Returns empty array when value not found (' + message + ')', function() {
@@ -2427,7 +2427,7 @@
           var data = sliceIfNecessary(originalData);
           var result = occurrences(val, data);
 
-          expect(Array.isArray(result)).to.be.true;
+          expect(isArray(result)).to.be.true;
         });
 
 
@@ -2489,7 +2489,7 @@
           var data = sliceIfNecessary(originalData);
           var result = occurrencesWith(p, data);
 
-          expect(Array.isArray(result)).to.be.true;
+          expect(isArray(result)).to.be.true;
         });
 
 
@@ -2606,7 +2606,7 @@
           var r = right.slice();
           var result = zip(l, r);
 
-          expect(Array.isArray(result)).to.be.true;
+          expect(isArray(result)).to.be.true;
         });
 
 
@@ -2734,7 +2734,7 @@
           var r = right.slice();
           var result = zipWith(f, l, r);
 
-          expect(Array.isArray(result)).to.be.true;
+          expect(isArray(result)).to.be.true;
         });
 
 
@@ -3168,7 +3168,7 @@
 
         it('First element is an array for ' + message, function() {
           var data = sliceIfNecessary(originalData);
-          var firstIsArray = Array.isArray(fst(unzip(data)));
+          var firstIsArray = isArray(fst(unzip(data)));
 
           expect(firstIsArray).to.be.true;
         });
@@ -3176,7 +3176,7 @@
 
         it('Second element is an array for ' + message, function() {
           var data = sliceIfNecessary(originalData);
-          var secondIsArray = Array.isArray(snd(unzip(data)));
+          var secondIsArray = isArray(snd(unzip(data)));
 
           expect(secondIsArray).to.be.true;
         });
@@ -4100,7 +4100,7 @@
           var data = sliceIfNecessary(originalData);
           var result = flatten(data);
             
-          expect(Array.isArray(result)).to.be.true;
+          expect(isArray(result)).to.be.true;
         });
 
 
@@ -4154,8 +4154,7 @@
         it('Only removes one layer for ' + message, function() {
           var flattened = flatten(data);
           var result = flattened.every(function(val, i) {
-            var sameType = Array.isArray(val) === Array.isArray(data[0][0]) &&
-                           typeof(val) === typeof(data[0][0]);
+            var sameType = isArray(val) === isArray(data[0][0]) && typeof(val) === typeof(data[0][0]);
             return sameType && val === data[Math.floor(i / 2)][i % 2];
           });
 
