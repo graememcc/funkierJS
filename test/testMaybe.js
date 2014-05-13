@@ -622,7 +622,7 @@
           newFn(val);
 
           expect(pred.called).to.be.true;
-          expect(pred.arg === val).to.be.true;
+          expect(pred.arg).to.equal(val);
         });
       });
 

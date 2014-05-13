@@ -784,7 +784,7 @@
           var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
           var result = fnUnderTest.apply(null, args);
 
-          expect(result === null).to.be.true;
+          expect(result).to.equal(null);
         });
 
 
@@ -814,8 +814,8 @@
           var args = isFrom ? [r, 0, s] : [r, s];
           var result = fnUnderTest.apply(null, args);
 
-          expect(result === null).to.be.false;
-          expect(result.index === 2).to.be.true;
+          expect(result).to.not.equal(null);
+          expect(result.index).to.equal(2);
         });
 
 

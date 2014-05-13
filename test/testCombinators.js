@@ -36,14 +36,14 @@
 
     describe('I', function() {
       it('Is a synonym for base.id', function() {
-        expect(combinators.combinators.I === base.id).to.be.true;
+        expect(combinators.combinators.I).to.equal(base.id);
       });
     });
 
 
     describe('K', function() {
       it('Is a synonym for base.constant', function() {
-        expect(combinators.combinators.K === base.constant).to.be.true;
+        expect(combinators.combinators.K).to.equal(base.constant);
       });
     });
 

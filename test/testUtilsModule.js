@@ -161,7 +161,7 @@
             expect(v).to.not.equal(test.value);
             // Need to manually check deep equality due to arraylikes being transformed to arrays
             for (var i = 0, l = test.value.length; i < l; i++)
-              expect(v[i] === test.value[i]).to.be.true;
+              expect(v[i]).to.equal(test.value[i]);
           }
         });
 
@@ -175,7 +175,7 @@
             expect(v).to.not.equal(test.value);
             // Need to manually check deep equality due to arraylikes being transformed to arrays
             for (var i = 0, l = test.value.length; i < l; i++)
-              expect(v[i] === test.value[i]).to.be.true;
+              expect(v[i]).to.equal(test.value[i]);
           }
         });
       });

@@ -314,7 +314,7 @@
         var original = [];
         var result = fnUnderTest.apply(null, argsBefore.concat([original]));
 
-        expect(result === original).to.be.false;
+        expect(result).to.not.equal(original);
         expect(result).to.deep.equal([]);
       });
 
@@ -323,7 +323,7 @@
         var original = makeArrayLike();
         var result = fnUnderTest.apply(null, argsBefore.concat([original]));
 
-        expect(result === original).to.be.false;
+        expect(result).to.not.equal(original);
         expect(result).to.deep.equal([]);
       });
 
@@ -574,7 +574,7 @@
         it('Returns undefined when called with ' + data, function() {
           var result = each(base.id, data);
 
-          expect(result === undefined).to.be.true;
+          expect(result).to.equal(undefined);
         });
       };
 

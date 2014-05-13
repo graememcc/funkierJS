@@ -446,8 +446,8 @@
 
           expect(Array.isArray(arr)).to.be.true;
           expect(arr.length).to.equal(2);
-          expect(arr[0] === t[0]).to.be.true;
-          expect(arr[1] === t[1]).to.be.true;
+          expect(arr[0]).to.equal(t[0]);
+          expect(arr[1]).to.equal(t[1]);
         });
 
 
@@ -456,8 +456,8 @@
 
           expect(Array.isArray(arr)).to.be.true;
           expect(arr.length).to.equal(2);
-          expect(arr[0] === t[1]).to.be.true;
-          expect(arr[1] === t[0]).to.be.true;
+          expect(arr[0]).to.equal(t[1]);
+          expect(arr[1]).to.equal(t[0]);
         });
       });
     });

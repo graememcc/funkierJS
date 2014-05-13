@@ -1726,7 +1726,7 @@
           var a = null;
           var clone = fnUnderTest(a);
 
-          expect(a === clone).to.be.true;
+          expect(a).to.equal(clone);
         });
       });
     };
@@ -1780,7 +1780,7 @@
       it('Returns the destination object', function() {
         var dest = {};
 
-        expect(extend({}, dest) === dest).to.be.true;
+        expect(extend({}, dest)).to.equal(dest);
       });
 
 
@@ -1859,7 +1859,7 @@
       it('Returns the destination object', function() {
         var dest = {};
 
-        expect(extendOwn({}, dest) === dest).to.be.true;
+        expect(extendOwn({}, dest)).to.equal(dest);
       });
 
 

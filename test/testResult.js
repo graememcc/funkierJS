@@ -575,7 +575,7 @@
           newFn(val);
 
           expect(pred.called).to.be.true;
-          expect(pred.arg === val).to.be.true;
+          expect(pred.arg).to.equal(val);
         });
       });
 
@@ -796,7 +796,7 @@
           f.arg = null;
           either(f, base.id, ok);
 
-          expect(f.arg === val).to.be.true;
+          expect(f.arg).to.equal(val);
         });
 
 
@@ -806,7 +806,7 @@
           var f = function(x) {return res;};
           var result = either(f, base.id, ok);
 
-          expect(result === res).to.be.true;
+          expect(result).to.equal(res);
         });
 
 
@@ -816,7 +816,7 @@
           var f = function(x) {return res;};
           var result = either(f, base.id, ok);
 
-          expect(result === res).to.be.true;
+          expect(result).to.equal(res);
         });
       };
 
@@ -842,7 +842,7 @@
           f.arg = null;
           either(base.id, f, err);
 
-          expect(f.arg === val).to.be.true;
+          expect(f.arg).to.equal(val);
         });
 
 
@@ -852,7 +852,7 @@
           var f = function(x) {return res;};
           var result = either(base.id, f, err);
 
-          expect(result === res).to.be.true;
+          expect(result).to.equal(res);
         });
 
 
@@ -862,7 +862,7 @@
           var f = function(x) {return res;};
           var result = either(base.id, f, err);
 
-          expect(result === res).to.be.true;
+          expect(result).to.equal(res);
         });
       };
 
