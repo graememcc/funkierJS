@@ -80,13 +80,22 @@
      */
 
     var isObjectLike = function(v) {
-      if (typeof(v) === 'string')
-        return true;
+      return v !== null && ['string', 'function', 'object'].indexOf(typeof(v)) !== -1;
+    };
 
-      if (typeof(v) === 'function')
-        return true;
 
-      return typeof(v) === 'object' && v !== null;
+    /* checkObjectLike: takes a value and throws if it is not object-like, otherwise return a copy.
+     *
+     */
+
+    var checkObjectLike = function(v, options) {
+      var options = options || {};
+      var message = options.message || 'Value is not an object';
+
+      if (!isObjectLike(v))
+        throw new TypeError(message);
+
+      return v;
     };
 
 
@@ -143,6 +152,7 @@
     var exported = {
       checkArrayLike: checkArrayLike,
       checkIntegral: checkIntegral,
+      checkObjectLike: checkObjectLike,
       checkPositiveIntegral: checkPositiveIntegral,
       isArrayLike: isArrayLike,
       isObjectLike: isObjectLike,

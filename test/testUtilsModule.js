@@ -16,7 +16,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
-                             'checkIntegral', 'checkPositiveIntegral'];
+                             'checkIntegral', 'checkPositiveIntegral', 'checkObjectLike'];
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
@@ -208,6 +208,18 @@
     });
 
 
+    var objectLikeTests = [
+      {name: 'number', value: 1, result: false},
+      {name: 'boolean', value: true, result: false},
+      {name: 'string', value: 'a', result: true},
+      {name: 'function', value: function() {}, result: true},
+      {name: 'object', value: {}, result: true},
+      {name: 'array', value: [1, 2], result: true},
+      {name: 'undefined', value: undefined, result: false},
+      {name: 'null', value: null, result: false}
+    ];
+
+
     var iolSpec = {
       name: 'isObjectLike',
       arity: 1
@@ -215,19 +227,7 @@
 
 
     describeFunction(iolSpec, utils.isObjectLike, function(isObjectLike) {
-      var tests = [
-        {name: 'number', value: 1, result: false},
-        {name: 'boolean', value: true, result: false},
-        {name: 'string', value: 'a', result: true},
-        {name: 'function', value: function() {}, result: true},
-        {name: 'object', value: {}, result: true},
-        {name: 'array', value: [1, 2], result: true},
-        {name: 'undefined', value: undefined, result: false},
-        {name: 'null', value: null, result: false}
-      ];
-
-
-      tests.forEach(function(t) {
+      objectLikeTests.forEach(function(t) {
         var name = t.name;
 
         it('Behaves correctly for ' + name, function() {
@@ -235,6 +235,59 @@
           var expected = t.result;
 
           expect(b).to.equal(expected);
+        });
+      });
+    });
+
+
+    // We deliberately use describe rather than our own describeFunction here
+    // due to the optional parameter
+    describe('checkObjectLike', function() {
+      var checkObjectLike = utils.checkObjectLike;
+
+
+      var shouldFail = objectLikeTests.filter(function(test) {return test.result === false;});
+      var shouldPass = objectLikeTests.filter(function(test) {return test.result === true;});
+
+      shouldFail.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Behaves correctly for ' + name, function() {
+          var fn = function() {
+            checkObjectLike(test.value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Returns correct exception for ' + name, function() {
+          var message = 'This was an error';
+          var fn = function() {
+            checkObjectLike(test.value, {message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      });
+
+
+      shouldPass.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Doesn\'t throw for ' + name, function() {
+          var fn = function() {
+            checkObjectLike(test.value);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+
+
+        it('Returns its argument for ' + name, function() {
+          expect(checkObjectLike(test.value)).to.equal(test.value);
         });
       });
     });
