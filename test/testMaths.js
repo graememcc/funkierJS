@@ -78,12 +78,12 @@
         var test1 = test.test1;
         var test2 = test.test2;
 
-        it(test.func + ' works as expected (1)', function() {
+        it('Works as expected (1)', function() {
           expect(fnUnderTest(test1.val1, test1.val2)).to.equal(test1.result);
         });
 
 
-        it(test.func + ' works as expected (2)', function() {
+        it('Works as expected (2)', function() {
           expect(fnUnderTest(test2.val1, test2.val2)).to.equal(test2.result);
         });
 
@@ -100,12 +100,12 @@
 
 
     describeFunction(bitwiseNotSpec, maths.bitwiseNot, function(bitwiseNot) {
-      it('bitwiseNot works as expected (1)', function() {
+      it('Works as expected (1)', function() {
         expect(bitwiseNot(1)).to.equal(~1);
       });
 
 
-      it('bitwiseNot works as expected (2)', function() {
+      it('Works as expected (2)', function() {
         expect(bitwiseNot(-43)).to.equal(~(-43));
       });
     });
@@ -118,17 +118,17 @@
 
 
     describeFunction(minSpec, maths.min, function(min) {
-      it('min works as expected (1)', function() {
+      it('Works as expected (1)', function() {
         expect(min(1, 2)).to.equal(Math.min(1, 2));
       });
 
 
-      it('min works as expected (2)', function() {
+      it('Works as expected (2)', function() {
         expect(min(42, 210)).to.equal(Math.min(42, 210));
       });
 
 
-      it('min discards excess arguments', function() {
+      it('Discards excess arguments', function() {
         expect(min(42, 45, 1)).to.equal(Math.min(42, 45));
       });
 
@@ -144,17 +144,17 @@
 
 
     describeFunction(maxSpec, maths.max, function(max) {
-      it('max works as expected (1)', function() {
+      it('Works as expected (1)', function() {
         expect(max(1, 2)).to.equal(Math.max(1, 2));
       });
 
 
-      it('max works as expected (2)', function() {
+      it('Works as expected (2)', function() {
         expect(max(42, 21)).to.equal(Math.max(42, 21));
       });
 
 
-      it('max discards excess arguments', function() {
+      it('Discards excess arguments', function() {
         expect(max(42, 35, 1)).to.equal(Math.max(42, 35));
       });
 
