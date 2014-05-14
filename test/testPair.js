@@ -6,16 +6,18 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var pair = require('../pair');
+
+    var base = require('../base');
+    var getRealArity = base.getRealArity;
+
     var utils = require('../utils');
+    var valueStringifier = utils.valueStringifier;
 
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
-    var getRealArity = base.getRealArity;
-    var valueStringifier = utils.valueStringifier;
 
 
     var expectedObjects = [];
@@ -55,256 +57,198 @@
       });
 
 
-      it('Returns an object when called with new operator', function() {
-        var p = new Pair(1, 2);
-
-        expect(p).to.be.an('object');
-      });
-
-
-      it('Returns an object when called without new operator', function() {
-        var p = Pair(1, 2);
-
-        expect(p).to.be.an('object');
-      });
-
-
-      it('instanceof correct for object created by new', function() {
-        var p = new Pair(1, 2);
-
-        expect(p).to.be.an.instanceOf(Pair);
-      });
-
-
-      it('instanceof correct for object created without new', function() {
-        var p = Pair(1, 2);
-
-        expect(p).to.be.an.instanceOf(Pair);
-      });
-
-
-      it('Object created with new has \'first\' property', function() {
-        var p = new Pair(1, 2);
-        var props = Object.getOwnPropertyNames(p);
-        var result = props.indexOf('first') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Object created with new has \'second\' property', function() {
-        var p = new Pair(1, 2);
-        var props = Object.getOwnPropertyNames(p);
-        var result = props.indexOf('second') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Object created without new has \'first\' property', function() {
-        var p = Pair(1, 2);
-        var props = Object.getOwnPropertyNames(p);
-        var result = props.indexOf('first') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Object created without new has \'second\' property', function() {
-        var p = Pair(1, 2);
-        var props = Object.getOwnPropertyNames(p);
-        var result = props.indexOf('second') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'first\' and \'second\' properties are not enumerable (1)', function() {
-        var p = new Pair(1, 2);
-        var first = false;
-        var second = false;
-        for (var prop in p) {
-          if (prop === 'first') first = true;
-          if (prop === 'second') second = true;
-        }
-        var result = !first && !second;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'first\' and \'second\' properties are not enumerable (2)', function() {
-        var p = Pair(1, 2);
-        var first = false;
-        var second = false;
-        for (var prop in p) {
-          if (prop === 'first') first = true;
-          if (prop === 'second') second = true;
-        }
-        var result = !first && !second;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'first\' is immutable (1)', function() {
-        var p = new Pair(1, 2);
-        var fn = function() {
-          p.first = 3;
+      var makePairTest = function(message, testMaker) {
+        var withNew = function() {
+          return new Pair(1, 2);
         };
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('\'first\' is immutable (2)', function() {
-        var p = Pair(1, 2);
-        var fn = function() {
-          p.first = 3;
+        var noNew = function() {
+          return Pair(1, 2);
         };
 
-        expect(fn).to.throw(TypeError);
+
+        it(message + ' (when pair constructed with new', testMaker(withNew));
+        it(message + ' (when pair constructed without new', testMaker(noNew));
+      };
+
+
+      makePairTest('Returns an object', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+
+          expect(p).to.be.an('object');
+        };
       });
 
 
-      it('\'second\' is immutable (1)', function() {
-        var p = new Pair(1, 2);
-        var fn = function() {
-          p.second = 3;
+      makePairTest('instanceof correct', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+
+          expect(p).to.be.an.instanceOf(Pair);
+        };
+      });
+
+
+      makePairTest('Has \'first\' property', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+          var props = Object.getOwnPropertyNames(p);
+          var result = props.indexOf('first') !== -1;
+
+          expect(result).to.be.true;
+        };
+      });
+
+
+      makePairTest('Has \'second\' property', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+          var props = Object.getOwnPropertyNames(p);
+          var result = props.indexOf('second') !== -1;
+
+          expect(result).to.be.true;
+        };
+      });
+
+
+      makePairTest('\'first\' and \'second\' properties are not enumerable', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+          var first = false;
+          var second = false;
+          for (var prop in p) {
+            if (prop === 'first') first = true;
+            if (prop === 'second') second = true;
+          }
+          var result = !first && !second;
+
+          expect(result).to.be.true;
+        };
+      });
+
+
+      makePairTest('\'first\' is immutable', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+          var fn = function() {
+            p.first = 3;
+          };
+
+          expect(fn).to.throw(TypeError);
+        };
+      });
+
+
+      makePairTest('\'second\' is immutable', function(pairMaker) {
+        return function() {
+          var p = pairMaker();
+          var fn = function() {
+            p.second = 3;
+          };
+
+          expect(fn).to.throw(TypeError);
+        };
+      });
+
+
+      makePairTest('Returns function of arity 1 if called with one argument', function(pairMaker) {
+        return function() {
+          var p = new Pair(1);
+
+          expect(p).to.be.a('function');
+          expect(p.length).to.equal(1);
+        };
+      });
+
+
+      var makeCurriedPairTest = function(message, testMaker) {
+        var withNew = function() {
+          return new Pair(1);
         };
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('\'second\' is immutable (2)', function() {
-        var p = Pair(1, 2);
-        var fn = function() {
-          p.second = 3;
+        var noNew = function() {
+          return Pair(1);
         };
 
-        expect(fn).to.throw(TypeError);
+
+        it(message + ' (when pair constructed with new', testMaker(withNew));
+        it(message + ' (when pair constructed without new', testMaker(noNew));
+      };
+
+
+      makeCurriedPairTest('Returns Pair when called with 1 argument, and result is called with another', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = f(2)
+
+          expect(p).to.be.an('object');
+          expect(p).to.be.an.instanceOf(Pair);
+        };
       });
 
 
-      it('Returns function of arity 1 if called with one argument (1)', function() {
-        var p = new Pair(1);
+      makeCurriedPairTest('Returned function can be called with new', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = new f(2)
 
-        expect(p).to.be.a('function');
-        expect(p.length).to.equal(1);
+          expect(p).to.be.an('object');
+          expect(p).to.be.an.instanceOf(Pair);
+        };
       });
 
 
-      it('Returns function of arity 1 if called with one argument (2)', function() {
-        var p = Pair(1);
+      makeCurriedPairTest('Returned function can be called without new', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = f(2)
 
-        expect(p).to.be.a('function');
-        expect(p.length).to.equal(1);
+          expect(p).to.be.an('object');
+          expect(p).to.be.an.instanceOf(Pair);
+        };
       });
 
 
-      it('Returns Pair when called with 1 argument, and result is called with another (1)', function() {
-        var f = new Pair(1);
-        var p = f(2)
+      makeCurriedPairTest('instanceof also correct in terms of returned function (1)', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = new f(2)
 
-        expect(p).to.be.an('object');
-        expect(p).to.be.an.instanceOf(Pair);
+          expect(p).to.be.an.instanceOf(f);
+        };
       });
 
 
-      it('Returns Pair when called with 1 argument, and result is called with another (2)', function() {
-        var f = Pair(1);
-        var p = f(2)
+      makeCurriedPairTest('instanceof also correct in terms of returned function (2)', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = f(2)
 
-        expect(p).to.be.an('object');
-        expect(p).to.be.an.instanceOf(Pair);
+          expect(p).to.be.an.instanceOf(f);
+        };
       });
 
 
-      it('Returned function can be called with new (1)', function() {
-        var f = new Pair(1);
-        var p = new f(2)
+      makeCurriedPairTest('Returned object correct (1)', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = new f(2)
 
-        expect(p).to.be.an('object');
-        expect(p).to.be.an.instanceOf(Pair);
+          expect(fst(p)).to.equal(1);
+          expect(snd(p)).to.equal(2);
+        };
       });
 
 
-      it('Returned function can be called with new (2)', function() {
-        var f = Pair(1);
-        var p = new f(2)
+      makeCurriedPairTest('Returned object correct (2)', function(pairMaker) {
+        return function() {
+          var f = pairMaker();
+          var p = f(2)
 
-        expect(p).to.be.an('object');
-        expect(p).to.be.an.instanceOf(Pair);
-      });
-
-
-      it('instanceof also correct in terms of returned function (1)', function() {
-        var f = new Pair(1);
-        var p = new f(2)
-
-        expect(p).to.be.an.instanceOf(f);
-      });
-
-
-      it('instanceof also correct in terms of returned function (2)', function() {
-        var f = Pair(1);
-        var p = new f(2)
-
-        expect(p).to.be.an('object');
-        expect(p).to.be.an.instanceOf(Pair);
-      });
-
-
-      it('instanceof also correct in terms of returned function (3)', function() {
-        var f = new Pair(1);
-        var p = f(2)
-
-        expect(p).to.be.an.instanceOf(f);
-      });
-
-
-      it('instanceof also correct in terms of returned function (4)', function() {
-        var f = Pair(1);
-        var p = f(2)
-
-        expect(p).to.be.an.instanceOf(Pair);
-      });
-
-
-      it('Returned object correct (1)', function() {
-        var f = new Pair(1);
-        var p = new f(2)
-
-        expect(fst(p)).to.equal(1);
-        expect(snd(p)).to.equal(2);
-      });
-
-
-      it('Returned object correct (2)', function() {
-        var f = Pair(1);
-        var p = new f(2)
-
-        expect(fst(p)).to.equal(1);
-        expect(snd(p)).to.equal(2);
-      });
-
-
-      it('Returned object correct (3)', function() {
-        var f = new Pair(1);
-        var p = f(2)
-
-        expect(fst(p)).to.equal(1);
-        expect(snd(p)).to.equal(2);
-      });
-
-
-      it('Returned object correct (4)', function() {
-        var f = Pair(1);
-        var p = f(2)
-
-        expect(fst(p)).to.equal(1);
-        expect(snd(p)).to.equal(2);
+          expect(fst(p)).to.equal(1);
+          expect(snd(p)).to.equal(2);
+        };
       });
     });
 
