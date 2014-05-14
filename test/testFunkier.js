@@ -47,8 +47,8 @@
         var name = importedModule.name;
         var module = importedModule.val;
 
-        // We want to check that funkier exports everything exported by
-        // the original submodule, and indeed that it exports the original version
+        // We want to check that funkier exports everything exported by the original submodule, and indeed that it
+        // exports the original version
         for (var k in module) {
           if (!module.hasOwnProperty(k))
             continue;
