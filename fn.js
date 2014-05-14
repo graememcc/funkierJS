@@ -10,21 +10,23 @@
 
     var utils = require('./utils');
     var checkArrayLike = utils.checkArrayLike;
+    var checkPositiveIntegral = utils.checkPositiveIntegral;
+    var checkObjectLike = utils.checkObjectLike;
 
     var funcUtils = require('./funcUtils');
     var checkFunction = funcUtils.checkFunction;
 
 
     /*
-     * bindWithContext: A curried version of Function.prototype.bind.
-     *                  Binds the given object as the execution context
-     *                  for the given function, returning a curried function
-     *                  with the same arity as the original. Throws if f is not
-     *                  a function.
+     * bindWithContext: A curried version of Function.prototype.bind. Takes an execution context, and a function.
+     *                  Binds the given object as the execution context for the given function, returning a curried
+     *                  function with the same arity as the original. Throws a TypeError if context is not an object,
+     *                  or if f is not a function.
      *
      */
 
     var bindWithContext = curry(function(obj, f) {
+      obj = checkObjectLike(obj);
       f = checkFunction(f);
 
       var realArity = getRealArity(f);
@@ -36,16 +38,16 @@
 
 
     /*
-     * bindWithContextAndArity: A curried version of Function.prototype.bind.
-     *                          Takes an execution context object, an arity and a
-     *                          function. Binds the given object as the execution
-     *                          context for the given function, returning a curried
-     *                          function accepting arity arguments. Throws if f is not
-     *                          a function.
+     * bindWithContextAndArity: A curried version of Function.prototype.bind. Takes an execution context, an arity and
+     *                          a function. Binds the given object as the execution context for the given function,
+     *                          returning a curried function with the given arity. Throws a TypeError if context is
+     *                          not an object, if arity is not a non-negative integer, or if f is not a function.
      *
      */
 
     var bindWithContextAndArity = curry(function(obj, arity, f) {
+      obj = checkObjectLike(obj);
+      arity = checkPositiveIntegral(arity);
       f = checkFunction(f);
 
       return curryWithArity(arity, function() {
@@ -169,6 +171,8 @@
 
     var callWithContext = curry(function(context, args, f) {
       args = checkArrayLike(args);
+      context = checkObjectLike(context);
+      // Don't need to explicitly check the type of f: curry will throw for a non-function
       f = curry(f);
 
       return f.apply(context, args);

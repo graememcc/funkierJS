@@ -10,6 +10,7 @@
 
     var base = require('../base');
     var getRealArity = base.getRealArity;
+    var id = base.id;
 
     // Import utility functions
     var testUtils = require('./testUtils');
@@ -25,40 +26,40 @@
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
+    var addReturnsFunctionTest = function(fnUnderTest, args) {
+      it('Returns a function', function() {
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.be.a('function');
+      });
+    };
+
+
     var bindWithContextSpec = {
       name: 'bindWithContext',
       arity: 2,
-      restrictions: [[], ['function']],
+      restrictions: [['objectlike'], ['function']],
       validArguments: [[{}], [function() {}]]
     };
 
 
     describeFunction(bindWithContextSpec, fn.bindWithContext, function(bindWithContext) {
-      it('Returns a function', function() {
-        var f = function() {};
-        var obj = {};
-        var result = bindWithContext(obj, f);
-
-        expect(result).to.be.a('function');
-      });
+      addReturnsFunctionTest(bindWithContext, [{}, function() {}]);
 
 
-      it('Returned function has correct arity (1)', function() {
-        var f = function() {};
-        var obj = {};
-        var result = bindWithContext(obj, f);
+      var addCorrectArityTest = function(message, f) {
+        it('Returned function has correct arity ' + message, function() {
+          var obj = {};
+          var result = bindWithContext(obj, f);
 
-        expect(getRealArity(result)).to.equal(f.length);
-      });
+          expect(getRealArity(result)).to.equal(f.length);
+        });
+      };
 
 
-      it('Returned function has correct arity (2)', function() {
-        var f = function(x, y) {};
-        var obj = {};
-        var result = bindWithContext(obj, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
+      addCorrectArityTest('(1)', function() {});
+      addCorrectArityTest('(2)', function(x) {});
+      addCorrectArityTest('(3)', function(x, y) {});
 
 
       it('Binds to context', function() {
@@ -87,49 +88,29 @@
     var bindWithContextAndAritySpec = {
       name: 'bindWithContextAndArity',
       arity: 3,
-      restrictions: [[], [], ['function']],
+      restrictions: [['objectlike'], ['positive'], ['function']],
       validArguments: [[{}], [0], [function() {}]]
     };
 
 
     describeFunction(bindWithContextAndAritySpec, fn.bindWithContextAndArity, function(bindWithContextAndArity) {
-      it('Returns a function', function() {
-        var f = function() {};
-        var obj = {};
-        var result = bindWithContextAndArity(obj, 0, f);
-
-        expect(result).to.be.a('function');
-      });
+      addReturnsFunctionTest(bindWithContextAndArity, [{}, 0, function() {}]);
 
 
-      it('Returned function has correct arity (1)', function() {
-        var f = function() {};
-        var obj = {};
-        var arity = 0;
-        var result = bindWithContextAndArity(obj, arity, f);
+      var addCorrectArityTest = function(message, arity, f) {
+        it('Returned function has correct arity ' + message, function() {
+          var obj = {};
+          var result = bindWithContextAndArity(obj, arity, f);
 
-        expect(getRealArity(result)).to.equal(arity);
-      });
-
-
-      it('Returned function has correct arity (2)', function() {
-        var f = function() {};
-        var obj = {};
-        var arity = 1;
-        var result = bindWithContextAndArity(obj, arity, f);
-
-        expect(getRealArity(result)).to.equal(arity);
-      });
+          expect(getRealArity(result)).to.equal(arity);
+        });
+      };
 
 
-      it('Returned function has correct arity (3)', function() {
-        var f = function(x, y) {};
-        var obj = {};
-        var arity = 3;
-        var result = bindWithContextAndArity(obj, arity, f);
-
-        expect(getRealArity(result)).to.equal(arity);
-      });
+      addCorrectArityTest('(1)', 0, function() {});
+      addCorrectArityTest('(2)', 1, function() {});
+      addCorrectArityTest('(3)', 1, function(x) {});
+      addCorrectArityTest('(4)', 1, function(x, y) {});
 
 
       it('Binds to context', function() {
@@ -158,6 +139,139 @@
     });
 
 
+    var addCommonWrapTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      addReturnsFunctionTest(fnUnderTest, isWrap ? [function() {}, function() {}, function() {}] :
+                                                   [function() {}, function() {}]);
+
+
+      var addCorrectArityTest = function(message, g, f) {
+        it('Returned function has correct arity ' + message, function() {
+          var result = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+
+          expect(getRealArity(result)).to.equal(f.length);
+        });
+      };
+
+
+      addCorrectArityTest('(1)', function() {}, function() {});
+      addCorrectArityTest('(2)', function() {}, function(x) {});
+      addCorrectArityTest('(3)', function(x) {}, function(x, y) {});
+
+
+      var addCallsOriginalWithArgsTest = function(message, args) {
+        it('Calls the original function with the given arguments ' + message, function() {
+          var fArgs = null;
+          var f = args.length === 2 ? function(x, y) {fArgs = [].slice.call(arguments);} :
+                                      function(x) {fArgs = [].slice.call(arguments);};
+          var g = function() {};
+          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+          newFn.apply(null, args);
+
+          expect(fArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsOriginalWithArgsTest('(1)', [1, 2]);
+      addCallsOriginalWithArgsTest('(2)', ['funkier']);
+
+
+      it('Calls the original function with preserved execution context', function() {
+        var exc = undefined;
+        var f = function(x, y) {exc = this;};
+        var g = function() {};
+        var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(exc).to.equal(obj);
+      });
+
+
+      var addReturnsOriginalsValueTest = function(message, f, args) {
+        it('Returns the original function\'s return value ' + message, function() {
+          var g = function() {};
+          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+          var result = newFn.apply(null, args);
+
+          expect(result).to.equal(f.apply(null, args));
+        });
+      };
+
+
+      addReturnsOriginalsValueTest('(1)', function(x, y) {return x + y;}, [1, 2]);
+      addReturnsOriginalsValueTest('(2)', function(x, y) {return 42;}, [1, 2]);
+    };
+
+
+    var addCommonPreTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      var addCallsPreWithArgsTest = function(message, f, args) {
+        it('Calls the pre function with the given arguments ' + message, function() {
+          var preArgs = null;
+          var pre = function(args) {preArgs = args;};
+          var post = function() {};
+          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+          newFn.apply(null, args);
+
+          expect(preArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsPreWithArgsTest('(1)', function(x, y) {}, [1, 2]);
+      addCallsPreWithArgsTest('(2)', function(x) {}, ['funkier']);
+
+
+      it('Calls the pre function with preserved execution context', function() {
+        var preExc = undefined;
+        var pre = function() {preExc = this;};
+        var post = function() {};
+        var f = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(preExc).to.equal(obj);
+      });
+
+
+      it('Calls the pre function before the original function', function() {
+        var origCalled = false;
+        var preCalledBefore = false;
+
+        var f = function() {origCalled = true;};
+        var pre = function() {preCalledBefore = !origCalled;};
+        var post = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = ['funkier'];
+        newFn.apply(null, args);
+
+        expect(preCalledBefore).to.be.true;
+      });
+
+
+      it('Disregards the fnUnderTest function\'s return value', function() {
+        var f = function(x, y) {return x + y;};
+        var pre = function() {return 42;};
+        var post = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = [1, 2];
+        var result = newFn.apply(null, args);
+
+        expect(result).to.not.equal(pre.apply(null, args));
+        expect(result).to.equal(f.apply(null, args));
+      });
+    };
+
+
     var preSpec = {
       name: 'pre',
       arity: 2,
@@ -167,169 +281,80 @@
 
 
     describeFunction(preSpec, fn.pre, function(pre) {
-      it('Returns a function', function() {
-        var f = function() {};
-        var g = function() {};
-        var result = pre(g, f);
-
-        expect(result).to.be.a('function');
-      });
-
-
-      it('Returns a function with the correct arity (1)', function() {
-        var f = function() {};
-        var g = function() {};
-        var result = pre(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (2)', function() {
-        var f = function(x) {};
-        var g = function() {};
-        var result = pre(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (3)', function() {
-        var f = function(x, y) {};
-        var g = function() {};
-        var result = pre(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Calls the pre function with the given arguments (1)', function() {
-        var f = function(x, y) {};
-        var g = function(args) {g.args = args;};
-        g.args = null;
-        var newFn = pre(g, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(g.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the pre function with the given arguments (2)', function() {
-        var f = function(x) {};
-        var g = function(args) {g.args = args;};
-        g.args = null;
-        var newFn = pre(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(g.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with the given arguments (1)', function() {
-        var f = function(x, y) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        var g = function() {};
-        var newFn = pre(g, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with the given arguments (2)', function() {
-        var f = function(x) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        var g = function() {};
-        var newFn = pre(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with preserved execution context', function() {
-        var f = function(x, y) {f.exc = this;};
-        f.exc = undefined;
-        var g = function() {};
-        var newFn = pre(g, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(f.exc).to.equal(obj);
-      });
-
-
-      it('Calls the pre function with preserved execution context', function() {
-        var g = function() {g.exc = this;};
-        g.exc = undefined;
-        var f = function() {};
-        var newFn = pre(g, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(g.exc).to.equal(obj);
-      });
-
-
-      it('Calls the pre function before the original function', function() {
-        var f = function() {f.called = true;};
-        f.called = false;
-        var g = function() {g.calledBefore = !f.called;};
-        g.calledBefore = false;
-        var newFn = pre(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(g.calledBefore).to.be.true;
-      });
-
-
-      it('Returns the original function\'s return value (1)', function() {
-        var f = function(x, y) {return 42;};
-        f.args = null;
-        var g = function() {};
-        var newFn = pre(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Returns the original function\'s return value (2)', function() {
-        var f = function(x, y) {return x + y;};
-        f.args = null;
-        var g = function() {};
-        var newFn = pre(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Disregards the pre function\'s return value', function() {
-        var f = function(x, y) {return x + y;};
-        var g = function() {return 42;};
-        var newFn = pre(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.not.equal(g.apply(null, args));
-        expect(result).to.equal(f.apply(null, args));
-      });
+      addCommonWrapTests(pre);
+      addCommonPreTests(pre);
 
 
       var g = function() {};
       var f = function(x) {return x;};
       testCurriedFunction('pre', pre, {firstArgs: [g, f], thenArgs: [1]});
     });
+
+
+    var addCommonPostTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      it('Calls the post function with preserved execution context', function() {
+        var postExc = undefined;
+        var post = function() {postExc = this;};
+        var f = function() {};
+        var pre = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(postExc).to.equal(obj);
+      });
+
+
+      it('Calls the post function after the original function', function() {
+        var origCalled = false;
+        var postCalledAfter = false;
+
+        var f = function() {origCalled = true;};
+        var pre = function() {};
+        var post = function() {postCalledAfter = origCalled;};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = ['funkier'];
+        newFn.apply(null, args);
+
+        expect(postCalledAfter).to.be.true;
+      });
+
+
+      var addCallsPostWithArgsAndResultTest = function(message, f, args) {
+        it('Calls the pre function with the given arguments ' + message, function() {
+          var postArgs = null;
+          var postResult = null;
+          var post = function(args, result) {postArgs = args; postResult = result;};
+          var pre = function() {};
+          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+          newFn.apply(null, args);
+
+          expect(postArgs).to.deep.equal(args);
+          expect(postResult).to.deep.equal(f.apply(null, args));
+        });
+      };
+
+
+      addCallsPostWithArgsAndResultTest('(1)', function(x, y) {return x + y;}, [1, 2]);
+      addCallsPostWithArgsAndResultTest('(2)', id, ['funkier']);
+
+
+      it('Disregards the post function\'s return value', function() {
+        var f = function(x, y) {return x + y;};
+        var pre = function() {};
+        var post = function() {return 42;};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = [1, 2];
+        var result = newFn.apply(null, args);
+
+        expect(result).to.not.equal(post.apply(null, [args, f.apply(null, args)]));
+        expect(result).to.equal(f.apply(null, args));
+      });
+    };
 
 
     var postSpec = {
@@ -341,172 +366,12 @@
 
 
     describeFunction(postSpec, fn.post, function(post) {
-      it('Returns a function', function() {
-        var f = function() {};
-        var g = function() {};
-        var result = post(g, f);
-
-        expect(result).to.be.a('function');
-      });
-
-
-      it('Returns a function with the correct arity (1)', function() {
-        var f = function() {};
-        var g = function() {};
-        var result = post(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (2)', function() {
-        var f = function(x) {};
-        var g = function() {};
-        var result = post(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (3)', function() {
-        var f = function(x, y) {};
-        var g = function() {};
-        var result = post(g, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Calls the original function with the given arguments (1)', function() {
-        var f = function(x, y) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        var g = function() {};
-        var newFn = post(g, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with the given arguments (2)', function() {
-        var f = function(x) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        var g = function() {};
-        var newFn = post(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with preserved execution context', function() {
-        var f = function(x, y) {f.exc = this;};
-        f.exc = undefined;
-        var g = function() {};
-        var newFn = post(g, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(f.exc).to.equal(obj);
-      });
-
-
-      it('Calls the pre function with preserved execution context', function() {
-        var g = function() {g.exc = this;};
-        g.exc = undefined;
-        var f = function() {};
-        var newFn = post(g, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(g.exc).to.equal(obj);
-      });
-
-
-      it('Calls the post function after the original function', function() {
-        var f = function() {f.called = true;};
-        f.called = false;
-        var g = function() {g.calledAfter = f.called;};
-        g.calledAfter = false;
-        var newFn = post(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(g.calledAfter).to.be.true;
-      });
-
-
-      it('Calls the post function with the given arguments and result(1)', function() {
-        var f = function(x, y) {return 42;};
-        var g = function(args, result) {g.args = args; g.result = result;};
-        g.args = null;
-        g.result = null;
-        var newFn = post(g, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(g.args).to.deep.equal(args);
-        expect(g.result).to.deep.equal(f.apply(null, args));
-      });
-
-
-      it('Calls the post function with the given arguments and result(2)', function() {
-        var f = function(x) {return x;};
-        var g = function(args, result) {g.args = args; g.result = result;};
-        g.args = null;
-        g.result = null;
-        var newFn = post(g, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(g.args).to.deep.equal(args);
-        expect(g.result).to.deep.equal(f.apply(null, args));
-      });
-
-
-      it('Returns the original function\'s return value (1)', function() {
-        var f = function(x, y) {return 42;};
-        f.args = null;
-        var g = function() {};
-        var newFn = post(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Returns the original function\'s return value (2)', function() {
-        var f = function(x, y) {return x + y;};
-        f.args = null;
-        var g = function() {};
-        var newFn = post(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Disregards the post function\'s return value', function() {
-        var f = function(x, y) {return x + y;};
-        var g = function() {return 42;};
-        var newFn = post(g, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.not.equal(g.apply(null, [args, f.apply(null, args)]));
-        expect(result).to.equal(f.apply(null, args));
-      });
+      addCommonWrapTests(post);
+      addCommonPostTests(post);
 
 
       var g = function() {};
-      var f = function(x) {return x;};
-      testCurriedFunction('post', post, {firstArgs: [g, f], thenArgs: [1]});
+      testCurriedFunction('post', post, {firstArgs: [g, id], thenArgs: [1]});
     });
 
 
@@ -519,248 +384,9 @@
 
 
     describeFunction(wrapSpec, fn.wrap, function(wrap) {
-      it('Returns a function', function() {
-        var f = function() {};
-        var pre = function() {};
-        var post = function() {};
-        var result = wrap(pre, post, f);
-
-        expect(result).to.be.a('function');
-      });
-
-
-      it('Returns a function with the correct arity (1)', function() {
-        var f = function() {};
-        var pre = function() {};
-        var post = function() {};
-        var result = wrap(pre, post, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (2)', function() {
-        var f = function(x) {};
-        var pre = function() {};
-        var post = function() {};
-        var result = wrap(pre, post, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Returns a function with the correct arity (3)', function() {
-        var f = function(x, y) {};
-        var pre = function() {};
-        var post = function() {};
-        var result = wrap(pre, post, f);
-
-        expect(getRealArity(result)).to.equal(f.length);
-      });
-
-
-      it('Calls the pre function with the given arguments (1)', function() {
-        var f = function(x, y) {};
-        var pre = function(arpres) {pre.args = args;};
-        var post = function() {};
-        pre.args = null;
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(pre.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the pre function with the given arguments (2)', function() {
-        var f = function(x) {};
-        var pre = function(arpres) {pre.args = args;};
-        var post = function() {};
-        pre.args = null;
-        var newFn = wrap(pre, post, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(pre.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with the given arguments (1)', function() {
-        var f = function(x, y) {f.args = [].slice.call(arguments);};
-        var pre = function() {};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with the given arguments (2)', function() {
-        var f = function(x) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        var g = function() {};
-        var pre = function() {};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(f.args).to.deep.equal(args);
-      });
-
-
-      it('Calls the original function with preserved execution context', function() {
-        var f = function(x, y) {f.exc = this;};
-        f.exc = undefined;
-        var pre = function() {};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(f.exc).to.equal(obj);
-      });
-
-
-      it('Calls the pre function with preserved execution context', function() {
-        var pre = function() {pre.exc = this;};
-        pre.exc = undefined;
-        var post = function() {};
-        var f = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(pre.exc).to.equal(obj);
-      });
-
-
-      it('Calls the post function with preserved execution context', function() {
-        var post = function() {post.exc = this;};
-        post.exc = undefined;
-        var pre = function() {};
-        var f = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['a', 'b'];
-        var obj = {};
-        newFn.apply(obj, args);
-
-        expect(post.exc).to.equal(obj);
-      });
-
-
-      it('Calls the pre function before the original function', function() {
-        var f = function() {f.called = true;};
-        f.called = false;
-        var pre = function() {pre.calledBefore = !f.called;};
-        pre.calledBefore = false;
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(pre.calledBefore).to.be.true;
-      });
-
-
-      it('Calls the post function after the original function', function() {
-        var f = function() {f.called = true;};
-        f.called = false;
-        var pre = function() {};
-        var post = function() {post.calledAfter = f.called;};
-        post.calledAfter = false;
-        var newFn = wrap(pre, post, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(post.calledAfter).to.be.true;
-      });
-
-
-      it('Calls the post function with the given arguments and result(1)', function() {
-        var f = function(x, y) {return 42;};
-        var post = function(args, result) {post.args = args; post.result = result;};
-        post.args = null;
-        post.result = null;
-        var pre = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        newFn.apply(null, args);
-
-        expect(post.args).to.deep.equal(args);
-        expect(post.result).to.deep.equal(f.apply(null, args));
-      });
-
-
-      it('Calls the post function with the given arguments and result(2)', function() {
-        var f = function(x) {return 42;};
-        var post = function(args, result) {post.args = args; post.result = result;};
-        post.args = null;
-        post.result = null;
-        var pre = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = ['funkier'];
-        newFn.apply(null, args);
-
-        expect(post.args).to.deep.equal(args);
-        expect(post.result).to.deep.equal(f.apply(null, args));
-      });
-
-
-      it('Returns the original function\'s return value (1)', function() {
-        var f = function(x, y) {return 42;};
-        f.args = null;
-        var pre = function() {};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Returns the original function\'s return value (2)', function() {
-        var f = function(x, y) {return x + y;};
-        f.args = null;
-        var pre = function() {};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Disregards the pre function\'s return value', function() {
-        var f = function(x, y) {return x + y;};
-        var pre = function() {return 42;};
-        var post = function() {};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.not.equal(pre.apply(null, args));
-        expect(result).to.equal(f.apply(null, args));
-      });
-
-
-      it('Disregards the post function\'s return value', function() {
-        var f = function(x, y) {return x + y;};
-        var pre = function() {};
-        var post = function() {return 42;};
-        var newFn = wrap(pre, post, f);
-        var args = [1, 2];
-        var result = newFn.apply(null, args);
-
-        expect(result).to.not.equal(post.apply(null, [args, f.apply(null, args)]));
-        expect(result).to.equal(f.apply(null, args));
-      });
+      addCommonWrapTests(wrap, true);
+      addCommonPreTests(wrap, true);
+      addCommonPostTests(wrap, true);
 
 
       var pre = function() {};
@@ -773,81 +399,41 @@
     var fixpointSpec = {
       name: 'fixpoint',
       arity: 2,
-      restrictions: [[], ['function']],
+      restrictions: [[], ['function: arity 1']],
       validArguments: [[1], [function(x) {return x;}]]
     };
 
 
     describeFunction(fixpointSpec, fn.fixpoint, function(fixpoint) {
-      it('Throws if function does not have arity 1 (1)', function() {
-        var f = function() {};
-        var fn = function() {
-          fixpoint(1, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if function does not have arity 1 (2)', function() {
-        var f = function(x, y) {};
-        var fn = function() {
-          fixpoint(1, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Does not throw if function has arity 1 (1)', function() {
-        var f = function(x) {return 1;};
-        var fn = function() {
-          fixpoint(1, f);
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
-      it('Does not throw if function has arity 1 (2)', function() {
-        var f = base.curry(function(x, y) {return y;})(42);
-        var fn = function() {
-          fixpoint(1, f);
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
       it('Calls function', function() {
-        var f = function(a) {f.called = true; return 1;};
-        f.called = false;
+        var called = false;
+        var f = function(a) {called = true; return 1;};
         fixpoint([], f);
 
-        expect(f.called).to.be.true;
+        expect(called).to.be.true;
       });
 
 
       it('Calls function with given arguments', function() {
-        var f = function(a) {f.args = [].slice.call(arguments); return 1;};
-        f.args = null;
+        var fArgs = null;
+        var f = function(a) {fArgs = [].slice.call(arguments); return 1;};
         var args = 1;
         fixpoint(args, f);
 
-        expect(f.args).to.deep.equal([args]);
+        expect(fArgs).to.deep.equal([args]);
       });
 
 
       it('Throws after 1000 calls', function() {
-        var f = function(a) {return f.called++;};
-        f.called = 0;
+        var called = 0;
+        var f = function(a) {return called++;};
         var args = 1;
         var fn = function() {
           fixpoint(args, f);
         };
 
         expect(fn).to.throw(Error);
-        expect(f.called).to.equal(1000);
+        expect(called).to.equal(1000);
       });
 
 
@@ -857,25 +443,25 @@
         value2 = value2 || value1;
 
         return function() {
+          var called = 0;
           var f = function(a) {
-            f.called++;
+            called++;
 
             // Return the first object
-            if (f.called === threshold + 1)
+            if (called === threshold + 1)
               return value1;
 
             // This should trigger the end of the function
-            if (f.called === threshold + 2)
+            if (called === threshold + 2)
               return value2;
 
-            // return something unique before threshold, and once we've returned
-            // the two similar objects. Hope Math.random() is random enough!
-            return Math.random();
+            // Return something unique before threshold, and once we've returned the two similar objects (which
+            // shouldn't be reached).
+            return function() {};
           };
-          f.called = 0;
           var result = fixpoint('a', f);
 
-          expect(f.called).to.be.lessThan(1000);
+          expect(called).to.be.lessThan(1000);
           expect(result).to.deep.equal(value2);
         };
       };
@@ -914,22 +500,23 @@
         var obj1 = {foo: 2};
         var obj2 = {foo: 3};
 
+        var called = 0;
         var f = function(a) {
-          f.called++;
+          called++;
 
-          if (f.called === 1)
+          if (called === 1)
             return null;
 
-          // We shouldn't get obj1
-          if (f.called === 2)
+          // We shouldn't end up with obj1 as our final result
+          if (called === 2)
             return obj1;
 
           return obj2;
         };
-        f.called = 0;
+        called = 0;
         var result = fixpoint(42, f);
 
-        expect(f.called).to.be.lessThan(1000);
+        expect(called).to.be.lessThan(1000);
         expect(result).to.not.equal(obj1);
         expect(result).to.equal(obj2);
       });
@@ -942,42 +529,37 @@
     var callWithContextSpec = {
       name: 'callWithContext',
       arity: 3,
-      restrictions: [[], ['strictarraylike'], ['function']],
+      restrictions: [['objectlike'], ['strictarraylike'], ['function']],
       validArguments: [[{}], [[], makeArrayLike()], [function() {}]]
     };
 
 
     describeFunction(callWithContextSpec, fn.callWithContext, function(callWithContext) {
       it('Calls function with correct context', function() {
-        var f = function() {f.context = this;};
-        f.context = null;
+        var fContext = null;
+        var f = function() {fContext = this;};
         var context = {};
         callWithContext(context, [], f);
 
-        expect(f.context).to.equal(context);
+        expect(fContext).to.equal(context);
       });
 
 
-      it('Calls function with correct arguments (1)', function() {
-        var f = function(a, b, c) {f.args = [].slice.call(arguments)};
-        f.args = [];
-        var context = {};
-        var args = [1, true , {}];
-        callWithContext(context, args, f);
+      var addCallsWithArgsTest = function(message, args) {
+        it('Calls function with correct arguments ' + message, function() {
+          var fArgs = null;
+          var f = args.length === 0 ? function() {fArgs = [].slice.call(arguments);} :
+                                      function(a, b, c) {fArgs = [].slice.call(arguments)};
+          var context = {};
+          callWithContext(context, args, f);
 
-        expect(f.args).to.deep.equal(args);
-      });
+          expect(fArgs).to.deep.equal(args);
+        });
+      };
 
 
-      it('Calls function with correct arguments (2)', function() {
-        var f = function() {f.args = [].slice.call(arguments)};
-        f.args = [];
-        var context = {};
-        var args = [];
-        callWithContext(context, args, f);
-
-        expect(f.args).to.deep.equal(args);
-      });
+      addCallsWithArgsTest('(1)', [1, true, []]);
+      addCallsWithArgsTest('(2)', []);
 
 
       it('Returns result of function (1)', function() {
