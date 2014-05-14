@@ -10,6 +10,7 @@
 
     var base = require('../base');
     var getRealArity = base.getRealArity;
+    var id = base.id;
 
     var utils = require('../utils');
     var valueStringifier = utils.valueStringifier;
@@ -134,119 +135,89 @@
       });
 
 
-      it('Returns an object when called with new operator', function() {
-        var j = new Just(1);
-
-        expect(j).to.be.an('object');
-      });
-
-
-      it('Returns an object when called without new operator', function() {
-        var j = Just(1);
-
-        expect(j).to.be.an('object');
-      });
-
-
-      it('instanceof correct for object created by new', function() {
-        var j = Just(1);
-
-        expect(j).to.be.an.instanceOf(Just);
-      });
-
-
-      it('instanceof correct for object created without new', function() {
-        var j = Just(1);
-
-        expect(j).to.be.an.instanceOf(Just);
-      });
-
-
-      it('Returned object is also a Maybe (1)', function() {
-        var j = new Just(1);
-
-        expect(j).to.be.an.instanceOf(Maybe);
-      });
-
-
-      it('Returned object is also a Maybe (2)', function() {
-        var j = Just(1);
-
-        expect(j).to.be.an.instanceOf(Maybe);
-      });
-
-
-      it('Object created with new has \'value\' property', function() {
-        var j = new Just(1);
-        var props = Object.getOwnPropertyNames(j);
-        var result = props.indexOf('value') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Object created without new has \'value\' property', function() {
-        var j = new Just(1);
-        var props = Object.getOwnPropertyNames(j);
-        var result = props.indexOf('value') !== -1;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'value\' property is not enumerable (1)', function() {
-        var j = new Just(1);
-        var value = false;
-        for (var prop in j)
-          if (prop === 'value') value = true;
-        var result = !value;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'value\' property is not enumerable (2)', function() {
-        var j = Just(1);
-        var value = false;
-        for (var prop in j)
-          if (prop === 'value') value = true;
-        var result = !value;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('\'value\' is immutable (1)', function() {
-        var j = new Just(1);
-        var fn = function() {
-          j.value = 2;
+      var makeJustTest = function(message, testMakerFn) {
+        var withNew = function() {
+          return new Just(1);
         };
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('\'value\' is immutable (2)', function() {
-        var j = Just(1);
-        var fn = function() {
-          j.value = 2;
+        var noNew = function() {
+          return Just(1);
         };
 
-        expect(fn).to.throw(TypeError);
+        it(message + ' when object created with new operator', testMakerFn(withNew));
+        it(message + ' when object created without new operator', testMakerFn(noNew));
+      };
+
+
+      makeJustTest('Returns an object', function(justMaker) {
+        return function() {
+          var j = justMaker();
+
+          expect(j).to.be.an('object');
+        };
       });
 
 
-      it('Returned object correct (1)', function() {
-        var j = new Just(1);
+      makeJustTest('instanceof correct', function(justMaker) {
+        return function() {
+          var j = justMaker();
 
-        expect(getJustValue(j)).to.equal(1);
+          expect(j).to.be.an.instanceOf(Just);
+        };
       });
 
 
-      it('Returned object correct (2)', function() {
-        var j = Just(1);
+      makeJustTest('Returned object is also a Maybe', function(justMaker) {
+        return function() {
+          var j = justMaker();
 
-        expect(getJustValue(j)).to.equal(1);
+          expect(j).to.be.an.instanceOf(Maybe);
+        };
+      });
+
+
+      makeJustTest('Object created has \'value\' property', function(justMaker) {
+        return function() {
+          var j = justMaker();
+          var props = Object.getOwnPropertyNames(j);
+          var result = props.indexOf('value') !== -1;
+
+          expect(result).to.be.true;
+        };
+      });
+
+
+      makeJustTest('\'value\' property is not enumerable', function(justMaker) {
+        return function() {
+          var j = justMaker();
+          var value = false;
+          for (var prop in j)
+            if (prop === 'value') value = true;
+          var result = !value;
+
+          expect(result).to.be.true;
+        };
+      });
+
+
+      makeJustTest('\'value\' is immutable', function(justMaker) {
+        return function() {
+          var j = justMaker();
+          var fn = function() {
+            j.value = 2;
+          };
+
+          expect(fn).to.throw(TypeError);
+        };
+      });
+
+
+      makeJustTest('Returned object correct', function(justMaker) {
+        return function() {
+          var j = justMaker();
+
+          expect(getJustValue(j)).to.equal(1);
+        };
       });
 
 
@@ -403,46 +374,38 @@
       });
 
 
-      it('Returned function has same arity (1)', function() {
-        var f = function() {};
-        var expected = getRealArity(f);
-        var result = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
+      var addSameArityTest = function(message, f) {
+        it('Returned function has same arity (1)', function() {
+          var expected = getRealArity(f);
+          var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
 
-        expect(getRealArity(result)).to.equal(expected);
-      });
-
-
-      it('Returned function has same arity (2)', function() {
-        var f = function(x, y, z) {};
-        var expected = getRealArity(f);
-        var result = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-
-        expect(getRealArity(result)).to.equal(expected);
-      });
+          expect(getRealArity(newFn)).to.equal(getRealArity(f));
+        });
+      };
 
 
-      it('Returned function calls original function with given args (1)', function() {
-        var f = function(x, y) {f.called = true; f.args = [x, y]; return 0;};
-        f.called = false;
-        f.args = null;
-        var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-        newFn(1, 2);
-
-        expect(f.called).to.be.true;
-        expect(f.args).to.deep.equal([1, 2]);
-      });
+      addSameArityTest('(1)', function() {});
+      addSameArityTest('(2)', function(x, y, z) {});
 
 
-      it('Returned function calls original function with given args (2)', function() {
-        var f = function(x) {f.called = true; f.args = [x]; return 0;};
-        f.called = false;
-        f.args = null;
-        var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-        newFn('a');
+      var addCallsOriginalTest = function(message, args) {
+        it('Returned function calls original function with given args ' + message, function() {
+          var called = false;
+          var fArgs = null;
 
-        expect(f.called).to.be.true;
-        expect(f.args).to.deep.equal(['a']);
-      });
+          var f = args.length > 1 ? function(x, y) {called = true; fArgs = [x, y]; return 0;} :
+                                      function(x) {called = true; fArgs = [x]; return 0;};
+          var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
+          newFn.apply(null, args);
+
+          expect(called).to.be.true;
+          expect(fArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsOriginalTest('(1)', [1, 2]);
+      addCallsOriginalTest('(2)', ['a']);
 
 
       it('Returned function preserves execution context', function() {
@@ -466,104 +429,56 @@
 
 
     describeFunction(maybeReturnerSpec, maybe.makeMaybeReturner, function(makeMaybeReturner) {
-      var notArrays = [1, true, 'a', undefined, null, {}, function() {}];
-      var notFns = [1, true, 'a', undefined, null, {}, [1]];
       var goodArgs = [[1], function() {}];
       addCommonMaybeMakerTests(makeMaybeReturner, goodArgs);
 
 
-      it('Returns Just <value> when value not in bad arguments array (1)', function() {
-        var bad = [6, 7, 8, 9, 10];
-        var f = function(x) {return x + 1;};
-        var newFn = makeMaybeReturner(bad, f);
-        var good = [0, 1, 2, 3, 4];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isJust(r) && getJustValue(r) === f(v);
+      var addReturnsJustTests = function(message, bad, good, f) {
+        it('Returns Just <value> when original function\'s result not in bad arguments array ' + message, function() {
+          var newFn = makeMaybeReturner(bad, f);
+          var good = [0, 1, 2, 3, 4];
+          var result = good.every(function(v) {
+            var r = newFn(v);
+            return isJust(r) && getJustValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Just <value> when value not in bad arguments array (2)', function() {
-        var bad = [false, undefined, 'a'];
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeMaybeReturner(bad, f);
-        var good = [true, null, 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isJust(r) && getJustValue(r) === f(v);
+      addReturnsJustTests('(1)', [6, 7, 8, 9, 10], [0, 1, 2, 3, 4], function(x) {return x + 1;});
+      addReturnsJustTests('(2)', [false, undefined, 'a'], [true, null, 'b'], id);
+
+
+      var addReturnsNothingTests = function(message, bad, badReturners, f) {
+        it('Returns Nothing when original function\'s result in bad arguments array ' + message, function() {
+          var newFn = makeMaybeReturner(bad, f);
+          var good = [0, 1, 2, 3, 4];
+          var result = badReturners.every(function(v) {
+            var r = newFn(v);
+            return isNothing(r);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Nothing when value in bad arguments array (1)', function() {
-        var bad = [6, 7, 8, 9, 10];
-        var f = function(x) {return x + 1;};
-        var newFn = makeMaybeReturner(bad, f);
-        var result = bad.every(function(v) {
-          var r = newFn(v - 1);
-          return isNothing(r);
-        });
+      addReturnsNothingTests('(1)', [6, 7, 8, 9, 10], [5, 6, 7, 8, 9], function(x) {return x + 1;});
+      addReturnsNothingTests('(2)', [false, undefined, 'a'], [false, undefined, 'a'], id);
 
-        expect(result).to.be.true;
-      });
+      var obj = {};
+      addReturnsJustTests('(tested for strict identity)', [obj], [{}], id);
+      addReturnsNothingTests('(tested for strict identity)', [obj], [obj], id);
 
 
-      it('Returns Nothing when value in bad arguments array (2)', function() {
-        var bad = [false, undefined, 'a'];
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeMaybeReturner(bad, f);
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isNothing(r);
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Strict identity used for checking values in bad array (1)', function() {
-        var o1 = {};
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeMaybeReturner([o1], f);
-        var o2 = {};
-        var val = newFn(o2);
-        var result = isJust(val) && getJustValue(val) === o2;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Strict identity used for checking values in bad array (2)', function() {
-        var o1 = {};
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeMaybeReturner([o1], f);
-        var val = newFn(o1);
-        var result = isNothing(val);
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Always return Just if bad values array empty', function() {
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeMaybeReturner([], f);
-        var good = [true, null, undefined, 1, {}, function() {}, [], 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isJust(r) && getJustValue(r) === f(v);
-        });
-
-        expect(result).to.be.true;
-      });
+      addReturnsJustTests('(when bad values array empty)', [], [true, null, undefined, 1, function() {}, {}, [], 'b'],
+                          id);
 
 
       // makeMaybeReturner should be curried
-      var f1 = function(x) {return x;}; // XXX ID REFACTORING
+      var f1 = id;
       var badArgs = [1];
       var thenArgs = [1];
       testCurriedFunction('makeMaybeReturner', makeMaybeReturner, {firstArgs: [badArgs, f1], thenArgs: thenArgs});
@@ -579,7 +494,7 @@
     var predReturnerSpec = {
       name: 'makePredMaybeReturner',
       arity: 2,
-      restrictions: [['function'], ['function']],
+      restrictions: [['function: arity 1'], ['function']],
       validArguments: [[function(x) {}], [function() {}]]
     };
 
@@ -590,97 +505,56 @@
       addCommonMaybeMakerTests(makePredMaybeReturner, goodArgs);
 
 
-      it('Throws if predicate function doesn\'t have arity 1 (1)', function() {
-        var pred = function() {};
-        var f = function(x) {};
-        var fn = function() {
-          makePredMaybeReturner(pred, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if predicate function doesn\'t have arity 1 (2)', function() {
-        var pred = function(x, y) {};
-        var f = function() {};
-        var fn = function() {
-          makePredMaybeReturner(pred, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       notFns.forEach(function(val, i) {
         it('Predicate function called with result of original function (' + (i + 1) + ')', function() {
-          var pred = function(x) {pred.called = true; pred.arg = x; return true;};
-          pred.called = false;
-          pred.arg = null;
-          var f = function(x) {return x;}; // XXX ID REFACTORING
+          var called = false;
+          var arg = null;
+          var pred = function(x) {called = true; arg = x; return true;};
+
+          var f = id;
           var newFn = makePredMaybeReturner(pred, f);
           newFn(val);
 
-          expect(pred.called).to.be.true;
-          expect(pred.arg).to.equal(val);
+          expect(called).to.be.true;
+          expect(arg).to.equal(val);
         });
       });
 
 
-      it('Returns Just <value> when pred returns true (1)', function() {
-        var pred = function(x) {return x < 6;};
-        var f = function(x) {return x + 1;};
-        var newFn = makePredMaybeReturner(pred, f);
-        var good = [0, 1, 2, 3, 4];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isJust(r) && getJustValue(r) === f(v);
+      var addReturnsJustOnTrueTest = function(message, pred, good, f)  {
+        it('Returns Just <value> when pred returns true ' + message, function() {
+          var newFn = makePredMaybeReturner(pred, f);
+
+          var result = good.every(function(v) {
+            var r = newFn(v);
+            return isJust(r) && getJustValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Just <value> when pred returns true (2)', function() {
-        var pred = function(x) {return true;}; // XXX Use constant
-        var f = function(x) {return x;};
-        var newFn = makePredMaybeReturner(pred, f);
-        var good = [true, null, 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isJust(r) && getJustValue(r) === f(v);
+      addReturnsJustOnTrueTest('(1)', function(x) {return x < 6;}, [0, 1, 2, 3, 4], function(x) {return x + 1;});
+      addReturnsJustOnTrueTest('(2)', base.constant(true), [true, 1, {}], id);
+
+
+      var addReturnsNothingOnFalseTest = function(message, pred, bad, f)  {
+        it('Returns Nothing when pred returns false ' + message, function() {
+          var newFn = makePredMaybeReturner(pred, f);
+
+          var result = bad.every(function(v) {
+            var r = newFn(v);
+            return isNothing(r);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Nothing when pred returns false (1)', function() {
-        var pred = function(x) {return x < 6;};
-        var f = function(x) {return x + 1;};
-        var newFn = makePredMaybeReturner(pred, f);
-        var bad = [6, 7, 8, 9, 10];
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isNothing(r);
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Returns Nothing when pred returns false (2)', function() {
-        var pred = function(x) {return false;}; // XXX Use constant
-        var f = function(x) {return x;};
-        var newFn = makePredMaybeReturner(pred, f);
-        var bad = [0, 1, 2, 3, 4];
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isNothing(r);
-        });
-
-        expect(result).to.be.true;
-      });
+      addReturnsNothingOnFalseTest('(1)', function(x) {return x < 6;}, [5, 6, 7, 8, 9], function(x) {return x + 1;});
+      addReturnsNothingOnFalseTest('(2)', base.constant(false), [true, 1, {}], id);
 
 
       // makePredMaybeReturner should be curried
