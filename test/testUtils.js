@@ -9,6 +9,7 @@
 
     var base = require('../base');
     var getRealArity = base.getRealArity;
+    var curry = base.curry;
 
     var utils = require('../utils');
     var isObjectLike = utils.isObjectLike;
@@ -225,15 +226,19 @@
       if (arityResults && arityResults.length > 0) {
         var arity = arityResults[1] - 0;
         for (var i = 0, l = bogusFuncs.length; i < l; i++) {
-          if (i !== arity)
+          if (i !== arity) {
             primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
+            primBogus.push({name: 'curried function of arity ' + i, article: 'a ', value: curry(bogusFuncs[i])});
+          }
         }
       } else {
         var minArityResults = /function:\s+minarity\s+(\d+)/.exec(resSpec);
         if (minArityResults && minArityResults.length > 0) {
           var minArity = minArityResults[1] - 0;
-          for (var i = 0; i < minArity; i++)
+          for (var i = 0; i < minArity; i++) {
             primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
+            primBogus.push({name: 'curried function of arity ' + i, article: 'a ', value: curry(bogusFuncs[i])});
+          }
         }
       }
 
