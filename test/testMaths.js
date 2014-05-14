@@ -6,7 +6,6 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var maths = require('../maths');
 
     // Import utility functions
@@ -225,31 +224,18 @@
       });
 
 
-      it('Works correctly (1)', function() {
-        var s = '10';
-        var base = 10;
-        var result = stringToInt(base, s);
+      var addStringToIntTest = function(message, s, base) {
+        it('Works correctly ' + message, function() {
+          var result = stringToInt(base, s);
 
-        expect(result).to.equal(parseInt(s, base));
-      });
-
-
-      it('Works correctly (2)', function() {
-        var s = '10';
-        var base = 2;
-        var result = stringToInt(base, s);
-
-        expect(result).to.equal(parseInt(s, base));
-      });
+          expect(result).to.equal(parseInt(s, base));
+        });
+      };
 
 
-      it('Works correctly (3)', function() {
-        var s = '1z';
-        var base = 36;
-        var result = stringToInt(base, s);
-
-        expect(result).to.equal(parseInt(s, base));
-      });
+      addStringToIntTest('(1)', '10', 10);
+      addStringToIntTest('(2)', '10', 2);
+      addStringToIntTest('(3)', '1z', 36);
 
 
       it('Works correctly (4)', function() {
