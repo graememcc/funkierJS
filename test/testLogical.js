@@ -29,12 +29,12 @@
 
 
     describeFunction(notSpec, logical.not, function(not) {
-      it('not works as expected (1)', function() {
+      it('Works as expected (1)', function() {
         expect(not(true)).to.be.false;
       });
 
 
-      it('not works as expected (2)', function() {
+      it('Works as expected (2)', function() {
         expect(not(false)).to.be.true;
       });
     });
@@ -89,7 +89,7 @@
     makeBinaryBooleanTestFixture('xor', logical.xor, xorTruthTable);
 
 
-    // The following predicate functions require the following definitions
+    // The following predicate tests require the following definitions
     var constant = base.constant;
     var curry = base.curry;
     var constantFalse = constant(false);
@@ -98,35 +98,13 @@
 
     var notPredSpec = {
       name: 'notPred',
-      arity: 1
+      arity: 1,
+      restrictions: [['function: arity 1']],
+      validArguments: [[function(x) {return true;}]]
     };
 
 
     describeFunction(notPredSpec, logical.notPred, function(notPred) {
-      // Utility function for test generation
-      var makePredicateArityTest = function(funcUnderTest, badArity) {
-        return function() {
-          var fn = function() {
-            funcUnderTest(badArity);
-          };
-
-          expect(fn).to.throw(TypeError);
-        };
-      };
-
-
-      it('notPred throws when called with a function of arity 0',
-          makePredicateArityTest(notPred, function() {}));
-
-
-      it('notPred throws when called with a function of arity > 1',
-          makePredicateArityTest(notPred, function(x, y) {}));
-
-
-      it('notPred throws when called with a curried function of arity > 1',
-          makePredicateArityTest(notPred, curry(function(x, y) {})));
-
-
       it('notPred works as expected (1)', function() {
         var negated = notPred(constantTrue);
 
@@ -147,17 +125,6 @@
 
 
     // Utility functions for test generation
-    var makeBinaryPredicateArityTest = function(funcUnderTest, pred1, pred2) {
-      return function() {
-        var fn = function() {
-          funcUnderTest(pred1, pred2);
-        };
-
-        expect(fn).to.throw(TypeError);
-      };
-    };
-
-
     var makeBinaryPredicateTest = function(funcUnderTest, pred1, pred2, expected) {
       return function() {
         expect(funcUnderTest(pred1, pred2)('a')).to.equal(expected);
@@ -187,37 +154,12 @@
     var makeBinaryPredicateTestFixture = function(desc, fnUnderTest, truthTable) {
       var spec = {
         name: desc,
-        arity: 2
+        arity: 2,
+        restrictions: [['function: arity 1'], ['function: arity 1']],
+        validArguments: [[function(x) {return true;}], [function(x) {return true;}]]
       };
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        var f0 = function() {};
-        var f2 = function(x, y) {};
-
-        it('Throws when called with a function of arity 0 (1)',
-            makeBinaryPredicateArityTest(fnUnderTest, f0, constantTrue));
-
-
-        it('Throws when called with a function of arity 0 (2)',
-            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, f0));
-
-
-        it('Throws when called with a function of arity > 1 (1)',
-            makeBinaryPredicateArityTest(fnUnderTest, f2, constantTrue));
-
-
-        it('Throws when called with a function of arity > 1 (2)',
-            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, f2));
-
-
-        it('Throws when called with a curried function of arity > 1 (1)',
-            makeBinaryPredicateArityTest(fnUnderTest, curry(f2), constantTrue));
-
-
-        it('Throws when called with a curried function of arity > 1 (2)',
-            makeBinaryPredicateArityTest(fnUnderTest, constantTrue, curry(f2)));
-
-
         truthTable.forEach(function(test, i) {
           var indexString = ' (' + (i + 1) + ')';
           it('Works as expected' + indexString,
