@@ -10,6 +10,8 @@
 
     var base = require('../base');
     var getRealArity = base.getRealArity;
+    var id = base.id;
+    var constant = base.constant;
 
     var utils = require('../utils');
     var valueStringifier = utils.valueStringifier;
@@ -100,119 +102,91 @@
         });
 
 
-        it('Returns an object when called with new operator', function() {
-          var o = new constructorFunction(1);
-
-          expect(o).to.be.an('object');
-        });
-
-
-        it('Returns an object when called without new operator', function() {
-          var o = constructorFunction(1);
-
-          expect(o).to.be.an('object');
-        });
-
-
-        it('instanceof correct for object created by new', function() {
-          var o = constructorFunction(1);
-
-          expect(o).to.be.an.instanceOf(constructorFunction);
-        });
-
-
-        it('instanceof correct for object created without new', function() {
-          var o = constructorFunction(1);
-
-          expect(o).to.be.an.instanceOf(constructorFunction);
-        });
-
-
-        it('Returned object is also a Maybe (1)', function() {
-          var o = new constructorFunction(1);
-
-          expect(o).to.be.an.instanceOf(Result);
-        });
-
-
-        it('Returned object is also a Maybe (2)', function() {
-          var o = constructorFunction(1);
-
-          expect(o).to.be.an.instanceOf(Result);
-        });
-
-
-        it('Object created with new has \'value\' property', function() {
-          var o = new constructorFunction(1);
-          var props = Object.getOwnPropertyNames(o);
-          var result = props.indexOf('value') !== -1;
-
-          expect(result).to.be.true;
-        });
-
-
-        it('Object created without new has \'value\' property', function() {
-          var o = new constructorFunction(1);
-          var props = Object.getOwnPropertyNames(o);
-          var result = props.indexOf('value') !== -1;
-
-          expect(result).to.be.true;
-        });
-
-
-        it('\'value\' property is not enumerable (1)', function() {
-          var o = new constructorFunction(1);
-          var value = false;
-          for (var prop in o)
-            if (prop === 'value') value = true;
-          var result = !value;
-
-          expect(result).to.be.true;
-        });
-
-
-        it('\'value\' property is not enumerable (2)', function() {
-          var o = constructorFunction(1);
-          var value = false;
-          for (var prop in o)
-            if (prop === 'value') value = true;
-          var result = !value;
-
-          expect(result).to.be.true;
-        });
-
-
-        it('\'value\' is immutable (1)', function() {
-          var o = new constructorFunction(1);
-          var fn = function() {
-            o.value = 2;
+        var makeTest = function(message, testMaker) {
+          var withNew = function() {
+            return new constructorFunction(1);
           };
 
-          expect(fn).to.throw(TypeError);
-        });
 
-
-        it('\'value\' is immutable (2)', function() {
-          var o = constructorFunction(1);
-          var fn = function() {
-            o.value = 2;
+          var withoutNew = function() {
+            return constructorFunction(1);
           };
 
-          expect(fn).to.throw(TypeError);
+
+          it(message + ' (when called with new operator)', testMaker(withNew));
+          it(message + ' (when called without new operator)', testMaker(withoutNew));
+        };
+
+
+        makeTest('Returns an object', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
+
+            expect(o).to.be.an('object');
+          };
         });
 
 
-        it('Returned object correct (1)', function() {
-          var o = new constructorFunction(1);
+        makeTest('instanceof correct', function(resultMaker) {
+          return function() {
+            var o = constructorFunction(1);
 
-          expect(verifier(o)).to.equal(1);
+            expect(o).to.be.an.instanceOf(constructorFunction);
+          };
         });
 
 
-        it('Returned object correct (2)', function() {
-          var o = constructorFunction(1);
+        makeTest('Returned object is also a Maybe', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
 
-          expect(verifier(o)).to.equal(1);
+            expect(o).to.be.an.instanceOf(Result);
+          };
+        });
+
+
+        makeTest('Has \'value\' property', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
+            var props = Object.getOwnPropertyNames(o);
+            var result = props.indexOf('value') !== -1;
+
+            expect(result).to.be.true;
+          };
+        });
+
+
+        makeTest('\'value\' property is not enumerable', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
+            var value = false;
+            for (var prop in o)
+              if (prop === 'value') value = true;
+            var result = !value;
+
+            expect(result).to.be.true;
+          };
+        });
+
+
+        makeTest('\'value\' is immutable', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
+            var fn = function() {
+              o.value = 2;
+            };
+
+            expect(fn).to.throw(TypeError);
+          };
+        });
+
+
+        makeTest('Returned object correct', function(resultMaker) {
+          return function() {
+            var o = resultMaker();
+
+            expect(verifier(o)).to.equal(1);
+          };
         });
 
 
@@ -356,46 +330,38 @@
       });
 
 
-      it('Returned function has same arity (1)', function() {
-        var f = function() {};
-        var expected = getRealArity(f);
-        var result = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
+      var addSameArityTest = function(message, f) {
+        it('Returned function has same arity ' + message, function() {
+          var expected = getRealArity(f);
+          var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
 
-        expect(getRealArity(result)).to.equal(expected);
-      });
-
-
-      it('Returned function has same arity (2)', function() {
-        var f = function(x, y, z) {};
-        var expected = getRealArity(f);
-        var result = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-
-        expect(getRealArity(result)).to.equal(expected);
-      });
+          expect(getRealArity(newFn)).to.equal(getRealArity(f));
+        });
+      };
 
 
-      it('Returned function calls original function with given args (1)', function() {
-        var f = function(x, y) {f.called = true; f.args = [x, y]; return 0;};
-        f.called = false;
-        f.args = null;
-        var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-        newFn(1, 2);
-
-        expect(f.called).to.be.true;
-        expect(f.args).to.deep.equal([1, 2]);
-      });
+      addSameArityTest('(1)', function() {});
+      addSameArityTest('(2)', function(x, y, z) {});
 
 
-      it('Returned function calls original function with given args (2)', function() {
-        var f = function(x) {f.called = true; f.args = [x]; return 0;};
-        f.called = false;
-        f.args = null;
-        var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
-        newFn('a');
+      var addCallsOriginalTest = function(message, args) {
+        it('Returned function calls original function with given args ' + message, function() {
+          var called = false;
+          var fArgs = null;
 
-        expect(f.called).to.be.true;
-        expect(f.args).to.deep.equal(['a']);
-      });
+          var f = args.length > 1 ? function(x, y) {called = true; fArgs = [x, y]; return 0;} :
+                                      function(x) {called = true; fArgs = [x]; return 0;};
+          var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
+          newFn.apply(null, args);
+
+          expect(called).to.be.true;
+          expect(fArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsOriginalTest('(1)', [1, 2]);
+      addCallsOriginalTest('(2)', ['a']);
 
 
       it('Returned function preserves execution context', function() {
@@ -419,107 +385,55 @@
 
 
     describeFunction(returnerSpec, result.makeResultReturner, function(makeResultReturner) {
-      var notArrays = [1, true, 'a', undefined, null, {}, function() {}];
-      var notFns = [1, true, 'a', undefined, null, {}, [1]];
       var goodArgs = [[1], function() {}];
       addCommonResultMakerTests(makeResultReturner, goodArgs);
 
 
-      it('Returns Ok <value> when value not in bad arguments array (1)', function() {
-        var bad = [6, 7, 8, 9, 10];
-        var f = function(x) {return x + 1;};
-        var newFn = makeResultReturner(bad, f);
-        var good = [0, 1, 2, 3, 4];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isOk(r) && getOkValue(r) === f(v);
+      var addReturnsOkTests = function(message, bad, good, f) {
+        it('Returns Ok <value> when original function\'s result not in bad arguments array ' + message, function() {
+          var newFn = makeResultReturner(bad, f);
+          var good = [0, 1, 2, 3, 4];
+          var result = good.every(function(v) {
+            var r = newFn(v);
+            return isOk(r) && getOkValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Ok <value> when value not in bad arguments array (2)', function() {
-        var bad = [false, undefined, 'a'];
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeResultReturner(bad, f);
-        var good = [true, null, 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isOk(r) && getOkValue(r) === f(v);
+      addReturnsOkTests('(1)', [6, 7, 8, 9, 10], [0, 1, 2, 3, 4], function(x) {return x + 1;});
+      addReturnsOkTests('(2)', [false, undefined, 'a'], [true, null, 'b'], id);
+
+
+      var addReturnsErrTests = function(message, bad, badReturners, f) {
+        it('Returns Err <value> when original function\'s result in bad arguments array ' + message, function() {
+          var newFn = makeResultReturner(bad, f);
+          var result = badReturners.every(function(v) {
+            var r = newFn(v);
+            return isErr(r) && getErrValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Err <value> when value in bad arguments array (1)', function() {
-        var bad = [6, 7, 8, 9, 10];
-        var f = function(x) {return x + 1;};
-        var newFn = makeResultReturner(bad, f);
-        var result = bad.every(function(v) {
-          var r = newFn(v - 1);
-          return isErr(r) && getErrValue(r) === f(v - 1);
-        });
+      addReturnsErrTests('(1)', [6, 7, 8, 9, 10], [5, 6, 7, 8, 9], function(x) {return x + 1;});
+      addReturnsErrTests('(2)', [false, undefined, 'a'], [false, undefined, 'a'], id);
 
-        expect(result).to.be.true;
-      });
+      var obj = {};
+      addReturnsOkTests('(tested for strict identity)', [obj], [{}], id);
+      addReturnsErrTests('(tested for strict identity)', [obj], [obj], id);
 
-
-      it('Returns Err <value> when value in bad arguments array (2)', function() {
-        var bad = [false, undefined, 'a'];
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeResultReturner(bad, f);
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isErr(r) && getErrValue(r) === f(v);
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Strict identity used for checking values in bad array (1)', function() {
-        var o1 = {};
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeResultReturner([o1], f);
-        var o2 = {};
-        var val = newFn(o2);
-        var result = isOk(val) && getOkValue(val) === o2;
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Strict identity used for checking values in bad array (2)', function() {
-        var o1 = {};
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeResultReturner([o1], f);
-        var val = newFn(o1);
-        var result = isErr(val);
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Always return Ok if bad values array empty', function() {
-        var f = function(x) {return x;}; // XXX ID REFACTORING
-        var newFn = makeResultReturner([], f);
-        var good = [true, null, undefined, 1, {}, function() {}, [], 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isOk(r) && getOkValue(r) === f(v);
-        });
-
-        expect(result).to.be.true;
-      });
+      addReturnsOkTests('(when bad values empty)', [], [true, null, undefined, 1, function() {}, {}, [], 'b'], id);
 
 
       // makeResultReturner should be curried
-      var f1 = function(x) {return x;}; // XXX ID REFACTORING
       var badArgs = [1];
       var thenArgs = [1];
-      testCurriedFunction('makeResultReturner', makeResultReturner, {firstArgs: [badArgs, f1], thenArgs: thenArgs});
+      testCurriedFunction('makeResultReturner', makeResultReturner, {firstArgs: [badArgs, id], thenArgs: thenArgs});
 
 
       // And so should the returned function
@@ -532,7 +446,7 @@
     var predSpec = {
       name: 'makePredResultReturner',
       arity: 2,
-      restrictions: [['function'], ['function']],
+      restrictions: [['function: arity 1'], ['function']],
       validArguments: [[function(x) {}], [function() {}]]
     };
 
@@ -543,97 +457,56 @@
       addCommonResultMakerTests(makePredResultReturner, goodArgs);
 
 
-      it('Throws if predicate function doesn\'t have arity 1 (1)', function() {
-        var pred = function() {};
-        var f = function(x) {};
-        var fn = function() {
-          makePredResultReturner(pred, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if predicate function doesn\'t have arity 1 (2)', function() {
-        var pred = function(x, y) {};
-        var f = function() {};
-        var fn = function() {
-          makePredResultReturner(pred, f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
       notFns.forEach(function(val, i) {
         it('Predicate function called with result of original function (' + (i + 1) + ')', function() {
-          var pred = function(x) {pred.called = true; pred.arg = x; return true;};
-          pred.called = false;
-          pred.arg = null;
-          var f = function(x) {return x;}; // XXX ID REFACTORING
+          var called = false;
+          var arg = null;
+          var pred = function(x) {called = true; arg = x; return true;};
+
+          var f = id;
           var newFn = makePredResultReturner(pred, f);
           newFn(val);
 
-          expect(pred.called).to.be.true;
-          expect(pred.arg).to.equal(val);
+          expect(called).to.be.true;
+          expect(arg).to.equal(val);
         });
       });
 
 
-      it('Returns Ok <value> when pred returns true (1)', function() {
-        var pred = function(x) {return x < 6;};
-        var f = function(x) {return x + 1;};
-        var newFn = makePredResultReturner(pred, f);
-        var good = [0, 1, 2, 3, 4];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isOk(r) && getOkValue(r) === f(v);
+      var addReturnsOkOnTrueTest = function(message, pred, good, f)  {
+        it('Returns Ok <value> when pred returns true ' + message, function() {
+          var newFn = makePredResultReturner(pred, f);
+
+          var result = good.every(function(v) {
+            var r = newFn(v);
+            return isOk(r) && getOkValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Ok <value> when pred returns true (2)', function() {
-        var pred = function(x) {return true;}; // XXX Use constant
-        var f = function(x) {return x;};
-        var newFn = makePredResultReturner(pred, f);
-        var good = [true, null, 'b'];
-        var result = good.every(function(v) {
-          var r = newFn(v);
-          return isOk(r) && getOkValue(r) === f(v);
+      addReturnsOkOnTrueTest('(1)', function(x) {return x < 6;}, [0, 1, 2, 3, 4], function(x) {return x + 1;});
+      addReturnsOkOnTrueTest('(2)', constant(true), [true, 1, {}], id);
+
+
+      var addReturnsErrOnFalseTest = function(message, pred, bad, f)  {
+        it('Returns Err <value> when pred returns false ' + message, function() {
+          var newFn = makePredResultReturner(pred, f);
+
+          var result = bad.every(function(v) {
+            var r = newFn(v);
+            return isErr(r) && getErrValue(r) === f(v);
+          });
+
+          expect(result).to.be.true;
         });
-
-        expect(result).to.be.true;
-      });
+      };
 
 
-      it('Returns Err <value> when pred returns false (1)', function() {
-        var pred = function(x) {return x < 6;};
-        var f = function(x) {return x + 1;};
-        var newFn = makePredResultReturner(pred, f);
-        var bad = [5, 6, 7, 8, 9];
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isErr(r) && getErrValue(r) === f(v);
-        });
-
-        expect(result).to.be.true;
-      });
-
-
-      it('Returns Err <value> when pred returns false (2)', function() {
-        var pred = function(x) {return false;}; // XXX Use constant
-        var f = function(x) {return x;};
-        var newFn = makePredResultReturner(pred, f);
-        var bad = [true, null, 'b'];
-        var result = bad.every(function(v) {
-          var r = newFn(v);
-          return isErr(r) && getErrValue(r) === f(v);
-        });
-
-        expect(result).to.be.true;
-      });
+      addReturnsErrOnFalseTest('(1)', function(x) {return x < 6;}, [5, 6, 7, 8, 9], function(x) {return x + 1;});
+      addReturnsErrOnFalseTest('(2)', constant(false), [true, 1, {}], id);
 
 
       // makePredResultReturner should be curried
@@ -659,7 +532,6 @@
 
 
     describeFunction(throwSpec, result.makeThrowResultReturner, function(makeThrowResultReturner) {
-      var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function() {}];
       addCommonResultMakerTests(makeThrowResultReturner, goodArgs);
 
@@ -715,63 +587,18 @@
     var eitherSpec = {
       name: 'either',
       arity: 3,
-      restrictions: [['function'], ['function'], [Result]],
-      validArguments: [[base.id], [base.id], [Ok(1)]]
+      restrictions: [['function: minarity 1'], ['function: minarity 1'], [Result]],
+      validArguments: [[id], [id], [Ok(1)]]
     };
 
 
     describeFunction(eitherSpec, result.either, function(either) {
-      it('Throws if first function has arity 0', function() {
-        var fn = function() {
-          either(function() {}, base.id, Ok(1));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if second function has arity 0', function() {
-        var fn = function() {
-          either(base.id, function() {}, Ok(1));
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Does not throw if functions have arity 1', function() {
-        var fn = function() {
-          either(base.id, base.id, Ok(1));
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
-      it('Does not throw if a function has arity > 1 (1)', function() {
-        var fn = function() {
-          either(base.constant, base.id, Ok(1));
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
-      it('Does not throw if a function has arity > 1 (2)', function() {
-        var fn = function() {
-          either(function(x, y, z) {return x;}, base.constant, Ok(1));
-        };
-
-        expect(fn).to.not.throw(TypeError);
-      });
-
-
       var notResults = [1, 'a', true, null, undefined, {}, []];
 
       notResults.forEach(function(test, i) {
         it('Throws if the last argument is not a Result (' + (i + 1) + ')', function() {
           var fn = function() {
-            either(base.id, base.constant, test);
+            either(id, constant, test);
           };
 
           expect(fn).to.throw(TypeError);
@@ -782,42 +609,40 @@
       var addOKTest = function(message, val) {
         it('Calls first function if value is OK ' + message, function() {
           var ok = Ok(val);
-          var f = function(x) {f.called = true; return null;};
-          f.called = false;
-          either(f, base.id, ok);
+          var called = false;
+          var f = function(x) {called = true; return null;};
+          called = false;
+          either(f, id, ok);
 
-          expect(f.called).to.be.true;
+          expect(called).to.be.true;
         });
 
 
         it('Calls first function with wrapped value if OK ' + message, function() {
           var ok = Ok(val);
-          var f = function(x) {f.arg = x; return null;};
-          f.arg = null;
-          either(f, base.id, ok);
+          var arg = null;
+          var f = function(x) {arg = x; return null;};
+          arg = null;
+          either(f, id, ok);
 
-          expect(f.arg).to.equal(val);
+          expect(arg).to.equal(val);
         });
 
 
-        it('Returns result of first function if OK (1) ' + message, function() {
-          var ok = Ok(val);
-          var res = 1;
-          var f = function(x) {return res;};
-          var result = either(f, base.id, ok);
+        var addReturnsFirstTest = function(m, expected) {
+          it('Returns result of first function if OK ' + m + ' ' + message, function() {
+            var ok = Ok(val);
+            var res = expected;
+            var f = function(x) {return res;};
+            var result = either(f, id, ok);
 
-          expect(result).to.equal(res);
-        });
+            expect(result).to.equal(expected);
+          });
+        };
 
 
-        it('Returns result of first function if OK (2) ' + message, function() {
-          var ok = Ok(val);
-          var res = 'funkier';
-          var f = function(x) {return res;};
-          var result = either(f, base.id, ok);
-
-          expect(result).to.equal(res);
-        });
+        addReturnsFirstTest('(1)', 1);
+        addReturnsFirstTest('(2)', 'funkier');
       };
 
 
@@ -828,42 +653,38 @@
       var addErrTest = function(message, val) {
         it('Calls second function if value is Err ' + message, function() {
           var err = Err(val);
-          var f = function(x) {f.called = true; return null;};
-          f.called = false;
-          either(base.id, f, err);
+          var called = false;
+          var f = function(x) {called = true; return null;};
+          either(id, f, err);
 
-          expect(f.called).to.be.true;
+          expect(called).to.be.true;
         });
 
 
         it('Calls second function with wrapped value if Err ' + message, function() {
           var err = Err(val);
-          var f = function(x) {f.arg = x; return null;};
-          f.arg = null;
-          either(base.id, f, err);
+          var arg = null;
+          var f = function(x) {arg = x; return null;};
+          either(id, f, err);
 
-          expect(f.arg).to.equal(val);
+          expect(arg).to.equal(val);
         });
 
 
-        it('Returns result of second function if Err (1) ' + message, function() {
-          var err = Err(val);
-          var res = 1;
-          var f = function(x) {return res;};
-          var result = either(base.id, f, err);
+        var addReturnsSecondTest = function(m, expected) {
+          it('Returns result of second function if Err ' + m + ' ' + message, function() {
+            var err = Err(val);
+            var res = expected;
+            var f = function(x) {return res;};
+            var result = either(id, f, err);
 
-          expect(result).to.equal(res);
-        });
+            expect(result).to.equal(expected);
+          });
+        };
 
 
-        it('Returns result of second function if Err (2) ' + message, function() {
-          var err = Err(val);
-          var res = 'funkier';
-          var f = function(x) {return res;};
-          var result = either(base.id, f, err);
-
-          expect(result).to.equal(res);
-        });
+        addReturnsSecondTest('(1)', 1);
+        addReturnsSecondTest('(2)', 'funkier');
       };
 
 
@@ -871,7 +692,7 @@
       addErrTest('(2)', 2);
 
 
-      testCurriedFunction('either', either, [base.id, base.id, Err(1)]);
+      testCurriedFunction('either', either, [id, id, Err(1)]);
     });
   };
 

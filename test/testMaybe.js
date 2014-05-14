@@ -375,7 +375,7 @@
 
 
       var addSameArityTest = function(message, f) {
-        it('Returned function has same arity (1)', function() {
+        it('Returned function has same arity ' + message, function() {
           var expected = getRealArity(f);
           var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
 
@@ -454,7 +454,6 @@
       var addReturnsNothingTests = function(message, bad, badReturners, f) {
         it('Returns Nothing when original function\'s result in bad arguments array ' + message, function() {
           var newFn = makeMaybeReturner(bad, f);
-          var good = [0, 1, 2, 3, 4];
           var result = badReturners.every(function(v) {
             var r = newFn(v);
             return isNothing(r);
@@ -471,7 +470,6 @@
       var obj = {};
       addReturnsJustTests('(tested for strict identity)', [obj], [{}], id);
       addReturnsNothingTests('(tested for strict identity)', [obj], [obj], id);
-
 
       addReturnsJustTests('(when bad values array empty)', [], [true, null, undefined, 1, function() {}, {}, [], 'b'],
                           id);
@@ -580,7 +578,6 @@
 
 
     describeFunction(throwReturnerSpec, maybe.makeThrowMaybeReturner, function(makeThrowMaybeReturner) {
-      var notFns = [1, true, 'a', undefined, {}, [1]];
       var goodArgs = [function() {}];
       addCommonMaybeMakerTests(makeThrowMaybeReturner, goodArgs);
 
