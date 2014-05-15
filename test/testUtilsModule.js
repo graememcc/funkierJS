@@ -220,13 +220,10 @@
     ];
 
 
-    var iolSpec = {
-      name: 'isObjectLike',
-      arity: 1
-    };
+    describe('isObjectLike', function() {
+      var isObjectLike = utils.isObjectLike;
 
 
-    describeFunction(iolSpec, utils.isObjectLike, function(isObjectLike) {
       objectLikeTests.forEach(function(t) {
         var name = t.name;
 
@@ -236,6 +233,16 @@
 
           expect(b).to.equal(expected);
         });
+      });
+
+
+      it('Behaves correctly with null when allowNull parameter explicitly false', function() {
+        expect(isObjectLike(null, false)).to.be.false;
+      });
+
+
+      it('Behaves correctly with null when allowNull parameter explicitly true', function() {
+        expect(isObjectLike(null, true)).to.be.true;
       });
     });
 
@@ -289,6 +296,32 @@
         it('Returns its argument for ' + name, function() {
           expect(checkObjectLike(test.value)).to.equal(test.value);
         });
+      });
+
+
+      it('Doesn\'t accept null when relevant parameter explicitly passed in (1)', function() {
+        var fn = function() {
+          checkObjectLike(null, {allowNull: false});
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Doesn\'t accept null when relevant parameter explicitly passed in (2)', function() {
+        var message = 'Noooo, no null here!';
+        var fn = function() {
+          checkObjectLike(null, {allowNull: false, message: message});
+        };
+
+        expect(fn).to.throw(message);
+      });
+
+
+      it('Accepts null when relevant parameter passed in', function() {
+        var o = checkObjectLike(null, {allowNull: true});
+
+        expect(o).to.equal(null);
       });
     });
 
