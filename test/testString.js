@@ -6,8 +6,9 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var string = require('../string');
+
+    var base = require('../base');
 
     // Import utility functions
     var testUtils = require('./testUtils');
@@ -27,6 +28,17 @@
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
+    var toStringTests = [
+      {name: 'number', value: 1000},
+      {name: 'string', value: 'a'},
+      {name: 'boolean', value: true},
+      {name: 'function', value: function() {}},
+      {name: 'object', value: {}},
+      {name: 'array', value: [1]},
+      {name: 'date', value: new Date(2000, 0, 0)}
+    ];
+
+
     var tsSpec = {
       name: 'toString',
       arity: 1
@@ -34,16 +46,6 @@
 
 
     describeFunction(tsSpec, string.toString, function(toString) {
-      var testData = [
-        {name: 'number', value: 1},
-        {name: 'string', value: 'a'},
-        {name: 'boolean', value: true},
-        {name: 'function', value: function() {}},
-        {name: 'object', value: {}},
-        {name: 'array', value: [1]}
-      ];
-
-
       var makeToStringTest = function(val) {
         return function() {
           expect(toString(val)).to.equal(val.toString());
@@ -51,8 +53,8 @@
       };
 
 
-      testData.forEach(function(tData) {
-        it('Works correctly for ' + tData.name, makeToStringTest(tData.value));
+      toStringTests.forEach(function(test) {
+        it('Works correctly for ' + test.name, makeToStringTest(test.value));
       });
 
 
@@ -71,17 +73,6 @@
 
 
     describeFunction(toLocaleStringSpec, string.toLocaleString, function(toLocaleString) {
-      var testData = [
-        {name: 'number', value: 1000},
-        {name: 'string', value: 'a'},
-        {name: 'boolean', value: true},
-        {name: 'function', value: function() {}},
-        {name: 'object', value: {}},
-        {name: 'array', value: [1]},
-        {name: 'date', value: new Date(2000, 0, 0)}
-      ];
-
-
       var makeToLocaleStringTest = function(val) {
         return function() {
           expect(toLocaleString(val)).to.equal(val.toLocaleString());
@@ -89,8 +80,8 @@
       };
 
 
-      testData.forEach(function(tData) {
-        it('Works correctly for ' + tData.name, makeToLocaleStringTest(tData.value));
+      toStringTests.forEach(function(test) {
+        it('Works correctly for ' + test.name, makeToLocaleStringTest(test.value));
       });
 
 
@@ -136,25 +127,16 @@
 
 
     describeFunction(ordSpec, string.ord, function(ord) {
-      it('Works correctly (1)', function() {
-        var a = 'a';
-
-        expect(ord(a)).to.equal(a.charCodeAt(0));
-      });
-
-
-      it('Works correctly (2)', function() {
-        var a = 'F';
-
-        expect(ord(a)).to.equal(a.charCodeAt(0));
-      });
+      var addWorksTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          expect(ord(str)).to.equal(str.charCodeAt(0));
+        });
+      };
 
 
-      it('Works correctly (3)', function() {
-        var a = 'funkier';
-
-        expect(ord(a)).to.equal(a.charCodeAt(0));
-      });
+      addWorksTest('(1)', 'a');
+      addWorksTest('(2)', 'F');
+      addWorksTest('(3)', 'funkier');
 
 
       it('Works correctly (4)', function() {
@@ -175,20 +157,17 @@
       var ord = string.ord;
 
 
-      it('Works correctly (1)', function() {
-        var a = 'a';
-        var aCode = ord(a);
+      var addWorksTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          var code = ord(str);
 
-        expect(chr(aCode)).to.equal(a);
-      });
+          expect(chr(code)).to.equal(str);
+        });
+      };
 
 
-      it('Works correctly (2)', function() {
-        var f = 'F';
-        var fCode = ord(f);
-
-        expect(chr(fCode)).to.equal(f);
-      });
+      addWorksTest('(1)', 'a');
+      addWorksTest('(1)', 'F');
 
 
       it('Discards superfluous arguments', function() {
@@ -210,28 +189,18 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        it('Works correctly (1)', function() {
-          var s = 'abc';
-          var result = fnUnderTest(s);
+        var addWorksTest = function(message, str) {
+          it('Works correctly ' + message, function() {
+            var result = fnUnderTest(str);
 
-          expect(result).to.equal(s[verifier]());
-        });
-
-
-        it('Works correctly (2)', function() {
-          var s = 'ABC';
-          var result = fnUnderTest(s);
-
-          expect(result).to.equal(s[verifier]());
-        });
+            expect(result).to.equal(str[verifier]());
+          });
+        };
 
 
-        it('Works correctly (3)', function() {
-          var s = 'AbC';
-          var result = fnUnderTest(s);
-
-          expect(result).to.equal(s[verifier]());
-        });
+        addWorksTest('(1)', 'abc');
+        addWorksTest('(1)', 'ABC');
+        addWorksTest('(1)', 'AbC');
       });
     };
 
@@ -249,20 +218,17 @@
 
 
     describeFunction(splitSpec, string.split, function(split) {
-      it('Returns an array (1)', function() {
-        var s = 'a-b-c';
-        var result = split('-', s);
+      var addReturnsArrayTest = function(message, splitStr, str) {
+        it('Returns an array ' + message, function() {
+          var result = split(splitStr, str);
 
-        expect(base.isArray(result)).to.be.true;
-      });
+          expect(base.isArray(result)).to.be.true;
+        });
+      };
 
 
-      it('Returns an array (2)', function() {
-        var s = 'a-b-c';
-        var result = split('*', s);
-
-        expect(base.isArray(result)).to.be.true;
-      });
+      addReturnsArrayTest('(1)', '-', 'a-b-c');
+      addReturnsArrayTest('(2)', '*', 'a-b-c');
 
 
       it('Splitting string not present in results (1)', function() {
@@ -285,44 +251,20 @@
       });
 
 
-      it('Works correctly (1)', function() {
-        var s = 'd-e-f-g';
-        var result = split('-', s);
+      var addWorksCorrectlyTest = function(message, splitStr, str) {
+        it('Works correctly ' + message, function() {
+          var result = split(splitStr, str);
 
-        expect(checkArrayEquality(result, s.split('-'))).to.be.true;
-      });
-
-
-      it('Works correctly (2)', function() {
-        var s = 'd-e-f-g';
-        var result = split('*', s);
-
-        expect(checkArrayEquality(result, s.split('*'))).to.be.true;
-      });
+          expect(result).to.deep.equal(str.split(splitStr));
+        });
+      };
 
 
-      it('Works correctly (3)', function() {
-        var s = 'd--e--f--g';
-        var result = split('--', s);
-
-        expect(checkArrayEquality(result, s.split('--'))).to.be.true;
-      });
-
-
-      it('Works correctly (4)', function() {
-        var s = 'defg';
-        var result = split('', s);
-
-        expect(checkArrayEquality(result, s.split(''))).to.be.true;
-      });
-
-
-      it('Works correctly (5)', function() {
-        var s = 'd--e--f--g';
-        var result = split(/--/, s);
-
-        expect(checkArrayEquality(result, s.split(/--/))).to.be.true;
-      });
+      addWorksCorrectlyTest('(1)', '-', 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', '*', 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', '--', 'd--e--f--g');
+      addWorksCorrectlyTest('(4)', '', 'defg');
+      addWorksCorrectlyTest('(5)', /--/, 'd--e--f--g');
 
 
       testCurriedFunction('split', split, ['*', 'a*b']);
@@ -554,32 +496,30 @@
 
 
     describeFunction(testSpec, string.test, function(test) {
-      it('Returns a boolean (1)', function() {
-        var result = test(/a/, 'b');
+      var addReturnsBooleanTest = function(message, str) {
+        it('Returns a boolean (1)', function() {
+          var result = test(/a/, str);
 
-        expect(result).to.be.a('boolean');
-      });
-
-
-      it('Returns a boolean (2)', function() {
-        var result = test(/a/, 'a');
-
-        expect(result).to.be.a('boolean');
-      });
+          expect(result).to.be.a('boolean');
+        });
+      };
 
 
-      it('Works correctly (1)', function() {
-        var result = test(/a/, 'b');
-
-        expect(result).to.be.false;
-      });
+      addReturnsBooleanTest('(1)', 'b');
+      addReturnsBooleanTest('(2)', 'a');
 
 
-      it('Works correctly (2)', function() {
-        var result = test(/a/, 'a');
+      var addWorksTest = function(message, str, expected) {
+        it('Works correctly (1)', function() {
+          var result = test(/a/, str);
 
-        expect(result).to.be.true;
-      });
+          expect(result).to.equal(expected);
+        });
+      };
+
+
+      addReturnsBooleanTest('(1)', 'b', false);
+      addReturnsBooleanTest('(2)', 'a', true);
 
 
       testCurriedFunction('test', test, [/na/, 'na']);
