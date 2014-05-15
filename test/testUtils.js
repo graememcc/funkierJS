@@ -73,7 +73,7 @@
     };
 
 
-    var typeclasses = ['integer', 'positive', 'arraylike', 'strictarraylike', 'objectlike'];
+    var typeclasses = ['integer', 'positive', 'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'];
     var isTypeClass = function(restriction) {
       if (typeclasses.indexOf(restriction) !== -1)
         return true;
@@ -86,7 +86,7 @@
 
     // Returns true when argument is the name of a typeclass that can map to actual values of more than one type
     var isMultiTypeClass = function(restriction) {
-      return ['arraylike', 'strictarraylike', 'objectlike'].indexOf(restriction) !== -1;
+      return ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'].indexOf(restriction) !== -1;
     };
 
 
@@ -155,14 +155,18 @@
       var primBogus = [
         {name: 'number', article: 'a ', value: 2, typeclasses: ['integer', 'positive']},
         {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer', 'positive']},
-        {name: 'string', article: 'a ', value: 'c', typeclasses: ['integer', 'positive', 'arraylike', 'objectlike']},
+        {name: 'string', article: 'a ', value: 'c',
+         typeclasses: ['integer', 'positive', 'arraylike', 'objectlike', 'objectlikeornull']},
         {name: 'undefined', article: '', value: undefined, typeclasses: []},
-        {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive']},
-        {name: 'function', article: 'a ', value: function() {}, typeclasses: ['function', 'objectlike']},
-        {name: 'object', article: 'an ', value: {foo: 4}, typeclasses: ['integer', 'positive', 'objectlike']},
-        {name: 'array', article: 'an ', value: [4, 5, 6], typeclasses: ['arraylike', 'strictarraylike', 'objectlike']},
+        {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive', 'objectlikeornull']},
+        {name: 'function', article: 'a ', value: function() {},
+         typeclasses: ['function', 'objectlike', 'objectlikeornull']},
+        {name: 'object', article: 'an ', value: {foo: 4},
+         typeclasses: ['integer', 'positive', 'objectlike','objectlikeornull']},
+        {name: 'array', article: 'an ', value: [4, 5, 6],
+         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']},
         {name: 'arraylike', article: 'an ', value: {'0': 1, '1': 2, 'length': 2},
-                                            typeclasses: ['arraylike', 'strictarraylike', 'objectlike']}
+         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']}
       ];
 
       primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
@@ -299,8 +303,9 @@
           // validArguments contains a value for each permissible member of the typeclass. For 'objectlike' we require
           // only one example.
 
-          if (r === 'objectlike') {
-            if (!isObjectLike(validArguments[i][j]))
+          if (r === 'objectlike' || r === 'objectlikeornull') {
+            var withNull = r === 'objectlikeornull';
+            if (!isObjectLike(validArguments[i][j], withNull))
               throw new Error(errorPre + 'validArguments ' + (j + 1) + ' (' + validArguments[i][j] + ') is not objectlike');
 
             return;
