@@ -32,6 +32,10 @@
     describeModule('object', object, expectedObjects, expectedFunctions);
 
 
+    // XXX Should we restrict parameters that are property names? How likely is it that we are using something
+    //     that coerces to a string as the property name?
+
+
     var cpwaSpec = {
       name: 'callPropWithArity',
       arity: 2
@@ -39,40 +43,41 @@
 
 
     describeFunction(cpwaSpec, object.callPropWithArity, function(callPropWithArity) {
-      // Test generation
-      var makeReturnedCurriedArityTest = function(i) {
-        return function() {
+      var addReturnedCurriedArityTest = function(i) {
+        it('Returned function is curried for arity ' + i, function() {
           var fn = callPropWithArity('prop', i);
 
           expect(fn.length).to.equal(1);
-        };
+          if (i > 0)
+            expect(getRealArity(fn)).to.not.equal(1);
+        });
       };
 
 
-      var makeReturnedArityTest = function(i) {
-        return function() {
+      var addReturnedArityTest = function(i) {
+        it('Returned function has correct arity for arity ' + i, function() {
           var fn = callPropWithArity('prop', i);
 
           expect(getRealArity(fn)).to.equal(i + 1);
-        };
+        });
       };
 
 
       var functionalityArgs = [1, true, null, function() {}, []];
-      var makeCalledTest = function(i) {
-        return function() {
+      var addCalledTest = function(i) {
+        it('Returned function calls property on given object for arity ' + i, function() {
           var args = functionalityArgs.slice(0, i);
           var obj = {called: false, calledProp: function() {this.called = true;}};
           var caller = callPropWithArity('calledProp', i);
-          var result = caller.apply(null, args.concat([obj]));
+          caller.apply(null, args.concat([obj]));
 
           expect(obj.called).to.be.true;
-        }
+        });
       };
 
 
-      var makeReturnedValueTest = function(i) {
-        return function() {
+      var addReturnedValueTest = function(i) {
+        it('Returned function returns correct result when called for arity ' + i, function() {
           var expected = functionalityArgs.slice(0, i);
           var obj = {calledProp: function() {return [].slice.call(arguments);}};
           var obj2 = {calledProp: function() {return 42;}};
@@ -82,22 +87,15 @@
 
           expect(result).to.deep.equal(expected);
           expect(result2).to.equal(42);
-        };
+        });
       };
 
 
       for (var i = 0; i < 6; i++) {
-        it('Returned function has correct arity for arity' + i,
-           makeReturnedCurriedArityTest(i));
-
-        it('Returned function has correct \'real\' arity' + i,
-           makeReturnedArityTest(i));
-
-        it('Returned function calls prop on given object' + i,
-           makeCalledTest(i));
-
-        it('Returned function returns correct result when called' + i,
-           makeReturnedValueTest(i));
+        addReturnedCurriedArityTest(i);
+        addReturnedArityTest(i);
+        addCalledTest(i);
+        addReturnedValueTest(i);
 
         // The returned function should be curried
         var testObj = {prop: function(x) {return x;}};
@@ -163,20 +161,6 @@
 
 
     describeFunction(hopSpec, object.hasOwnProperty, function(hasOwnProperty) {
-      it('Wraps Object.prototype.hasOwnProperty', function() {
-        // Temporary monkey-patch
-        var original = Object.prototype.hasOwnProperty;
-        var fn = function() {fn.called = true;};
-        fn.called = false;
-        Object.prototype.hasOwnProperty = fn;
-        var obj = {funkier: 1};
-        hasOwnProperty('funkier', obj);
-
-        expect(fn.called).to.be.true;
-        Object.prototype.hasOwnProperty = original;
-      });
-
-
       it('Works correctly (1)', function() {
         var obj = {funkier: 1};
         var result = hasOwnProperty('funkier', obj);
@@ -280,35 +264,6 @@
 
 
     describeFunction(ipoSpec, object.isPrototypeOf, function(isPrototypeOf) {
-      it('Wraps Object.prototype.isPrototypeOf', function() {
-        // Temporary monkey-patch
-        var original = Object.prototype.isPrototypeOf;
-        var fn = function() {fn.called = true;};
-        fn.called = false;
-        Object.prototype.isPrototypeOf = fn;
-        var obj = {funkier: 1};
-        isPrototypeOf({}, obj);
-
-        expect(fn.called).to.be.true;
-        Object.prototype.isPrototypeOf = original;
-      });
-
-
-      it('Calls Object.prototype.isPrototypeOf on correct object', function() {
-        // Temporary monkey-patch
-        var original = Object.prototype.isPrototypeOf;
-        var fn = function() {fn.thisObj = this;};
-        fn.thisObj = null;
-        Object.prototype.isPrototypeOf = fn;
-        var protoCheck = {};
-        var obj = {funkier: 1};
-        isPrototypeOf(protoCheck, obj);
-
-        expect(fn.thisObj).to.equal(protoCheck);
-        Object.prototype.isPrototypeOf = original;
-      });
-
-
       it('Works correctly (1)', function() {
         expect(isPrototypeOf(Object.prototype, {})).to.be.true;
       });
@@ -325,7 +280,7 @@
       it('Works correctly (3)', function() {
         var Constructor = function() {};
         var Proto = function() {};
-        Constructor.prototype = Proto.prototype
+        Constructor.prototype = Proto.prototype;
         var obj = new Constructor();
 
         expect(isPrototypeOf(Proto.prototype, obj)).to.be.true;
@@ -347,7 +302,9 @@
 
     var coSpec = {
       name: 'createObject',
-      arity: 1
+      arity: 1,
+      restrictions: [['objectlikeornull']],
+      validArguments: [[{}]]
     };
 
 
@@ -364,11 +321,18 @@
       });
 
 
-      it('Works correctly', function() {
+      it('Works correctly (1)', function() {
         var obj = {funkier: 1};
         var result = createObject(obj);
 
         expect(isPrototypeOf(obj, result)).to.be.true;
+      });
+
+
+      it('Works correctly (2)', function() {
+        var result = createObject(null);
+
+        expect(Object.getPrototypeOf(result)).to.equal(null);
       });
 
 
@@ -402,38 +366,35 @@
       });
 
 
-      it('Works correctly (1)', function() {
-        var obj = {funkier: 1};
-        var result = createObjectWithProps(obj, descriptor);
+      var addWorksCorrectlyTests = function(message, proto) {
+        it('Created objects have correct prototype ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
 
-        expect(isPrototypeOf(obj, result)).to.be.true;
-      });
-
-
-      it('Works correctly (2)', function() {
-        var obj = {funkier: 1};
-        var result = createObjectWithProps(obj, descriptor);
-
-        expect(hasOwnProperty('prop1', result)).to.be.true;
-      });
-
-
-      it('Works correctly (3)', function() {
-        var obj = {funkier: 1};
-        var result = createObjectWithProps(obj, descriptor);
-
-        var descriptorProps = Object.keys(descriptor.prop1);
-        var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
-        var leftComparison = descriptorProps.every(function(p) {
-          return (p in actualDescriptor) && descriptor.prop1[p] === actualDescriptor[p];
-        });
-        var actualDescriptorProps = Object.keys(actualDescriptor);
-        var rightComparison = actualDescriptorProps.every(function(p) {
-          return (p in descriptor.prop1) && descriptor.prop1[p] === actualDescriptor[p];
+          expect(Object.getPrototypeOf(result)).to.equal(proto);
         });
 
-        expect(leftComparison && rightComparison).to.be.true;
-      });
+
+        it('Created objects have correct properties ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
+
+          // Need to call hasOwnProperty in this manner because of the null
+          // proto test, which of course will not inherit from Object.prototype
+          expect(Object.prototype.hasOwnProperty.call(result, 'prop1')).to.be.true;
+        });
+
+
+        it('Created objects have correct descriptors ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
+
+          var descriptorProps = descriptor.prop1;
+          var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
+          expect(actualDescriptor).to.deep.equal(descriptorProps);
+        });
+      };
+
+
+      addWorksCorrectlyTests('for normal case', {});
+      addWorksCorrectlyTests('when prototype is null', null);
 
 
       testCurriedFunction('createObjectWithProps', createObjectWithProps, [{}, descriptor]);
@@ -442,7 +403,9 @@
 
     var dpSpec = {
       name: 'defineProperty',
-      arity: 3
+      arity: 3,
+      restrictions: [[], ['object'], ['objectlike']],
+      validArguments: [['myprop'], [{value: 42}], [{reset: function() {return {};}}]]
     };
 
 
@@ -470,7 +433,7 @@
         var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
         defineProperty('prop', descriptor, obj);
 
-        expect(checkEquality(obj.prop, descriptor.value)).to.be.true;
+        expect(obj.prop).to.deep.equal(descriptor.value);
       });
 
 
@@ -480,7 +443,7 @@
         defineProperty('prop', descriptor, obj);
         var actualDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
 
-        expect(checkEquality(actualDescriptor, descriptor)).to.be.true;
+        expect(actualDescriptor).to.deep.equal(descriptor);
       });
 
 
@@ -491,7 +454,9 @@
 
     var dpsSpec = {
       name: 'defineProperties',
-      arity: 2
+      arity: 2,
+      restrictions: [['objectlike'], ['objectlike']],
+      validArguments: [[{}], [{}]]
     };
 
 
@@ -529,11 +494,10 @@
         var obj = {};
         defineProperties(descriptors, obj);
         var newProps = Object.keys(descriptors);
-        var allCorrect = newProps.every(function(p) {
-          return checkEquality(obj[p], 'get' in descriptors[p] ? descriptors[p].get() : descriptors[p].value);
-        });
 
-        expect(allCorrect).to.be.true;
+        newProps.forEach(function(p) {
+          expect(obj[p]).to.deep.equal('get' in descriptors[p] ? descriptors[p].get() : descriptors[p].value);
+        });
       });
 
 
@@ -541,11 +505,10 @@
         var obj = {};
         defineProperties(descriptors, obj);
         var newProps = Object.keys(descriptors);
-        var allDescriptorsCorrect = newProps.every(function(p) {
-          return checkEquality(Object.getOwnPropertyDescriptor(obj, p), descriptors[p]);
-        });
 
-        expect(allDescriptorsCorrect).to.be.true;
+        newProps.forEach(function(prop) {
+          expect(Object.getOwnPropertyDescriptor(obj, prop)).to.deep.equal(descriptors[prop]);
+        });
       });
 
 
@@ -580,20 +543,19 @@
         var realDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
         var descriptor = getOwnPropertyDescriptor('prop', obj);
 
-        expect(checkEquality(descriptor, realDescriptor)).to.be.true;
+        expect(descriptor).to.deep.equal(realDescriptor);
       });
 
 
       it('Works correctly (2)', function() {
         // Let's use object itself as a reasonably complex object
         var keys = Object.keys(object);
-        var allCorrect = keys.every(function(k) {
+
+        keys.forEach(function(k) {
           var realDescriptor = Object.getOwnPropertyDescriptor(object, k);
           var descriptor = getOwnPropertyDescriptor(k, object);
-          return checkEquality(descriptor, realDescriptor);
+          expect(descriptor).to.deep.equal(realDescriptor);
         });
-
-        expect(allCorrect).to.be.true;
       });
 
 
@@ -626,7 +588,7 @@
         var obj = {prop: 42};
         var result = extract('prop', obj);
 
-        expect(checkEquality(obj.prop, result)).to.be.true;
+        expect(result).to.deep.equal(obj.prop);
       });
 
 
@@ -634,7 +596,7 @@
         var obj = {funkier: function() {}};
         var result = extract('funkier', obj);
 
-        expect(checkEquality(obj.funkier, result)).to.be.true;
+        expect(result).to.deep.equal(obj.funkier);
       });
 
 
@@ -644,7 +606,7 @@
         var obj = new Constructor();
         var result = extract('prop', obj);
 
-        expect(checkEquality(obj.prop, result)).to.be.true;
+        expect(result).to.deep.equal(obj.prop);
       });
 
 
@@ -681,7 +643,7 @@
         var defaultVal = 'default';
         var result = extractOrDefault('prop', defaultVal, obj);
 
-        expect(checkEquality(obj.prop, result)).to.be.true;
+        expect(result).to.deep.equal(obj.prop);
       });
 
 
@@ -690,7 +652,7 @@
         var defaultVal = 'default';
         var result = extractOrDefault('funkier', defaultVal, obj);
 
-        expect(checkEquality(obj.funkier, result)).to.be.true;
+        expect(result).to.deep.equal(obj.funkier);
       });
 
 
@@ -701,7 +663,7 @@
         var defaultVal = 'default';
         var result = extractOrDefault('prop', defaultVal, obj);
 
-        expect(checkEquality(obj.prop, result)).to.be.true;
+        expect(result).to.deep.equal(obj.prop);
       });
 
 
@@ -977,7 +939,9 @@
     var makeSetterTests = function(desc, setter, shouldThrow) {
       var spec = {
         name: desc,
-        arity: 3
+        arity: 3,
+        restrictions: [[], [], ['objectlike']],
+        validArguments: [['foo'], [1], [{}]]
       };
 
 
@@ -1111,7 +1075,9 @@
     var makeDeleterTests = function(desc, deleter, shouldThrow) {
       var spec = {
         name: desc,
-        arity: 2
+        arity: 2,
+        restrictions: [[], ['objectlike']],
+        validArguments: [['abc'], [{}]]
       };
 
 
@@ -1262,40 +1228,20 @@
           testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {foo: 1};}}]);
         else
           testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {};}}]);
-
-
-        // We can't test the curried nature of deleter in the normal fashion, due to the stateful
-        // nature of the operation. Thus, we test manually
-        it('Returns a function when partially applied', function() {
-          var a = {foo: 1};
-          var partial = deleter('foo');
-
-          expect(partial).to.be.a('function');
-        });
-
-
-        it('Returns a function of length 1', function() {
-          var a = {foo: 1};
-          var partial = deleter('foo');
-
-          expect(partial.length).to.equal(1);
-        });
-
-
-        it('Partially applying then supplying remaining arguments applies function', function() {
-          var a = {foo: 1};
-          var partial = deleter('foo');
-          var result = partial(a);
-
-          expect(result).to.equal(a);
-          expect(hasOwnProperty('foo', a)).to.be.false;
-        });
       });
     };
 
 
     makeDeleterTests('deleteProp', object.deleteProp, false);
     makeDeleterTests('deletePropOrThrow', object.deletePropOrThrow, true);
+
+
+    var nonObjects = [
+      {name: 'number', val: 1},
+      {name: 'boolean', val: true},
+      {name: 'string', val: 'a'},
+      {name: 'undefined', val: undefined},
+      {name: 'null', val: null}];
 
 
     var makeKeyBasedTests = function(desc, fnUnderTest, verifier, expectNonEnumerable) {
@@ -1319,14 +1265,6 @@
         };
 
 
-        var nonObjects = [
-          {name: 'number', val: 1},
-          {name: 'boolean', val: true},
-          {name: 'string', val: 'a'},
-          {name: 'undefined', val: undefined},
-          {name: 'null', val: null}];
-
-
         nonObjects.forEach(function(test) {
           it('Returns empty array for value of type ' + test.name,
              makeNonObjectTest(test.val));
@@ -1341,43 +1279,21 @@
         });
 
 
-        it('Returns correct value for object (1)', function() {
-          var a = {foo: 1, bar: 2, baz: 3};
-          var expected = verifier(a);
-          var result = fnUnderTest(a);
+        var addReturnsCorrectTest = function(message, obj) {
+          it('Returns correct value for ' + message, function() {
+            var expected = verifier(obj);
+            var result = fnUnderTest(obj);
 
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, expected)).to.be.true;
-        });
-
-
-        it('Returns correct value for object (2)', function() {
-          var expected = verifier(object);
-          var result = fnUnderTest(object);
-
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, expected)).to.be.true;
-        });
+            expect(Array.isArray(result)).to.be.true;
+            expect(checkArrayContent(result, expected)).to.be.true;
+          });
+        };
 
 
-        it('Returns correct value for array (1)', function() {
-          var a = [];
-          var expected = verifier(a);
-          var result = fnUnderTest(a);
-
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, expected)).to.be.true;
-        });
-
-
-        it('Returns correct value for array (2)', function() {
-          var a = [1, 2, 3];
-          var expected = verifier(a);
-          var result = fnUnderTest(a);
-
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, expected)).to.be.true;
-        });
+        addReturnsCorrectTest('object (1)', {foo: 1, bar: 2, baz: 3});
+        addReturnsCorrectTest('object (2)', object);
+        addReturnsCorrectTest('array', [1, 2, 3]);
+        addReturnsCorrectTest('empty array', []);
 
 
         it('Only returns own properties', function() {
@@ -1428,14 +1344,6 @@
         };
 
 
-        var nonObjects = [
-          {name: 'number', val: 1},
-          {name: 'boolean', val: true},
-          {name: 'string', val: 'a'},
-          {name: 'undefined', val: undefined},
-          {name: 'null', val: null}];
-
-
         nonObjects.forEach(function(test) {
           it('Returns empty array for value of type ' + test.name,
              makeNonObjectTest(test.val));
@@ -1472,35 +1380,26 @@
         };
 
 
-        it('Returns correct keys for object (1)', function() {
-          var a = {foo: 1, bar: 2, baz: 3};
-          var result = fnUnderTest(a);
+        var addReturnsCorrectTests = function(message, obj) {
+          it('Returns correct keys for ' + message, function() {
+            var result = fnUnderTest(obj);
 
-          verifyKeys(a, result);
-        });
-
-
-        it('Returns correct keys for object (2)', function() {
-          var result = fnUnderTest(object);
-
-          verifyKeys(object, result);
-        });
+            verifyKeys(obj, result);
+          });
 
 
-        it('Returns correct keys for array (1)', function() {
-          var a = [];
-          var result = fnUnderTest(a);
+          it('Returns correct values for ' + message, function() {
+            var result = fnUnderTest(obj);
 
-          verifyKeys(a, result);
-        });
+            verifyValues(obj, result);
+          });
+        };
 
 
-        it('Returns correct keys for array (2)', function() {
-          var a = [1, 2, 3];
-          var result = fnUnderTest(a);
-
-          verifyKeys(a, result);
-        });
+        addReturnsCorrectTests('object (1)', {foo: 1, bar: 2, baz: 3});
+        addReturnsCorrectTests('object (2)', object);
+        addReturnsCorrectTests('array', [1, 2, 3]);
+        addReturnsCorrectTests('empty array', []);
 
 
         it('Only returns keys for own properties', function() {
@@ -1510,37 +1409,6 @@
           var result = fnUnderTest(a);
 
           verifyKeys(a, result);
-        });
-
-
-        it('Returns correct values for object (1)', function() {
-          var a = {foo: 1, bar: 2, baz: 3};
-          var result = fnUnderTest(a);
-
-          verifyValues(a, result);
-        });
-
-
-        it('Returns correct values for object (2)', function() {
-          var result = fnUnderTest(object);
-
-          verifyValues(object, result);
-        });
-
-
-        it('Returns correct values for array (1)', function() {
-          var a = [];
-          var result = fnUnderTest(a);
-
-          verifyValues(a, result);
-        });
-
-
-        it('Returns correct values for array (2)', function() {
-          var a = [1, 2, 3];
-          var result = fnUnderTest(a);
-
-          verifyValues(a, result);
         });
 
 
@@ -1680,8 +1548,8 @@
           defineProperty('bar', {enumerable: false, value: 1}, a);
           var f = function() {};
           f.prototype = Object.create(a);
-          defineProperty('fizz', {enumerable: true, value: 'b'}, a);
-          defineProperty('buzz', {enumerable: false, value: 2}, a);
+          defineProperty('fizz', {enumerable: true, value: 3}, a);
+          defineProperty('buzz', {enumerable: false, value: 5}, a);
           var b = new f();
           var clone = fnUnderTest(b);
           var cloneProps = getOwnPropertyNames(clone);

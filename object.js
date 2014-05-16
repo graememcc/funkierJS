@@ -9,6 +9,10 @@
     var flip = base.flip;
     var permuteLeft = base.permuteLeft;
 
+    var utils = require('./utils');
+    var checkObjectLike = utils.checkObjectLike;
+
+
     /*
      * callPropWithArity: takes a property name, and an arity. Returns a curried function
      *                    of (arity + 1) arguments, that calls the given property on an
@@ -147,12 +151,15 @@
 
 
     /*
-     * defineProperty: a curried wrapper around Object.defineProperty. Takes a property name,
-     *                 a property descriptor, and an object. Returns the object.
+     * defineProperty: a curried wrapper around Object.defineProperty. Takes a property name, a property descriptor,
+     *                 and an object. Throws a TypeError if the descriptor is not an object.
      *
      */
 
-    var defineProperty = permuteLeft(Object.defineProperty);
+    var defineProperty = curry(function(prop, descriptor, obj) {
+      descriptor = checkObjectLike(descriptor, {strict: true});
+      return Object.defineProperty(obj, prop, descriptor);
+    });
 
 
     /*
@@ -161,7 +168,12 @@
      *
      */
 
-    var defineProperties = permuteLeft(Object.defineProperties);
+    var defineProperties = curry(function(descriptors, obj) {
+      // We're not strict here: for example one might want to install array-like properties from an array
+      descriptors = checkObjectLike(descriptors, {allowNull: false});
+      obj = checkObjectLike(obj, {allowNull: false});
+      return Object.defineProperties(obj, descriptors);
+    });
 
 
     /*
@@ -435,6 +447,8 @@
      */
 
     var deleteProp = curry(function(prop, obj) {
+      obj = checkObjectLike(obj);
+
       // Deleting is considerably simpler than the "setting" cases! There's no need
       // to walk the prototype chain, and there are no other errors to propagate. Thus...
       try {

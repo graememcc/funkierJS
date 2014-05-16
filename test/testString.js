@@ -15,7 +15,6 @@
     var describeModule = testUtils.describeModule;
     var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
-    var checkArrayEquality = testUtils.checkArrayEquality;
 
 
     var expectedObjects = [];
