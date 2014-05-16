@@ -11,6 +11,7 @@
     // Import utility functions
     var testUtils = require('./testUtils');
     var describeModule = testUtils.describeModule;
+    var describeFunction = testUtils.describeFunction;
     var testCurriedFunction = testUtils.testCurriedFunction;
 
 
@@ -31,12 +32,15 @@
     var getRealArity = base.getRealArity;
 
 
-    describe('curry', function() {
-      it('Has correct arity', function() {
-        expect(getRealArity(curry)).to.equal(1);
-      });
+    var currySpec = {
+      name: 'curry',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
 
 
+    describeFunction(currySpec, curry, function(curry) {
       // We shall test curry with binary, ternary, and quarternary functions
       var testFuncs = [
         {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
@@ -70,7 +74,7 @@
         var f = function() {};
         var curried = curry(f);
 
-        expect(curried.length).to.equal(0);
+        expect(getRealArity(curried)).to.equal(0);
       });
 
 
@@ -78,7 +82,7 @@
         var f = function(x) {};
         var curried = curry(f);
 
-        expect(curried.length).to.equal(1);
+        expect(getRealArity(curried)).to.equal(1);
       });
 
 
@@ -117,21 +121,23 @@
     });
 
 
-    describe('curryWithArity', function() {
-      var curryWithArity = base.curryWithArity;
+    var curryWithAritySpec = {
+      name: 'curryWithArity',
+      arity: 2,
+      restrictions: [['positive'], ['function']],
+      validArguments: [[1], [function() {}]]
+    };
+
+
+    describeFunction(curryWithAritySpec, base.curryWithArity, function(curryWithArity) {
       var fromCharCodes = String.fromCharCode;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(curryWithArity)).to.equal(2);
-      });
 
 
       it('Currying a function of length 0 to 0 returns a function of length 0', function() {
         var f = function() {};
         var curried = curryWithArity(0, f);
 
-        expect(curried.length).to.equal(0);
+        expect(getRealArity(curried)).to.equal(0);
       });
 
 
@@ -139,7 +145,7 @@
         var f = function(x) {};
         var curried = curryWithArity(1, f);
 
-        expect(curried.length).to.equal(1);
+        expect(getRealArity(curried)).to.equal(1);
       });
 
 
@@ -147,7 +153,7 @@
         var f = function() {};
         var curried = curryWithArity(1, f);
 
-        expect(curried.length).to.equal(1);
+        expect(getRealArity(curried)).to.equal(1);
       });
 
 
@@ -155,7 +161,7 @@
         var f = function(a, b, c) {};
         var curried = curryWithArity(0, f);
 
-        expect(curried.length).to.equal(0);
+        expect(getRealArity(curried)).to.equal(0);
       });
 
 
@@ -196,17 +202,6 @@
 
         testCurriedFunction(message, curried, args, fn);
       });
-
-
-      // curryWithArity should itself be curried
-      // We use an IIFE here to avoid an 'it' wrapped in an 'it'
-      (function() {
-        var fn = function(a, b) {return a + b;};
-        var args = {firstArgs: [fn.length, fn], thenArgs: [41, 1]};
-        var message = 'curryWithArity';
-
-        testCurriedFunction(message, curryWithArity, args);
-      }());
 
 
       it('Underlying function called with anticipated arguments when curried function called with superfluous arguments', function() {
@@ -272,30 +267,24 @@
 
         expect(result).to.equal(context);
       });
+
+
+      // curryWithArity should itself be curried
+      var fn = function(a, b) {return a + b;};
+      var args = {firstArgs: [fn.length, fn], thenArgs: [41, 1]};
+      testCurriedFunction('curryWithArity', curryWithArity, args);
     });
 
 
-    describe('compose', function() {
-      var compose = base.compose;
+    var composeSpec = {
+      name: 'compose',
+      arity: 2,
+      restrictions: [['function: minarity 1'], ['function']],
+      validArguments: [[function(x) {}], [function() {}]]
+    };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(compose)).to.equal(2);
-      });
-
-
-      it('Throws if the first function has arity 0', function() {
-        var f = function() {return 3;};
-        var g = function(x) {return x + 1;};
-
-        var fn = function() {
-          var composition = compose(f, g);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
+    describeFunction(composeSpec, base.compose, function(compose) {
       it('Composes two functions correctly (1)', function() {
         var f = function(x) {return x + 2;};
         var g = function(x) {return x + 1;};
@@ -356,7 +345,7 @@
         var g = function() {return 3;};
         var composition = compose(f, g);
 
-        expect(composition.length).to.equal(1);
+        expect(getRealArity(composition)).to.equal(1);
         expect(composition(1)).to.equal(f(g(), 1));
       });
 
@@ -367,7 +356,7 @@
         var composition = compose(f, g);
 
         expect(composition(1)).to.be.a('function');
-        expect(composition(1).length).to.equal(1);
+        expect(getRealArity(composition(1))).to.equal(1);
       });
 
 
@@ -417,7 +406,7 @@
         var composition = compose(id, g);
 
         expect(composition(1)).to.be.a('function');
-        expect(composition(1).length).to.equal(1);
+        expect(getRealArity(composition(1))).to.equal(1);
       });
 
 
@@ -441,37 +430,24 @@
 
 
       // Compose is binary, and should of course be curried
-      // We use an IIFE here to avoid an 'it' wrapped in an 'it'
-      (function() {
-        var fn = function(a) {return a + 1;};
-        var args = {firstArgs: [fn, fn], thenArgs: [1]};
-        var message = 'compose';
-
-        testCurriedFunction(message, compose, args);
-      }());
-
+      var fn = function(a) {return a + 1;};
+      var args = {firstArgs: [fn, fn], thenArgs: [1]};
+      testCurriedFunction('compose', compose, args);
 
       // Also, lets test the composed functions too
-      (function() {
-        var fn = function(a) {return a + 3;};
-        var fn2 = function(a) {return a * 4;};
-        var composed = compose(fn, fn2);
-        var args = [1];
-        var message = 'Composed function';
-
-        testCurriedFunction(message, composed, args);
-      }());
+      var fn = function(a, b) {return a + b + 3;};
+      var fn2 = function(a) {return a * 4;};
+      testCurriedFunction('Composed function', compose(fn, fn2), [1, 2]);
     });
 
 
-    describe('id', function() {
-      var id = base.id;
-
-      it('Has correct arity', function() {
-        expect(getRealArity(id)).to.equal(1);
-      });
+    var idSpec = {
+      name: 'id',
+      arity: 1
+    };
 
 
+    describeFunction(idSpec, base.id, function(id) {
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
@@ -498,15 +474,13 @@
     });
 
 
-    describe('constant', function() {
-      var constant = base.constant;
+    var constantSpec = {
+      name: 'constant',
+      arity: 2
+    };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(constant)).to.equal(2);
-      });
-
-
+    describeFunction(constantSpec, base.constant, function(constant) {
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
@@ -520,7 +494,7 @@
 
       it('Returns a function of arity 1', function() {
         tests.forEach(function(test) {
-          expect(constant(test.value).length).to.equal(1);
+          expect(getRealArity(constant(test.value))).to.equal(1);
         });
       });
 
@@ -552,15 +526,13 @@
     });
 
 
-    describe('constant0', function() {
-      var constant0 = base.constant0;
+    var constant0Spec = {
+      name: 'constant0',
+      arity: 1
+    };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(constant0)).to.equal(1);
-      });
-
-
+    describeFunction(constant0Spec, base.constant0, function(constant0) {
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
@@ -574,7 +546,7 @@
 
       it('Returns a function of arity 0', function() {
         tests.forEach(function(test) {
-          expect(constant0(test.value).length).to.equal(0);
+          expect(getRealArity(constant0(test.value))).to.equal(0);
         });
       });
 
@@ -599,15 +571,16 @@
     });
 
 
-    describe('composeMany', function() {
-      var composeMany = base.composeMany;
+
+    var composeManySpec = {
+      name: 'composeMany',
+      arity: 1,
+      restrictions: [['strictarraylike']],
+      validArguments: [[[function(a) {}, function() {}], testUtils.makeArrayLike(function(a) {}, function() {})]]
+    };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(composeMany)).to.equal(1);
-      });
-
-
+    describeFunction(composeManySpec, base.composeMany, function(composeMany) {
       it('Throws if called with empty array', function() {
           var fn = function() {
             var composition = composeMany([]);
@@ -659,6 +632,7 @@
         var g = composeMany([f]);
 
         expect(g.length).to.equal(1);
+        expect(getRealArity(g)).to.equal(1);
         expect(g(42)).to.deep.equal(f(42));
         expect(g(42, 'x')).to.deep.equal([42]);
       });
@@ -677,7 +651,7 @@
         var g = composeMany([f]);
 
         expect(g.length).to.equal(1);
-        expect(g(1).length).to.equal(1);
+        expect(getRealArity(g)).to.equal(2);
         expect(g(1)(2)).to.equal(f(1, 2));
         expect(g(1, 2)).to.equal(f(1, 2));
       });
@@ -699,6 +673,7 @@
         var composed = compose(f, g);
 
         expect(composeM.length).to.equal(composed.length);
+        expect(getRealArity(composeM)).to.equal(getRealArity(composed));
         expect(composeM(1)).to.equal(composed(1));
       });
 
@@ -711,7 +686,7 @@
         var composed = compose(f, g);
 
         expect(composeM.length).to.equal(composed.length);
-        expect(composeM(1).length).to.equal(composed(1).length);
+        expect(getRealArity(composeM)).to.equal(getRealArity(composed));
         expect(composeM(1)(2)).to.equal(composed(1)(2));
         expect(composeM(1, 2)).to.equal(composed(1, 2));
       });
@@ -770,7 +745,7 @@
         ];
         var composed = composeMany(args);
 
-        expect(composed.length).to.equal(0);
+        expect(getRealArity(composed)).to.equal(0);
       });
 
 
@@ -783,7 +758,7 @@
         var composed = composeMany(args);
 
         expect(composed.length).to.equal(1);
-        expect(composed(1).length).to.equal(1);
+        expect(getRealArity(composed)).to.equal(2);
       });
 
 
@@ -816,20 +791,20 @@
     });
 
 
-    describe('flip', function() {
-      var flip = base.flip;
+    var flipSpec = {
+      name: 'flip',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function(a, b) {}]]
+    };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(flip)).to.equal(1);
-      });
-
-
+    describeFunction(flipSpec, base.flip, function(flip) {
       it('Returns a curried version of original function when called with function of length 0', function() {
         var f = function() {return [].slice.call(arguments);};
         var flipped = flip(f);
 
-        expect(flipped.length).to.equal(0);
+        expect(getRealArity(flipped)).to.equal(0);
         expect(flipped()).to.deep.equal([]);
         expect(flipped(42)).to.deep.equal([]);
       });
@@ -847,7 +822,7 @@
         var f = function(x) {return [].slice.call(arguments);};
         var flipped = flip(f);
 
-        expect(flipped.length).to.equal(1);
+        expect(getRealArity(flipped)).to.equal(1);
         expect(flipped(42)).to.deep.equal(f(42));
         expect(flipped(42, 'x')).to.deep.equal([42]);
       });
@@ -861,45 +836,36 @@
       });
 
 
-      it('Throws if called with a function of arity > 2 (1)', function() {
-        var f = function(x, y, z) {return [].slice.call(arguments);};
-        var fn = function() {
+      var addThrowsArityGT2Test = function(message, f) {
+        it('Throws if called with a function of arity > 2 ' + message, function() {
+          var fn = function() {
+            var flipped = flip(f);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addThrowsArityGT2Test('(normal function)', function(x, y, z) {return 42;});
+      addThrowsArityGT2Test('(curried function)', curry(function(x, y, z) {return 42;}));
+
+
+      var addReturnsCurriedTest = function(message, f) {
+        it('Returns a curried function ' + message, function() {
           var flipped = flip(f);
-        };
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if called with a function of arity > 2 (2)', function() {
-        var f = curry(function(x, y, z) {return [].slice.call(arguments);});
-        var fn = function() {
-          var flipped = flip(f);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
+          expect(flipped.length).to.equal(1);
+          expect(getRealArity(flipped)).to.equal(2);
+        });
+      };
 
 
-      it('Returns a curried function (1)', function() {
-        var f = function(x, y) {};
-        var flipped = flip(f);
-
-        expect(flipped.length).to.equal(1);
-        expect(flipped(1).length).to.equal(1);
-      });
+      addReturnsCurriedTest('(normal function)', function(x, y) {});
+      addReturnsCurriedTest('(curried function)', curry(function(x, y) {}));
 
 
-      it('Returns a curried function (2)', function() {
-        var f = curry(function(x, y) {});
-        var flipped = flip(f);
-
-        expect(flipped.length).to.equal(1);
-        expect(flipped(1).length).to.equal(1);
-      });
-
-
-      it('Works correctly (1)', function() {
+      it('Works correctly', function() {
         var f = function(x, y) {return [].slice.call(arguments);};
         var flipped = flip(f);
 
@@ -908,13 +874,7 @@
       });
 
 
-      it('Works correctly (2)', function() {
-        var f = curry(function(x, y) {return [].slice.call(arguments);});
-        var flipped = flip(f);
-
-        expect(flipped(1)(2)).to.deep.equal(f(2)(1));
-        expect(flipped('a')('b')).to.deep.equal(f('b')('a'));
-      });
+      testCurriedFunction('flipped function', flip(function(a, b) {return a - b;}), [1, 2]);
     });
 
 
@@ -1006,6 +966,14 @@
     });
 
 
+    var sectionRightSpec = {
+      name: 'sectionRight',
+      arity: 2,
+      restrictions: [['function: arity 2'], []],
+      validArguments: [[function(x, y) {}], [1]]
+    };
+
+
     describe('sectionRight', function() {
       var sectionRight = base.sectionRight;
 
@@ -1015,64 +983,19 @@
       });
 
 
-      it('Throws if f is not binary (1)', function() {
-        var fn = function() {
-          sectionRight(id, 1);
-        };
+      var addPartiallyAppliedRightTest = function(message, f, val1, val2) {
+        it('Partially applies to the right (1)', function() {
+          var sectioned = sectionRight(f, val1);
 
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if f is not binary (2)', function() {
-        var fn = function() {
-          sectionRight(function() {}, 1);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
+          expect(sectioned).to.be.a('function');
+          expect(sectioned.length).to.equal(1);
+          expect(sectioned(val2)).to.deep.equal(f(val2, val1));
+        });
+      };
 
 
-      it('Throws if f is not binary (3)', function() {
-        var fn = function() {
-          sectionRight(function(x, y, z) {}, 1);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Throws if f is not binary (4)', function() {
-        var fn = function() {
-          sectionRight(curry(function(x, y, z) {}), 1);
-        };
-
-        expect(fn).to.throw(TypeError);
-      });
-
-
-      it('Partially applies to the right (1)', function() {
-        var f = curry(function(a, b) {return [].slice.call(arguments);});
-        var val1 = 32;
-        var val2 = 10;
-        var sectioned = sectionRight(f, val1);
-
-        expect(sectioned).to.be.a('function');
-        expect(sectioned.length).to.equal(1);
-        expect(sectioned(val2)).to.deep.equal([val2, val1]);
-      });
-
-
-      it('Partially applies to the right (2)', function() {
-        var f = curry(function(a, b) {return a - b;});
-        var val1 = 10;
-        var val2 = 52;
-        var sectioned = sectionRight(f, val1);
-
-        expect(sectioned).to.be.a('function');
-        expect(sectioned.length).to.equal(1);
-        expect(sectioned(val2)).to.deep.equal(f(val2, val1));
-      });
+      addPartiallyAppliedRightTest('(1)', curry(function(a, b) {return a - b;}), 1, 2);
+      addPartiallyAppliedRightTest('(2)', function(a, b) {return [a, b];}, 3, 4);
 
 
       it('Curries f if necessary', function() {
@@ -1087,11 +1010,8 @@
       });
 
 
-      // sectionRight should be curried
-      (function() {
-        var fn = function(x, y) {return x + y;};
-        testCurriedFunction('sectionRight', sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
-      })();
+      var fn = function(x, y) {return x + y;};
+      testCurriedFunction('sectionRight', sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
     });
 
 
@@ -1119,157 +1039,59 @@
     };
 
 
-    describe('equals', function() {
-      var equals = base.equals;
+    var makeEqualsTests = function(name, fnUnderTest, isStrict, isNot) {
+      var spec = {
+        name: name,
+        arity: 2
+      };
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(equals)).to.equal(2);
-      });
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+        equalityTests.forEach(function(test) {
+          var val = test.value;
+          var type = val !== null ? typeof(val) : 'null';
 
+          it('Correct for value of type ' + type + ' when testing value with itself',
+             makeEqualityTest(fnUnderTest, !isNot, val, val));
 
-      equalityTests.forEach(function(test) {
-        var val = test.value;
-        var type = val !== null ? typeof(val) : 'null';
+          var coercible = test.coercible;
+          coercible.forEach(function(cVal) {
+            var cType = cVal !== null ? typeof(cVal) : 'null';
+            it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
+               makeEqualityTest(fnUnderTest, !(isStrict ^ isNot), val, cVal));
+          });
 
-        it('Correct for value of type ' + type + ' when testing value with itself',
-           makeEqualityTest(equals, true, val, val));
+          var notEqual = test.notEqual;
+          notEqual.forEach(function(nVal) {
+            var nType = nVal !== null ? typeof(nVal) : 'null';
+            it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
+               makeEqualityTest(fnUnderTest, isNot, val, nVal));
+          });
 
-        var coercible = test.coercible;
-        coercible.forEach(function(cVal) {
-          var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
-             makeEqualityTest(equals, true, val, cVal));
+          testCurriedFunction(name, fnUnderTest, [val, val]);
         });
+      });
+    };
 
-        var notEqual = test.notEqual;
-        notEqual.forEach(function(nVal) {
-          var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
-             makeEqualityTest(equals, false, val, nVal));
+
+    makeEqualsTests('equals', base.equals, false, false);
+    makeEqualsTests('strictEquals', base.strictEquals, true, false);
+    makeEqualsTests('notEqual', base.notEqual, false, true);
+    makeEqualsTests('strictNotEqual', base.strictNotEqual, true, true);
+
+
+    var deepEqualSpec = {
+      name: 'deepEqual',
+      arity: 2
+    };
+
+
+    describeFunction(deepEqualSpec, base.deepEqual, function(deepEqual) {
+      var addWorksCorrectlyTest = function(message, a, b, expected) {
+        it('Works correctly for ' + message, function() {
+          expect(deepEqual(a, b)).to.equal(expected);
         });
-
-        // equals should be curried
-        testCurriedFunction('equals', equals, [val, val]);
-      });
-    });
-
-
-    describe('strictEquals', function() {
-      var strictEquals = base.strictEquals;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(strictEquals)).to.equal(2);
-      });
-
-
-      equalityTests.forEach(function(test) {
-        var val = test.value;
-        var type = val !== null ? typeof(val) : 'null';
-
-        it('Correct for value of type ' + type + ' when testing value with itself',
-           makeEqualityTest(strictEquals, true, val, val));
-
-        var coercible = test.coercible;
-        coercible.forEach(function(cVal) {
-          var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
-             makeEqualityTest(strictEquals, false, val, cVal));
-        });
-
-        var notEqual = test.notEqual;
-        notEqual.forEach(function(nVal) {
-          var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
-             makeEqualityTest(strictEquals, false, val, nVal));
-        });
-
-        // strictEquals should be curried
-        testCurriedFunction('strictEquals', strictEquals, [val, val]);
-      });
-    });
-
-
-    describe('notEqual', function() {
-      var notEqual = base.notEqual;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(notEqual)).to.equal(2);
-      });
-
-
-      equalityTests.forEach(function(test) {
-        var val = test.value;
-        var type = val !== null ? typeof(val) : 'null';
-
-        it('Correct for value of type ' + type + ' when testing value with itself',
-           makeEqualityTest(notEqual, false, val, val));
-
-        var coercible = test.coercible;
-        coercible.forEach(function(cVal) {
-          var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
-             makeEqualityTest(notEqual, false, val, cVal));
-        });
-
-        var notEquals = test.notEqual;
-        notEquals.forEach(function(nVal) {
-          var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
-             makeEqualityTest(notEqual, true, val, nVal));
-        });
-
-        // notEqual should be curried
-        testCurriedFunction('notEqual', notEqual, [val, val]);
-      });
-    });
-
-
-    describe('strictNotEqual', function() {
-      var strictNotEqual = base.strictNotEqual;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(strictNotEqual)).to.equal(2);
-      });
-
-
-      equalityTests.forEach(function(test) {
-        var val = test.value;
-        var type = val !== null ? typeof(val) : 'null';
-
-        it('Correct for value of type ' + type + ' when testing value with itself',
-           makeEqualityTest(strictNotEqual, false, val, val));
-
-        var coercible = test.coercible;
-        coercible.forEach(function(cVal) {
-          var cType = cVal !== null ? typeof(cVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with coercible value of type ' + cType,
-             makeEqualityTest(strictNotEqual, true, val, cVal));
-        });
-
-        var notEqual = test.notEqual;
-        notEqual.forEach(function(nVal) {
-          var nType = nVal !== null ? typeof(nVal) : 'null';
-          it('Correct for value of type ' + type + ' when testing value with unequal value of type ' + nType,
-             makeEqualityTest(strictNotEqual, true, val, nVal));
-        });
-
-        // strictNotEqual should be curried
-        testCurriedFunction('strictNotEqual', strictNotEqual, [val, val]);
-      });
-    });
-
-
-    describe('deepEqual', function() {
-      var deepEqual = base.deepEqual;
-
-
-      it('Has correct arity', function() {
-        expect(base.getRealArity(deepEqual)).to.equal(2);
-      });
+      };
 
 
       var deTests = [
@@ -1292,10 +1114,7 @@
           var value2 = deTest2.value;
 
           var expected = (i === j);
-
-          it('Works correctly for values of type ' + name + ' and ' + name2, function() {
-            expect(deepEqual(value, value2)).to.equal(expected);
-          });
+          addWorksCorrectlyTest('values of type ' + name + ' and ' + name2, value, value2, expected);
         });
       });
 
@@ -1312,42 +1131,28 @@
       });
 
 
+      addWorksCorrectlyTest('objects with different keys', {foo: 5}, {baz: 1}, false);
+      addWorksCorrectlyTest('objects with different property values', {foo: 5}, {foo: 1}, false);
+      addWorksCorrectlyTest('objects with properties that are not deep equal (1)', {foo: {bar: 1}},
+                                                                                   {foo: {bar: 2}}, false);
+      addWorksCorrectlyTest('objects with properties that are not deep equal (2)', {foo: [1, 2, 3]},
+                                                                                   {foo: [4, 5]}, false);
+      addWorksCorrectlyTest('objects with same keys and values', {foo: 4, bar: 3}, {foo: 4, bar: 3}, true);
+      addWorksCorrectlyTest('objects with properties that are deep equal (1)', {foo: {bar: 1}}, {foo: {bar: 1}}, true);
+      addWorksCorrectlyTest('objects with properties that are deep equal (2)', {foo: [1, 2, 3]}, {foo: [1, 2, 3]}, true);
+      addWorksCorrectlyTest('arrays with different lengths', [1], [], false);
+      addWorksCorrectlyTest('arrays with different values', [1, 2], [1, 3], false);
+      addWorksCorrectlyTest('arrays that aren\'t deep equal (1)', [1, {foo: 5}], [1, {foo: 6}], false);
+      addWorksCorrectlyTest('arrays that aren\'t deep equal (2)', [1, [1]], [1, [2]], false);
+      addWorksCorrectlyTest('arrays with same lengths and  values', [1, 2], [1, 2], true);
+      addWorksCorrectlyTest('arrays that are deep equal (1)', [1, {foo: 5}], [1, {foo: 5}], true);
+      addWorksCorrectlyTest('arrays that are deep equal (2)', [1, [2]], [1, [2]], true);
+
+
       it('Works correctly for objects with non-identical prototypes (2)', function() {
         // The object literals here will not be identical
         var f = Object.create({foo: 1});
         var g = Object.create({foo: 1});
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for objects with different keys', function() {
-        var f = {foo: 5};
-        var g = {baz: 1};
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for objects with different property values', function() {
-        var f = {foo: 5};
-        var g = {foo: 1};
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for objects when property values not deep equal (1)', function() {
-        var f = {foo: {bar: 1}};
-        var g = {foo: {bar: 2}};
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for objects when property values not deep equal (2)', function() {
-        var f = {foo: [1, 2]};
-        var g = {foo: [1, 2, 3]};
 
         expect(deepEqual(f, g)).to.be.false;
       });
@@ -1363,30 +1168,6 @@
       });
 
 
-      it('Works correctly for objects with same keys and values', function() {
-        var f = {foo: 5};
-        var g = {foo: 5};
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
-      it('Works correctly for objects when property values deep equal (1)', function() {
-        var f = {foo: {bar: 1}};
-        var g = {foo: {bar: 1}};
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
-      it('Works correctly for objects when property values deep equal (2)', function() {
-        var f = {foo: [1, 2], bar: 'a'};
-        var g = {foo: [1, 2], bar: 'a'};
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
       it('Non-enumerable properties do not affect deep equality', function() {
         var f = {buzz: 42};
         var g = {buzz: 42};
@@ -1396,66 +1177,11 @@
       });
 
 
-      it('Works correctly for arrays of different lengths', function() {
-        var f = [1];
-        var g = [];
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for arrays with different values', function() {
-        var f = [1, 2];
-        var g = [1, 3];
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for arrays when values not deep equal (1)', function() {
-        var f = [1, {foo: 5}];
-        var g = [1, {foo: 6}];
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for arrays when values not deep equal (2)', function() {
-        var f = [1, [1]];
-        var g = [1, [2]];
-
-        expect(deepEqual(f, g)).to.be.false;
-      });
-
-
-      it('Works correctly for arrays with same length and values', function() {
-        var f = [1, 2];
-        var g = [1, 2];
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
-      it('Works correctly for arrays when values deep equal (1)', function() {
-        var f = [1, {foo: 5}];
-        var g = [1, {foo: 5}];
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
-      it('Works correctly for arrays when values deep equal (2)', function() {
-        var f = [1, [1]];
-        var g = [1, [1]];
-
-        expect(deepEqual(f, g)).to.be.true;
-      });
-
-
       testCurriedFunction('deepEqual', deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
     });
 
 
+    // We can't use describeFunction for getRealArity, as describeFunction uses it
     describe('getRealArity', function() {
       var getRealArity = base.getRealArity;
       var curryWithArity = base.curryWithArity;
@@ -1517,51 +1243,38 @@
     });
 
 
-    describe('permuteLeft', function() {
-      var permuteLeft = base.permuteLeft;
-      var curryWithArity = base.curryWithArity;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(permuteLeft)).to.equal(1);
-      });
-
-
+    var addCommonPermuteTests = function(fnUnderTest) {
       // Generate the same arity tests
       var fns = [function() {}, function(a) {}, function(a, b) {}, function(a, b, c) {}, function(a, b, c, d) {}];
 
-      var makeSameArityTest = function(i) {
-        return function() {
-          var f = fns[i];
-          var permuted = permuteLeft(f);
+      var addSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i, function() {
+          var permuted = fnUnderTest(f);
 
           expect(getRealArity(permuted)).to.equal(getRealArity(f));
-        };
+        });
       };
 
 
-      var makeCurriedSameArityTest = function(i) {
-        return function() {
-          var f = curry(fns[i]);
-          var permuted = permuteLeft(f);
+      var addCurriedSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i, function() {
+          f = curry(f);
+          var permuted = fnUnderTest(f);
 
           expect(getRealArity(permuted)).to.equal(getRealArity(f));
-        };
+        });
       };
 
 
-      for (var i = 0, l = fns.length; i < l; i++) {
-        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i,
-            makeSameArityTest(i));
-
-        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i,
-            makeCurriedSameArityTest(i));
-      }
+      fns.forEach(function(f, i) {
+        addSameArityTest(f, i);
+        addCurriedSameArityTest(f, i);
+      });
 
 
       it('Returns original function if original is curried with arity 0', function() {
         var f = curry(function() {});
-        var g = permuteLeft(f);
+        var g = fnUnderTest(f);
 
         expect(g).to.equal(f);
       });
@@ -1569,16 +1282,17 @@
 
       it('Returns curried original function if original is not curried and has arity 0', function() {
         var f = function() {return [].slice.call(arguments);};
-        var g = permuteLeft(f);
+        var g = fnUnderTest(f);
 
         expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
         expect(g(1, 2, 3)).to.deep.equal([]);
       });
 
 
       it('Returns original function if original is curried with arity 1', function() {
         var f = curry(function(x) {});
-        var g = permuteLeft(f);
+        var g = fnUnderTest(f);
 
         expect(g).to.equal(f);
       });
@@ -1586,24 +1300,25 @@
 
       it('Returns curried original function if original is not curried and has arity 1', function() {
         var f = function(x) {return [].slice.call(arguments);};
-        var g = permuteLeft(f);
+        var g = fnUnderTest(f);
 
         expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
         expect(g(1, 2, 3)).to.deep.equal([1]);
       });
 
 
-      it('Returns same result as original when called with uncurried function of arity 2', function() {
+      it('New function returns same result as original when called with uncurried function of arity 2', function() {
         var f = function(x, y) {return x - y;};
-        var permuted = permuteLeft(f);
+        var permuted = fnUnderTest(f);
 
         expect(permuted(1, 2)).to.equal(f(2, 1));
       });
 
 
-      it('Returns same result as original when called with curried function of arity 2', function() {
+      it('New function returns same result as original when called with curried function of arity 2', function() {
         var f = curry(function(x, y) {return x - y;});
-        var permuted = permuteLeft(f);
+        var permuted = fnUnderTest(f);
 
         expect(permuted(1, 2)).to.equal(f(2, 1));
       });
@@ -1612,7 +1327,7 @@
       it('Equivalent to flip when called with an uncurried function of arity 2', function() {
         var f = function(x, y) {return x - y;};
         var flipped = base.flip(f);
-        var permuted = permuteLeft(f);
+        var permuted = fnUnderTest(f);
 
         expect(permuted(1, 2)).to.equal(flipped(1, 2));
       });
@@ -1621,17 +1336,32 @@
       it('Equivalent to flip when called with an curried function of arity 2', function() {
         var f = curry(function(x, y) {return x - y;});
         var flipped = base.flip(f);
-        var permuted = permuteLeft(f);
+        var permuted = fnUnderTest(f);
 
         expect(permuted(1, 2)).to.equal(flipped(1, 2));
       });
 
 
-      // check curries with arity 2
       var f = function(a, b) {return a - b;};
-      testCurriedFunction('Uncurried arity 2 curries', permuteLeft(f), [1, 2]);
+      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(f), [1, 2]);
       var g = curry(function(a, b) {return a - b;});
-      testCurriedFunction('Uncurried arity 2 curries', permuteLeft(g), [1, 2]);
+      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(g), [1, 2]);
+    };
+
+
+    var permuteLeftSpec = {
+      name: 'permuteLeft',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    describeFunction(permuteLeftSpec, base.permuteLeft, function(permuteLeft) {
+      var curryWithArity = base.curryWithArity;
+
+
+      addCommonPermuteTests(permuteLeft);
 
 
       // For higher arities, we will generate a series of tests for arities 3 and 4
@@ -1639,8 +1369,8 @@
       var baseFunc = function() {return [].slice.call(arguments);};
 
 
-      var makeCallsOriginalTest = function(i) {
-        return function() {
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
           var called = false;
           var args = params.slice(0, i);
           var fn = curryWithArity(i, function() {called = true;});
@@ -1649,12 +1379,12 @@
           permuted.apply(null, args);
 
           expect(called).to.be.true;
-        };
+        });
       };
 
 
-      var makePermutesArgsTest = function(i) {
-        return function() {
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
           var args = params.slice(0, i);
           var fn = curryWithArity(i, baseFunc);
           var permuted = permuteLeft(fn);
@@ -1662,12 +1392,12 @@
           var expected = [args[i - 1]].concat(args.slice(0, i - 1));
 
           expect(result).to.deep.equal(expected);
-        };
+        });
       };
 
 
-      var makeSameResultTest = function(i) {
-        return function() {
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
           var args = params.slice(0, i);
           var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
           var permuted = permuteLeft(fn);
@@ -1675,139 +1405,35 @@
           var result = permuted.apply(null, args);
 
           expect(result).to.deep.equal(originalResult);
-        };
+        });
       };
 
 
       for (var i = 3; i < 5; i++) {
-        var message = 'Permuted function of arity ' + i;
-
-        it(message + ' calls original function', makeCallsOriginalTest(i));
-        it(message + ' permutes arguments', makePermutesArgsTest(i));
-        it(message + ' returns same result as original', makeSameResultTest(i));
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
 
         // And, of course, the permuted function should be curried
         var curried = curryWithArity(i, baseFunc);
-        testCurriedFunction(message + ' (curried)', permuteLeft(curried), params.slice(0, i));
+        testCurriedFunction('Permuted function of arity ' + i, permuteLeft(curried), params.slice(0, i));
       }
     });
 
 
-    describe('permuteRight', function() {
-      var permuteRight = base.permuteRight;
+    var permuteRightSpec = {
+      name: 'permuteRight',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    describeFunction(permuteRightSpec, base.permuteRight, function(permuteRight) {
       var curryWithArity = base.curryWithArity;
 
 
-      it('Has correct arity', function() {
-        expect(getRealArity(permuteRight)).to.equal(1);
-      });
-
-
-      // Generate the same arity tests
-      var fns = [function() {}, function(a) {}, function(a, b) {}, function(a, b, c) {}, function(a, b, c, d) {}];
-
-      var makeSameArityTest = function(i) {
-        return function() {
-          var f = fns[i];
-          var permuted = permuteRight(f);
-
-          expect(getRealArity(permuted)).to.equal(getRealArity(f));
-        };
-      };
-
-
-      var makeCurriedSameArityTest = function(i) {
-        return function() {
-          var f = curry(fns[i]);
-          var permuted = permuteRight(f);
-
-          expect(getRealArity(permuted)).to.equal(getRealArity(f));
-        };
-      };
-
-
-      for (var i = 0, l = fns.length; i < l; i++) {
-        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i,
-            makeSameArityTest(i));
-
-        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i,
-            makeCurriedSameArityTest(i));
-      }
-
-
-      it('Returns original function if original is curried with arity 0', function() {
-        var f = curry(function() {});
-        var g = permuteRight(f);
-
-        expect(g).to.equal(f);
-      });
-
-
-      it('Returns curried original function if original is not curried and has arity 0', function() {
-        var f = function() {return [].slice.call(arguments);};
-        var g = permuteRight(f);
-
-        expect(g).to.not.equal(f);
-        expect(g(1, 2, 3)).to.deep.equal([]);
-      });
-
-
-      it('Returns original function if original is curried with arity 1', function() {
-        var f = curry(function(x) {});
-        var g = permuteRight(f);
-
-        expect(g).to.equal(f);
-      });
-
-
-      it('Returns curried original function if original is not curried and has arity 1', function() {
-        var f = function(x) {return [].slice.call(arguments);};
-        var g = permuteRight(f);
-
-        expect(g).to.not.equal(f);
-        expect(g(1, 2, 3)).to.deep.equal([1]);
-      });
-
-
-      it('Returns same result as original when called with uncurried function of arity 2', function() {
-        var f = function(x, y) {return x - y;};
-        var permuted = permuteRight(f);
-
-        expect(permuted(1, 2)).to.equal(f(2, 1));
-      });
-
-
-      it('Returns same result as original when called with curried function of arity 2', function() {
-        var f = curry(function(x, y) {return x - y;});
-        var permuted = permuteRight(f);
-
-        expect(permuted(1, 2)).to.equal(f(2, 1));
-      });
-
-
-      it('Equivalent to flip when called with an uncurried function of arity 2', function() {
-        var f = function(x, y) {return x - y;};
-        var flipped = base.flip(f);
-        var permuted = permuteRight(f);
-
-        expect(permuted(1, 2)).to.equal(flipped(1, 2));
-      });
-
-
-      it('Equivalent to flip when called with an curried function of arity 2', function() {
-        var f = curry(function(x, y) {return x - y;});
-        var flipped = base.flip(f);
-        var permuted = permuteRight(f);
-
-        expect(permuted(1, 2)).to.equal(flipped(1, 2));
-      });
-
-
-      // check curries with arity 2
-      var f = function(a, b) {return a - b;};
-      testCurriedFunction('Uncurried arity 2 curries', permuteRight(f), [1, 2]);
-      var g = curry(function(a, b) {return a - b;});
-      testCurriedFunction('Uncurried arity 2 curries', permuteRight(g), [1, 2]);
+      addCommonPermuteTests(permuteRight);
 
 
       // For higher arities, we will generate a series of tests for arities 3 and 4
@@ -1815,8 +1441,8 @@
       var baseFunc = function() {return [].slice.call(arguments);};
 
 
-      var makeCallsOriginalTest = function(i) {
-        return function() {
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
           var called = false;
           var args = params.slice(0, i);
           var fn = curryWithArity(i, function() {called = true;});
@@ -1825,12 +1451,12 @@
           permuted.apply(null, args);
 
           expect(called).to.be.true;
-        };
+        });
       };
 
 
-      var makePermutesArgsTest = function(i) {
-        return function() {
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
           var args = params.slice(0, i);
           var fn = curryWithArity(i, baseFunc);
           var permuted = permuteRight(fn);
@@ -1838,12 +1464,12 @@
           var expected = args.slice(1).concat([args[0]]);
 
           expect(result).to.deep.equal(expected);
-        };
+        });
       };
 
 
-      var makeSameResultTest = function(i) {
-        return function() {
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
           var args = params.slice(0, i);
           var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
           var permuted = permuteRight(fn);
@@ -1851,20 +1477,18 @@
           var result = permuted.apply(null, args);
 
           expect(result).to.deep.equal(originalResult);
-        };
+        });
       };
 
 
       for (var i = 3; i < 5; i++) {
-        var message = 'Permuted function of arity ' + i;
-
-        it(message + ' calls original function', makeCallsOriginalTest(i));
-        it(message + ' permutes arguments', makePermutesArgsTest(i));
-        it(message + ' returns same result as original', makeSameResultTest(i));
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
 
         // And, of course, the permuted function should be curried
         var curried = curryWithArity(i, baseFunc);
-        testCurriedFunction(message + ' (curried)', permuteRight(curried), params.slice(0, i));
+        testCurriedFunction('Permuted function of arity ' + i, permuteRight(curried), params.slice(0, i));
       }
     });
 
@@ -1881,34 +1505,33 @@
     ];
 
 
-    var baseIsTests = isTestData.filter(function(o) {return o.base;});
-
-
-    var makeIsCheck = function(fnUnderTest, test1, test2) {
-      return function() {
-        var result = fnUnderTest(test1.name, test2.value);
-        var expected = test2.types.indexOf(test1.name) !== -1;
-
-        expect(result).to.equal(expected);
-      };
+    var isSpec = {
+      name: 'is',
+      arity: 2,
+      restrictions: [['string'], []],
+      validArguments: [['number'], [1]]
     };
 
 
-    describe('is', function() {
-      var is = base.is;
+    describeFunction(isSpec, base.is, function(is) {
+      var primitiveIsTests = isTestData.filter(function(o) {return o.primitive;});
 
 
-      it('Has correct arity', function() {
-        expect(base.getRealArity(is)).to.equal(2);
-      });
+      var addIsCheck = function(name, test2) {
+        it('Works correctly for type ' + name + ' and value ' + test2.name, function() {
+          var result = is(name, test2.value);
+          var expected = test2.types.indexOf(name) !== -1;
+
+          expect(result).to.equal(expected);
+        });
+      };
 
 
-      baseIsTests.forEach(function(bTest) {
-        var name = bTest.name;
+      primitiveIsTests.forEach(function(primTest) {
+        var name = primTest.name;
 
         isTestData.forEach(function(test2) {
-          it('Works correctly for type ' + name + ' and value ' + test2.name,
-            makeIsCheck(is, bTest, test2));
+          addIsCheck(is, primTest, test2);
         });
       });
 
@@ -1917,30 +1540,27 @@
     });
 
 
-    var makeSpecialisedIsCheck = function(fnUnderTest, test, accepts) {
-      return function() {
+    var addSpecialisedIsCheck = function(name, fnUnderTest, test, accepts) {
+      it('Works correctly for type ' + name, function() {
         var result = fnUnderTest(test.value);
         var expected = test.types.indexOf(accepts) !== -1;
 
         expect(result).to.equal(expected);
-      };
+      });
     };
 
 
-    var makeSpecialisedIsTest = function(desc, fnUnderTest, accepts) {
-      describe(desc, function() {
+    var addSpecialisedIsTest = function(desc, fnUnderTest, accepts) {
+      var spec = {
+        name: desc,
+        arity: 1
+      };
 
 
-        it('Has correct arity', function() {
-          expect(base.getRealArity(fnUnderTest)).to.equal(1);
-        });
-
-
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         isTestData.forEach(function(test) {
           var name = test.name;
-
-          it('Works correctly for type ' + name,
-            makeSpecialisedIsCheck(fnUnderTest, test, accepts));
+          addSpecialisedIsCheck(name, fnUnderTest, test, accepts);
         });
 
 
@@ -1949,25 +1569,23 @@
     };
 
 
-    makeSpecialisedIsTest('isNumber', base.isNumber, 'number');
-    makeSpecialisedIsTest('isString', base.isString, 'string');
-    makeSpecialisedIsTest('isBoolean', base.isBoolean, 'boolean');
-    makeSpecialisedIsTest('isUndefined', base.isUndefined, 'undefined');
-    makeSpecialisedIsTest('isObject', base.isObject, 'object');
-    makeSpecialisedIsTest('isArray', base.isArray, 'array');
-    makeSpecialisedIsTest('isNull', base.isNull, 'null');
-    makeSpecialisedIsTest('isRealObject', base.isRealObject, 'realObject');
+    addSpecialisedIsTest('isNumber', base.isNumber, 'number');
+    addSpecialisedIsTest('isString', base.isString, 'string');
+    addSpecialisedIsTest('isBoolean', base.isBoolean, 'boolean');
+    addSpecialisedIsTest('isUndefined', base.isUndefined, 'undefined');
+    addSpecialisedIsTest('isObject', base.isObject, 'object');
+    addSpecialisedIsTest('isArray', base.isArray, 'array');
+    addSpecialisedIsTest('isNull', base.isNull, 'null');
+    addSpecialisedIsTest('isRealObject', base.isRealObject, 'realObject');
 
 
-    describe('getType', function() {
-      var getType = base.getType;
+    var getTypeSpec = {
+      name: 'getType',
+      arity: 1
+    };
 
 
-      it('Has correct arity', function() {
-        expect(base.getRealArity(getType)).to.equal(1);
-      });
-
-
+    describeFunction(getTypeSpec, base.getType, function(getType) {
       var typeTests = [
         {name: 'number', val: 1},
         {name: 'boolean', val: true},

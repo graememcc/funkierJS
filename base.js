@@ -1,6 +1,9 @@
 (function() {
   "use strict";
 
+  var utils = require('./utils');
+  var checkPositiveIntegral = utils.checkPositiveIntegral;
+
 
   var makeModule = function(require, exports) {
     // Property that will be installed on all curried functions reflecting 'real' arity.
@@ -11,10 +14,10 @@
 
 
     /*
-     * curry: take a function fn, and curry up to the function's arity, as defined by the
+     * curry: Takes a function fn, and curries it up to the function's arity, as defined by the
      *        function's length property. The curried function returned will have length 1,
      *        unless the original function had length 0, in which case the returned function
-     *        will have length 0 too. Arguments are curried left to right.
+     *        will have length 0 too. Arguments are curried left to right. Throws if fn is not a function.
      *
      * curry will ultimately call the underlying function with a null execution context. Use
      * Function.prototype.bind beforehand if you need to curry with a specific context.
@@ -46,7 +49,8 @@
      * curryWithArity: take an arity and a function fn, and curry up to the specified arity, regardless of the
      *                 function's length. Note in particular, a function can be curried to a length greater
      *                 than its arity. Arguments are curried left to right. The returned function will have
-     *                 length 1, unless the arity requested was 0, in which case the length will be zero.
+     *                 length 1, unless the arity requested was 0, in which case the length will be zero. Throws if
+     *                 fn is not a function, or if length is not a non-negative integer.
      *
      * curryWithArity will ultimately call the underlying function with a null execution context. Use
      * Function.prototype.bind beforehand if you need to curry with a specific context.
@@ -66,6 +70,12 @@
      */
 
     var curryWithArity = function(length, fn) {
+      length = checkPositiveIntegral(length);
+
+      // We can't use checkFunction from funcUtils here: it depends on base; it would introduce a circular dependency
+      if (typeof(fn) !== 'function')
+        throw new TypeError('Value to be curried is not a function');
+
       if (fn.hasOwnProperty(arityProp) && fn[arityProp] === length)
         return fn;
 
@@ -233,6 +243,10 @@
      */
 
     var flip = function(f) {
+      // XXX Use funcUtils when curry bits split out
+      if (typeof(f) !== 'function')
+        throw new TypeError('Value to be flipped is not a function');
+
       var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
 
       if (fLen < 2)
@@ -478,7 +492,8 @@
 
     /*
      * is: a curried wrapper around typeof. Takes a string that could be returned by the typeof operator,
-     *     and an object. Returns true if the type of the given object equals the given string.
+     *     and an object. Returns true if the type of the given object equals the given string. Throws if the first
+     *     argument is not a string.
      *
      * For example,
      *   is('object', {}); // true
@@ -486,6 +501,9 @@
      */
 
     var is = curry(function(s, obj) {
+      if (typeof(s) !== 'string')
+        throw new TypeError('Type to be checked is not a string');
+
       return typeof(obj) === s;
     });
 
