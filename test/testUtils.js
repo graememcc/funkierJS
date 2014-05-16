@@ -164,16 +164,19 @@
         {name: 'object', article: 'an ', value: {foo: 4},
          typeclasses: ['integer', 'positive', 'objectlike','objectlikeornull']},
         {name: 'array', article: 'an ', value: [4, 5, 6],
-         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']},
-        {name: 'arraylike', article: 'an ', value: {'0': 1, '1': 2, 'length': 2},
          typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']}
       ];
-
-      primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
 
       // If the restriction is a constructor function, then all of the above will be bogus
       if (resSpec.length === 1 && typeof(resSpec[0]) === 'function')
         return primBogus;
+
+      primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
+
+      // Add arraylike test if objects aren't allowed (need to do this seperately as they are of course objects
+      if (resSpec.indexOf('object') === -1)
+        primBogus.push({name: 'arraylike', article: 'an ', value: {'0': 1, '1': 2, 'length': 2},
+         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']});
 
       // If the restriction is not a typeclass, then we're done. This assumes we already checked
       // that typeclasses restrictions only appear in arrays of length 1
