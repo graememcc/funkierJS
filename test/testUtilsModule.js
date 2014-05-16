@@ -236,14 +236,32 @@
       });
 
 
-      it('Behaves correctly with null when allowNull parameter explicitly false', function() {
-        expect(isObjectLike(null, false)).to.be.false;
-      });
+      var addOptionTests = function(allowNull, strict) {
+        it('Behaves correctly for null when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike(null, {allowNull: allowNull, strict: strict})).to.equal(allowNull);
+        });
 
 
-      it('Behaves correctly with null when allowNull parameter explicitly true', function() {
-        expect(isObjectLike(null, true)).to.be.true;
-      });
+        it('Behaves correctly for function when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike(function() {}, {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
+        it('Behaves correctly for string when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike('a', {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
+        it('Behaves correctly for object when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.be.true;
+        });
+      };
+
+
+      addOptionTests(false, false);
+      addOptionTests(false, true);
+      addOptionTests(true, false);
+      addOptionTests(true, true);
     });
 
 
@@ -323,6 +341,38 @@
 
         expect(o).to.equal(null);
       });
+
+
+      var addStrictTests = function(type, val) {
+        it('Accepts ' + type + ' when strict parameter explicitly false', function() {
+          var o = checkObjectLike(val, {strict: false});
+
+          expect(o).to.equal(val);
+        });
+
+
+        it('Doesn\'t accept ' + type + ' when strict parameter true (1)', function() {
+          var fn = function() {
+            checkObjectLike(val, {strict: true});
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Doesn\'t accept ' + type + ' when relevant strict parameter true (2)', function() {
+          var message = 'Noooo, only objects here!';
+          var fn = function() {
+            checkObjectLike(val, {strict: true, message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      addStrictTests('function', function() {});
+      addStrictTests('string', 'abc');
     });
 
 

@@ -79,10 +79,13 @@
      *
      */
 
-    var isObjectLike = function(v, allowNull) {
-      allowNull = allowNull || false;
+    var isObjectLike = function(v, options) {
+      var options = options || {};
+      var strict = options.strict || false;
+      var allowNull = options.allowNull || false;
 
-      return (v === null && allowNull) || (v !== null && ['string', 'function', 'object'].indexOf(typeof(v)) !== -1);
+      var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
+      return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
     };
 
 
@@ -95,7 +98,7 @@
       var message = options.message || 'Value is not an object';
       var allowNull = options.allowNull || false;
 
-      if (!isObjectLike(v, allowNull))
+      if (!isObjectLike(v, options))
         throw new TypeError(message);
 
       return v;
