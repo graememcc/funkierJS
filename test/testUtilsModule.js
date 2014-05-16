@@ -252,6 +252,11 @@
         });
 
 
+        it('Behaves correctly for array when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike([1], {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
         it('Behaves correctly for object when allowNull ' + allowNull + ' and strict ' + strict, function() {
           expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.be.true;
         });

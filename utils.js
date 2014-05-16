@@ -85,6 +85,9 @@
       var allowNull = options.allowNull || false;
 
       var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
+      if (strict && Array.isArray(v))
+        return false;
+
       return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
     };
 
