@@ -3,10 +3,10 @@
 
 
   var makeModule = function(require, exports) {
-    var base = require('./base');
-    var curry = base.curry;
-    var curryWithArity = base.curryWithArity;
-    var getRealArity = base.getRealArity;
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+    var curryWithArity = curryModule.curryWithArity;
+    var getRealArity = curryModule.getRealArity;
 
     var utils = require('./utils');
     var valueStringifier = utils.valueStringifier;

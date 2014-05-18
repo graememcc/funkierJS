@@ -8,8 +8,10 @@
 
     var fn = require('../fn');
 
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
+
     var base = require('../base');
-    var getRealArity = base.getRealArity;
     var id = base.id;
 
     // Import utility functions

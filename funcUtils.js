@@ -12,8 +12,8 @@
 
 
   var makeModule = function(require, exports) {
-    var base = require('./base');
-    var getRealArity = base.getRealArity;
+    var curryModule = require('./curry');
+    var getRealArity = curryModule.getRealArity;
 
 
     /*

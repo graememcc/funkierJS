@@ -3,10 +3,12 @@
 
 
   var makeModule = function(require, exports) {
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+    var curryWithArity = curryModule.curryWithArity;
+    var getRealArity = curryModule.getRealArity;
+
     var base = require('./base');
-    var curry = base.curry;
-    var curryWithArity = base.curryWithArity;
-    var getRealArity = base.getRealArity;
 
     var utils = require('./utils');
     var checkArrayLike = utils.checkArrayLike;

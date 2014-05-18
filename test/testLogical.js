@@ -6,6 +6,8 @@
     var chai = require('chai');
     var expect = chai.expect;
 
+    var curryModule = require('../curry');
+
     var base = require('../base');
     var logical = require('../logical');
 
@@ -90,8 +92,8 @@
 
 
     // The following predicate tests require the following definitions
+    var curry = curryModule.curry;
     var constant = base.constant;
-    var curry = base.curry;
     var constantFalse = constant(false);
     var constantTrue = constant(true);
 

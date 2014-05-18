@@ -3,6 +3,7 @@
 
 
   var makeModule = function(require, exports) {
+    var curry = require('./curry');
     var base = require('./base');
     var logical = require('./logical');
     var maths = require('./maths');
@@ -16,8 +17,8 @@
     var combinators = require('./combinators');
     var array = require('./array');
 
-    var imports = [base, logical, maths, object, string, fn, date, pair, maybe, result,
-                   combinators, array];
+    var imports = [curry, base, logical, maths, object, string, fn, date, pair, maybe,
+                   result, combinators, array];
     var exportedFns = {};
 
     // Export our imports

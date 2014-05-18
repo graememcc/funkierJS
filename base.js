@@ -1,155 +1,14 @@
 (function() {
   "use strict";
 
-  var utils = require('./utils');
-  var checkPositiveIntegral = utils.checkPositiveIntegral;
-
-
   var makeModule = function(require, exports) {
-    // Property that will be installed on all curried functions reflecting 'real' arity.
-    // When we attach this property to the curried functions, we will use Object.defineProperty.
-    // This is a minor hack to prevent the property showing up when the functions are logged
-    // to the console (enumerable will be false).
-    var arityProp = '_trueArity';
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+    var curryWithArity = curryModule.curryWithArity;
+    var getRealArity = curryModule.getRealArity;
 
-
-    /*
-     * curry: Takes a function fn, and curries it up to the function's arity, as defined by the
-     *        function's length property. The curried function returned will have length 1,
-     *        unless the original function had length 0, in which case the returned function
-     *        will have length 0 too. Arguments are curried left to right. Throws if fn is not a function.
-     *
-     * curry will ultimately call the underlying function with a null execution context. Use
-     * Function.prototype.bind beforehand if you need to curry with a specific context.
-     *
-     * Each curried function will have an arity of 1, but will accept > 1 arguments. If the number
-     * of arguments supplied is equal to the number of outstanding arguments, the
-     * underlying function will be called. For example,
-     *   var f = curry(function(a, b) {...});
-     *   f(1); // returns a function that awaits a value for the b parameter
-     *   f(1, 2); // calls the original function with a=1, b=2
-     *
-     * If the curried function is called with superfluous arguments, they will be discarded.
-     * This avoids unexpected behaviour triggered by supplying optional arguments. Functions accepting
-     * optional arguments effectively represent a family of functions with different type-signatures,
-     * so each variant should be treated seperately.
-     *
-     * If you need a function to accept a specific number of arguments, where that number is different
-     * from the function's length property, use curryWithArity instead.
-     *
-     */
-
-    var curry = function(fn) {
-      var desiredLength = fn.hasOwnProperty(arityProp) ? fn[arityProp] : fn.length;
-      return curryWithArity(desiredLength, fn);
-    };
-
-
-    /*
-     * curryWithArity: take an arity and a function fn, and curry up to the specified arity, regardless of the
-     *                 function's length. Note in particular, a function can be curried to a length greater
-     *                 than its arity. Arguments are curried left to right. The returned function will have
-     *                 length 1, unless the arity requested was 0, in which case the length will be zero. Throws if
-     *                 fn is not a function, or if length is not a non-negative integer.
-     *
-     * curryWithArity will ultimately call the underlying function with a null execution context. Use
-     * Function.prototype.bind beforehand if you need to curry with a specific context.
-     *
-     * Each curried function will have an arity of 1, but will accept > 1 arguments. If the number
-     * of arguments supplied is equal to the number of outstanding arguments, the
-     * underlying function will be called. For example,
-     *   var f = curryWithArity(2, function(a, b) {...});
-     *   f(1); // returns a function that awaits a value for the b parameter
-     *   f(1, 2); // calls the original function with a=1, b=2
-     *
-     * If the curried function is called with superfluous arguments, they will be discarded.
-     * This avoids unexpected behaviour triggered by supplying optional arguments. Functions accepting
-     * optional arguments effectively represent a family of functions with different type-signatures,
-     * so each variant should be treated seperately.
-     *
-     */
-
-    var curryWithArity = function(length, fn) {
-      length = checkPositiveIntegral(length);
-
-      // We can't use checkFunction from funcUtils here: it depends on base; it would introduce a circular dependency
-      if (typeof(fn) !== 'function')
-        throw new TypeError('Value to be curried is not a function');
-
-      if (fn.hasOwnProperty(arityProp) && fn[arityProp] === length)
-        return fn;
-
-      // Handle the special case of length 0
-      if (length === 0) {
-        var result = function() {
-          // Don't simply return fn: need to discard any arguments
-          return fn.apply(this);
-        };
-
-        Object.defineProperty(result, arityProp, {value: 0});
-        return result;
-      }
-
-      var curried = function(a) {
-        var args = [].slice.call(arguments);
-        var argsNeeded = length - args.length;
-
-        // If we have more args than expected, trim down to the expected length
-        // (the function will be called when we fall through to the next conditional)
-        if (args.length > length)
-          args = args.slice(0, length);
-
-        // If we have enough arguments, call the underlying function
-        if (args.length === length)
-          return fn.apply(this, args);
-
-        // We don't have enough arguments. Bind those that we already have
-        var newFn = fn.bind.apply(fn, [this].concat(args));
-        var argsNeeded = length - args.length;
-
-        // Continue currying if we can't yet return a function of length 1
-        if (argsNeeded > 1)
-          return curryWithArity(argsNeeded, newFn);
-
-        // The trivial case
-        var trivial = function(b) {
-          return newFn(b);
-        };
-
-        Object.defineProperty(trivial, arityProp, {value: 1});
-        return trivial;
-      };
-
-      Object.defineProperty(curried, arityProp, {value: length});
-      return curried;
-    };
-
-    // curryWithArity should itself be curried
-    curryWithArity = curry(curryWithArity);
-
-
-    /*
-     * getRealArity: reports the real arity of a function. If the function has not been curried by funkier.js
-     *               this simply returns the function's length property. For a function that has been curried,
-     *               the arity of the original function will be reported (the function's length property will
-     *               always be 0 or 1 in this case). For a partially applied function, the amount of arguments
-     *               not yet supplied will be returned.
-     *
-     * For example:
-     *   function(x) {}.length == 1;
-     *   getRealArity(function(x) {}) == 1;
-     *   function(x, y) {}.length == 2;
-     *   getRealArity(function(x, y) {}) == 2;
-     *   curry(function(x, y) {}).length == 1;
-     *   getRealArity(curry(function(x, y) {})) == 2;
-     *   getRealArity(curry(function(x, y, z) {})) == 3;
-     *   getRealArity(curry(function(x, y, z) {})(1)) == 2;
-     *
-     */
-
-    var getRealArity = function(f) {
-      return f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
-    };
+    var utils = require('./utils');
+    var checkPositiveIntegral = utils.checkPositiveIntegral;
 
 
     /*
@@ -170,8 +29,8 @@
      */
 
     var compose = curry(function(f, g) {
-      var gLen = g.hasOwnProperty(arityProp) ? g[arityProp] : g.length;
-      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
+      var gLen = getRealArity(g);
+      var fLen = getRealArity(f);
 
       if (fLen === 0)
         throw new TypeError('compose called with function of arity 0');
@@ -247,7 +106,7 @@
       if (typeof(f) !== 'function')
         throw new TypeError('Value to be flipped is not a function');
 
-      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
+      var fLen = getRealArity(f);
 
       if (fLen < 2)
         return curry(f);
@@ -314,7 +173,7 @@
      */
 
     var sectionRight = curry(function(f, x) {
-      var fLen = f.hasOwnProperty(arityProp) ? f[arityProp] : f.length;
+      var fLen = getRealArity(f);
       if (fLen !== 2)
         throw new TypeError('sectionRight called with function of arity ' + fLen);
 
@@ -598,12 +457,9 @@
       composeMany: composeMany,
       constant: constant,
       constant0: constant0,
-      curry: curry,
-      curryWithArity: curryWithArity,
       deepEqual: deepEqual,
       equals: equals,
       flip: flip,
-      getRealArity: getRealArity,
       getType: getType,
       id: id,
       is: is,

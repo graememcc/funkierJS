@@ -8,8 +8,10 @@
 
     var result = require('../result');
 
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
+
     var base = require('../base');
-    var getRealArity = base.getRealArity;
     var id = base.id;
     var constant = base.constant;
 

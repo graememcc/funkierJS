@@ -7,12 +7,13 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
-    var getRealArity = base.getRealArity;
-    var curry = base.curry;
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
+    var curry = curryModule.curry;
 
     var utils = require('../utils');
     var isObjectLike = utils.isObjectLike;
+
 
     // Return a function that tests if the object has the given property
     var exportsProperty = function(obj, prop) {

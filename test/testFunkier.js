@@ -14,6 +14,7 @@
 
 
     // Import submodules
+    var curry = require('../curry');
     var base = require('../base');
     var logical = require('../logical');
     var maths = require('../maths');
@@ -28,7 +29,8 @@
     var array = require('../array');
 
 
-    var imports = [{name: 'base', val: base},
+    var imports = [{name: 'curry', val: curry},
+                   {name: 'base', val: base},
                    {name: 'logical', val: logical},
                    {name: 'maths', val: maths},
                    {name: 'object', val: object},
@@ -48,7 +50,8 @@
         var module = importedModule.val;
 
         // We want to check that funkier exports everything exported by the original submodule, and indeed that it
-        // exports the original version
+        // exports the original version. This also implicitly tests that no two components export a function with
+        // the same name: one of these tests would fail in that case.
         for (var k in module) {
           if (!module.hasOwnProperty(k))
             continue;

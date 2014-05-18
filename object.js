@@ -3,9 +3,11 @@
 
 
   var makeModule = function(require, exports) {
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+    var curryWithArity = curryModule.curryWithArity;
+
     var base = require('./base');
-    var curry = base.curry;
-    var curryWithArity = base.curryWithArity;
     var flip = base.flip;
     var permuteLeft = base.permuteLeft;
 

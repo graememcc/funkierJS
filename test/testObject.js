@@ -6,8 +6,8 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
-    var getRealArity = base.getRealArity;
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
 
     var object = require('../object');
 

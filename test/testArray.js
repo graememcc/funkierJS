@@ -8,8 +8,10 @@
 
     var array = require('../array');
 
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
+
     var base = require('../base');
-    var getRealArity = base.getRealArity;
     var isArray = base.isArray;
     var alwaysTrue = base.constant(true);
     var alwaysFalse = base.constant(false);

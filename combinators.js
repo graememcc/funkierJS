@@ -3,8 +3,10 @@
 
 
   var makeModule = function(require, exports) {
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+
     var base = require('./base');
-    var curry = base.curry;
 
     var funcUtils = require('./funcUtils');
     var checkFunction = funcUtils.checkFunction;

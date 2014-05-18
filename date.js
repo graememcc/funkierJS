@@ -3,8 +3,8 @@
 
 
   var makeModule = function(require, exports) {
-    var base = require('./base');
-    var curry = base.curry;
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
 
     var object = require('./object');
     var callProp = object.callProp;

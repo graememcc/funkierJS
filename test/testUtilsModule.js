@@ -6,7 +6,6 @@
     var chai = require('chai');
     var expect = chai.expect;
 
-    var base = require('../base');
     var utils = require('../utils');
 
     var testUtils = require('./testUtils');

@@ -8,8 +8,8 @@
 
     var pair = require('../pair');
 
-    var base = require('../base');
-    var getRealArity = base.getRealArity;
+    var curryModule = require('../curry');
+    var getRealArity = curryModule.getRealArity;
 
     var utils = require('../utils');
     var valueStringifier = utils.valueStringifier;

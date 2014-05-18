@@ -3,9 +3,9 @@
 
 
   var makeModule = function(require, exports) {
-    var base = require('./base');
-    var curry = base.curry;
-    var getRealArity = base.getRealArity;
+    var curryModule = require('./curry');
+    var curry = curryModule.curry;
+    var getRealArity = curryModule.getRealArity;
 
     var funcUtils = require('./funcUtils');
     var checkFunction = funcUtils.checkFunction;
