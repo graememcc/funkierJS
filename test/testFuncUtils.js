@@ -113,14 +113,37 @@
       };
 
 
-      var addGoodArityTest = function(arity, f, isMin) {
+      var addBadMaxArityTest = function(arity, f) {
+        it('Throws for function of arity ' + f.length + ' when maximum arity is ' + arity, function() {
+          var fn = function() {
+            checkFunction(f, {arity: arity, maximum: true});
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws with correct message for disallowed arity ' + f.length + ' above maximum ' + arity, function() {
+          var message = 'That ain\'t the right stinking function!';
+          var fn = function() {
+            checkFunction(f, {arity: arity, message: message, maximum: true});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      var addGoodArityTest = function(arity, f, isMin, isMax) {
         isMin = isMin || false;
+        isMax = isMax || false;
+        var message = isMin ? 'minimum' : isMax ? 'maximum' : '';
 
 
-        it('Doesn\'t throw for function of arity ' + f.length + ' when ' + (isMin ? 'minimum ' : '') + 'arity is ' + arity, function() {
+        it('Doesn\'t throw for function of arity ' + f.length + ' when ' + message + ' arity is ' + arity, function() {
           var result = null;
           var fn = function() {
-            var options = isMin ? {arity: arity, minimum: true} : {arity: arity};
+            var options = isMin ? {arity: arity, minimum: true} : isMax ? {arity: arity, maximum: true} : {arity: arity};
             result = checkFunction(f, options);
           };
 
@@ -138,10 +161,16 @@
             addBadArityTest(arity, f);
 
           if (arity > 0) {
-            if (f.length >= arity)
+            if (f.length >= arity) {
               addGoodArityTest(arity, f, true);
-            else
+              if (f.length > arity)
+                addBadMaxArityTest(arity, f);
+              else
+                addGoodArityTest(arity, f, false, true);
+            } else {
               addBadMinArityTest(arity, f);
+              addGoodArityTest(arity, f, false, true);
+            }
           }
         });
       });

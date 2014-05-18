@@ -32,6 +32,11 @@
       var message = options.message || 'Value is not a function';
       var arity = 'arity' in options ? options.arity : null;
       var minimum = options.minimum || false;
+      if (minimum && !options.message)
+        message = 'Value is not a function of arity ≥ ' + arity;
+      var maximum = options.maximum || false;
+      if (maximum && !options.message)
+        message = 'Value is not a function of arity ≤ ' + arity;
 
       if (typeof(f) !== 'function')
         throw new TypeError(message);
@@ -39,7 +44,7 @@
       if (arity !== null) {
         var fArity = getRealArity(f);
 
-        if ((minimum && fArity < arity) || (!minimum && fArity !== arity))
+        if ((minimum && fArity < arity) || (maximum && fArity > arity) || (!minimum && !maximum && fArity !== arity))
           throw new TypeError(message);
 
       }
