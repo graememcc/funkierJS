@@ -7,6 +7,9 @@
     var curryWithArity = curryModule.curryWithArity;
     var getRealArity = curryModule.getRealArity;
 
+    var funcUtils = require('./funcUtils');
+    var checkFunction = funcUtils.checkFunction;
+
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
 
@@ -32,9 +35,7 @@
       var gLen = getRealArity(g);
       var fLen = getRealArity(f);
 
-      if (fLen === 0)
-        throw new TypeError('compose called with function of arity 0');
-
+      f = checkFunction(f, {arity: 1, minimum: true, message: 'function f must have arity ≥ 1'});
       f = curry(f);
       g = curry(g);
 
@@ -102,17 +103,11 @@
      */
 
     var flip = function(f) {
-      // XXX Use funcUtils when curry bits split out
-      if (typeof(f) !== 'function')
-        throw new TypeError('Value to be flipped is not a function');
+      f = checkFunction(f, {arity: 2, maximum: true, message: 'Value to be flipped must be a function of arity 2'});
 
-      var fLen = getRealArity(f);
-
-      if (fLen < 2)
+      // XXX Should checkFunction curry automatically?
+      if (getRealArity(f) < 2)
         return curry(f);
-
-      if (fLen > 2)
-        throw new TypeError('flip called with function of arity > 2');
 
       return curry(function(a, b) {
         return f(b, a);
@@ -173,9 +168,7 @@
      */
 
     var sectionRight = curry(function(f, x) {
-      var fLen = getRealArity(f);
-      if (fLen !== 2)
-        throw new TypeError('sectionRight called with function of arity ' + fLen);
+      f = checkFunction(f, {arity: 2, message: 'Value to be sectioned must be a function of arity 2'});
 
       return sectionLeft(flip(f), x);
     });
