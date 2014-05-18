@@ -15,7 +15,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
-                             'checkIntegral', 'checkPositiveIntegral', 'checkObjectLike'];
+                             'checkIntegral', 'checkPositiveIntegral', 'checkObjectLike', 'defineFunction'];
     describeModule('utils', utils, expectedObjects, expectedFunctions);
 
 
@@ -488,6 +488,183 @@
 
 
       addNumericTests(checkPositiveIntegral, true);
+    });
+
+
+    describe('defineFunction', function() {
+      var defineFunction = utils.defineFunction;
+
+
+      var addThrowsIfMoreThanOneTests = function(type, value) {
+        it('Throws when more than one ' + type + '(1)', function() {
+          var args = [];
+          args.push('name: testFunc');
+          args.push('signature: a: any');
+          args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
+          args.push(value);
+          args.push('explanatory text');
+          args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+
+        it('Throws when more than one ' + type + '(2)', function() {
+          var args = [];
+          args.push('name: testFunc');
+          args.push('signature: a: any');
+          args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
+          args.push('explanatory text');
+          args.push(value);
+          args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      var addThrowsIfNoneTest = function(type) {
+        it('Throws when no ' + type, function() {
+          var args = [];
+          if (type !== 'name')
+            args.push('name: testFunc');
+          if (type !== 'signature')
+            args.push('signature: a: any');
+          if (type !== 'plugin' && type !== 'classification')
+            args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
+          args.push('explanatory text');
+          if (type !== 'function')
+            args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      var addThrowsIfFnNotLastTest = function(isPlugin) {
+        it('Throws when function not last (isPlugin: ' + isPlugin + ')', function() {
+          var args = [];
+          args.push(function() {});
+          args.push('name: testFunc');
+          args.push('signature: a: any');
+          args.push(isPlugin ? 'plugin: foo' : 'classification: foo');
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      var addThrowsWithNonString = function(message, value, isPlugin) {
+        it('Throws when a value is a ' + message + ' (plugin: ' + isPlugin + ')', function() {
+          var args = [];
+          args.push(function() {});
+          args.push('name: testFunc');
+          args.push('signature: a: any');
+          args.push(isPlugin ? 'plugin: foo' : 'classification: foo');
+          args.push(value);
+          args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      var extraNoneTests = [
+        {type: 'name', value: 'name: bar'},
+        {type: 'signature', value: 'signature: b: any'},
+        {type: 'classification', value: 'classification: fizz'},
+        {type: 'plugin', value: 'plugin: buzz'},
+        {type: 'function', value: function() {}}
+      ];
+
+
+      extraNoneTests.forEach(function(test) {
+        addThrowsIfMoreThanOneTests(test.type, test.value);
+        addThrowsIfNoneTest(test.type);
+      });
+
+
+      addThrowsIfFnNotLastTest(false);
+      addThrowsIfFnNotLastTest(true);
+
+
+      var nonStrings = [
+        {name: 'number', value: 1},
+        {name: 'boolean', value: true},
+        {name: 'object', value: {}},
+        {name: 'array', value: [1, 2]},
+        {name: 'undefined', value: undefined},
+        {name: 'null', value: null}
+      ];
+
+
+      nonStrings.forEach(function(test) {
+        addThrowsWithNonString(test.name, test.value, false);
+        addThrowsWithNonString(test.name, test.value, true);
+      });
+
+
+      it('Throws when called with both classification and plugin', function() {
+        var args = [];
+        args.push('name: testFunc');
+        args.push('signature: a: any');
+        args.push('classification: foo');
+        args.push('plugin: bar');
+        args.push(function() {});
+
+        var fn = function() {
+          defineFunction.apply(null, args);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws when called with no arguments', function() {
+        var fn = function() {
+          defineFunction();
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Doesn\'t throw if called with just a function', function() {
+        var fn = function() {
+          defineFunction(function() {});
+        };
+
+        expect(fn).to.not.throw(TypeError);
+      });
+
+
+      it('Returns the function', function() {
+        var fn = function() {};
+        var result = defineFunction(fn);
+
+        expect(result).to.equal(fn);
+      });
     });
   };
 

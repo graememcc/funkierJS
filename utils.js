@@ -158,11 +158,129 @@
     };
 
 
+    var trim = function(s) {
+      s = s.replace(/^\s+/, '');
+      s = s.replace(/\s+$/, '');
+      return s;
+    };
+
+
+    // defineFunction returns the function, and optionally takes several strings to be returned
+    // as help text, and to be used in documentation generation. If you call it with strings, then
+    // the following must be present:
+    //  - a string starting with "name: " defining the function name
+    //  - a string starting with "signature: " defining the type signature of the function
+    //  - either of:
+    //     - a string starting with "classification: " defining the class of functionality of the function
+    //         (this should only be used by funkierJS core)
+    //     - a string starting with "plugin: " defining the plugin this function came from
+    // These can then be followed by lines of explanatory text, detailing the functionality of the function
+    var defineFunction = function() {
+      var args = [].slice.call(arguments);
+
+      if (args.length === 0)
+        throw new TypeError('defineFunction called with no function');
+
+      var errorMessage = '';
+      var name = '';
+      var signature = '';
+      var classification = '';
+      var plugin = '';
+      var fn = null;
+      var text = [];
+
+      // We abuse every to ensure an early exit if things go awry
+      var valsOK = args.every(function(val, i) {
+        var type = typeof(val);
+
+        // The last argument must be a function
+        if (i === args.length - 1) {
+          if (type !== 'function') {
+            errorMessage = 'defineFunction must be called with a function';
+            return false;
+          }
+          fn = val;
+          return true;
+        }
+        if (type !== 'string') {
+          errorMessage = 'defineFunction can only be called with strings and a function';
+          return false;
+        }
+
+        var colon = val.indexOf(':');
+
+        // For now, ignore explanatory text
+        if (colon === -1) {
+          text.push(val);
+          return true;
+        }
+
+        // Look for lines with special meaning
+        var preColon = val.slice(0, colon).toLowerCase();
+        preColon = trim(preColon);
+
+        if (preColon === 'name') {
+          if (name !== '') {
+            errorMessage = 'defineFunction called with two \'name\' lines';
+            return false;
+          }
+          name = val.slice(colon + 1);
+        } else if (preColon === 'signature') {
+          if (signature !== '') {
+            errorMessage = 'defineFunction called with two \'signature\' lines';
+            return false;
+          }
+          signature = val.slice(colon + 1);
+        } else if (preColon === 'classification') {
+          if (classification !== '') {
+            errorMessage = 'defineFunction called with two \'classification\' lines';
+            return false;
+          } else if (plugin !== '') {
+            errorMessage = 'defineFunction called with both \'classification\'  and \'plugin\' lines';
+            return false;
+          }
+
+          classification = val.slice(colon + 1);
+        } else if (preColon === 'plugin') {
+          if (plugin !== '') {
+            errorMessage = 'defineFunction called with two \'plugin\' lines';
+            return false;
+          } else if (classification !== '') {
+            errorMessage = 'defineFunction called with both \'classification\'  and \'plugin\' lines';
+            return false;
+          }
+
+          plugin = val.slice(colon + 1);
+        } else {
+          // Not a documentation-specific string
+          text.push(val);
+        }
+
+        return true;
+      });
+
+      if (args.length > 1) {
+        if (name === '')
+          errorMessage = 'defineFunction called with no name for function';
+        else if (signature === '')
+          errorMessage = 'defineFunction called with no signature for function';
+        else if (classification === '' && plugin === '')
+          errorMessage = 'defineFunction called with no classification/plugin for function';
+      }
+
+      if (errorMessage !== '')
+        throw new TypeError(errorMessage);
+
+      return fn;
+    };
+
+
     var exported = {
       checkArrayLike: checkArrayLike,
       checkIntegral: checkIntegral,
       checkObjectLike: checkObjectLike,
       checkPositiveIntegral: checkPositiveIntegral,
+      defineFunction: defineFunction,
       isArrayLike: isArrayLike,
       isObjectLike: isObjectLike,
       valueStringifier: valueStringifier
