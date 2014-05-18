@@ -10,6 +10,7 @@
 
     var base = require('../base');
     var id = base.id;
+    var constant = base.constant;
 
     // Import utility functions
     var testUtils = require('./testUtils');
@@ -45,7 +46,7 @@
 
     describe('K', function() {
       it('Is a synonym for base.constant', function() {
-        expect(combinators.combinators.K).to.equal(base.constant);
+        expect(combinators.combinators.K).to.equal(constant);
       });
     });
 

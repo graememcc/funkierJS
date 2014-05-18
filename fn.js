@@ -9,6 +9,7 @@
     var getRealArity = curryModule.getRealArity;
 
     var base = require('./base');
+    var deepEqual = base.deepEqual;
 
     var utils = require('./utils');
     var checkArrayLike = utils.checkArrayLike;
@@ -152,7 +153,7 @@
       while (calls < 1000 && !found) {
         calls += 1;
         var newResult = f(result);
-        found = base.deepEqual(result, newResult);
+        found = deepEqual(result, newResult);
         result = newResult;
       }
 

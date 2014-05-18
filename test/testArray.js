@@ -12,7 +12,11 @@
     var getRealArity = curryModule.getRealArity;
 
     var base = require('../base');
+    var id = base.id;
     var isArray = base.isArray;
+    var equals = base.equals;
+    var strictEquals = base.strictEquals;
+    var constant = base.constant;
     var alwaysTrue = base.constant(true);
     var alwaysFalse = base.constant(false);
 
@@ -536,9 +540,9 @@
       };
 
 
-      addTests('array (1)', base.id, [1, true, null, undefined]);
+      addTests('array (1)', id, [1, true, null, undefined]);
       addTests('array (2)', function(x) {return x + 1;}, [2, 3, 4]);
-      addTests('arraylike (1)', base.id, makeArrayLike({}, {}));
+      addTests('arraylike (1)', id, makeArrayLike({}, {}));
       addTests('arraylike (2)', function(x) {return x - 1;}, makeArrayLike(5, 6, 7));
       addTests('strings (1)', function(x) {return x.toUpperCase();}, 'funkier');
       addTests('strings (2)', function(x) {return x.charCodeAt(0);}, 'abc');
@@ -555,7 +559,7 @@
       });
 
 
-      testCurriedFunction('map', map, [base.id, [1, 2]]);
+      testCurriedFunction('map', map, [id, [1, 2]]);
     });
 
 
@@ -574,7 +578,7 @@
 
       var addOne = function(message, data) {
         it('Returns undefined when called with ' + data, function() {
-          var result = each(base.id, data);
+          var result = each(id, data);
 
           expect(result).to.equal(undefined);
         });
@@ -586,7 +590,7 @@
       addOne('string', 'abc');
 
 
-      testCurriedFunction('each', each, [base.id, [1, 2]]);
+      testCurriedFunction('each', each, [id, [1, 2]]);
     });
 
 
@@ -2498,7 +2502,7 @@
         if (isNotFound) {
           it('Returns empty array for ' + message, function() {
             var data = sliceIfNecessary(originalData);
-            var result = occurrencesWith(base.constant(false), data);
+            var result = occurrencesWith(alwaysFalse, data);
 
             expect(result).to.deep.equal([]);
           });
@@ -2547,13 +2551,13 @@
       addTests('array when value not found', alwaysFalse, [1, 2, 3]);
       addTests('arraylike when value not found', alwaysFalse, makeArrayLike(2, 3, 4));
       addTests('string when value not found', alwaysFalse, 'funkier');
-      addTests('array (1)', base.strictEquals(1), [2, 1, 3]);
-      addTests('array (2)', base.strictEquals(1), [2, 1, 1, 3, 1]);
+      addTests('array (1)', strictEquals(1), [2, 1, 3]);
+      addTests('array (2)', strictEquals(1), [2, 1, 1, 3, 1]);
       addTests('array (3)', function(x) {return x.foo = 3;},
               [{foo: 3}, {foo: 42}, {foo: 3}, {foo: 3}, {foo: undefined}]);
-      addTests('arraylike (1)', base.strictEquals(2), [2, 1, 3]);
-      addTests('arraylike (2)', base.strictEquals(2), [2, 1, 1, 2, 2]);
-      addTests('string (1)', base.strictEquals('a'), 'ban');
+      addTests('arraylike (1)', strictEquals(2), [2, 1, 3]);
+      addTests('arraylike (2)', strictEquals(2), [2, 1, 1, 2, 2]);
+      addTests('string (1)', strictEquals('a'), 'ban');
       addTests('string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
 
 
@@ -3510,13 +3514,13 @@
       testAdder('array', fooIs42, [{foo: 1}, {foo: 42}, {foo: 3}]);
       testAdder('array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
       testAdder('array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
-      testAdder('singleton array when value matches', base.equals(1), [1]);
+      testAdder('singleton array when value matches', equals(1), [1]);
       testAdder('array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
 
       testAdder('arraylike', fooIs42, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
       testAdder('arraylike when value matches last entry', function(x) {return x >= 3;}, makeArrayLike(1, 2, 3));
       testAdder('arraylike when value matches first entry', function(x) {return x < 2;}, makeArrayLike(1, 2, 3));
-      testAdder('singleton arraylike when value matches', base.equals(1), makeArrayLike(1));
+      testAdder('singleton arraylike when value matches', equals(1), makeArrayLike(1));
       testAdder('arraylike with multiple matches', function(x) {return x < 10;}, makeArrayLike(1, 2, 3, 1));
 
       addCommonRemoveNotFoundTests('array when value not found', fnUnderTest,
@@ -3620,7 +3624,7 @@
       addCommonRemoveWithTests(addTests, removeOneWith);
 
 
-      testCurriedFunction('removeOneWith', removeOneWith, [base.constant(true), [1, 2, 3]]);
+      testCurriedFunction('removeOneWith', removeOneWith, [alwaysTrue, [1, 2, 3]]);
     });
 
 
@@ -3714,11 +3718,11 @@
 
 
       addCommonRemoveWithTests(addTests, removeAllWith);
-      addTests('array where every value matches', base.constant(true), [1, 2, 3, 4]);
-      addTests('arraylike where every value matches', base.constant(true), makeArrayLike(1, 2, 3, 4));
+      addTests('array where every value matches', alwaysTrue, [1, 2, 3, 4]);
+      addTests('arraylike where every value matches', alwaysTrue, makeArrayLike(1, 2, 3, 4));
 
 
-      testCurriedFunction('removeAllWith', removeAllWith, [base.constant(true), [1, 2, 3]]);
+      testCurriedFunction('removeAllWith', removeAllWith, [alwaysTrue, [1, 2, 3]]);
     });
 
 
@@ -3866,7 +3870,7 @@
       addCommonReplaceWithTests(addTests, replaceOneWith);
 
 
-      testCurriedFunction('replaceOneWith', replaceOneWith, [base.constant(true), 4, [1, 2, 3]]);
+      testCurriedFunction('replaceOneWith', replaceOneWith, [alwaysTrue, 4, [1, 2, 3]]);
     });
 
 
@@ -3965,7 +3969,7 @@
       addTests('arraylike where every value matches', lessThanFive, 5, makeArrayLike(1, 2, 3, 4));
 
 
-      testCurriedFunction('replaceAllWith', replaceAllWith, [base.constant(true), 4, [1, 2, 3]]);
+      testCurriedFunction('replaceAllWith', replaceAllWith, [alwaysTrue, 4, [1, 2, 3]]);
     });
 
 
