@@ -12,6 +12,7 @@
     var testUtils = require('./testUtils');
     var exportsProperty = testUtils.exportsProperty;
 
+    var utils = require('../utils');
 
     // Import submodules
     var curry = require('../curry');
@@ -61,6 +62,11 @@
             expect(funkier[k]).to.equal(module[k]);
           });
         }
+      });
+
+
+      it('Exports help from utils', function() {
+        expect(funkier.help).to.equal(utils.help);
       });
     });
   };

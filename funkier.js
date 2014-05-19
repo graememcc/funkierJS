@@ -17,6 +17,9 @@
     var combinators = require('./combinators');
     var array = require('./array');
 
+    var utils = require('./utils');
+    var help = utils.help;
+
     var imports = [curry, base, logical, maths, object, string, fn, date, pair, maybe,
                    result, combinators, array];
     var exportedFns = {};
@@ -27,6 +30,10 @@
         exportedFns[k] = importedModule[k];
       });
     });
+
+
+    // Also export help
+    exportedFns['help'] = help;
 
 
     module.exports = exportedFns;
