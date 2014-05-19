@@ -501,6 +501,11 @@
         var defineFunction = utils.defineFunction;
 
 
+        beforeEach(function() {
+          utils.resetHelpCache();
+        });
+
+
         var addThrowsIfMoreThanOneTests = function(type, value) {
           it('Throws when more than one ' + type + '(1)', function() {
             var args = [];
@@ -509,7 +514,7 @@
             args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
             args.push(value);
             args.push('explanatory text');
-            args.push(function() {});
+            args.push(function(x) {});
 
             var fn = function() {
               defineFunction.apply(null, args);
@@ -527,7 +532,7 @@
             args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
             args.push('explanatory text');
             args.push(value);
-            args.push(function() {});
+            args.push(function(x) {});
 
             var fn = function() {
               defineFunction.apply(null, args);
@@ -549,7 +554,7 @@
               args.push(type === 'plugin' ? 'plugin: foo' : 'classification: foo');
             args.push('explanatory text');
             if (type !== 'function')
-              args.push(function() {});
+              args.push(function(x) {});
 
             var fn = function() {
               defineFunction.apply(null, args);
@@ -685,13 +690,41 @@
           args.push('signature: a: any');
           args.push('classification: foo');
           args.push('plugin: bar');
-          args.push(function() {});
+          args.push(function(x) {});
 
           var fn = function() {
             defineFunction.apply(null, args);
           };
 
           expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Signature can be omitted if function\'s arity 0 (1)', function() {
+          var args = [];
+          args.push('name: testFunc');
+          args.push('classification: foo');
+          args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+
+
+        it('Signature can be omitted if function\'s arity 0 (2)', function() {
+          var args = [];
+          args.push('name: testFunc');
+          args.push('plugin: foo');
+          args.push(function() {});
+
+          var fn = function() {
+            defineFunction.apply(null, args);
+          };
+
+          expect(fn).to.not.throw(TypeError);
         });
 
 
@@ -776,7 +809,7 @@
             'classification: testing',
             'signature: a',
             ourText,
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -838,7 +871,7 @@
             'classification: test',
             '',
             'This is the text for f1',
-            function() {}
+            function(x) {}
           );
           var f2 = defineFunction(
             'name: f2',
@@ -847,7 +880,7 @@
             '',
             'This, however, is the text for f2',
             'It should be different.',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(f1Writer);
@@ -878,7 +911,7 @@
               'classification: test',
               '',
               'This is the text for f',
-              function() {}
+              function(x) {}
             );
 
             var restorer = monkeyPatchOutput(writer);
@@ -895,6 +928,57 @@
         addPrintsNameSigTest('(2)', 'fizzBuzz', 'a: object');
 
 
+        it('Signature correct for arity 0 function (1)', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: myFunction',
+            'classification: test',
+            '',
+            'This is the text for f',
+            function() {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          var firstText = text[0];
+          expect(firstText).to.equal('myFunction()');
+        });
+
+
+        it('Signature correct for arity 0 function (2)', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: funkier',
+            'signature: ',
+            'classification: test',
+            '',
+            'This is the text for f',
+            function() {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          var firstText = text[0];
+          expect(firstText).to.equal('funkier()');
+        });
+
+
         it('Signature stripped of formatting characters', function() {
           var text = [];
           var writer =  function() {
@@ -909,7 +993,7 @@
             'classification: test',
             '',
             'This is the text for f',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -935,7 +1019,7 @@
             'classification: test',
             '',
             'This is the text for f',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -960,7 +1044,7 @@
             'signature: a: [[Pair]]',
             'classification: test',
             'This is the text for f',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -987,7 +1071,7 @@
             '',
             '',
             'This is the text for f',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -1019,7 +1103,7 @@
             '',
             '',
             'Line 6 above. This is line 7',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -1042,7 +1126,7 @@
             var f = defineFunction.apply(null,
               ['name: foo',
               'signature: a: string',
-              'classification: test'].concat(textArr).concat([function() {}]));
+              'classification: test'].concat(textArr).concat([function(x) {}]));
 
             var restorer = monkeyPatchOutput(writer);
             help(f);
@@ -1079,7 +1163,7 @@
             'Line 2 above. This is line 3.\nThis is line 4',
             '',
             'Line 5 above. This is line 6\nThis is line 7',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -1106,7 +1190,7 @@
             'Line 2 above. This is line 3.\n\n\nThis is line 5',
             '',
             'Line 6 above. This is line 7\n\n\nThis is line 9',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);
@@ -1131,7 +1215,7 @@
             'classification: test',
             '',
             'This is line 2 with [[formatting]]',
-            function() {}
+            function(x) {}
           );
 
           var restorer = monkeyPatchOutput(writer);

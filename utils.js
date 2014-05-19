@@ -340,7 +340,7 @@
         if (args.length > 1 && errorMessage === '') {
           if (name === '')
             errorMessage = 'defineFunction called with no name for function';
-          else if (signature === '')
+          else if (signature === '' && fn.length > 0)
             errorMessage = 'defineFunction called with no signature for function';
           else if (classification === '' && plugin === '')
             errorMessage = 'defineFunction called with no classification/plugin for function';
