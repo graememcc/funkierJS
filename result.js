@@ -11,6 +11,7 @@
     var utils = require('./utils');
     var valueStringifier = utils.valueStringifier;
     var checkArrayLike = utils.checkArrayLike;
+    var defineFunction = utils.defineFunction;
 
     var funcUtils = require('./funcUtils');
     var checkFunction = funcUtils.checkFunction;
@@ -21,14 +22,20 @@
      * to the Either datatype from Haskell, or the Result type from Rust.
      */
 
-    /*
-     * Result is the 'base class' of Ok and Err. It is provided for the instanceof operator
-     *
-     */
-
-    var Result = function() {
-      throw new Error('Result cannot be instantiated directly');
-    };
+    var Result = defineFunction(
+      'name: Result',
+      'classification: datatypes',
+      '',
+      'The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent',
+      'to the Either datatype from Haskell, or the Result type from Rust.',
+      '',
+      'Result is the \'base class\' of [[Ok]] and [[Err]]. It is provided only for the instanceof operator.',
+      '',
+      'Throws an Error when called directly.',
+      function() {
+        throw new Error('Result cannot be instantiated directly');
+      }
+    );
 
     Result.prototype = {toString: function() {return 'Result';}};
 
@@ -39,15 +46,27 @@
      *
      */
 
-    var Ok = function(val) {
-      if (arguments.length !== 1)
-        throw new TypeError('Ok called with incorrect number of arguments');
+    var Ok = defineFunction(
+      'name: Ok',
+      'classification: datatypes',
+      'signature: val: any',
+      '',
+      'An Ok is a type of [[Result]] representing a successful computation. The constructor is new-agnostic',
+      '',
+      'Throws a TypeError when called with no arguments.',
+      '',
+      '--',
+      'var result = Ok(42);',
+      function(val) {
+        if (arguments.length !== 1)
+          throw new TypeError('Ok called with incorrect number of arguments');
 
-      if (!(this instanceof Ok))
-        return new Ok(val);
+        if (!(this instanceof Ok))
+          return new Ok(val);
 
-      Object.defineProperty(this, 'value', {configurable: false, writable: false, enumerable: false, value: val});
-    };
+        Object.defineProperty(this, 'value', {configurable: false, writable: false, enumerable: false, value: val});
+      }
+    );
 
 
     Ok.prototype = Object.create(Result.prototype);
@@ -56,21 +75,27 @@
     };
 
 
-    /*
-     * An Err represents the error from an successful computation. The constructor is new-agnostic, but
-     * throws if called with no arguments.
-     *
-     */
+    var Err = defineFunction(
+      'name: Err',
+      'classification: datatypes',
+      'signature: val: any',
+      '',
+      'An Err represents the error from an unsuccessful computation. The constructor is new-agnostic.',
+      '',
+      'Throws a TypeError when called with no arguments.',
+      '',
+      '--',
+      'var result = Err(false);',
+      function(val) {
+        if (arguments.length !== 1)
+          throw new TypeError('Err called with incorrect number of arguments');
 
-    var Err = function(val) {
-      if (arguments.length !== 1)
-        throw new TypeError('Err called with incorrect number of arguments');
+        if (!(this instanceof Err))
+          return new Err(val);
 
-      if (!(this instanceof Err))
-        return new Err(val);
-
-      Object.defineProperty(this, 'value', {configurable: false, writable: false, enumerable: false, value: val});
-    };
+        Object.defineProperty(this, 'value', {configurable: false, writable: false, enumerable: false, value: val});
+      }
+    );
 
 
     Err.prototype = Object.create(Result.prototype);
@@ -79,166 +104,226 @@
     };
 
 
-    /*
-     * isResult: returns true when the given object is a Result object. Returns false otherwise.
-     *
-     */
-
-    var isResult = function(obj) {
-      return obj === Result || obj instanceof Result;
-    };
-
-
-    /*
-     * isErr: returns true when the given object is the Err object. Returns false otherwise.
-     *
-     */
-
-    var isErr = function(obj) {
-      return obj instanceof Err;
-    };
+    var isResult = defineFunction(
+      'name: isResult',
+      'classification: datatypes',
+      'signature: val: any',
+      '',
+      'Returns true when the given object is a [[Result]] object. Returns false otherwise.',
+      '',
+      '--',
+      'isResult(Ok(3)) && isResult(Err(false)); // true',
+      function(val) {
+        return val === Result || val instanceof Result;
+      }
+    );
 
 
-    /*
-     * isOk: returns true when the given object is a Ok object. Returns false otherwise.
-     *
-     */
-
-    var isOk = function(obj) {
-      return obj instanceof Ok;
-    };
-
-
-    /*
-     * getOkValue: returns the value wrapped by the given Ok instance. Throws if not called
-     *             with a Ok.
-     *
-     */
-
-    var getOkValue = function(o) {
-      if (!isOk(o))
-        throw new TypeError('Value is not an Ok');
-
-      return o.value;
-    };
+    var isErr = defineFunction(
+      'name: isErr',
+      'classification: datatypes',
+      'signature: val: any',
+      '',
+      'Returns true when the given object is an [[Err]] object. Returns false otherwise.',
+      '',
+      '--',
+      'isErr(Err(4)); // true',
+      function(val) {
+        return val instanceof Err;
+      }
+    );
 
 
-    /*
-     * getErrValue: returns the value wrapped by the given Err instance. Throws if not called
-     *              with a Err.
-     *
-     */
-
-    var getErrValue = function(e) {
-      if (!isErr(e))
-        throw new TypeError('Value is not an Err');
-
-      return e.value;
-    };
-
-
-    /*
-     * makeResultReturner: Takes an array of sentinel values, and a function f. Returns a function
-     *                     with the same arity as f. The returned function calls the original function
-     *                     and examines the result. If the result is in the array of sentinel values—
-     *                     checked for strict identity—then the value is wrapped in an Err and returned.
-     *                     Otherwise, the result is wrapped in a Ok and returned. Throws if the first
-     *                     argument is not an array, or if the second argument is not a function.
-     *
-     */
-
-    var makeResultReturner = curry(function(sentinels, f) {
-      sentinels = checkArrayLike(sentinels, {noStrings: true,
-                                             message: 'Sentinels must be an array'});
-      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
-
-      return curryWithArity(getRealArity(f), function() {
-        var args = [].slice.call(arguments);
-        var result = f.apply(this, arguments);
-
-        if (sentinels.indexOf(result) !== -1)
-          return Err(result);
-
-        return Ok(result);
-      });
-    });
+    var isOk = defineFunction(
+      'name: isOk',
+      'classification: datatypes',
+      'signature: val: any',
+      '',
+      'Returns true when the given object is an [[Ok]] object. Returns false otherwise.',
+      '',
+      '--',
+      'isOk(Ok({})); // true',
+       function(val) {
+        return val instanceof Ok;
+      }
+    );
 
 
-    /*
-     * makePredResultReturner: Takes a predicate function p, and a function f. Returns a function
-     *                         with the same arity as f. The returned function calls the original function
-     *                         and examines the result. The predicate function p is called with the result.
-     *                         If p returns false, then the result is wrapped in an Err and returned, otherwise
-     *                         it is wrapped in a Ok and returned. Throws if p is not a function of arity 1,
-     *                         or if f is not a function.
-     *
-     */
+    var getOkValue = defineFunction(
+      'name: isOk',
+      'classification: datatypes',
+      'signature: val: [[Ok]]',
+      '',
+      'Returns the value wrapped by the given [[Ok]] instance.',
+      '',
+      'Throws a TypeError when called with a value that is not an [[Ok]].',
+      '',
+      '--',
+      'var a = getOkValue(Ok(7)); // a === 7',
+      function(val) {
+        if (!isOk(val))
+          throw new TypeError('Value is not an Ok');
 
-    var makePredResultReturner = curry(function(p, f) {
-      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
-      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
-
-      return curryWithArity(getRealArity(f), function() {
-        var args = [].slice.call(arguments);
-        var result = f.apply(this, arguments);
-
-        if (!p(result))
-          return Err(result);
-
-        return Ok(result);
-      });
-    });
+        return val.value;
+      }
+    );
 
 
-    /*
-     * makeThrowResultReturner: Takes a function f. Returns a function with the same arity as f. The returned
-     *                          function calls the original function. If the function f throws during execution
-     *                          then the value thrown is wrapped in an Err and returned. Otherwise, the result is
-     *                          wrapped in an Ok and returned. Throws if f is not a function.
-     *
-     */
+    var getErrValue = defineFunction(
+      'name: isErr',
+      'classification: datatypes',
+      'signature: val: [[Err]]',
+      '',
+      'Returns the value wrapped by the given [[Err]] instance.',
+      '',
+      'Throws a TypeError when called with a value that is not an [[Err]].',
+      '',
+      '--',
+      'var a = getErrValue(Ok(7)); // a === 7',
+      function(val) {
+        if (!isErr(val))
+          throw new TypeError('Value is not an Err');
 
-    var makeThrowResultReturner = curry(function(f) {
-      f = checkFunction(f, {message: 'Value to be transformed must be a function'});
+        return val.value;
+      }
+    );
 
-      return curryWithArity(getRealArity(f), function() {
-        var args = [].slice.call(arguments);
 
-        try {
+    var makeResultReturner = defineFunction(
+      'name: makeResultReturner',
+      'classification: datatypes',
+      'signature: sentinels: array/arraylike, f: function',
+      '',
+      'Takes an array of sentinel values, and a function f. Returns a new function with the same arity as f.',
+      'When called, the new function calls the original function and examines the result. If the result is contained',
+      'in the array of sentinel values—checked for strict identity—then the result is wrapped in an [[Err]] and returned.',
+      'Otherwise, the result is wrapped in a [[Ok]] and returned.',
+      '',
+      'Throws a TypeError if the first argument is not an array or arraylike, or if the second argument is not a function.',
+      '',
+      '--',
+      'var sentinels = [-1];',
+      'var newIndexOf = makeResultReturner(sentinels, indexOf);',
+      'newIndexOf(\'a\', \'banana\'); // Ok(1)',
+      'newIndexOf(\'a\', \'funkier\'); // Err(-1)',
+      curry(function(sentinels, f) {
+        sentinels = checkArrayLike(sentinels, {noStrings: true,
+                                               message: 'Sentinels must be an array'});
+        f = checkFunction(f, {message: 'Value to be transformed must be a function'});
+
+        return curryWithArity(getRealArity(f), function() {
+          var args = [].slice.call(arguments);
           var result = f.apply(this, arguments);
+
+          if (sentinels.indexOf(result) !== -1)
+            return Err(result);
+
           return Ok(result);
-        } catch (e) {
-          return Err(e);
-        }
-      });
-    });
+        });
+      })
+    );
 
 
-    /*
-     * either: Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value,
-     *         the first function will be called with the unwrapped value. Otherwise, when the Result
-     *         is an Err value, the second function is called with the unwrapped value. In either case
-     *         the result of the called function is returned. Throws a TypeError if either of the first
-     *         two arguments are not a function, or if they have arity 0, or if the last argument is not
-     *         a Result.
-     *
-     */
+    var makePredResultReturner = defineFunction(
+      'name: makePredResultReturner',
+      'classification: datatypes',
+      'signature: p: function, f: function',
+      '',
+      'Takes a predicate function p, and a function f. Returns a new function with the same arity as f. When called,',
+      'the new function calls the original function and the given predicate function is called with the result.',
+      'If p returns false, then the result is wrapped in an [[Err]] and returned, otherwise it is wrapped in an',
+      '[[Ok]] and returned.',
+      '',
+      'Throws a TypeError if p is not a function of arity 1, or if f is not a function.',
+      '--',
+      'var predicate = function(x) {return x !== -1;};',
+      'var newIndexOf = makePredResultReturner(predicate, indexOf);',
+      'newIndexOf(\'a\', \'funkier\'); // Err(-1)',
+      curry(function(p, f) {
+        p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+        f = checkFunction(f, {message: 'Value to be transformed must be a function'});
 
-    var either = curry(function(f, g, result) {
-      if (typeof(f) !== 'function' || typeof(g) !== 'function')
-        throw new TypeError('Value is not a function');
+        return curryWithArity(getRealArity(f), function() {
+          var args = [].slice.call(arguments);
+          var result = f.apply(this, arguments);
 
-      if (getRealArity(f) === 0 || getRealArity(g) === 0)
-        throw new TypeError('Function has incorrect arity');
+          if (!p(result))
+            return Err(result);
 
-      if (isOk(result))
-        return f(getOkValue(result));
+          return Ok(result);
+        });
+      })
+    );
 
-      if (isErr(result))
-        return g(getErrValue(result));
 
-      throw new TypeError('Invalid value');
-    });
+    var makeThrowResultReturner = defineFunction(
+      'name: makeThrowResultReturner',
+      'classification: datatypes',
+      'signature: f: function',
+      '',
+      'Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the',
+      'original function. If the function f throws during execution, then the exception is wrapped in an [[Err]] and',
+      'returned. Otherwise, the result of the funciton is wrapped in an [[Ok]] and returned.',
+      '',
+      'Throws a TypeError if f is not a function.',
+      '',
+      '--',
+      'var g = function(x) {',
+      '  if (x < 10)',
+      '    throw new Error(\'Bad value\');',
+      '  return x;',
+      '};',
+      '',
+      'var f = makeThrowResultReturner(g);',
+      'f(11); // returns Ok(11);',
+      'f(5); // returns Err([object Error]);',
+      curry(function(f) {
+        f = checkFunction(f, {message: 'Value to be transformed must be a function'});
+
+        return curryWithArity(getRealArity(f), function() {
+          var args = [].slice.call(arguments);
+
+          try {
+            var result = f.apply(this, arguments);
+            return Ok(result);
+          } catch (e) {
+            return Err(e);
+          }
+        });
+      })
+    );
+
+
+    var either = defineFunction(
+      'name: either',
+      'classification: datatypes',
+      'signature: okFn: function, errFn: function, result: [[Result]]',
+      '',
+      'Takes two functions of arity 1 or greater, and a [[Result]]. If the [[Result]] is an [[Ok]] value,',
+      'the first function will be called with the unwrapped value. Otherwise, if the [[Result]] is an',
+      '[[Err]] value, the second function is called with the unwrapped value. In either case, the result of',
+      'of the called function is returned.',
+      '',
+      'Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if',
+      'the given value is not a [[Result]]',
+      '',
+      '--',
+      'var f = either(function(x) {console.log(\'Good: \' + x);}, function(x) {console.log(\'Bad: \' + x);});',
+      'f(Ok(2)); // logs \'Good: 2\' to the console',
+      'f(Err(\':(\')); // logs \'Bad: :(\' to the console',
+      curry(function(okFn, errFn, result) {
+        okFn = checkFunction(okFn, {arity: 1, minimum: true, message: 'Ok value must be a function of arity 1 or more'});
+        errFn = checkFunction(errFn, {arity: 1, minimum: true, message: 'Err value must be a function of arity 1 or more'});
+
+        if (isOk(result))
+          return okFn(getOkValue(result));
+
+        if (isErr(result))
+          return errFn(getErrValue(result));
+
+        throw new TypeError('Invalid value');
+      })
+    );
 
 
     var exported = {
