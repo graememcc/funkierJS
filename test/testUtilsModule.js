@@ -1201,7 +1201,7 @@
         });
 
 
-        it('Removes special formatting in explanatory text', function() {
+        it('Removes special formatting for links in explanatory text', function() {
           var text = [];
           var writer =  function() {
             [].forEach.call(arguments, function(val) {
@@ -1223,6 +1223,168 @@
           restorer();
 
           expect(text[2]).to.equal('This is line 2 with formatting');
+        });
+
+
+        it('Removes special formatting for inline code in explanatory text', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            'This is line 2 with {{formatting}}',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[2]).to.equal('This is line 2 with formatting');
+        });
+
+
+        it('Removes special formatting for italics in explanatory text', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            'This is line 2 with __formatting__',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[2]).to.equal('This is line 2 with formatting');
+        });
+
+
+        it('Removes special formatting for strong emphasis in explanatory text', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            'This is line 2 with **formatting**',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[2]).to.equal('This is line 2 with formatting');
+        });
+
+
+        it('Replaces code block marker with \'For example\' when logging to console', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            '--',
+            'a = 1;',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[2]).to.equal('For example:');
+        });
+
+
+        it('Indents text after code block marker', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            '--',
+            'a = 1;',
+            'b = 2;',
+            'b = 3;',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[3].slice(0, 2)).to.equal('  ');
+          expect(text[4].slice(0, 2)).to.equal('  ');
+          expect(text[5].slice(0, 2)).to.equal('  ');
+        });
+
+
+        it('Indents lines starting with -', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            '- this should be indented',
+            'Your ad here',
+            '- this too',
+            'no indentation',
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[2].slice(0, 2)).to.equal('  ');
+          expect(text[4].slice(0, 2)).to.equal('  ');
+          expect(text[3].slice(0, 2)).to.not.equal('  ');
+          expect(text[5].slice(0, 2)).to.not.equal('  ');
         });
       });
     };

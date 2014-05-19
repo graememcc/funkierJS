@@ -355,12 +355,19 @@
 
 
       // The help text is used both for generation of documentation, and online help. For online help, we need to
-      // strip any special formatting characters, and append newlines if necessary
-      var formatForConsole = function(text) {
-        //if (text[text.length - 1] !== '\n')
-          //text += '\n';
-
+      // strip any special formatting characters, and replace double dashes with 'For example:'
+      var formatForConsole = function(text, inCodeBlock) {
         text = text.replace(/\[\[([^\]]+)\]\]/g, '$1');
+        text = text.replace(/\{\{([^}]+)\}\}/g, '$1');
+        text = text.replace(/\*\*([^*]+)\*\*/g, '$1');
+        text = text.replace(/__([^_]+)__/g, '$1');
+
+        if (text === '--')
+          text = 'For example:';
+
+        if (text.indexOf('- ') === 0 || inCodeBlock)
+          text = '  ' + text;
+
         return text;
       };
 
@@ -383,9 +390,11 @@
           if (helpText === null)
             helpText = ['No help available for this function'];
 
+          var inCodeBlock = false;
           helpText.forEach(function(text) {
-            text = formatForConsole(text);
-            writerFn(text);
+            var newText = formatForConsole(text, inCodeBlock);
+            inCodeBlock = inCodeBlock || text === '--';
+            writerFn(newText);
           });
         }
       );
