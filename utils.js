@@ -184,21 +184,29 @@
         // necessary
         var newText = [];
         var lastLineWasEmpty = false;
+        var inCodeBlock = false;
+
         text.forEach(function(lines, i) {
           lines = lines.split('\n');
           lines.forEach(function(line) {
-            line = line.trim();
+            if (!inCodeBlock) {
+              var trimmed = line.trim();
 
-            if (i === 0 && line !== '') {
-              newText.push('');
-              lastLineWasEmpty = true;
+              if (i === 0 && trimmed !== '') {
+                newText.push('');
+                lastLineWasEmpty = true;
+              }
+
+              if (lastLineWasEmpty && trimmed === '')
+                return;
+
+              lastLineWasEmpty = trimmed === '';
+              inCodeBlock = trimmed === '--';
+              newText.push(trimmed);
+            } else {
+              // Don't alter code lines
+              newText.push(line);
             }
-
-            if (lastLineWasEmpty && line === '')
-              return;
-
-            lastLineWasEmpty = line === '';
-            newText.push(line);
           });
         });
 
@@ -365,7 +373,7 @@
         if (text === '--')
           text = 'For example:';
 
-        if (text.indexOf('- ') === 0 || inCodeBlock)
+        if (text.indexOf('- ') === 0 || inCodeBlock && text.slice(0, 2) !== '  ')
           text = '  ' + text;
 
         return text;

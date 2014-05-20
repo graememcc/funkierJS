@@ -1357,6 +1357,36 @@
         });
 
 
+        it('Maintains existing indents after code block marker', function() {
+          var text = [];
+          var writer =  function() {
+            [].forEach.call(arguments, function(val) {
+              text.push(val);
+              });
+          };
+
+          var indent1 = '      a = 1;';
+          var indent2 = '    b = 2;';
+          var f = defineFunction(
+            'name: foo',
+            'signature: a: number',
+            'classification: test',
+            '',
+            '--',
+            indent1,
+            indent2,
+            function(x) {}
+          );
+
+          var restorer = monkeyPatchOutput(writer);
+          help(f);
+          restorer();
+
+          expect(text[3]).to.equal(indent1);
+          expect(text[4]).to.equal(indent2);
+        });
+
+
         it('Indents lines starting with -', function() {
           var text = [];
           var writer =  function() {
