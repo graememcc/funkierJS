@@ -257,7 +257,7 @@
       '',
       'Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the',
       'original function. If the function f throws during execution, then the exception is wrapped in an [[Err]] and',
-      'returned. Otherwise, the result of the funciton is wrapped in an [[Ok]] and returned.',
+      'returned. Otherwise, the result of the function is wrapped in an [[Ok]] and returned.',
       '',
       'Throws a TypeError if f is not a function.',
       '',
