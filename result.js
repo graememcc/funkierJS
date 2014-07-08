@@ -11,7 +11,7 @@
     var utils = require('./utils');
     var valueStringifier = utils.valueStringifier;
     var checkArrayLike = utils.checkArrayLike;
-    var defineFunction = utils.defineFunction;
+    var defineValue = utils.defineValue;
 
     var funcUtils = require('./funcUtils');
     var checkFunction = funcUtils.checkFunction;
@@ -22,7 +22,7 @@
      * to the Either datatype from Haskell, or the Result type from Rust.
      */
 
-    var Result = defineFunction(
+    var Result = defineValue(
       'name: Result',
       'classification: datatypes',
       '',
@@ -40,18 +40,12 @@
     Result.prototype = {toString: function() {return 'Result';}};
 
 
-    /*
-     * An Ok represents a successful computation. The constructor is new-agnostic, but
-     * throws if called with no arguments.
-     *
-     */
-
-    var Ok = defineFunction(
+    var Ok = defineValue(
       'name: Ok',
       'classification: datatypes',
       'signature: val: any',
       '',
-      'An Ok is a type of [[Result]] representing a successful computation. The constructor is new-agnostic',
+      'An Ok is a type of [[Result]] representing a successful computation. The constructor is new-agnostic.',
       '',
       'Throws a TypeError when called with no arguments.',
       '',
@@ -75,7 +69,7 @@
     };
 
 
-    var Err = defineFunction(
+    var Err = defineValue(
       'name: Err',
       'classification: datatypes',
       'signature: val: any',
@@ -104,7 +98,7 @@
     };
 
 
-    var isResult = defineFunction(
+    var isResult = defineValue(
       'name: isResult',
       'classification: datatypes',
       'signature: val: any',
@@ -119,7 +113,7 @@
     );
 
 
-    var isErr = defineFunction(
+    var isErr = defineValue(
       'name: isErr',
       'classification: datatypes',
       'signature: val: any',
@@ -134,7 +128,7 @@
     );
 
 
-    var isOk = defineFunction(
+    var isOk = defineValue(
       'name: isOk',
       'classification: datatypes',
       'signature: val: any',
@@ -149,7 +143,7 @@
     );
 
 
-    var getOkValue = defineFunction(
+    var getOkValue = defineValue(
       'name: isOk',
       'classification: datatypes',
       'signature: val: [[Ok]]',
@@ -169,7 +163,7 @@
     );
 
 
-    var getErrValue = defineFunction(
+    var getErrValue = defineValue(
       'name: isErr',
       'classification: datatypes',
       'signature: val: [[Err]]',
@@ -189,7 +183,7 @@
     );
 
 
-    var makeResultReturner = defineFunction(
+    var makeResultReturner = defineValue(
       'name: makeResultReturner',
       'classification: datatypes',
       'signature: sentinels: array/arraylike, f: function',
@@ -224,7 +218,7 @@
     );
 
 
-    var makePredResultReturner = defineFunction(
+    var makePredResultReturner = defineValue(
       'name: makePredResultReturner',
       'classification: datatypes',
       'signature: p: function, f: function',
@@ -256,7 +250,7 @@
     );
 
 
-    var makeThrowResultReturner = defineFunction(
+    var makeThrowResultReturner = defineValue(
       'name: makeThrowResultReturner',
       'classification: datatypes',
       'signature: f: function',
@@ -294,7 +288,7 @@
     );
 
 
-    var either = defineFunction(
+    var either = defineValue(
       'name: either',
       'classification: datatypes',
       'signature: okFn: function, errFn: function, result: [[Result]]',

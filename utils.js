@@ -163,15 +163,14 @@
       };
 
 
-      // The helpCache allows defineFunction and help to provide help text. It is an array of 2-element arrays,
+      // The helpCache allows defineValue and help to provide help text. It is an array of 2-element arrays,
       // where the first value is a function, and the second the data for providing help text. Note that we can't
-      // use an object: using the functions as keys won't work (they will all coerce to the string 'function',
-      // making them indistinguishable
-
+      // use an object to store these values, as we would be unable to use the defined values as keys: for example
+      // every function would coerce to the string key "function" making them indistinguishable.
       var helpCache = [];
 
 
-      // Utility for testing defineFunction and help
+      // Utility for testing defineValue and help
       var resetHelpCache = function() {
         helpCache = [];
       };
@@ -214,16 +213,17 @@
       };
 
 
+      // Locate any help text that has been provided for the given function.
       var lookupHelpFor = function(fn) {
         var text = null;
 
-        // Abuse any for early exit semantics (we can't use indexOf)
+        // Abuse any for early exit semantics (we can't use indexOf, as helpCache contains arrays)
         helpCache.some(function(arr) {
           if (arr[0] === fn) {
             var fnData = arr[1];
             var name = fnData.name;
-            var sig = fnData.signature;
-            text = [name + '(' + sig + ')'].concat(fnData.text);
+            var sig = typeof(fn) === 'function' ? '(' + fnData.signature + ')' : '';
+            text = [name + sig].concat(fnData.text);
             return true;
           }
 
@@ -234,21 +234,48 @@
       };
 
 
-      // defineFunction returns the function, and optionally takes several strings to be returned
-      // as help text, and to be used in documentation generation. If you call it with strings, then
-      // the following must be present:
-      //  - a string starting with "name: " defining the function name
-      //  - a string starting with "signature: " defining the type signature of the function
-      //  - either of:
-      //     - a string starting with "classification: " defining the class of functionality of the function
-      //         (this should only be used by funkierJS core)
-      //     - a string starting with "plugin: " defining the plugin this function came from
-      // These can then be followed by lines of explanatory text, detailing the functionality of the function
-      var defineFunction = function() {
+      // Returns true if val has a type that defineValue accepts.
+      var isDefinable = function(val) {
+        var t = typeof(val);
+        return t === 'function' || (t === 'object' && val !== null && !Array.isArray(val));
+      };
+
+
+      // defineValue is the hook into the help system. It is essentially a side-effecting id function, as it takes
+      // a function or string, and returns it. However the value being defined can be preceded by any number of strings
+      // which may have meaning to the help system. Any calls to help will output text based on those strings.
+      //
+      // The value being defined must always be the last argument to defineValue. (This makes my source-code pretty!)
+      //
+      // When called with one or more strings, certain strings with special meaning must be supplied:
+      //  - There must be exactly one string starting with "name:" which supplies the name of the value being defined
+      //
+      //  - For functions of arity > 1, there must be exactly one string starting with "signature", detailing the
+      //    function's signature. This value is ignored for objects, and functions of arity 0
+      //
+      //  - Exactly one of the following:
+      //     - a string starting with "classification:" defining the class of function being defined
+      //       (this option should only be used by core funkierJS code)
+      //     - a string starting with "plugin:" detailing the funkierJS plugin supplying this function
+      //
+      // There can be zero or more lines of explanatory text. Note the following:
+      //
+      //  - Lines starting with "-" will be indented in console output.
+      //
+      //  - Text between {{ and }} characters will be italicised in any generated HTML
+      //
+      //  - Text between pairs of __ characters will be strong emphasised in any generated HTML
+      //
+      //  - Text between [[ and ]] pairs are assumed to refer to refer to some other funkierJS value known to the
+      //    help system. They will be linked appropriately in any generated HTML output.
+      //
+      //  - All text following a line consisting only of '--' characters is assumed to be an extended code example,
+      //    and will be printed appropriately in the given environment.
+      var defineValue = function() {
         var args = [].slice.call(arguments);
 
         if (args.length === 0)
-          throw new TypeError('defineFunction called with no function');
+          throw new TypeError('defineValue called without a value');
 
         var errorMessage = '';
         var name = '';
@@ -262,23 +289,24 @@
         var valsOK = args.every(function(val, i) {
           var type = typeof(val);
 
-          // The last argument must be a function
+          // The last argument must be a function or object
           if (i === args.length - 1) {
-            if (type !== 'function') {
-              errorMessage = 'defineFunction must be called with a function';
+            if (!isDefinable(val)) {
+               errorMessage = 'defineValue must be called with a function or object';
               return false;
             }
+
             fn = val;
             return true;
           } else {
-            if (type === 'function') {
-              errorMessage = 'function must be last argument to defineFunction';
+            if (isDefinable(val)) {
+              errorMessage = 'value being defined must be last argument to defineValue ';
               return false;
             }
           }
 
           if (type !== 'string') {
-            errorMessage = 'defineFunction can only be called with strings and a function';
+            errorMessage = 'defineValue can only be called with strings followed by an object or function';
             return false;
           }
 
@@ -297,7 +325,7 @@
           switch (lineType) {
             case 'name':
               if (name !== '') {
-                errorMessage = 'defineFunction called with two \'name\' lines';
+                errorMessage = 'defineValue called with two \'name\' lines';
                 return false;
               }
 
@@ -306,7 +334,7 @@
 
             case 'signature':
               if (signature !== '') {
-                errorMessage = 'defineFunction called with two \'signature\' lines';
+                errorMessage = 'defineValue called with two \'signature\' lines';
                 return false;
               }
 
@@ -315,10 +343,10 @@
 
             case 'classification':
               if (classification !== '') {
-                errorMessage = 'defineFunction called with two \'classification\' lines';
+                errorMessage = 'defineValue called with two \'classification\' lines';
                 return false;
               } else if (plugin !== '') {
-                errorMessage = 'defineFunction called with both \'classification\'  and \'plugin\' lines';
+                errorMessage = 'defineValue called with both \'classification\'  and \'plugin\' lines';
                 return false;
               }
 
@@ -327,10 +355,10 @@
 
             case 'plugin':
               if (plugin !== '') {
-                errorMessage = 'defineFunction called with two \'plugin\' lines';
+                errorMessage = 'defineValue called with two \'plugin\' lines';
                 return false;
               } else if (classification !== '') {
-                errorMessage = 'defineFunction called with both \'classification\'  and \'plugin\' lines';
+                errorMessage = 'defineValue called with both \'classification\'  and \'plugin\' lines';
                 return false;
               }
 
@@ -347,11 +375,13 @@
 
         if (args.length > 1 && errorMessage === '') {
           if (name === '')
-            errorMessage = 'defineFunction called with no name for function';
-          else if (signature === '' && fn.length > 0)
-            errorMessage = 'defineFunction called with no signature for function';
+            errorMessage = 'defineValue called with no name for value';
+          else if (signature === '' && typeof(fn) === 'function' && fn.length > 0)
+            errorMessage = 'defineValue called with no signature for function';
+          else if (signature !== '' && typeof(fn) === 'object')
+            errorMessage = 'defineValue called with signature for non-function';
           else if (classification === '' && plugin === '')
-            errorMessage = 'defineFunction called with no classification/plugin for function';
+            errorMessage = 'defineValue called with no classification/plugin for function';
         }
 
         if (errorMessage !== '')
@@ -380,7 +410,7 @@
       };
 
 
-      var help = defineFunction(
+      var help = defineValue(
         'name: help',
         'signature: fn: function',
         'classification: base',
@@ -413,7 +443,7 @@
         checkIntegral: checkIntegral,
         checkObjectLike: checkObjectLike,
         checkPositiveIntegral: checkPositiveIntegral,
-        defineFunction: defineFunction,
+        defineValue: defineValue,
         help: help,
         isArrayLike: isArrayLike,
         isObjectLike: isObjectLike,

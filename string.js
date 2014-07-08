@@ -7,7 +7,7 @@
     var curry = curryModule.curry;
 
     var utils = require('./utils');
-    var defineFunction = utils.defineFunction;
+    var defineValue = utils.defineValue;
 
     var base = require('./base');
     var flip = base.flip;
@@ -20,7 +20,7 @@
     var checkFunction = funcUtils.checkFunction;
 
 
-    var toString = defineFunction(
+    var toString = defineValue(
       'name: toString',
       'classification: base',
       'signature: val: any',
@@ -35,7 +35,7 @@
     );
 
 
-    var toLocaleString = defineFunction(
+    var toLocaleString = defineValue(
       'name: toLocaleString',
       'classification: base',
       'signature: val: any',
@@ -49,7 +49,7 @@
     );
 
 
-    var toCharCode = defineFunction(
+    var toCharCode = defineValue(
       'name: toCharCode',
       'classification: string',
       'signature: i: number, s: string',
@@ -63,7 +63,7 @@
     );
 
 
-    var ord = defineFunction(
+    var ord = defineValue(
       'name: ord',
       'classification: string',
       'signature: s: string',
@@ -76,7 +76,7 @@
     );
 
 
-    var chr = defineFunction(
+    var chr = defineValue(
       'name: chr',
       'classification: string',
       'signature: n: number',
@@ -91,7 +91,7 @@
     );
 
 
-    var toLowerCase = defineFunction(
+    var toLowerCase = defineValue(
       'name: toLowerCase',
       'classification: string',
       'signature: s: string',
@@ -104,7 +104,7 @@
     );
 
 
-    var toLocaleLowerCase = defineFunction(
+    var toLocaleLowerCase = defineValue(
       'name: toLocaleLowerCase',
       'classification: string',
       'signature: s: string',
@@ -118,7 +118,7 @@
     );
 
 
-    var toUpperCase = defineFunction(
+    var toUpperCase = defineValue(
       'name: toUpperCase',
       'classification: string',
       'signature: s: string',
@@ -131,7 +131,7 @@
     );
 
 
-    var toLocaleUpperCase = defineFunction(
+    var toLocaleUpperCase = defineValue(
       'name: toLocaleUpperCase',
       'classification: string',
       'signature: s: string',
@@ -146,7 +146,7 @@
 
 
     // FIXME: Regexps should be a separate function
-    var split = defineFunction(
+    var split = defineValue(
       'name: split',
       'classification: string',
       'signature: delimiter: string, s: string',
@@ -161,7 +161,7 @@
     );
 
 
-    var replaceOneString = defineFunction(
+    var replaceOneString = defineValue(
       'name: replaceOneString',
       'signature: substr: string, replacement: string, s: string',
       'classification: string',
@@ -195,7 +195,7 @@
     );
 
 
-    var replaceString = defineFunction(
+    var replaceString = defineValue(
       'name: replaceString',
       'signature: substr: string, replacement: string, s: string',
       'classification: string',
@@ -239,7 +239,7 @@
     );
 
 
-    var replaceOneStringWith = defineFunction(
+    var replaceOneStringWith = defineValue(
       'name: replaceOneStringWith',
       'signature: substr: string, f: function, s: string',
       'classification: string',
@@ -272,7 +272,7 @@
     );
 
 
-    var replaceStringWith = defineFunction(
+    var replaceStringWith = defineValue(
       'name: replaceStringWith',
       'signature: substr: string, f: function, s: string',
       'classification: string',
@@ -314,7 +314,7 @@
     );
 
 
-    var replaceOneRegExp = defineFunction(
+    var replaceOneRegExp = defineValue(
       'name: replaceOneRegExp',
       'signature: regexp: RegExp, replacement: string, s: string',
       'classification: string',
@@ -352,7 +352,7 @@
     );
 
 
-    var replaceRegExp = defineFunction(
+    var replaceRegExp = defineValue(
       'name: replaceRegExp',
       'signature: regexp: RegExp, replacement: string, s: string',
       'classification: string',
@@ -390,7 +390,7 @@
     );
 
 
-    var replaceOneRegExpWith = defineFunction(
+    var replaceOneRegExpWith = defineValue(
       'name: replaceOneRegExpWith',
       'signature: regexp: RegExp, f: function, s: string',
       'classification: string',
@@ -428,7 +428,7 @@
     );
 
 
-    var replaceRegExpWith = defineFunction(
+    var replaceRegExpWith = defineValue(
       'name: replaceRegExpWith',
       'signature: regexp: RegExp, f: function, s: string',
       'classification: string',
@@ -467,7 +467,7 @@
 
 
     // XXX Should we adapt this so we return a TypeError?
-    var test = defineFunction(
+    var test = defineValue(
       'name: test',
       'signature: regexp: RegExp, s: string',
       'classification: string',
@@ -492,7 +492,7 @@
     };
 
 
-    var matches = defineFunction(
+    var matches = defineValue(
       'name: matches',
       'signature: regexp: RegExp, s: string',
       'classification: string',
@@ -533,7 +533,7 @@
     );
 
 
-    var matchesFrom = defineFunction(
+    var matchesFrom = defineValue(
       'name: matchesFrom',
       'signature: regexp: RegExp, index: number, s: string',
       'classification: string',
@@ -562,7 +562,7 @@
     );
 
 
-    var firstMatch = defineFunction(
+    var firstMatch = defineValue(
       'name: firstMatch',
       'signature: regexp: RegExp, s: string',
       'classification: string',
@@ -594,7 +594,7 @@
     );
 
 
-    var firstMatchFrom = defineFunction(
+    var firstMatchFrom = defineValue(
       'name: firstMatchFrom',
       'signature: regexp: RegExp, index: number, s: string',
       'classification: string',
