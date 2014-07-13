@@ -12,206 +12,265 @@
 
     var utils = require('./utils');
     var checkPositiveIntegral = utils.checkPositiveIntegral;
+    var defineValue = utils.defineValue;
 
 
-    /*
-     * compose: Composes the two functions f and g, returning a new function that will return f(g(<arguments>)).
-     *          The function g must have arity 0 or 1. A TypeError will be thrown when this is not the case.
-     *          Likewise, g must have arity >= 1. A TypeError will be thrown when this is not the case.
-     *          If f has arity > 1, it will be curried, and partially applied when an argument is supplied to the
-     *          composed function.
-     *
-     * For example:
-     *
-     * var f1 = function(a) {return a + 1;};
-     * var f2 = function(b) {return b * 2;};
-     * var f = compose(f1, f2); // f(x) = 2(x + 1)
-     *
-     * As usual, superfluous arguments supplied to the returned function will be discarded.
-     *
-     */
+    var compose = defineValue(
+      'name: compose',
+      'signature: f: function, g: function',
+      'classification: base',
+      '',
+      'Composes the two functions f and g, returning a new function that will return',
+      'f(g(<arguments>)).',
+      '',
+      'The function f must have arity >= 1. A TypeError will be thrown when this is not',
+      'the case.',
+      '',
+      'If any function has arity > 1, it will be curried, and partially applied when an',
+      'argument is supplied to the composed function.',
+      '--',
+      'var f1 = function(a) {return a + 1;};',
+      'var f2 = function(b) {return b * 2;};',
+      'var f = compose(f1, f2); // f(x) = 2(x + 1)',
+      curry(function(f, g) {
+        var gLen = getRealArity(g);
+        var fLen = getRealArity(f);
 
-    var compose = curry(function(f, g) {
-      var gLen = getRealArity(g);
-      var fLen = getRealArity(f);
+        f = checkFunction(f, {arity: 1, minimum: true, message: 'function f must have arity ≥ 1'});
+        f = curry(f);
+        g = curry(g);
 
-      f = checkFunction(f, {arity: 1, minimum: true, message: 'function f must have arity ≥ 1'});
-      f = curry(f);
-      g = curry(g);
+        // If g has arity > 0, then we accept one argument for g, and f.length - 1 arguments for f
+        // Otherwise, we accept fLen - 1 arguments.
+        var curryTo = fLen - (gLen > 0 ? 0 : 1);
 
-      // If g has arity > 0, then we accept one argument for g, and f.length - 1 arguments for f
-      // Otherwise, we accept fLen - 1 arguments.
-      var curryTo = fLen - (gLen > 0 ? 0 : 1);
+        return curryWithArity(curryTo, function() {
+          var args = [].slice.call(arguments);
 
-      return curryWithArity(curryTo, function() {
-        var args = [].slice.call(arguments);
-
-        var gArgs = gLen > 0 ? [args[0]] : [];
-        var fArgs = gLen > 0 ? args.slice(1) : args;
-        return f.apply(null, [g.apply(null, gArgs)].concat(fArgs));
-      });
-    });
-
-
-    /*
-     * id: Returns the value passed in
-     *
-     * Satisfies id(x) === x.
-     *
-     * Superfluous arguments supplied will be discarded.
-     *
-     */
-
-    var id = function(x) {
-      return x;
-    };
+          var gArgs = gLen > 0 ? [args[0]] : [];
+          var fArgs = gLen > 0 ? args.slice(1) : args;
+          return f.apply(null, [g.apply(null, gArgs)].concat(fArgs));
+        });
+      })
+    );
 
 
-    /*
-     * constant: Takes a value x, and returns a function of one parameter that, when called, returns x
-     *           regardless of input
-     *
-     * constant(x)(y) === x for all x, y
-     *
-     * Superfluous arguments supplied to the returned function will be discarded.
-     *
-     */
-
-    var constant = curry(function(x, y) {
-      return x;
-    });
-
-
-    /*
-     * constant0: Similar to constant, but returns a function of arity 0.
-     *
-     * constant0(x)() === x for all x
-     *
-     * Superfluous arguments supplied to the returned function will be discarded.
-     *
-     */
-
-    var constant0 = compose(curryWithArity(0), constant);
+    var id = defineValue(
+      'name: id',
+      'signature: x: any',
+      'classification: base',
+      '',
+      'Returns the value passed in. Superfluous arguments supplied will be discarded.',
+      '',
+      'Satisfies id(x) === x.',
+      '--',
+      'id(1); // 1',
+      function(x) {
+        return x;
+      }
+    );
 
 
-    /*
-     * flip: takes a binary function f, and returns a curried function that flips the arguments.
-     *       Throws if called with a function of arity > 2
-     *
-     * i.e. flip(f)(a, b) == f(b, a);
-     *
-     */
-
-    var flip = function(f) {
-      f = checkFunction(f, {arity: 2, maximum: true, message: 'Value to be flipped must be a function of arity 2'});
-
-      // XXX Should checkFunction curry automatically?
-      if (getRealArity(f) < 2)
-        return curry(f);
-
-      return curry(function(a, b) {
-        return f(b, a);
-      });
-    };
+    var constant = defineValue(
+      'name: constant',
+      'signature: x: any, y: any',
+      'classification: base',
+      '',
+      'Takes a value x, and returns a function of one parameter that, when called,',
+      'returns x regardless of input',
+      '',
+      'constant(x)(y) === x for all x, y',
+      '--',
+      'constant(2)(3); // 2',
+      'constant(2, 3); // 2',
+      curry(function(x, y) {
+        return x;
+      })
+    );
 
 
-    /*
-     * composeMany: repeatedly composes the given array of functions, from right to left
-     *
-     * composeMany([f1, f2, f3]) behaves like f1(f2(f3(x)));
-     * All functions are curried when necessary.
-     *
-     */
+    var constant0 = defineValue(
+      'name: constant0',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Similar to constant, but returns a function of arity 0.',
+      '',
+      'constant0(x)() === x for all x',
+      'Superfluous arguments supplied to the returned function will be discarded.',
+      '--',
+      'var f = constant0(42);',
+      'f(); // 42',
+      compose(curryWithArity(0), constant)
+    );
+
+
+    var flip = defineValue(
+      'name: flip',
+      'signature: f: function',
+      'classification: base',
+      '',
+      'Takes a binary function f, and returns a curried function that flips the.',
+      'arguments',
+      '',
+      'i.e. flip(f)(a, b) == f(b, a);',
+      '',
+      'Throws a TypeError if called with a function of arity > 2',
+      '--',
+      'var backwards = flip(subtract);',
+      'backwards(2, 3); // 1',
+      function(f) {
+        f = checkFunction(f, {arity: 2, maximum: true, message: 'Value to be flipped must be a function of arity 2'});
+
+        // XXX Should checkFunction curry automatically?
+        if (getRealArity(f) < 2)
+          return curry(f);
+
+        return curry(function(a, b) {
+          return f(b, a);
+        });
+      }
+    );
+
 
     // XXX should we supply a vararg variant of composeMany?
+    var composeMany = defineValue(
+      'name: composeMany',
+      'signature: fns: array',
+      'classification: base',
+      '',
+      'Repeatedly composes the given array of functions, from right to left. All',
+      'functions are curried where necessary.',
+      '',
+      'composeMany([f1, f2, f3]) behaves like f1(f2(f3(x)));',
+      '',
+      'Throws a TypeError if the given array is empty, if any entry is not a',
+      'function, or if any entry other than the last has arity 0.',
+      '--',
+      'var square = function(x) {return x * x;};',
+      'var double = function(x) {return 2 * x;};',
+      'var plusOne = plus(1);',
+      'var f = composeMany([square, double, plusOne]);',
+      'f(2); // 36',
+      function(fnArray) {
+        // XXX Should throw if not array. Update help text too!
+        if (fnArray.length === 0)
+          throw new TypeError('composeMany called with empty array');
 
-    var composeMany = function(fnArray) {
-      if (fnArray.length === 0)
-        throw new TypeError('composeMany called with empty array');
+        if (fnArray.length === 1)
+          return curry(fnArray[0]);
 
-      if (fnArray.length === 1)
-        return curry(fnArray[0]);
+        // We don't use foldr to avoid creating a circular dependency',
+        return fnArray.reduceRight(flip(compose));
+      }
+    );
 
-      // We don't use foldr to avoid creating a circular dependency
-      return fnArray.reduceRight(flip(compose));
-    };
+
+    // XXX Not sure this has any real value. (Note it is used for applyFunc!)
+    var applyFunc = defineValue(
+      'name: applyFunc',
+      'signature: f: function, x: any',
+      'classification: base',
+      '',
+      'Apply the given function f with the given argument x, returning the result.',
+      'The given function will be curried if it has arity > 1',
+      '',
+      'Thus, applyFunc(f, x) = f(x)',
+      '--',
+      'apply(id, 1); // 1',
+      curry(function(f, x) {
+        f = curry(f);
+        return f(x);
+      })
+    );
 
 
     /*
-     * applyFunc: apply the given function f with the given argument x, returning the result.
-     *            The given function will be curried if it has arity > 1
-     *
-     * Thus, applyFunc(f, x) = f(x)
+      sectionLeft: sectionLeft is a synonym for applyFunc
      *
      */
 
-    var applyFunc = curry(function(f, x) {
-      f = curry(f);
-      return f(x);
-    });
-
-
-    /*
-     * sectionLeft: sectionLeft is a synonym for applyFunc.
-     *
-     */
-
+    // XXX This will need proper help when we've sorted the applyFunc situation
     var sectionLeft = applyFunc;
 
 
-    /*
-     * sectionRight: partially applies the binary function f with the given argument x, with x being supplied as
-     *               the second argument to f. Throws if f is not a binary function.
-     *
-     * sectionRight satisfies the equation sectionRight(f, x) = applyFunc(flip(f), x);
-     *
-     */
+    // XXX This help will need updated too
+    var sectionRight = defineValue(
+      'name: sectionRight',
+      'signature: f: function, arg: any',
+      'classification: base',
+      '',
+      'Partially applies the binary function f with the given argument x, with x being supplied as',
+      'the second argument to f.',
+      '',
+      'sectionRight satisfies the equation sectionRight(f, x) = applyFunc(flip(f), x);',
+      '',
+      'Throws a TypeError if f is not a binary function.',
+      '--',
+      'var fn = sectionRight(subtract, 3);',
+      'fn(2); // -1',
+      curry(function(f, x) {
+        f = checkFunction(f, {arity: 2, message: 'Value to be sectioned must be a function of arity 2'});
 
-    var sectionRight = curry(function(f, x) {
-      f = checkFunction(f, {arity: 2, message: 'Value to be sectioned must be a function of arity 2'});
-
-      return sectionLeft(flip(f), x);
-    });
-
-
-    /*
-     * equals: tests non-strict equality (==) on its two arguments
-     *
-     */
-
-    var equals = curry(function(x, y) {
-      return x == y;
-    });
+        return sectionLeft(flip(f), x);
+      })
+    );
 
 
-    /*
-     * strictEquals: tests strict equality (===) on its two arguments
-     *
-     */
-
-    var strictEquals = curry(function(x, y) {
-      return x === y;
-    });
-
-
-    /*
-     * notEqual: tests non-identity (!=) on its two arguments
-     *
-     */
-
-    var notEqual = curry(function(x, y) {
-      return x != y;
-    });
+    var equals = defineValue(
+      'name: equals',
+      'signature: a: any, b: any',
+      'classification: base',
+      '',
+      'A wrapper around the non-strict equality (==) operator.',
+      '--',
+      'equals({}, {}); // false',
+      curry(function(x, y) {
+        return x == y;
+      })
+    );
 
 
-    /*
-     * strictNotEqual: tests strict non-identity (!==) on its two arguments
-     *
-     */
+    var strictEquals = defineValue(
+      'name: strictEquals',
+      'signature: a: any, b: any',
+      'classification: base',
+      '',
+      'A wrapper around the strict equality (===) operator.',
+      '--',
+      'equals({}, {}); // true',
+      curry(function(x, y) {
+        return x === y;
+      })
+    );
 
-    var strictNotEqual = curry(function(x, y) {
-      return x !== y;
-    });
+
+    var notEqual = defineValue(
+      'name: notEqual',
+      'signature: a: any, b: any',
+      'classification: base',
+      '',
+      'A wrapper around the not-equal (!=) operator.',
+      '--',
+      'notEqual({}, {}); // true',
+      curry(function(x, y) {
+        return x != y;
+      })
+    );
+
+
+    var strictNotEqual = defineValue(
+      'name: strictNotEqual',
+      'signature: a: any, b: any',
+      'classification: base',
+      '',
+      'A wrapper around the strict not-equal (!==) operator.',
+      '--',
+      'strictNotEqual({}, {}); // true',
+      curry(function(x, y) {
+        return x !== y;
+      })
+    );
 
 
     // Helper function for deepEqual. Assumes both objects are arrays.
@@ -253,195 +312,239 @@
     };
 
 
-    /*
-     * deepEqual: check two values for deep equality. Deep equality holds if any
-     *            of the following hold:
-     *            - strictEquals(a, b) is true i.e. identity.
-     *            - Both values are objects with the same prototype, same enumerable
-     *              properties, and those properties are deepEqual. Non-enumerable properties
-     *              are not checked.
-     *            - Both values are arrays with the same length, and the items at each
-     *              index are themselves deepEqual.
-     *
-     */
+    // XXX Need to convince myself that not checking non-enumerables is the right thing to do
+    var deepEqual = defineValue(
+      'name: deepEqual',
+      'signature: a: any, b: any',
+      'classification: base',
+      '',
+      'Check two values for deep equality. Deep equality holds if any of the following',
+      'hold:',
+      '- strictEquals(a, b) is true i.e. identity.',
+      '- Both values are objects with the same prototype, same enumerable properties',
+      '- and those properties are deepEqual. Non-enumerable properties are not checked.',
+      '- Both values are arrays with the same length, and the items at each index are',
+      '- themselves deepEqual.',
+      '--',
+      'deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // true',
+      curry(function(a, b) {
+        if (strictEquals(a, b))
+          return true;
 
-    var deepEqual = curry(function(a, b) {
-      if (strictEquals(a, b))
-        return true;
+        if (typeof(a) !== typeof(b))
+          return false;
 
-      if (typeof(a) !== typeof(b))
-        return false;
+        if (typeof(a) !== 'object')
+          return false;
 
-      if (typeof(a) !== 'object')
-        return false;
+        if (Array.isArray(a) && Array.isArray(b))
+          return deepEqualArr(a, b);
 
-      if (Array.isArray(a) && Array.isArray(b))
-        return deepEqualArr(a, b);
-
-      return deepEqualObj(a, b);
-    });
-
-
-    /*
-     * permuteLeft: takes a function, returns a curried function of the same arity
-     *              which takes the same parameters, except in a different position.
-     *              The first parameter of the original function will be the last parameter
-     *              of the new function, the second parameter of the original will be the first
-     *              parameter of the new function and so on. This function is essentially a no-op
-     *              for functions of arity 0 and 1, and equivalent to flip for functions of arity 2.
-     *
-     * For example, if:
-     *  f = function(x, y, z) {...};
-     *  g = permuteLeft(f);
-     * then f(a, b, c) and g(b, c, a) are equivalent.
-     *
-     */
-
-    var permuteLeft = curry(function(f) {
-      var fLen = getRealArity(f);
-      f = curry(f);
-
-      if (fLen < 2)
-        return f;
-
-      return curryWithArity(fLen, function() {
-        var args = [].slice.call(arguments);
-        var newArgs = [args[fLen - 1]].concat(args.slice(0, fLen - 1));
-        return f.apply(null, newArgs);
-      });
-    });
+        return deepEqualObj(a, b);
+      })
+    );
 
 
-    /*
-     * permuteRight: takes a function, returns a curried function of the same arity
-     *               which takes the same parameters, except in a different position.
-     *               The last parameter of the original function will be the first parameter
-     *               of the new function, the first parameter of the original will be the second
-     *               parameter of the new function and so on. This function is essentially a no-op
-     *               for functions of arity 0 and 1, and equivalent to flip for functions of arity 2.
-     *
-     * For example, if:
-     *  f = function(x, y, z) {...};
-     *  g = permuteLeft(f);
-     * then f(a, b, c) and g(c, a, b) are equivalent.
-     *
-     */
+    var permuteLeft = defineValue(
+      'name: permuteLeft',
+      'signature: f: function',
+      'classification: base',
+      '',
+      'Takes a function, returns a curried function of the same arity which takes the',
+      'same parameters, except in a different position. The first parameter of the',
+      'original function will be the last parameter of the new function, the second',
+      'parameter of the original will be the first parameter of the new function and',
+      'so on. This function is essentially a no-op for functions of arity 0 and 1, and',
+      'equivalent to flip for functions of arity 2.',
+      '',
+      'Throws a TypeError if f is not a function.',
+      '--',
+      function(f) {
+        var fLen = getRealArity(f);
+        f = curry(f);
 
-    var permuteRight = curry(function(f) {
-      var fLen = getRealArity(f);
-      f = curry(f);
+        if (fLen < 2)
+          return f;
 
-      if (fLen < 2)
-        return f;
-
-      return curryWithArity(fLen, function() {
-        var args = [].slice.call(arguments);
-        var newArgs = args.slice(1).concat([args[0]]);
-        return f.apply(null, newArgs);
-      });
-    });
-
-
-    /*
-     * is: a curried wrapper around typeof. Takes a string that could be returned by the typeof operator,
-     *     and an object. Returns true if the type of the given object equals the given string. Throws if the first
-     *     argument is not a string.
-     *
-     * For example,
-     *   is('object', {}); // true
-     *
-     */
-
-    var is = curry(function(s, obj) {
-      if (typeof(s) !== 'string')
-        throw new TypeError('Type to be checked is not a string');
-
-      return typeof(obj) === s;
-    });
+        return curryWithArity(fLen, function() {
+          var args = [].slice.call(arguments);
+          var newArgs = [args[fLen - 1]].concat(args.slice(0, fLen - 1));
+          return f.apply(null, newArgs);
+        });
+      }
+    );
 
 
-    /*
-     * isNumber: Returns true if typeof the given object returns 'number'.
-     *
-     */
+    var permuteRight = defineValue(
+      'name: permuteRight',
+      'signature: f: function',
+      'classification: base',
+      '',
+      'Takes a function, returns a curried function of the same arity which takes the',
+      'same parameters, except in a different position. The last parameter of the',
+      'original function will be the first parameter of the new function, the first',
+      'parameter of the original will be the second parameter of the new function and',
+      'so on. This function is essentially a no-op for functions of arity 0 and 1, and',
+      'equivalent to flip for functions of arity 2.',
+      '',
+      'Throws a TypeError if f is not a function.',
+      '--',
+      'f = function(x, y, z) {return x + y + z;};',
+      'g = permuteRight(f);',
+      'g(\'a\', \'b\', \'c\'); // \'cab\'',
+      function(f) {
+        var fLen = getRealArity(f);
+        f = curry(f);
 
-    var isNumber = is('number');
+        if (fLen < 2)
+          return f;
 
-
-    /*
-     * isString: Returns true if typeof the given object returns 'string'.
-     *
-     */
-
-    var isString = is('string');
-
-
-    /*
-     * isBoolean: Returns true if typeof the given object returns 'boolean'.
-     *
-     */
-
-    var isBoolean = is('boolean');
-
-
-    /*
-     * isUndefined: Returns true if typeof the given object returns 'undefined'.
-     *
-     */
-
-    var isUndefined = is('undefined');
-
-
-    /*
-     * isObject: Returns true if typeof the given object returns 'object'.
-     *
-     */
-
-    var isObject = is('object');
+        return curryWithArity(fLen, function() {
+          var args = [].slice.call(arguments);
+          var newArgs = args.slice(1).concat([args[0]]);
+          return f.apply(null, newArgs);
+        });
+      }
+    );
 
 
-    /*
-     * isArray: Returns true if the given object is an array
-     *
-     */
+    var is = defineValue(
+      'name: is',
+      'signature: type: string, value: any',
+      'classification: base',
+      '',
+      'Takes a string that could be returned by the typeof operator, and a value.',
+      'Returns true if the type of the given object equals the given string.',
+      '',
+      'Throws a TypeError if the first argument is not a string.',
+      '--',
+      'is(\'object\', {}); // true',
+      curry(function(s, obj) {
+        if (typeof(s) !== 'string')
+          throw new TypeError('Type to be checked is not a string');
 
-    var isArray = function(obj) {
-      return Array.isArray(obj);
-    };
-
-
-    /*
-     * isNull: Returns true if the given object is the value null
-     *
-     */
-
-    var isNull = function(obj) {
-      return obj === null;
-    };
-
-
-    /*
-     * isRealObject: Returns true if the given object is a 'real' object, i.e. an
-     *               typeof(obj) === 'object', and obj !== null and isArray(obj) === false
-     *
-     */
-
-    var isRealObject = function(obj) {
-      return isObject(obj) && !(isArray(obj) || isNull(obj));
-    };
+        return typeof(obj) === s;
+      })
+    );
 
 
-    /*
-     * getType: a function wrapper around the typeof operator. Takes
-     *          any Javascript value, and returns a string representing
-     *          the object's type: one of 'number', 'boolean', 'string',
-     *          'undefined', 'function' or 'object'.
-     *
-     */
+    var isNumber = defineValue(
+      'name: isNumber',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if typeof the given object returns \'number\'.',
+      '--',
+      'isNumber(10); // true',
+      is('number')
+    );
 
-    var getType = curry(function(val) {
-      return typeof(val);
-    });
+
+    var isString = defineValue(
+      'name: isString',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if typeof the given object returns \'string\'.',
+      '--',
+      'isString(\'abc\'); // true',
+      is('string')
+    );
+
+
+    var isBoolean = defineValue(
+      'name: isBoolean',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if typeof the given object returns \'boolean\'.',
+      '--',
+      'isBoolean(true); // true',
+      is('boolean')
+    );
+
+
+    var isUndefined = defineValue(
+      'name: isUndefined',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if typeof the given object returns \'undefined\'.',
+      '--',
+      'isUndefined(undefined); // true',
+      is('undefined')
+    );
+
+
+    var isObject = defineValue(
+      'name: isObject',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if typeof the given object returns \'object\'.',
+      '--',
+      'isObject({}); // true',
+      is('object')
+    );
+
+
+    var isArray = defineValue(
+      'name: isArray',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if the given object is an array.',
+      '--',
+      'isArray([1, 2]); // true',
+      function(obj) {
+        return Array.isArray(obj);
+      }
+    );
+
+
+    var isNull = defineValue(
+      'name: isNull',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if the given object is the value null.',
+      '--',
+      'isNull(null); // true',
+      function(obj) {
+        return obj === null;
+      }
+    );
+
+
+    var isRealObject = defineValue(
+      'name: isRealObject',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'Returns true if the given object is a \'real\' object, i.e. an object for which',
+      'typeof(obj) === \'object\', and obj !== null and isArray(obj) === false',
+      '--',
+      'isRealObject({}); // true',
+      function(obj) {
+        return isObject(obj) && !(isArray(obj) || isNull(obj));
+      }
+    );
+
+
+    var getType = defineValue(
+      'name: getType',
+      'signature: a: any',
+      'classification: base',
+      '',
+      'A function wrapper around the typeof operator. Takes any Javascript value,',
+      'and returns a string representing the object\'s type: one of \'number\', \'boolean\',',
+      '\'string\', \'undefined\', \'function\' or \'object\'.',
+      '--',
+      'getType(function() {}); // function',
+      curry(function(val) {
+        return typeof(val);
+      })
+    );
 
 
     var exported = {
