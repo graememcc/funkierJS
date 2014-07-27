@@ -26,7 +26,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity', 'permuteLeft', 'rotateLeft',
-                             'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
+                             'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
@@ -208,6 +208,82 @@
     describe('rotateLeft', function() {
       it('Is a synonym for permuteLeft', function() {
         expect(fn.rotateLeft === fn.permuteLeft).to.be.true;
+      });
+    });
+
+
+    var permuteRightSpec = {
+      name: 'permuteRight',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    describeFunction(permuteRightSpec, fn.permuteRight, function(permuteRight) {
+      addCommonPermuteTests(permuteRight);
+
+
+      // For higher arities, we will generate a series of tests for arities 3 and 4
+      var params = [1, 'a', undefined, true];
+      var baseFunc = function() {return [].slice.call(arguments);};
+
+
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
+          var called = false;
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {called = true;});
+          var permuted = permuteRight(fn);
+          // Lack of assignment is deliberate: we only care about the side-effect
+          permuted.apply(null, args);
+
+          expect(called).to.be.true;
+        });
+      };
+
+
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, baseFunc);
+          var permuted = permuteRight(fn);
+          var result = permuted.apply(null, args);
+          var expected = args.slice(1).concat([args[0]]);
+
+          expect(result).to.deep.equal(expected);
+        });
+      };
+
+
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
+          var permuted = permuteRight(fn);
+          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
+          var result = permuted.apply(null, args);
+
+          expect(result).to.deep.equal(originalResult);
+        });
+      };
+
+
+      for (var i = 3; i < 5; i++) {
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
+
+        // And, of course, the permuted function should be curried
+        var curried = curryWithArity(i, baseFunc);
+        testCurriedFunction('Permuted function of arity ' + i, permuteRight(curried), params.slice(0, i));
+      }
+    });
+
+
+    describe('rotateRight', function() {
+      it('Is a synonym for permuteRight', function() {
+        expect(fn.rotateRight === fn.permuteRight).to.be.true;
       });
     });
 
