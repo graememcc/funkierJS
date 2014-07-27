@@ -157,169 +157,10 @@
     );
 
 
+    // XXX Currently this function and replaceOneStringWith strictly require strings. Should we allow
+    // coercion?
     var replaceOneString = defineValue(
       'name: replaceOneString',
-      'signature: substr: string, replacement: string, s: string',
-      'classification: string',
-      '',
-      'Takes 3 strings:',
-      '  - substr: a substring to be replaced',
-      '  - replacement: the value to replace substr with',
-      '  - s: the string to be searched',
-      'and replaces the first occurrence of substr with replacement, and returns the new',
-      'string.',
-      '',
-      'The following three sequences have special meaning: if replacement contains these,',
-      'then when the match is replaced, these patterns will be replaced by the values',
-      'they represent:',
-      '  - $& refers to the text that was matched (i.e. substr)',
-      '  - $` refers to the text before the match',
-      '  - $\' refers to the text after the match',
-      '',
-      'Throws a TypeError if substr is a RegExp, or if replacement is a function.',
-      '',
-      'To replace with a RegExp, use [[replaceOneRegExp]]/[[replaceRegExp]]/',
-      '[[replaceOneRegExpWith]]/[[replaceRegExpWith]].',
-      'To specify a function to be called with the match, use [[replaceOneStringWith]].',
-      'To replace all matches, use [[replaceString]]/[[replaceStringWith]].',
-      '--',
-      'var s = replaceOneString(\'a\', \'i\', \'banana\'); // s === \'binana\'',
-      curry(function(substr, replacement, s) {
-        if ((substr instanceof RegExp) || (replacement instanceof Function))
-          throw new TypeError('replaceOneString called with invalid types');
-
-        return s.replace(substr, replacement);
-      })
-    );
-
-
-    var replaceString = defineValue(
-      'name: replaceString',
-      'signature: substr: string, replacement: string, s: string',
-      'classification: string',
-      '',
-      'Takes 3 strings:',
-      '  - substr: a substring to be replaced',
-      '  - replacement: the value to replace substr with',
-      '  - s: the string to be searched',
-      'and replaces every occurrence of substr with replacement, and returns the new string.',
-      '',
-      'The following three sequences have special meaning: if replacement contains these,',
-      'then when the match is replaced, these patterns will be replaced by the values',
-      'they represent:',
-      '  - $& refers to the text that was matched (i.e. substr)',
-      '  - $` refers to the text before the match',
-      '  - $\' refers to the text after the match',
-      '',
-      'Throws a TypeError if substr is a RegExp, or if replacement is a function.',
-      '',
-      'To replace with a RegExp, use [[replaceOneRegExp]]/[[replaceRegExp]]/',
-      '[[replaceOneRegExpWith]]/[[replaceRegExpWith]].',
-      'To specify a function to be called with the match, use [[replaceStringWith]].',
-      'To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].',
-      '--',
-      'var s = replaceString(\'a\', \'i\', \'banana\'); // s === \'binini\'',
-      curry(function(substr, replacement, s) {
-        if ((substr instanceof RegExp) || (replacement instanceof Function))
-          throw new TypeError('replaceString called with invalid types');
-
-        var last = 0;
-        var l = replacement.length;
-        var i;
-
-        while (i = s.indexOf(substr, last) !== -1) {
-          last = i + replacement.length;
-          // XXX What if there's a substr earlier? This looks like a bug
-          s = replaceOneString(substr, replacement, s);
-        }
-
-        return s;
-      })
-    );
-
-
-    var replaceOneStringWith = defineValue(
-      'name: replaceOneStringWith',
-      'signature: substr: string, f: function, s: string',
-      'classification: string',
-      '',
-      'Takes 3 parameters:',
-      '  - substr: a substring to be replaced',
-      '  - f: a function to call that will return the replacement text',
-      '  - s: the string to be searched',
-      'and replaces the first occurrence of substr with the value returned by f, and',
-      'returns the new string.',
-      '',
-      'The function f will be called with 3 arguments: the matched text, the index of',
-      'the match, and the original string. If f returns a non-string value, it will be',
-      'coerced to a string.',
-      '',
-      'Throws a TypeError if substr is a RegExp, if replacement is a string, or if f has',
-      'arity 0.',
-      '',
-      'To replace with a RegExp, use [[replaceOneRegExp]]/[[replaceRegExp]]/',
-      '[[replaceOneRegExpWith]]/[[replaceRegExpWith]].',
-      'To specify a string to be replace the match, use [[replaceOneString]].',
-      'To replace all matches, use [[replaceString]]/[[replaceStringWith]].',
-      '--',
-      'var f = function(match, index, s) {return \'\' + index;};',
-      'var s = replaceOneStringWith(\'a\', f, \'banana\'); // s === \'b1nana\'',
-      curry(function(substr, f, s) {
-        f = checkFunction(f, {arity: 1, minimum: true, message: 'f must be a function of arity at least 1'});
-        if ((substr instanceof RegExp))
-          throw new TypeError('replaceOneStringWith called with invalid types');
-
-        return s.replace(substr, f);
-      })
-    );
-
-
-    var replaceStringWith = defineValue(
-      'name: replaceStringWith',
-      'signature: substr: string, f: function, s: string',
-      'classification: string',
-      '',
-      'Takes 3 parameters:',
-      '  - substr: a substring to be replaced',
-      '  - f: a function to call that will return the replacement text',
-      '  - s: the string to be searched',
-      'and replaces all occurrences of substr with the value returned by f, and returns',
-      'the new string.',
-      '',
-      'The function f will be called with 3 arguments: the matched text, the index of',
-      'the match, and the original string. If f returns a non-string value, it will be',
-      'coerced to a string.',
-      '',
-      'Throws a TypeError if substr is a RegExp, if replacement is a string, or if f has arity 0.',
-      '',
-      'To replace with a RegExp, use [[replaceOneRegExp]]/[[replaceRegExp]]/',
-      '[[replaceOneRegExpWith]]/[[replaceRegExpWith]].',
-      'To specify a string to be replace the match, use [[replaceStringWith]].',
-      'To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].',
-      '--',
-      'var f = function(match, index, s) {return \'\' + index;};',
-      'var s = replaceStringWith(\'a\', f, \'banana\'); // s === \'b1n3n5\'',
-      curry(function(substr, f, s) {
-        if ((substr instanceof RegExp))
-          throw new TypeError('replaceStringWith called with invalid types');
-        f = checkFunction(f, {arity: 1, minimum: true, message: 'f must be a function of arity at least 1'});
-
-        // XXX This looks buggy too
-        var last = 0;
-        var i;
-
-        while (i = s.indexOf(substr, last) !== -1) {
-          last = i + 1;
-          s = replaceOneStringWith(substr, f, s);
-        }
-
-        return s;
-      })
-    );
-
-
-    var replaceOneRegExp = defineValue(
-      'name: replaceOneRegExp',
       'signature: regexp: RegExp, replacement: string, s: string',
       'classification: string',
       '',
@@ -338,19 +179,17 @@
       '  - $` refers to the text before the match',
       '  - $\' refers to the text after the match',
       '',
-      'Throws a TypeError if substr is a string, or if replacement is a function.',
+      'Throws a TypeError if regexp is not a RegExp, or if replacement is a function.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
-      'To replace with a string, use [[replaceOneString]]/[[replaceString]]/',
-      '[[replaceOneStringWith]]/[[replaceStringWith]].',
-      'To specify a function to be called with the match, use [[replaceRegExpWith]].',
-      'To replace all matches, use [[replaceRegExp]]/[[replaceRegExpWith]].',
+      'To specify a function to be called with the match, use [[replaceOneStringWith]].',
+      'To replace all matches, use [[replaceString]]/[[replaceStringWith]].',
       '--',
       'var s = replaceOneString(/a/, \'i\', \'banana\'); // s === \'binana\'',
       curry(function(regexp, replacement, s) {
-        if (!(regexp instanceof RegExp) || (replacement instanceof Function))
-          throw new TypeError('replaceOneRegExp called with invalid types');
+        if (!(regexp instanceof RegExp) || typeof(replacement) !== 'string')
+          throw new TypeError('replaceOneString called with invalid types');
 
         var r = new RegExp(regexp.source);
         return s.replace(r, replacement);
@@ -358,8 +197,8 @@
     );
 
 
-    var replaceRegExp = defineValue(
-      'name: replaceRegExp',
+    var replaceString = defineValue(
+      'name: replaceString',
       'signature: regexp: RegExp, replacement: string, s: string',
       'classification: string',
       '',
@@ -377,19 +216,17 @@
       '  - $` refers to the text before the match',
       '  - $\' refers to the text after the match',
       '',
-      'Throws a TypeError if substr is a string, or if replacement is a function.',
+      'Throws a TypeError if regexp is not a RegExp, or if replacement is a function.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
-      'To replace with a string, use [[replaceOneString]]/[[replaceString]]/',
-      '[[replaceOneStringWith]]/[[replaceStringWith]].',
-      'To specify a function to be called with the match, use [[replaceRegExpWith]].',
-      'To replace only the first match, use [[replaceOneRegExp]]/[[replaceOneRegExpWith]].',
+      'To specify a function to be called with the match, use [[replaceStringWith]].',
+      'To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].',
       '--',
-      'var s = replaceRegExp(/a/, \'i\', \'banana\'); // s === \'binini\'',
+      'var s = replaceString(/a/, \'i\', \'banana\'); // s === \'binini\'',
       curry(function(regexp, replacement, s) {
-        if (!(regexp instanceof RegExp) || (replacement instanceof Function))
-          throw new TypeError('replaceRegExp called with invalid types');
+        if (!(regexp instanceof RegExp) || typeof(replacement) !== 'string')
+          throw new TypeError('replaceString called with invalid types');
 
         var r = new RegExp(regexp.source, 'g');
         return s.replace(r, replacement);
@@ -397,8 +234,8 @@
     );
 
 
-    var replaceOneRegExpWith = defineValue(
-      'name: replaceOneRegExpWith',
+    var replaceOneStringWith = defineValue(
+      'name: replaceOneStringWith',
       'signature: regexp: RegExp, f: function, s: string',
       'classification: string',
       '',
@@ -415,21 +252,20 @@
       'will be the index of the start of the match, and the last argument will be the',
       'original string. If f returns a non-string value, it will be coerced to a string.',
       '',
-      'Throws a TypeError if substr or f are strings, or if f has arity 0.',
+      'Throws a TypeError if regexp is not a RegExp, if f is not a function, or if f',
+      'has arity 0.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
-      'To replace with a string, use [[replaceOneString]]/[[replaceString]]/',
-      '[[replaceOneStringWith]]/[[replaceStringWith]].',
-      'To specify a string to be replace the match, use [[replaceOneRegExp]].',
-      'To replace all matches, use [[replaceRegExp]]/[[replaceRegExpWith]].',
+      'To specify a string to be replace the match, use [[replaceOneString]].',
+      'To replace all matches, use [[replaceString]]/[[replaceStringWith]].',
       '--',
       'var f = function(match, paren, i, s) {return paren + i;};',
-      'var s = replaceOneRegExpWith(/(a)/, f, \'banana\'); // s === \'ba1nana\'',
+      'var s = replaceOneStringWith(/(a)/, f, \'banana\'); // s === \'ba1nana\'',
       curry(function(regexp, f, s) {
         f = checkFunction(f, {arity: 1, minimum: true, message: 'to must be a function of arity at least 1'});
         if (!(regexp instanceof RegExp))
-          throw new TypeError('replaceOneRegExpWith called with invalid types');
+          throw new TypeError('replaceOneStringWith called with invalid types');
 
         var r = new RegExp(regexp.source);
         return s.replace(r, f);
@@ -437,8 +273,8 @@
     );
 
 
-    var replaceRegExpWith = defineValue(
-      'name: replaceRegExpWith',
+    var replaceStringWith = defineValue(
+      'name: replaceStringWith',
       'signature: regexp: RegExp, f: function, s: string',
       'classification: string',
       '',
@@ -455,21 +291,20 @@
       'be the index of the start of the match, and the last argument will be the original',
       'string. If f returns a non-string value, it will be coerced to a string.',
       '',
-      'Throws a TypeError if substr or f are strings, or if f has arity 0.',
+      'Throws a TypeError if regexp is not a RegExp, if f is not a function, or if f',
+      'has arity 0.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
-      'To replace with a string, use [[replaceOneString]]/[[replaceString]]/',
-      '[[replaceOneStringWith]]/[[replaceStringWith]].',
-      'To specify a string to be replace the match, use [[replaceOneRegExp]]/[[replaceRegExp]].',
-      'To replace only the first match, use [[replaceOneRegExp]]/[[replaceOneRegExpWith]].',
+      'To specify a string to be replace the match, use [[replaceString]].',
+      'To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].',
       '--',
       'var f = function(match, paren, i, s) {return paren + i;};',
-      'var s = replaceOneRegExpWith(/(a)/, f, \'banana\'); // s === \'ba1na2na3\'',
+      'var s = replaceOneStringWith(/(a)/, f, \'banana\'); // s === \'ba1na2na3\'',
       curry(function(regexp, f, s) {
         f = checkFunction(f, {arity: 1, minimum: true, message: 'to must be a function of arity at least 1'});
         if (!(regexp instanceof RegExp))
-          throw new TypeError('replaceRegExpWith called with invalid types');
+          throw new TypeError('replaceStringWith called with invalid types');
 
         var r = new RegExp(regexp.source, 'g');
         return s.replace(r, f);
@@ -653,12 +488,8 @@
       matches: matches,
       matchesFrom: matchesFrom,
       ord: ord,
-      replaceOneRegExp: replaceOneRegExp,
-      replaceOneRegExpWith: replaceOneRegExpWith,
       replaceOneString: replaceOneString,
       replaceOneStringWith: replaceOneStringWith,
-      replaceRegExp: replaceRegExp,
-      replaceRegExpWith: replaceRegExpWith,
       replaceString: replaceString,
       replaceStringWith: replaceStringWith,
       split: split,

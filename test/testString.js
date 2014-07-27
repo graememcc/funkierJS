@@ -21,9 +21,8 @@
     var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
                              'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
                              'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                             'replaceStringWith', 'replaceOneRegExp', 'replaceRegExp',
-                             'replaceRegExpWith', 'replaceOneRegExpWith', 'test', 'matches',
-                             'matchesFrom', 'firstMatch', 'firstMatchFrom', 'toLocaleString'];
+                             'replaceStringWith','test', 'matches', 'matchesFrom', 'firstMatch',
+                             'firstMatchFrom', 'toLocaleString'];
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
@@ -270,86 +269,76 @@
     });
 
 
-    var makeReplaceTest = function(desc, fnUnderTest, regexp, fn, once) {
+    var makeReplaceTest = function(desc, fnUnderTest, fn, once) {
       var spec = {
         name: desc,
         arity: 3
       };
 
-      // XXX FIXME Need to modify testTypeRestriction to handle restriction
-      // where something is not something. We don't want to clamp down too hard
-      // and just say it must be a string: we should allow coercions.
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        // XXX Delete this when the above is fixed
-        if (!regexp) {
-          it('Throws if from is a regular expression', function() {
+        var invalids = [
+          {name: 'number', value: 42},
+          {name: 'boolean', value: false},
+          {name: 'null', value: null},
+          {name: 'undefined', value: undefined},
+          {name: 'object', value: {}},
+          {name: 'array', value: []}
+        ];
+
+
+        var nonRegExpes = invalids.concat([
+          {name: 'string', value: 'abc'},
+          {name: 'function', value: function() {}}
+        ]);
+
+        nonRegExpes.forEach(function(test) {
+          it('Throws if from is a ' + test.name, function() {
             var s = 'funkier';
-            var from = /g/;
             var to = fn ? function(s) {return 'h';} : 'h';
             var f = function() {
-              fnUnderTest(from, to, s);
+              fnUnderTest(test.value, to, s);
             };
 
             expect(f).to.throw(TypeError);
           });
-        } else {
-          it('Does not throw if from is a regular expression', function() {
-            var s = 'funkier';
-            var from = /g/;
-            var to = fn ? function(s) {return 'h';} : 'h';
-            var f = function() {
-              fnUnderTest(from, to, s);
-            };
-
-            expect(f).to.not.throw(TypeError);
-          });
-
-
-          if (!fn) {
-            it('Respects meaning of $1 in replacement', function() {
-              var s = 'bana';
-              var from = /(na)/;
-              var to = '$1$1'
-              var result = fnUnderTest(from, to, s);
-
-              expect(result).to.equal('banana');
-            });
-          } else {
-            it('Calls replacement function with matched groups', function() {
-              var s = 'a111b222c';
-              var from = /(\d+)b(\d+)/;
-              var to = function(s, a, b) {to.arg1 = a; to.arg2 = b; return '';};
-              to.arg1 = null;
-              to.arg2 = null;
-              var result = fnUnderTest(from, to, s);
-
-              expect(to.arg1).to.equal('111');
-              expect(to.arg2).to.equal('222');
-            });
-          }
-        }
+        });
 
 
         if (!fn) {
-          it('Throws if to is a function', function() {
-            var s = 'funkier';
-            var from = regexp ? /g/ : 'g';
-            var to = function(s) {};
-            var f = function() {
-              fnUnderTest(from, to, s);
-            };
+          var nonStrings = invalids.concat([
+            {name: 'function', value: function() {return 'abc';}}
+          ]);
 
-            expect(f).to.throw(TypeError);
+          nonStrings.forEach(function(test) {
+            it('Throws if replacement is a ' + test.name, function() {
+              var s = 'funkier';
+              var from = /u/;
+              var f = function() {
+                fnUnderTest(from, test.value, s);
+              };
+
+              expect(f).to.throw(TypeError);
+            });
           });
 
 
           // If argument 2 isn't a function, then it's a string. Test the various
           //  special characters.
 
+          it('Respects meaning of $1 in replacement', function() {
+            var s = 'bana';
+            var from = /(na)/;
+            var to = '$1$1'
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('banana');
+          });
+
+
           it('Respects meaning of $& in replacement', function() {
             var s = 'ba';
-            var from = regexp ? /ba/ : 'ba';
+            var from = /ba/;
             var to = 'ab$&';
             var result = fnUnderTest(from, to, s);
 
@@ -359,7 +348,7 @@
 
           it('Respects meaning of $` in replacement', function() {
             var s = 'can-';
-            var from = regexp ? /-/ : '-';
+            var from = /-/;
             var to = '-$`';
             var result = fnUnderTest(from, to, s);
 
@@ -369,7 +358,7 @@
 
           it('Respects meaning of $\' in replacement', function() {
             var s = 'bana';
-            var from = regexp ? /ba/ : 'ba';
+            var from = /ba/;
             var to = 'ba$\''
             var result = fnUnderTest(from, to, s);
 
@@ -379,16 +368,46 @@
 
           it('Respects meaning of $$ in replacement', function() {
             var s = 'let\'s make some dollar';
-            var from = regexp ? /dollar/ : 'dollar';
+            var from = /dollar/;
             var to = '$$'
             var result = fnUnderTest(from, to, s);
 
             expect(result).to.equal('let\'s make some $');
           });
         } else {
+          var nonFunctions = invalids.concat([
+            {name: 'string', value: 'abc'}
+          ]);
+
+          nonFunctions.forEach(function(test) {
+            it('Throws if replacement is a ' + test.name, function() {
+              var s = 'funkier';
+              var from = /u/;
+              var f = function() {
+                fnUnderTest(from, test.value, s);
+              };
+
+              expect(f).to.throw(TypeError);
+            });
+          });
+
+
+          it('Calls replacement function with matched groups', function() {
+            var s = 'a111b222c';
+            var from = /(\d+)b(\d+)/;
+            var to = function(s, a, b) {to.arg1 = a; to.arg2 = b; return '';};
+            to.arg1 = null;
+            to.arg2 = null;
+            var result = fnUnderTest(from, to, s);
+
+            expect(to.arg1).to.equal('111');
+            expect(to.arg2).to.equal('222');
+          });
+
+
           it('Calls replacement function with matched substring', function() {
             var s = 'funkier';
-            var from = regexp ? /f/ : 'f';
+            var from = /f/;
             var to = function(s) {to.s = s; return 'g';};
             to.s = null;
             var result = fnUnderTest(from, to, s);
@@ -400,7 +419,7 @@
 
         it('Returns original string when no matches found', function() {
           var s = 'funkier';
-          var from = regexp ? /g/ : 'g';
+          var from = /g/;
           var to = fn ? function(s) {return 'h';} : 'h';
           var result = fnUnderTest(from, to, s);
 
@@ -410,7 +429,7 @@
 
         it('Works correctly', function() {
           var s = 'funkier';
-          var from = regexp ? /f/ : 'f';
+          var from = /f/;
           var to = fn ? function(s) {return 'g';} : 'g';
           var result = fnUnderTest(from, to, s);
 
@@ -420,7 +439,7 @@
 
         it('Replaces leftmost', function() {
           var s = 'bannna';
-          var from = regexp ? /nn/ : 'nn';
+          var from = /nn/;
           var to = fn ? function(s) {return 'na';} : 'na';
           var result = fnUnderTest(from, to, s);
 
@@ -430,7 +449,7 @@
 
         it('Deletes if replacement is empty', function() {
           var s = 'funkier';
-          var from = regexp ? /u/ : 'u';
+          var from = /u/;
           var to = fn ? function(s) {return '';} : '';
           var result = fnUnderTest(from, to, s);
 
@@ -441,7 +460,7 @@
         if (once) {
           it('Replaces exactly one instance when found', function() {
             var s = 'banana';
-            var from = regexp ? /a/ : 'a';
+            var from = /a/;
             var to = fn ? function(s) {return 'i';} : 'i';
             var result = fnUnderTest(from, to, s);
 
@@ -449,20 +468,38 @@
           });
 
 
-          if (regexp) {
-            it('Ignores global flag on regexp', function() {
-              var s = 'banana';
-              var from = /a/g;
-              var to = fn ? function(s) {return 'i';} : 'i';
-              var result = fnUnderTest(from, to, s);
+          it('Ignores global flag on regexp', function() {
+            var s = 'banana';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
 
-              expect(result).to.equal('binana');
-            });
-          }
+            expect(result).to.equal('binana');
+          });
         } else {
           it('Replaces all instances found', function() {
             var s = 'banana';
-            var from = regexp ? /a/ : 'a';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binini');
+          });
+
+
+          it('Works correctly when replacement text matches', function() {
+            var s = 'banana';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'ai';} : 'ai';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('bainainai');
+          });
+
+
+          it('Works irrespective of regexp global flag', function() {
+            var s = 'banana';
+            var from = /a/;
             var to = fn ? function(s) {return 'i';} : 'i';
             var result = fnUnderTest(from, to, s);
 
@@ -470,20 +507,16 @@
           });
         }
 
-        var from = regexp ? /a/ : 'a';
+        var from = /a/g;
         var to = fn ? function(s) {return 'i';} : 'i';
         testCurriedFunction(desc, fnUnderTest, [from, to, 'banana']);
       });
     };
 
-    makeReplaceTest('replaceOneString', string.replaceOneString, false, false, true);
-    makeReplaceTest('replaceString', string.replaceString, false, false, false);
-    makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, false, true, true);
-    makeReplaceTest('replaceStringWith', string.replaceStringWith, false, true, false);
-    makeReplaceTest('replaceOneRegExp', string.replaceOneRegExp, true, false, true);
-    makeReplaceTest('replaceRegExp', string.replaceRegExp, true, false, false);
-    makeReplaceTest('replaceOneRegExpWith', string.replaceOneRegExpWith, true, true, true);
-    makeReplaceTest('replaceRegExpWith', string.replaceRegExpWith, true, true, false);
+    makeReplaceTest('replaceOneString', string.replaceOneString, false, true);
+    makeReplaceTest('replaceString', string.replaceString, false, false);
+    makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, true, true);
+    makeReplaceTest('replaceStringWith', string.replaceStringWith, true, false);
 
 
     var testSpec = {
