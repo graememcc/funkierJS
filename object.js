@@ -9,7 +9,6 @@
 
     var base = require('./base');
     var flip = base.flip;
-    var permuteLeft = base.permuteLeft;
 
     var utils = require('./utils');
     var checkObjectLike = utils.checkObjectLike;

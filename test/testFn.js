@@ -9,6 +9,8 @@
     var fn = require('../fn');
 
     var curryModule = require('../curry');
+    var curry = curryModule.curry;
+    var curryWithArity = curryModule.curryWithArity;
     var getRealArity = curryModule.getRealArity;
 
     var base = require('../base');
@@ -23,9 +25,191 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity',
+    var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity', 'permuteLeft', 'rotateLeft',
                              'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
+
+
+    var addCommonPermuteTests = function(fnUnderTest) {
+      // Generate the same arity tests
+      var fns = [function() {}, function(a) {}, function(a, b) {}, function(a, b, c) {}, function(a, b, c, d) {}];
+
+      var addSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i, function() {
+          var permuted = fnUnderTest(f);
+
+          expect(getRealArity(permuted)).to.equal(getRealArity(f));
+        });
+      };
+
+
+      var addCurriedSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i, function() {
+          f = curry(f);
+          var permuted = fnUnderTest(f);
+
+          expect(getRealArity(permuted)).to.equal(getRealArity(f));
+        });
+      };
+
+
+      fns.forEach(function(f, i) {
+        addSameArityTest(f, i);
+        addCurriedSameArityTest(f, i);
+      });
+
+
+      it('Returns original function if original is curried with arity 0', function() {
+        var f = curry(function() {});
+        var g = fnUnderTest(f);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Returns curried original function if original is not curried and has arity 0', function() {
+        var f = function() {return [].slice.call(arguments);};
+        var g = fnUnderTest(f);
+
+        expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
+        expect(g(1, 2, 3)).to.deep.equal([]);
+      });
+
+
+      it('Returns original function if original is curried with arity 1', function() {
+        var f = curry(function(x) {});
+        var g = fnUnderTest(f);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Returns curried original function if original is not curried and has arity 1', function() {
+        var f = function(x) {return [].slice.call(arguments);};
+        var g = fnUnderTest(f);
+
+        expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
+        expect(g(1, 2, 3)).to.deep.equal([1]);
+      });
+
+
+      it('New function returns same result as original when called with uncurried function of arity 2', function() {
+        var f = function(x, y) {return x - y;};
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(f(2, 1));
+      });
+
+
+      it('New function returns same result as original when called with curried function of arity 2', function() {
+        var f = curry(function(x, y) {return x - y;});
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(f(2, 1));
+      });
+
+
+      it('Equivalent to flip when called with an uncurried function of arity 2', function() {
+        var f = function(x, y) {return x - y;};
+        var flipped = base.flip(f);
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(flipped(1, 2));
+      });
+
+
+      it('Equivalent to flip when called with an curried function of arity 2', function() {
+        var f = curry(function(x, y) {return x - y;});
+        var flipped = base.flip(f);
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(flipped(1, 2));
+      });
+
+
+      var f = function(a, b) {return a - b;};
+      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(f), [1, 2]);
+      var g = curry(function(a, b) {return a - b;});
+      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(g), [1, 2]);
+    };
+
+
+    var permuteLeftSpec = {
+      name: 'permuteLeft',
+      arity: 1,
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    describeFunction(permuteLeftSpec, fn.permuteLeft, function(permuteLeft) {
+      addCommonPermuteTests(permuteLeft);
+
+
+      // For higher arities, we will generate a series of tests for arities 3 and 4
+      var params = [1, 'a', undefined, true];
+      var baseFunc = function() {return [].slice.call(arguments);};
+
+
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
+          var called = false;
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {called = true;});
+          var permuted = permuteLeft(fn);
+          // Lack of assignment is deliberate: we only care about the side-effect
+          permuted.apply(null, args);
+
+          expect(called).to.be.true;
+        });
+      };
+
+
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, baseFunc);
+          var permuted = permuteLeft(fn);
+          var result = permuted.apply(null, args);
+          var expected = [args[i - 1]].concat(args.slice(0, i - 1));
+
+          expect(result).to.deep.equal(expected);
+        });
+      };
+
+
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
+          var permuted = permuteLeft(fn);
+          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
+          var result = permuted.apply(null, args);
+
+          expect(result).to.deep.equal(originalResult);
+        });
+      };
+
+
+      for (var i = 3; i < 5; i++) {
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
+
+        // And, of course, the permuted function should be curried
+        var curried = curryWithArity(i, baseFunc);
+        testCurriedFunction('Permuted function of arity ' + i, permuteLeft(curried), params.slice(0, i));
+      }
+    });
+
+
+    describe('rotateLeft', function() {
+      it('Is a synonym for permuteLeft', function() {
+        expect(fn.rotateLeft === fn.permuteLeft).to.be.true;
+      });
+    });
 
 
     var addReturnsFunctionTest = function(fnUnderTest, args) {
