@@ -309,6 +309,19 @@
       });
 
 
+      it('Works correctly when object has custom isPrototypeOf function', function() {
+        var obj = {
+          'foo': 1,
+          'isPrototypeOf': function(prop) {
+            return true;
+          }
+        };
+        var result = isPrototypeOf(obj, Object);
+
+        expect(result).to.be.false;
+      });
+
+
       testCurriedFunction('isPrototypeOf', isPrototypeOf, [Object.prototype, {}]);
     });
 

@@ -118,7 +118,6 @@
     );
 
 
-    // XXX Bug: Use proto.isPrototypeOf in case object has own implementation
     var isPrototypeOf = defineValue(
       'name: isPrototypeOf',
       'signature: protoObj: Object, o: Object',
@@ -131,7 +130,9 @@
       'var Constructor = function() {};',
       'isPrototypeOf(Constructor.prototype, new Constructor()); // true',
       'isPrototypeOf(Function.prototype, {}); // false',
-      flip(callPropWithArity('isPrototypeOf', 1))
+      curry(function(proto, obj) {
+        return Object.prototype.isPrototypeOf.call(proto, obj);
+      })
     );
 
 
