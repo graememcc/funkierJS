@@ -157,8 +157,6 @@
     );
 
 
-    // XXX Currently this function and replaceOneStringWith strictly require strings. Should we allow
-    // coercion?
     var replaceOneString = defineValue(
       'name: replaceOneString',
       'signature: regexp: RegExp, replacement: string, s: string',
@@ -179,7 +177,7 @@
       '  - $` refers to the text before the match',
       '  - $\' refers to the text after the match',
       '',
-      'Throws a TypeError if regexp is not a RegExp, or if replacement is a function.',
+      'Throws a TypeError if regexp is not a RegExp, or if replacement is not a string.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
@@ -216,7 +214,7 @@
       '  - $` refers to the text before the match',
       '  - $\' refers to the text after the match',
       '',
-      'Throws a TypeError if regexp is not a RegExp, or if replacement is a function.',
+      'Throws a TypeError if regexp is not a RegExp, or if replacement is not a string.',
       '',
       'Note: this function ignores the global flag of the given RegExp.',
       '',
@@ -312,7 +310,6 @@
     );
 
 
-    // XXX Should we adapt this so we return a TypeError?
     var test = defineValue(
       'name: test',
       'signature: regexp: RegExp, s: string',
@@ -322,10 +319,14 @@
       'and returns true if the string contains a substring matching the given pattern,',
       'and false otherwise.',
       '',
-      'Throws a ReferenceError if the first parameter is not a RegExp.',
+      'Throws a TypeError if regexp is not a RegExp, or if s is not a string.',
       '--',
       'var b = test(/a/, \'banana\'); // b === true',
-      flip(callPropWithArity('test', 1))
+      curry(function(regexp, s) {
+        if (!(regexp instanceof RegExp) || typeof(s) !== 'string')
+          throw new TypeError('test called with invalid types');
+        return regexp.test(s);
+      })
     );
 
 

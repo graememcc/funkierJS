@@ -528,6 +528,43 @@
 
 
     describeFunction(testSpec, string.test, function(test) {
+      var invalids = [
+        {name: 'number', value: 42},
+        {name: 'boolean', value: false},
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'object', value: {}},
+        {name: 'array', value: []},
+        {name: 'function', value: function() {}}
+      ];
+
+
+      var nonRegExpes = invalids.concat([
+        {name: 'string', value: 'abc'},
+      ]);
+
+      nonRegExpes.forEach(function(test) {
+        it('Throws when first parameter is a ' + test.name, function() {
+          var fn = function() {
+            test(test.value, 'foo');
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      invalids.forEach(function(test) {
+        it('Throws when second parameter is a ' + test.name, function() {
+          var fn = function() {
+            test(/a/, test.value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
       var addReturnsBooleanTest = function(message, str) {
         it('Returns a boolean (1)', function() {
           var result = test(/a/, str);
