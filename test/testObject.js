@@ -179,6 +179,19 @@
       });
 
 
+      it('Works correctly when object has custom hasOwnProperty function', function() {
+        var obj = {
+          'foo': 1,
+          'hasOwnProperty': function(prop) {
+            return prop !== 'foo';
+          }
+        };
+        var result = hasOwnProperty('foo', obj);
+
+        expect(result).to.be.true;
+      });
+
+
       testCurriedFunction('hasOwnProperty', hasOwnProperty, ['funkier', {funkier: 1}]);
     });
 

@@ -66,7 +66,6 @@
     );
 
 
-    // XXX Bug: Use proto.hasOwnProperty in case object has own implementation
     var hasOwnProperty = defineValue(
       'name: hasOwnProperty',
       'signature: prop: string, o: Object',
@@ -78,9 +77,10 @@
       '--',
       'hasOwnProperty(\'funkier\', {funkier: 1}); // true',
       'hasOwnProperty(\'toString\', {funkier: 1}); // false',
-      callPropWithArity('hasOwnProperty', 1)
+      curry(function(prop, obj) {
+        return Object.prototype.hasOwnProperty.call(obj, prop);
+      })
     );
-
 
 
     var hasProperty = defineValue(
