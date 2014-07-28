@@ -185,16 +185,29 @@
     );
 
 
-    /*
-      sectionLeft: sectionLeft is a synonym for applyFunc
-     *
-     */
+    var sectionLeft = defineValue(
+      'name: sectionLeft',
+      'signature: f: function, x: any',
+      'classification: base',
+      '',
+      'Partially applies the binary function f with the given argument x, with x being',
+      'supplied as the first argument to f. The given function f will be curried if',
+      'necessary.',
+      '',
+      'Throws a TypeError if f is not a binary function.',
+      '--',
+      'var f = function(x, y) {return x * y;};',
+      'var g = sectionLeft(f, 2); // returns a function',
+      'g(3); // 6 (i.e. 2 * 3)',
+      curry(function(f, x) {
+        f = checkFunction(f, {arity: 2, message: 'Value to be sectioned must be a function of arity 2'});
+        f = curry(f);
 
-    // XXX This will need proper help when we've sorted the applyFunc situation
-    var sectionLeft = applyFunc;
+        return f(x);
+      })
+    );
 
 
-    // XXX This help will need updated too
     var sectionRight = defineValue(
       'name: sectionRight',
       'signature: f: function, arg: any',
@@ -202,8 +215,6 @@
       '',
       'Partially applies the binary function f with the given argument x, with x being supplied as',
       'the second argument to f.',
-      '',
-      'sectionRight satisfies the equation sectionRight(f, x) = applyFunc(flip(f), x);',
       '',
       'Throws a TypeError if f is not a binary function.',
       '--',

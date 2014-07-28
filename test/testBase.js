@@ -704,14 +704,74 @@
     });
 
 
-    describe('sectionLeft', function() {
-      var sectionLeft = base.sectionLeft;
-      var applyFunc = base.applyFunc;
+    var sectionLeftSpec = {
+      name: 'sectionLeft',
+      arity: 2,
+      restrictions: [['function: arity 2'], []],
+      validArguments: [[function(x, y) {}], [1]]
+    };
 
 
-      it('sectionLeft is a synonym for applyFunc', function() {
-        expect(sectionLeft).to.equal(applyFunc);
+    describeFunction(sectionLeftSpec, base.sectionLeft, function(sectionLeft) {
+      it('Calls f with x (1)', function() {
+        var f = function(x, y) {f.args = [x];};
+        f.args = null;
+        // Lack of assignment here is deliberate: we are interested in the side effect
+        var val = 42;
+        var g = sectionLeft(f, val);
+        g(1);
+
+        expect(f.args).to.deep.equal([val]);
       });
+
+
+      it('Calls f with x (2)', function() {
+        var f = function(x, y) {f.args = [x];};
+        f.args = null;
+        // Lack of assignment here is deliberate: we are interested in the side effect
+        var val = 'mozilla';
+        var g = sectionLeft(f, val);
+        g(1);
+
+        expect(f.args).to.deep.equal([val]);
+      });
+
+
+      it('Returns f(x) (1)', function() {
+        var val = 42;
+        var f = curry(function(x, y) {return x + y;});
+        var result = sectionLeft(f, val);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(val, 10));
+      });
+
+
+      it('Returns f(x) (2)', function() {
+        var val = 42;
+        var f = curry(function(x, y) {return x * y;});
+        var result = sectionLeft(f, val);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(val, 10));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var val = 42;
+        var f = function(x, y) {return x + y;};
+        var result = sectionLeft(f, val);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(val, 10));
+      });
+
+
+      var fn = function(x, y) {return x + y;};
+      testCurriedFunction('sectionLeft', sectionLeft, {firstArgs: [fn, 42], thenArgs: [1]});
     });
 
 
@@ -723,15 +783,7 @@
     };
 
 
-    describe('sectionRight', function() {
-      var sectionRight = base.sectionRight;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(sectionRight)).to.equal(2);
-      });
-
-
+    describeFunction(sectionRightSpec, base.sectionRight, function(sectionRight) {
       var addPartiallyAppliedRightTest = function(message, f, val1, val2) {
         it('Partially applies to the right (1)', function() {
           var sectioned = sectionRight(f, val1);
