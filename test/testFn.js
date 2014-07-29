@@ -25,9 +25,90 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['bindWithContext', 'bindWithContextAndArity', 'permuteLeft', 'rotateLeft',
+    var expectedFunctions = ['apply', 'bindWithContext', 'bindWithContextAndArity', 'permuteLeft', 'rotateLeft',
                              'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
+
+
+    var applySpec = {
+      name: 'apply',
+      arity: 2,
+      restrictions: [['strictarraylike'], ['function']],
+      validArguments: [[[1, 2], makeArrayLike([1, 2])], [function(x) {}]]
+    };
+
+
+    describeFunction(applySpec, fn.apply, function(apply) {
+      it('Calls f', function() {
+        var called = false;
+        var f = function() {called = true;};
+        apply([], f);
+
+        expect(called).to.be.true;
+      });
+
+
+      it('Calls f with null execution context', function() {
+        var context = undefined;
+        var f = function() {context = this;};
+        apply([], f);
+
+        expect(context).to.equal(null);
+      });
+
+
+      it('Calls f with given arguments (1)', function() {
+        var args = null;
+        var f = function(x) {args = [].slice.call(arguments);};
+        var fArgs = [1];
+        apply(fArgs, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Calls f with given arguments (2)', function() {
+        var args = null;
+        var f = function(x, y) {args = [].slice.call(arguments);};
+        var fArgs = ['foo', 42];
+        apply(fArgs, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Returns f(x) (1)', function() {
+        var f = function(x) {return x + 1;};
+        var arg = 1;
+        var result = apply([arg], f);
+
+        expect(result).to.deep.equal(f(arg));
+      });
+
+
+      it('Returns f(x) (2)', function() {
+        var f = function(x, y) {return x * y;};
+        var arg1 = 2;
+        var arg2 = 42;
+        var result = apply([arg1, arg2], f);
+
+        expect(result).to.deep.equal(f(arg1, arg2));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var f = function(x, y) {return x + y;};
+        var arg = 42;
+        var result = apply([arg], f);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(arg, 10));
+      });
+
+
+      testCurriedFunction('apply', apply, [[42], id]);
+    });
 
 
     var addCommonPermuteTests = function(fnUnderTest) {

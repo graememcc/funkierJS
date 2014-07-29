@@ -21,6 +21,28 @@
     var checkFunction = funcUtils.checkFunction;
 
 
+    var apply = defineValue(
+      'name: apply',
+      'signature: args: array, f: function',
+      'classification: function',
+      '',
+      'Apply the given function f with the arguments given in the array args,',
+      'returning the result. The given function will be curried if it has arity > 1.',
+      '',
+      'Throws a TypeError if args is not an array, or if f is not a function.',
+      '',
+      '--',
+      'apply([1], id); // 1',
+      curry(function(args, f) {
+        f = checkFunction(f);
+        f = curry(f);
+        args = checkArrayLike(args, {noStrings: true, message: 'Function arguments not an array'});
+
+        return f.apply(null, args);
+      })
+    );
+
+
     var permuteLeft = defineValue(
       'name: permuteLeft/rotateLeft',
       'signature: f: function',
@@ -54,7 +76,7 @@
     var permuteRight = defineValue(
       'name: permuteRight/rotateRight',
       'signature: f: function',
-      'classification: base',
+      'classification: function',
       '',
       'Takes a function, returns a curried function of the same arity which takes the',
       'same parameters, except in a different position. The last parameter of the',
@@ -296,6 +318,7 @@
 
 
     var exported = {
+      apply: apply,
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
       callWithContext: callWithContext,

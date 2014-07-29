@@ -166,25 +166,6 @@
     );
 
 
-    // XXX Not sure this has any real value. (Note it is used for applyFunc!)
-    var applyFunc = defineValue(
-      'name: applyFunc',
-      'signature: f: function, x: any',
-      'classification: base',
-      '',
-      'Apply the given function f with the given argument x, returning the result.',
-      'The given function will be curried if it has arity > 1',
-      '',
-      'Thus, applyFunc(f, x) = f(x)',
-      '--',
-      'apply(id, 1); // 1',
-      curry(function(f, x) {
-        f = curry(f);
-        return f(x);
-      })
-    );
-
-
     var sectionLeft = defineValue(
       'name: sectionLeft',
       'signature: f: function, x: any',
@@ -496,7 +477,6 @@
 
 
     var exported = {
-      applyFunc: applyFunc,
       compose: compose,
       composeMany: composeMany,
       constant: constant,

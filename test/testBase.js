@@ -20,10 +20,9 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['compose', 'id', 'constant', 'constant0', 'composeMany', 'flip', 'applyFunc',
-                             'sectionLeft', 'sectionRight', 'equals', 'strictEquals', 'notEqual', 'strictNotEqual',
-                             'is', 'isNumber', 'isString', 'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
-                             'isRealObject', 'getType', 'deepEqual'];
+    var expectedFunctions = ['compose', 'id', 'constant', 'constant0', 'composeMany', 'flip', 'sectionLeft', 'sectionRight',
+                             'equals', 'strictEquals', 'notEqual', 'strictNotEqual', 'is', 'isNumber', 'isString', 'isBoolean',
+                             'isUndefined', 'isObject', 'isArray', 'isNull', 'isRealObject', 'getType', 'deepEqual'];
     describeModule('base', base, expectedObjects, expectedFunctions);
 
 
@@ -624,83 +623,6 @@
 
 
       testCurriedFunction('flipped function', flip(function(a, b) {return a - b;}), [1, 2]);
-    });
-
-
-    describe('applyFunc', function() {
-      var applyFunc = base.applyFunc;
-
-
-      it('Has correct arity', function() {
-        expect(getRealArity(applyFunc)).to.equal(2);
-      });
-
-
-      it('Calls f with x (1)', function() {
-        var f = function(x) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        // Lack of assignment here is deliberate: we are interested in the side effect
-        var val = 42;
-        applyFunc(f, val);
-
-        expect(f.args).to.deep.equal([val]);
-      });
-
-
-      it('Calls f with x (2)', function() {
-        var f = function(x) {f.args = [].slice.call(arguments);};
-        f.args = null;
-        // Lack of assignment here is deliberate: we are interested in the side effect
-        var val = 'mozilla';
-        applyFunc(f, val);
-
-        expect(f.args).to.deep.equal([val]);
-      });
-
-
-      it('Returns f(x) (1)', function() {
-        var val = 42;
-        var result = applyFunc(id, val);
-
-        expect(result).to.equal(id(val));
-      });
-
-
-      it('Returns f(x) (2)', function() {
-        var val = 42;
-        var f = function(x) {return x + 1;};
-        var result = applyFunc(f, val);
-
-        expect(result).to.equal(f(val));
-      });
-
-
-      it('Returns f(x) (3)', function() {
-        var val = 42;
-        var f = curry(function(x, y) {return x + y;});
-        var result = applyFunc(f, val);
-
-        expect(result).to.be.a('function');
-        expect(result.length).to.equal(1);
-        expect(result(10)).to.equal(f(val, 10));
-      });
-
-
-      it('Curries f if necessary', function() {
-        var val = 42;
-        var f = function(x, y) {return x + y;};
-        var result = applyFunc(f, val);
-
-        expect(result).to.be.a('function');
-        expect(result.length).to.equal(1);
-        expect(result(10)).to.equal(f(val, 10));
-      });
-
-
-      // applyFunc should be curried
-      (function() {
-        testCurriedFunction('applyFunc', applyFunc, [id, 42]);
-      })();
     });
 
 
