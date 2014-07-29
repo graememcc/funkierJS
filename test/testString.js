@@ -19,9 +19,9 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
-                             'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase',
-                             'split', 'replaceOneString', 'replaceString', 'replaceOneStringWith',
-                             'replaceStringWith','test', 'matches', 'matchesFrom', 'firstMatch',
+                             'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase', 'split', 'splitRegExp',
+                             'splitLimit', 'splitRegExpLimit', 'replaceOneString', 'replaceString',
+                             'replaceOneStringWith', 'replaceStringWith','test', 'matches', 'matchesFrom', 'firstMatch',
                              'firstMatchFrom', 'toLocaleString'];
     describeModule('string', string, expectedObjects, expectedFunctions);
 
@@ -211,7 +211,9 @@
 
     var splitSpec = {
       name: 'split',
-      arity: 2
+      arity: 2,
+      restrictions: [['string'], ['string']],
+      validArguments: [['a'], ['banana']]
     };
 
 
@@ -262,10 +264,193 @@
       addWorksCorrectlyTest('(2)', '*', 'd-e-f-g');
       addWorksCorrectlyTest('(3)', '--', 'd--e--f--g');
       addWorksCorrectlyTest('(4)', '', 'defg');
-      addWorksCorrectlyTest('(5)', /--/, 'd--e--f--g');
+      addWorksCorrectlyTest('(5)', '--', 'd--e--f--g');
 
 
       testCurriedFunction('split', split, ['*', 'a*b']);
+    });
+
+
+    var splitRegExpSpec = {
+      name: 'splitRegExp',
+      arity: 2,
+      restrictions: [[RegExp], ['string']],
+      validArguments: [[/a/], ['banana']]
+    };
+
+
+    describeFunction(splitRegExpSpec, string.splitRegExp, function(splitRegExp) {
+      var addReturnsArrayTest = function(message, pattern, str) {
+        it('Returns an array ' + message, function() {
+          var result = splitRegExp(pattern, str);
+
+          expect(base.isArray(result)).to.be.true;
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', /-/, 'a-b-c');
+      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
+
+
+      it('Matched pattern not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = splitRegExp(/-/, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Matched pattern not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = splitRegExp(/-/, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      var addWorksCorrectlyTest = function(message, pattern, str) {
+        it('Works correctly ' + message, function() {
+          var result = splitRegExp(pattern, str);
+
+          expect(result).to.deep.equal(str.split(pattern));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', /-/, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', /\*/, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', /-{1}/, 'd--e--f--g');
+
+
+      testCurriedFunction('splitRegExp', splitRegExp, [/-+/, 'a--b']);
+    });
+
+
+    var splitLimitSpec = {
+      name: 'splitLimit',
+      arity: 3,
+      restrictions: [['string'], ['integer'], ['string']],
+      validArguments: [['a'], [2], ['banana']]
+    };
+
+
+    describeFunction(splitLimitSpec, string.splitLimit, function(splitLimit) {
+      var addReturnsArrayTest = function(message, splitStr, str) {
+        it('Returns an array ' + message, function() {
+          var result = splitLimit(splitStr, 1, str);
+
+          expect(base.isArray(result)).to.be.true;
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', '-', 'a-b-c');
+      addReturnsArrayTest('(2)', '*', 'a-b-c');
+
+
+      it('Splitting string not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = splitLimit('-', 10, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Splitting string not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = splitLimit('-', 10, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      var addWorksCorrectlyTest = function(message, splitStr, limit, str) {
+        it('Works correctly ' + message, function() {
+          var result = splitLimit(splitStr, limit, str);
+
+          expect(result).to.deep.equal(str.split(splitStr, limit));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', '-', 10, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', '-', 1, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', '*', 2, 'd-e-f-g');
+      addWorksCorrectlyTest('(4)', '--', 4, 'd--e--f--g');
+      addWorksCorrectlyTest('(5)', '', 2, 'defg');
+
+
+      testCurriedFunction('splitLimit', splitLimit, ['*', 1, 'a*b']);
+    });
+
+
+    var splitRegExpLimitSpec = {
+      name: 'splitRegExpLimit',
+      arity: 3,
+      restrictions: [[RegExp], ['integer'], ['string']],
+      validArguments: [[/a/], [10], ['banana']]
+    };
+
+
+    describeFunction(splitRegExpLimitSpec, string.splitRegExpLimit, function(splitRegExpLimit) {
+      var addReturnsArrayTest = function(message, pattern, str) {
+        it('Returns an array ' + message, function() {
+          var result = splitRegExpLimit(pattern, 10, str);
+
+          expect(base.isArray(result)).to.be.true;
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', /-/, 'a-b-c');
+      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
+
+
+      it('Matched pattern not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = splitRegExpLimit(/-/, 10, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      it('Matched pattern not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = splitRegExpLimit(/-/, 10, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.be.true;
+      });
+
+
+      var addWorksCorrectlyTest = function(message, pattern, limit, str) {
+        it('Works correctly ' + message, function() {
+          var result = splitRegExpLimit(pattern, limit, str);
+
+          expect(result).to.deep.equal(str.split(pattern, limit));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', /-/, 10, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', /-/, 2, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', /\*/, 4, 'd-e-f-g');
+      addWorksCorrectlyTest('(4)', /-{1}/, 3, 'd--e--f--g');
+
+
+      testCurriedFunction('splitRegExpLimit', splitRegExpLimit, [/-+/, 10, 'a--b']);
     });
 
 

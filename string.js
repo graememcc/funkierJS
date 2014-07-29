@@ -8,6 +8,7 @@
 
     var utils = require('./utils');
     var defineValue = utils.defineValue;
+    var checkIntegral = utils.checkIntegral;
 
     var base = require('./base');
     var flip = base.flip;
@@ -140,7 +141,6 @@
     );
 
 
-    // FIXME: Regexps should be a separate function
     var split = defineValue(
       'name: split',
       'classification: string',
@@ -150,10 +150,103 @@
       'and a target string s, and returns an array containing the substrings of s that',
       'were separated by the given delimiter.',
       '',
-      'Note: this function does not accept the limit parameter accepted by String.prototype.split.',
+      'Throws a TypeError if either parameter is not a string.',
+      '',
+      'To specify the delimiter as a RegExp, use [[splitRegExp]].',
+      'To specify a limit count, use [[splitLimit]]/[[splitRegExpLimit]].',
       '--',
       'var arr = split(\'|\', \'1|2|3\'); // arr === [\'1\', \'2\', \'3\']',
-      callPropWithArity('split', 1)
+      curry(function(delimiter, s) {
+        if (typeof(s) !== 'string' || typeof(delimiter) !== 'string')
+          throw new TypeError('Delimiter and string must be strings');
+
+        return s.split(delimiter);
+      })
+    );
+
+
+    var splitRegExp = defineValue(
+      'name: splitRegExp',
+      'classification: string',
+      'signature: delimiter: RegExp, s: string',
+      '',
+      'A curried wrapper around {{String.prototype.split}}. Takes a pattern regexp,',
+      'and a target string s, and returns an array containing the substrings of s that',
+      'were separated by substrings matching the given pattern.',
+      '',
+      'Throws a TypeError if the first parameter is not a RegExp or if the second',
+      'parameter is not a string.',
+      '',
+      'To specify the delimiter as a string, use [[split]].',
+      'To specify a limit count, use [[splitLimit]]/[[splitRegExpLimit]].',
+      '--',
+      'var arr = splitRegExp(/a/, \'banana\'); // arr === [\'b\', \'n\', \'n\']',
+      curry(function(delimiter, s) {
+        if (typeof(s) !== 'string')
+          throw new TypeError('Value to split must be a string');
+        if (!(delimiter instanceof RegExp))
+          throw new TypeError('Pattern to split on must be a RegExp');
+
+        return s.split(delimiter);
+      })
+    );
+
+
+    var splitLimit = defineValue(
+      'name: split',
+      'classification: string',
+      'signature: delimiter: string, limit: integer, s: string',
+      '',
+      'A curried wrapper around {{String.prototype.split}}. Takes a string delimiter,',
+      'a count, and a target string s, and returns an array containing the substrings',
+      'of s that were separated by the given delimiter, the returned array containing',
+      'at most limit such substrings.',
+      '',
+      'Throws a TypeError if the first or last parameter is not a string, or if limit',
+      'is not integral.',
+      '',
+      'To specify the delimiter as a RegExp, use [[splitRegExpLimit]].',
+      'To find all substrings, use [[split]]/[[splitRegExp]].',
+      '--',
+      'var arr = split(\'|\', 2, \'1|2|3\'); // arr === [\'1\', \'2\']',
+      curry(function(delimiter, limit, s) {
+        limit = checkIntegral(limit);
+
+        if (typeof(s) !== 'string' || typeof(delimiter) !== 'string')
+          throw new TypeError('Delimiter and string must be strings');
+
+        return s.split(delimiter, limit);
+      })
+    );
+
+
+    var splitRegExpLimit = defineValue(
+      'name: splitRegExpLimit',
+      'classification: string',
+      'signature: delimiter: RegExp, limit: integer, s: string',
+      '',
+      'A curried wrapper around {{String.prototype.split}}. Takes a pattern regexp,',
+      'a count and a target string s, and returns an array containing the substrings',
+      'of s that were separated by substrings matching the given pattern, the resulting',
+      'array containing at most limit such substrings.',
+      '',
+      'Throws a TypeError if the first parameter is not a RegExp, if the limit count is',
+      'not integral, or if the last parameter is not a string.',
+      '',
+      'To specify the delimiter as a string, use [[splitLimit]].',
+      'To find all substrings, use [[split]]/[[splitRegExp]].',
+      '--',
+      'var arr = splitRegExpLimit(/a/, 2, \'banana\'); // arr === [\'b\', \'n\']',
+      curry(function(delimiter, limit, s) {
+        limit = checkIntegral(limit);
+
+        if (typeof(s) !== 'string')
+          throw new TypeError('Value to split must be a string');
+        if (!(delimiter instanceof RegExp))
+          throw new TypeError('Pattern to split on must be a RegExp');
+
+        return s.split(delimiter, limit);
+      })
     );
 
 
@@ -494,6 +587,9 @@
       replaceString: replaceString,
       replaceStringWith: replaceStringWith,
       split: split,
+      splitLimit: splitLimit,
+      splitRegExp: splitRegExp,
+      splitRegExpLimit: splitRegExpLimit,
       test: test,
       toCharCode: toCharCode,
       toLocaleLowerCase: toLocaleLowerCase,
