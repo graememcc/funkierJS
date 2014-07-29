@@ -26,8 +26,9 @@
       'signature: args: array, f: function',
       'classification: function',
       '',
-      'Apply the given function f with the arguments given in the array args,',
-      'returning the result. The given function will be curried if it has arity > 1.',
+      'Apply the given function f with a null execution context, and the arguments given',
+      'in the array args, returning the result. The given function will be curried if it',
+      'has arity > 1.',
       '',
       'Throws a TypeError if args is not an array, or if f is not a function.',
       '',
@@ -39,6 +40,29 @@
         args = checkArrayLike(args, {noStrings: true, message: 'Function arguments not an array'});
 
         return f.apply(null, args);
+      })
+    );
+
+
+    var applyWithContext = defineValue(
+      'name: applyWithContext',
+      'signature: args: array, context: any, f: function',
+      'classification: function',
+      '',
+      'Apply the given function f with the given execution context, and the arguments',
+      'given in the array args, returning the result. The given function will be curried',
+      'if it has arity > 1.',
+      '',
+      'Throws a TypeError if args is not an array, or if f is not a function.',
+      '',
+      '--',
+      'applyWithContext([1], {foo: 1}, function(x) {return this.foo + x;}); // 2',
+      curry(function(args, context, f) {
+        f = checkFunction(f);
+        f = curry(f);
+        args = checkArrayLike(args, {noStrings: true, message: 'Function arguments not an array'});
+
+        return f.apply(context, args);
       })
     );
 
@@ -319,6 +343,7 @@
 
     var exported = {
       apply: apply,
+      applyWithContext: applyWithContext,
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
       callWithContext: callWithContext,

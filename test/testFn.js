@@ -25,8 +25,9 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['apply', 'bindWithContext', 'bindWithContextAndArity', 'permuteLeft', 'rotateLeft',
-                             'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'fixpoint', 'callWithContext'];
+    var expectedFunctions = ['apply', 'applyWithContext', 'bindWithContext', 'bindWithContextAndArity', 'permuteLeft',
+                             'rotateLeft', 'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'fixpoint',
+                             'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
@@ -77,7 +78,7 @@
       });
 
 
-      it('Returns f(x) (1)', function() {
+      it('Returns value of f when applied to given arguments (1)', function() {
         var f = function(x) {return x + 1;};
         var arg = 1;
         var result = apply([arg], f);
@@ -86,7 +87,7 @@
       });
 
 
-      it('Returns f(x) (2)', function() {
+      it('Returns value of f when applied to given arguments (2)', function() {
         var f = function(x, y) {return x * y;};
         var arg1 = 2;
         var arg2 = 42;
@@ -108,6 +109,90 @@
 
 
       testCurriedFunction('apply', apply, [[42], id]);
+    });
+
+
+    var applyWithContextSpec = {
+      name: 'applyWithContext',
+      arity: 3,
+      restrictions: [['strictarraylike'], [], ['function']],
+      validArguments: [[[1, 2], makeArrayLike([1, 2])], [{}], [function(x) {}]]
+    };
+
+
+    describeFunction(applyWithContextSpec, fn.applyWithContext, function(applyWithContext) {
+      it('Calls f', function() {
+        var called = false;
+        var f = function() {called = true;};
+        applyWithContext([], {}, f);
+
+        expect(called).to.be.true;
+      });
+
+
+      it('Calls f with correct execution context', function() {
+        var context = undefined;
+        var o = {};
+        var f = function() {context = this;};
+        applyWithContext([], o, f);
+
+        expect(context).to.equal(o);
+      });
+
+
+      it('Calls f with given arguments (1)', function() {
+        var args = null;
+        var f = function(x) {args = [].slice.call(arguments);};
+        var fArgs = [1];
+        applyWithContext(fArgs, {}, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Calls f with given arguments (2)', function() {
+        var args = null;
+        var f = function(x, y) {args = [].slice.call(arguments);};
+        var fArgs = ['foo', 42];
+        applyWithContext(fArgs, {}, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Returns value of f when applied to given arguments (1)', function() {
+        var o = {foo: 41};
+        var f = function(x) {return x + this.foo;};
+        var arg = 1;
+        var result = applyWithContext([arg], o, f);
+
+        expect(result).to.deep.equal(f.call(o, arg));
+      });
+
+
+      it('Returns value of f applied to given arguments (2)', function() {
+        var o = {bar: 10};
+        var f = function(x, y) {return x * y * this.bar;;};
+        var arg1 = 2;
+        var arg2 = 42;
+        var result = applyWithContext([arg1, arg2], o, f);
+
+        expect(result).to.deep.equal(f.call(o, arg1, arg2));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var f = function(x, y) {return x + y;};
+        var arg = 42;
+        var result = applyWithContext([arg], {}, f);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(arg, 10));
+      });
+
+
+      testCurriedFunction('applyWithContext', applyWithContext, [[42], {}, id]);
     });
 
 
