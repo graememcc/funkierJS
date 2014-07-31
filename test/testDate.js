@@ -107,7 +107,6 @@
 
 
       addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
-      addOne('(2)', new Date());
 
 
       // fnUnderTest should have arity 2, so should be curried
