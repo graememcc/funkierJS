@@ -112,6 +112,26 @@
 
         expect(result).to.equal(context);
       });
+
+
+      it('Calling a curried function that expects no arguments does not throw', function() {
+        var f = curry(function() {return 42;});
+        var fn = function() {
+          f();
+        };
+
+        expect(f).to.not.throw(TypeError);
+      });
+
+
+      it('Calling a curried function that awaits further arguments with no arguments throws', function() {
+        var f = curry(function(x) {return 42;});
+        var fn = function() {
+          f();
+        };
+
+        expect(f).to.throw(TypeError);
+      });
     });
 
 
@@ -261,6 +281,26 @@
         var result = context.f();
 
         expect(result).to.equal(context);
+      });
+
+
+      it('Calling a curried function that expects no arguments does not throw', function() {
+        var f = curryWithArity(0, function(x) {return 42;});
+        var fn = function() {
+          f();
+        };
+
+        expect(f).to.not.throw(TypeError);
+      });
+
+
+      it('Calling a curried function that awaits further arguments with no arguments throws', function() {
+        var f = curryWithArity(1, function() {return 42;});
+        var fn = function() {
+          f();
+        };
+
+        expect(f).to.throw(TypeError);
       });
 
 

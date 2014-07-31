@@ -695,7 +695,7 @@
 
         var addInitialOnEmptyTests = function(message, originalData) {
           // fold(l|r) should return the 'initial' parameter if the value to be folded is empty
-          // We test with two different values to confirm the return value is not fixed 
+          // We test with two different values to confirm the return value is not fixed
 
           var addOneInitialTest = function(count, initValue) {
             it('Returns initial value when called with empty ' + message + ' ' + count, function() {
@@ -842,7 +842,7 @@
       };
 
 
-      describe(spec, fnUnderTest, function(fnUnderTest) {
+      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         var okVal = !trigger;
         addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
 
@@ -4105,7 +4105,7 @@
         it('Result is an array ' + message, function() {
           var data = sliceIfNecessary(originalData);
           var result = flatten(data);
-            
+
           expect(isArray(result)).to.be.true;
         });
 

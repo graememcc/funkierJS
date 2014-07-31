@@ -72,7 +72,7 @@
     var curryWithArity = function(length, fn) {
       length = checkPositiveIntegral(length);
 
-      // We can't use checkFunction from funcUtils here: it depends on base; it would introduce a circular dependency
+      // We can't use checkFunction from funcUtils here: it depends on base so would introduce a circular dependency
       if (typeof(fn) !== 'function')
         throw new TypeError('Value to be curried is not a function');
 
@@ -90,9 +90,13 @@
         return result;
       }
 
+      // Note: 'a' is a dummy parameter to force the length property to be 1
       var curried = function(a) {
         var args = [].slice.call(arguments);
-        var argsNeeded = length - args.length;
+
+        // Throw if we expected arguments and didn't receive any
+        if (args.length === 0)
+          throw new TypeError('Missing arguments for function!');
 
         // If we have more args than expected, trim down to the expected length
         // (the function will be called when we fall through to the next conditional)
