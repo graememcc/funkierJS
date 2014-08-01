@@ -114,7 +114,7 @@
       });
 
 
-      testCurriedFunction('toCharCode', toCharCode, [1, 'abc']);
+      testCurriedFunction(toCharCode, [1, 'abc']);
     });
 
 
@@ -267,7 +267,7 @@
       addWorksCorrectlyTest('(5)', '--', 'd--e--f--g');
 
 
-      testCurriedFunction('split', split, ['*', 'a*b']);
+      testCurriedFunction(split, ['*', 'a*b']);
     });
 
 
@@ -327,7 +327,7 @@
       addWorksCorrectlyTest('(3)', /-{1}/, 'd--e--f--g');
 
 
-      testCurriedFunction('splitRegExp', splitRegExp, [/-+/, 'a--b']);
+      testCurriedFunction(splitRegExp, [/-+/, 'a--b']);
     });
 
 
@@ -389,7 +389,7 @@
       addWorksCorrectlyTest('(5)', '', 2, 'defg');
 
 
-      testCurriedFunction('splitLimit', splitLimit, ['*', 1, 'a*b']);
+      testCurriedFunction(splitLimit, ['*', 1, 'a*b']);
     });
 
 
@@ -450,7 +450,7 @@
       addWorksCorrectlyTest('(4)', /-{1}/, 3, 'd--e--f--g');
 
 
-      testCurriedFunction('splitRegExpLimit', splitRegExpLimit, [/-+/, 10, 'a--b']);
+      testCurriedFunction(splitRegExpLimit, [/-+/, 10, 'a--b']);
     });
 
 
@@ -694,7 +694,7 @@
 
         var from = /a/g;
         var to = fn ? function(s) {return 'i';} : 'i';
-        testCurriedFunction(desc, fnUnderTest, [from, to, 'banana']);
+        testCurriedFunction(fnUnderTest, [from, to, 'banana']);
       });
     };
 
@@ -776,7 +776,7 @@
       addReturnsBooleanTest('(2)', 'a', true);
 
 
-      testCurriedFunction('test', test, [/na/, 'na']);
+      testCurriedFunction(test, [/na/, 'na']);
     });
 
 
@@ -959,7 +959,7 @@
 
 
         var args = isFrom ? [/a/, 0, 'banana'] : [/a/, 'banana'];
-        testCurriedFunction(desc, fnUnderTest, args);
+        testCurriedFunction(fnUnderTest, args);
       });
     };
 
@@ -1014,7 +1014,7 @@
 
 
         var args = isFrom ? [/a/, 4, 'banana'] : [/a/, 'banana'];
-        testCurriedFunction(desc, fnUnderTest, args);
+        testCurriedFunction(fnUnderTest, args);
       });
     };
 
@@ -1046,7 +1046,7 @@
       addWorksCorrectlyTest('(3)', 'abc  ');
       addWorksCorrectlyTest('(4)', '  abc  ');
 
-      testCurriedFunction('trim', trim, [' abc ']);
+      testCurriedFunction(trim, [' abc ']);
     });
   };
 

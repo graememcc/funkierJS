@@ -85,8 +85,7 @@
     makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
 
 
-    // XXX Remove desc parameter when testCurriedFunction's desc becomes optional
-    var makeBasicSetterTests = function(desc, fnUnderTest, verifier) {
+    var makeBasicSetterTests = function(fnUnderTest, verifier) {
       it('Returns the date', function() {
         var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
         var result = fnUnderTest(2, testDate);
@@ -111,7 +110,7 @@
 
       // fnUnderTest should have arity 2, so should be curried
       var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0)};
-      testCurriedFunction(desc, fnUnderTest, [2, {reset: makeDate}]);
+      testCurriedFunction(fnUnderTest, [2, {reset: makeDate}]);
     };
 
 
@@ -125,7 +124,7 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        makeBasicSetterTests(desc, fnUnderTest, verifier);
+        makeBasicSetterTests(fnUnderTest, verifier);
       });
     };
 
@@ -157,7 +156,7 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        makeBasicSetterTests(desc, fnUnderTest, verifier);
+        makeBasicSetterTests(fnUnderTest, verifier);
 
 
         bounds.forEach(function(bound, i) {
@@ -195,7 +194,7 @@
 
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-        makeBasicSetterTests(desc, fnUnderTest, verifier);
+        makeBasicSetterTests(fnUnderTest, verifier);
 
 
         // Tackle some obvious invalid values first
@@ -399,7 +398,7 @@
 
 
         // The constructor function should be curried
-        testCurriedFunction(desc, fnUnderTest, testDates[0].slice(0, arity));
+        testCurriedFunction(fnUnderTest, testDates[0].slice(0, arity));
       });
     };
 

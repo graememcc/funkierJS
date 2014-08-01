@@ -186,12 +186,12 @@
       // Compose is binary, and should of course be curried
       var fn = function(a) {return a + 1;};
       var args = {firstArgs: [fn, fn], thenArgs: [1]};
-      testCurriedFunction('compose', compose, args);
+      testCurriedFunction(compose, args);
 
       // Also, lets test the composed functions too
       var fn = function(a, b) {return a + b + 3;};
       var fn2 = function(a) {return a * 4;};
-      testCurriedFunction('Composed function', compose(fn, fn2), [1, 2]);
+      testCurriedFunction(compose(fn, fn2), [1, 2], {message: 'Composed Function'});
     });
 
 
@@ -267,8 +267,8 @@
         });
 
         tests.forEach(function(test) {
-          testCurriedFunction('constant of type ' + name + ' called with type ' + test.name, constant,
-                              [value, test.value]);
+          testCurriedFunction(constant, [value, test.value],
+                              {message: 'constant of type ' + name + ' called with type ' + test.name});
         });
       });
     });
@@ -622,7 +622,7 @@
       });
 
 
-      testCurriedFunction('flipped function', flip(function(a, b) {return a - b;}), [1, 2]);
+      testCurriedFunction(flip(function(a, b) {return a - b;}), [1, 2]);
     });
 
 
@@ -693,7 +693,7 @@
 
 
       var fn = function(x, y) {return x + y;};
-      testCurriedFunction('sectionLeft', sectionLeft, {firstArgs: [fn, 42], thenArgs: [1]});
+      testCurriedFunction(sectionLeft, {firstArgs: [fn, 42], thenArgs: [1]});
     });
 
 
@@ -734,7 +734,7 @@
 
 
       var fn = function(x, y) {return x + y;};
-      testCurriedFunction('sectionRight', sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
+      testCurriedFunction(sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
     });
 
 
@@ -791,7 +791,7 @@
                makeEqualityTest(fnUnderTest, isNot, val, nVal));
           });
 
-          testCurriedFunction(name, fnUnderTest, [val, val]);
+          testCurriedFunction(fnUnderTest, [val, val]);
         });
       });
     };
@@ -900,7 +900,7 @@
       });
 
 
-      testCurriedFunction('deepEqual', deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
+      testCurriedFunction(deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
     });
 
 
@@ -947,7 +947,7 @@
       });
 
 
-      testCurriedFunction('is', is, ['object', {}]);
+      testCurriedFunction(is, ['object', {}]);
     });
 
 
@@ -975,7 +975,7 @@
         });
 
 
-        testCurriedFunction(desc, fnUnderTest, [1]);
+        testCurriedFunction(fnUnderTest, [1]);
       });
     };
 

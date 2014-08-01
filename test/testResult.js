@@ -435,13 +435,13 @@
       // makeResultReturner should be curried
       var badArgs = [1];
       var thenArgs = [1];
-      testCurriedFunction('makeResultReturner', makeResultReturner, {firstArgs: [badArgs, id], thenArgs: thenArgs});
+      testCurriedFunction(makeResultReturner, {firstArgs: [badArgs, id], thenArgs: thenArgs});
 
 
       // And so should the returned function
       var f2 = function(x, y) {return x + y;};
       var newFn = makeResultReturner([], f2);
-      testCurriedFunction('function returned by makeResultReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makeResultReturner'});
     });
 
 
@@ -515,13 +515,13 @@
       var f1 = function(x) {return x;}; // XXX ID REFACTORING
       var pred = function(x) {return true;};
       var thenArgs = [1];
-      testCurriedFunction('makePredResultReturner', makePredResultReturner, {firstArgs: [pred, f1], thenArgs: thenArgs});
+      testCurriedFunction(makePredResultReturner, {firstArgs: [pred, f1], thenArgs: thenArgs});
 
 
       // And so should the returned function
       var f2 = function(x, y) {return x + y;};
       var newFn = makePredResultReturner(pred, f2);
-      testCurriedFunction('function returned by makePredResultReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makePredResultReturner'});
     });
 
 
@@ -582,7 +582,7 @@
       // The function returned by makeThrowResultReturner should be curried
       var f2 = function(x, y) {return x + y;};
       var newFn = makeThrowResultReturner(f2);
-      testCurriedFunction('function returned by makeThrowResultReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makeThrowResultReturner'});
     });
 
 
@@ -694,7 +694,7 @@
       addErrTest('(2)', 2);
 
 
-      testCurriedFunction('either', either, [id, id, Err(1)]);
+      testCurriedFunction(either, [id, id, Err(1)]);
     });
   };
 

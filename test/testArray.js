@@ -422,7 +422,7 @@
       addTests('funkier');
 
 
-      testCurriedFunction('getIndex', getIndex, [1, ['a', 'b']]);
+      testCurriedFunction(getIndex, [1, ['a', 'b']]);
     });
 
 
@@ -499,7 +499,7 @@
       addTests('when count is zero', 0, 2);
 
 
-      testCurriedFunction('replicate', replicate, [1, 1]);
+      testCurriedFunction(replicate, [1, 1]);
     });
 
 
@@ -559,7 +559,7 @@
       });
 
 
-      testCurriedFunction('map', map, [id, [1, 2]]);
+      testCurriedFunction(map, [id, [1, 2]]);
     });
 
 
@@ -590,7 +590,7 @@
       addOne('string', 'abc');
 
 
-      testCurriedFunction('each', each, [id, [1, 2]]);
+      testCurriedFunction(each, [id, [1, 2]]);
     });
 
 
@@ -650,7 +650,7 @@
       });
 
 
-      testCurriedFunction('filter', filter, [alwaysTrue, [1, 2]]);
+      testCurriedFunction(filter, [alwaysTrue, [1, 2]]);
     });
 
 
@@ -740,7 +740,7 @@
         var curriedArgs = is1Func ? [function(x, y) {return 42;}, [1, 2]] :
                                     [function(x, y) {return 42;}, 0, [1, 2]];
 
-        testCurriedFunction(spec.name, fnUnderTest, curriedArgs);
+        testCurriedFunction(fnUnderTest, curriedArgs);
       });
     };
 
@@ -977,7 +977,7 @@
         addEmptyTests(checkEmpty);
 
 
-        testCurriedFunction(desc, fnUnderTest, [alwaysTrue, [1, 2, 3]]);
+        testCurriedFunction(fnUnderTest, [alwaysTrue, [1, 2, 3]]);
       });
     };
 
@@ -1104,7 +1104,7 @@
       addElementFoundTest(element, 'identical element in arraylike', obj, makeArrayLike({foo: 1}, obj, {}));
 
 
-      testCurriedFunction('element', element, [2, [1, 2, 3]]);
+      testCurriedFunction(element, [2, [1, 2, 3]]);
     });
 
 
@@ -1132,7 +1132,7 @@
       addElementFoundTest(elementWith, 'predicate matches element in string', isDigit, 'abc8de');
 
 
-      testCurriedFunction('elementWith', elementWith, [function(x) {return true;}, [1, 2, 3]]);
+      testCurriedFunction(elementWith, [function(x) {return true;}, [1, 2, 3]]);
     });
 
 
@@ -1204,7 +1204,7 @@
       addCorrectTest('(2)', 1.1, 15.2);
 
 
-      testCurriedFunction('range', array.range, [1, 5]);
+      testCurriedFunction(range, [1, 5]);
     });
 
 
@@ -1276,7 +1276,7 @@
       });
 
 
-      testCurriedFunction('rangeStep', array.rangeStep, [1, 1, 5]);
+      testCurriedFunction(rangeStep, [1, 1, 5]);
     });
 
 
@@ -1354,7 +1354,7 @@
       addCorrectEntryTests('count > length', 4, [3, 4, 5], makeArrayLike(8, 9), 'x');
 
 
-      testCurriedFunction('take', take, [1, [1, 2, 3]]);
+      testCurriedFunction(take, [1, [1, 2, 3]]);
     });
 
 
@@ -1429,7 +1429,7 @@
       addEmptyAfterDropTests('count > length', 4, [3, 4, 5], makeArrayLike('a', 'b'), 'x');
 
 
-      testCurriedFunction('drop', drop, [1, [1, 2, 3]]);
+      testCurriedFunction(drop, [1, [1, 2, 3]]);
     });
 
 
@@ -1695,7 +1695,7 @@
       addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], makeArrayLike(2, 3, 4, 5), 'abcd');
 
 
-      testCurriedFunction('slice', slice, [1, 2, 'funkier']);
+      testCurriedFunction(slice, [1, 2, 'funkier']);
     });
 
 
@@ -1780,7 +1780,7 @@
         });
 
 
-        testCurriedFunction(desc, fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
+        testCurriedFunction(fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
       });
     };
 
@@ -1852,7 +1852,7 @@
                  [['a', 'bcd'], ['z', '']]);
 
 
-        testCurriedFunction(desc, fnUnderTest, [1, [1, 2, 3]]);
+        testCurriedFunction(fnUnderTest, [1, [1, 2, 3]]);
       });
     };
 
@@ -1941,7 +1941,7 @@
       });
 
 
-      testCurriedFunction('concat', concat, [[1], [1, 2, 3]]);
+      testCurriedFunction(concat, [[1], [1, 2, 3]]);
     });
 
 
@@ -2047,7 +2047,7 @@
       addTests('string (2)', 'funkier');
 
 
-      testCurriedFunction('intersperse', intersperse, ['1', 'abc']);
+      testCurriedFunction(intersperse, ['1', 'abc']);
     });
 
 
@@ -2321,7 +2321,7 @@
       });
 
 
-      testCurriedFunction('findWith', findWith, [alwaysTrue, 'funkier']);
+      testCurriedFunction(findWith, [alwaysTrue, 'funkier']);
     });
 
 
@@ -2395,7 +2395,7 @@
       addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith, [function(x) {return x < 'a';}, 1, 'abdCde']);
 
 
-      testCurriedFunction('findFromWith', findFromWith, [alwaysTrue, 1, 'funkier']);
+      testCurriedFunction(findFromWith, [alwaysTrue, 1, 'funkier']);
     });
 
 
@@ -2471,7 +2471,7 @@
       addTest('for string (2)', 'a', 'banana');
 
 
-      testCurriedFunction('occurrences', occurrences, [1, [1, 2, 3]]);
+      testCurriedFunction(occurrences, [1, [1, 2, 3]]);
     });
 
 
@@ -2561,7 +2561,7 @@
       addTests('string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
 
 
-      testCurriedFunction('occurrencesWith', occurrencesWith, [alwaysTrue, [1, 2, 3]]);
+      testCurriedFunction(occurrencesWith, [alwaysTrue, [1, 2, 3]]);
     });
 
 
@@ -2685,7 +2685,7 @@
       });
 
 
-      testCurriedFunction('zip', zip, [[1, 2, 3], [4, 5, 6]]);
+      testCurriedFunction(zip, [[1, 2, 3], [4, 5, 6]]);
     });
 
 
@@ -2792,7 +2792,7 @@
       });
 
 
-      testCurriedFunction('zipWith', zipWith, [function(x, y) {return x * y;}, [1, 2, 3], [4, 5, 6]]);
+      testCurriedFunction(zipWith, [function(x, y) {return x * y;}, [1, 2, 3], [4, 5, 6]]);
     });
 
 
@@ -2959,7 +2959,7 @@
       addTests('string with multiple duplicates', oneVowel, 'funkier', 5);
 
 
-      testCurriedFunction('nubWith', nubWith, [function(x, y) {return false;}, 'funkier']);
+      testCurriedFunction(nubWith, [function(x, y) {return false;}, 'funkier']);
     });
 
 
@@ -3118,7 +3118,7 @@
       addTests('worst case', stringSort, 'zyxw');
 
 
-      testCurriedFunction('sortWith', sortWith, [normalCompare, [1, 2, 3]]);
+      testCurriedFunction(sortWith, [normalCompare, [1, 2, 3]]);
     });
 
 
@@ -3324,7 +3324,7 @@
       });
 
 
-      testCurriedFunction('insert', insert, [0, 'a', [1, 2, 3]]);
+      testCurriedFunction(insert, [0, 'a', [1, 2, 3]]);
     });
 
 
@@ -3403,7 +3403,7 @@
       addTests('singleton string when index === 0', 0, 'a');
 
 
-      testCurriedFunction('remove', remove, [0, [1, 2, 3]]);
+      testCurriedFunction(remove, [0, [1, 2, 3]]);
     });
 
 
@@ -3463,7 +3463,7 @@
       });
 
 
-      testCurriedFunction('replace', replace, [0, 0, [1, 2, 3]]);
+      testCurriedFunction(replace, [0, 0, [1, 2, 3]]);
     });
 
 
@@ -3600,7 +3600,7 @@
       addCommonRemoveValTests(addTests, removeOne);
 
 
-      testCurriedFunction('removeOne', removeOne, [0, [1, 2, 3]]);
+      testCurriedFunction(removeOne, [0, [1, 2, 3]]);
     });
 
 
@@ -3624,7 +3624,7 @@
       addCommonRemoveWithTests(addTests, removeOneWith);
 
 
-      testCurriedFunction('removeOneWith', removeOneWith, [alwaysTrue, [1, 2, 3]]);
+      testCurriedFunction(removeOneWith, [alwaysTrue, [1, 2, 3]]);
     });
 
 
@@ -3694,7 +3694,7 @@
       addTests('arraylike with all matches', 1, makeArrayLike(1, 1, 1, 1));
 
 
-      testCurriedFunction('removeAll', removeAll, [0, [1, 2, 3]]);
+      testCurriedFunction(removeAll, [0, [1, 2, 3]]);
     });
 
 
@@ -3722,7 +3722,7 @@
       addTests('arraylike where every value matches', alwaysTrue, makeArrayLike(1, 2, 3, 4));
 
 
-      testCurriedFunction('removeAllWith', removeAllWith, [alwaysTrue, [1, 2, 3]]);
+      testCurriedFunction(removeAllWith, [alwaysTrue, [1, 2, 3]]);
     });
 
 
@@ -3846,7 +3846,7 @@
       addCommonReplaceValTests(addTests, replaceOne);
 
 
-      testCurriedFunction('replaceOne', replaceOne, [0, 1, [1, 2, 3]]);
+      testCurriedFunction(replaceOne, [0, 1, [1, 2, 3]]);
     });
 
 
@@ -3870,7 +3870,7 @@
       addCommonReplaceWithTests(addTests, replaceOneWith);
 
 
-      testCurriedFunction('replaceOneWith', replaceOneWith, [alwaysTrue, 4, [1, 2, 3]]);
+      testCurriedFunction(replaceOneWith, [alwaysTrue, 4, [1, 2, 3]]);
     });
 
 
@@ -3941,7 +3941,7 @@
       addCommonReplaceValTests(addTests, replaceAll);
 
 
-      testCurriedFunction('replaceAll', replaceAll, [0, 1, [1, 2, 3]]);
+      testCurriedFunction(replaceAll, [0, 1, [1, 2, 3]]);
     });
 
 
@@ -3969,7 +3969,7 @@
       addTests('arraylike where every value matches', lessThanFive, 5, makeArrayLike(1, 2, 3, 4));
 
 
-      testCurriedFunction('replaceAllWith', replaceAllWith, [alwaysTrue, 4, [1, 2, 3]]);
+      testCurriedFunction(replaceAllWith, [alwaysTrue, 4, [1, 2, 3]]);
     });
 
 
@@ -4052,7 +4052,7 @@
       addTests('when join value is not a string (arraylike)', {toString: function() {return '-';}}, makeArrayLike(1, 2, 3));
 
 
-      testCurriedFunction('join', join, [', ', [4, 5, 6]]);
+      testCurriedFunction(join, [', ', [4, 5, 6]]);
     });
 
 
@@ -4211,7 +4211,7 @@
       });
 
 
-      testCurriedFunction('flattenMap', flattenMap, [array.range(1), [2, 3, 4]]);
+      testCurriedFunction(flattenMap, [array.range(1), [2, 3, 4]]);
     });
   };
 

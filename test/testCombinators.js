@@ -82,7 +82,7 @@
       });
 
 
-      testCurriedFunction('Ky', Ky, [1, {}]);
+      testCurriedFunction(Ky, [1, {}]);
     });
 
 
@@ -193,7 +193,7 @@
       });
 
 
-      testCurriedFunction('S', S, [function(x, y) {return x + y;}, id, 4]);
+      testCurriedFunction(S, [function(x, y) {return x + y;}, id, 4]);
     });
   };
 

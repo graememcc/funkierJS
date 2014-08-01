@@ -108,7 +108,7 @@
       });
 
 
-      testCurriedFunction('apply', apply, [[42], id]);
+      testCurriedFunction(apply, [[42], id]);
     });
 
 
@@ -192,7 +192,7 @@
       });
 
 
-      testCurriedFunction('applyWithContext', applyWithContext, [[42], {}, id]);
+      testCurriedFunction(applyWithContext, [[42], {}, id]);
     });
 
 
@@ -296,9 +296,9 @@
 
 
       var f = function(a, b) {return a - b;};
-      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(f), [1, 2]);
+      testCurriedFunction(fnUnderTest(f), [1, 2], {message: 'Uncurried arity 2 function curries'});
       var g = curry(function(a, b) {return a - b;});
-      testCurriedFunction('Uncurried arity 2 curries', fnUnderTest(g), [1, 2]);
+      testCurriedFunction(fnUnderTest(g), [1, 2]), {message: 'Curried arity 2 function'};
     };
 
 
@@ -366,7 +366,7 @@
 
         // And, of course, the permuted function should be curried
         var curried = curryWithArity(i, baseFunc);
-        testCurriedFunction('Permuted function of arity ' + i, permuteLeft(curried), params.slice(0, i));
+        testCurriedFunction(permuteLeft(curried), params.slice(0, i), {message: 'Permuted function of arity ' + i});
       }
     });
 
@@ -442,7 +442,7 @@
 
         // And, of course, the permuted function should be curried
         var curried = curryWithArity(i, baseFunc);
-        testCurriedFunction('Permuted function of arity ' + i, permuteRight(curried), params.slice(0, i));
+        testCurriedFunction(permuteRight(curried), params.slice(0, i), {message: 'Permuted function of arity ' + i});
       }
     });
 
@@ -503,13 +503,13 @@
       var f1 = function(x, y) {return x + y + this.foo};
       var obj1 = {foo: 6};
       var result = bindWithContext(obj1, f1);
-      testCurriedFunction('bindWithContext bound function', result, [1, 2]);
+      testCurriedFunction(result, [1, 2], {message: 'bindWithContext bound function'});
 
 
       // bindWithContext should be curried
       var f2 = function(x) {return x + this.foo};
       var obj2 = {foo: 5};
-      testCurriedFunction('bindWithContext', bindWithContext, {firstArgs: [obj2, f2], thenArgs: [2]});
+      testCurriedFunction(bindWithContext, {firstArgs: [obj2, f2], thenArgs: [2]});
     });
 
 
@@ -556,14 +556,14 @@
       var obj1 = {foo: 6};
       var arity1 = 2;
       var result = bindWithContextAndArity(obj1, arity1, f1);
-      testCurriedFunction('bindWithContextAndArity bound function', result, [1, 2]);
+      testCurriedFunction(result, [1, 2], {message: 'bindWithContextAndArity bound function'});
 
 
       // bindWithContextAndArity should be curried
       var f2 = function(x) {return x + this.foo};
       var obj2 = {foo: 5};
       var arity2 = 1;
-      testCurriedFunction('bindWithContextAndArity', bindWithContextAndArity, {firstArgs: [obj2, arity2, f2], thenArgs: [2]});
+      testCurriedFunction(bindWithContextAndArity, {firstArgs: [obj2, arity2, f2], thenArgs: [2]});
     });
 
 
@@ -715,7 +715,7 @@
 
       var g = function() {};
       var f = function(x) {return x;};
-      testCurriedFunction('pre', pre, {firstArgs: [g, f], thenArgs: [1]});
+      testCurriedFunction(pre, {firstArgs: [g, f], thenArgs: [1]});
     });
 
 
@@ -799,7 +799,7 @@
 
 
       var g = function() {};
-      testCurriedFunction('post', post, {firstArgs: [g, id], thenArgs: [1]});
+      testCurriedFunction(post, {firstArgs: [g, id], thenArgs: [1]});
     });
 
 
@@ -820,7 +820,7 @@
       var pre = function() {};
       var post = function() {};
       var f = function(x) {return x;};
-      testCurriedFunction('wrap', wrap, {firstArgs: [pre, post, f], thenArgs: [1]});
+      testCurriedFunction(wrap, {firstArgs: [pre, post, f], thenArgs: [1]});
     });
 
 
@@ -950,7 +950,7 @@
       });
 
 
-      testCurriedFunction('fixpoint', fixpoint, [1, Math.cos]);
+      testCurriedFunction(fixpoint, [1, Math.cos]);
     });
 
 
@@ -1047,7 +1047,7 @@
 
 
       var f = function() {return this.foo;};
-      testCurriedFunction('callWithContext', callWithContext, [{foo: 42}, [], f]);
+      testCurriedFunction(callWithContext, [{foo: 42}, [], f]);
     });
   };
 

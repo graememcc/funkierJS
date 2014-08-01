@@ -87,7 +87,7 @@
         });
 
 
-        testCurriedFunction(test.func, fnUnderTest, [3, 4]);
+        testCurriedFunction(fnUnderTest, [3, 4]);
       });
     });
 
@@ -132,7 +132,7 @@
       });
 
 
-      testCurriedFunction('min', min, [5, 4]);
+      testCurriedFunction(min, [5, 4]);
     });
 
 
@@ -158,7 +158,7 @@
       });
 
 
-      testCurriedFunction('max', max, [5, 4]);
+      testCurriedFunction(max, [5, 4]);
     });
 
 
@@ -188,7 +188,7 @@
         });
 
 
-        testCurriedFunction(desc, fnUnderTest, [testData[0][1], testData[0][0]]);
+        testCurriedFunction(fnUnderTest, [testData[0][1], testData[0][0]]);
       });
     };
 
@@ -247,7 +247,7 @@
       });
 
 
-      testCurriedFunction('stringToInt', stringToInt, [2, '11']);
+      testCurriedFunction(stringToInt, [2, '11']);
     });
 
 

@@ -100,14 +100,14 @@
         // The returned function should be curried
         var testObj = {prop: function(x) {return x;}};
         var caller = callPropWithArity('prop', 1);
-        testCurriedFunction('Returned function', caller, [2, testObj]);
+        testCurriedFunction(caller, [2, testObj], {message: 'Returned function'});
       }
 
 
       // callPropWithArity should itself be curried
       testObj = {property: function() {return 42;}};
       var args = {firstArgs: ['property', 0], thenArgs: [testObj]};
-      testCurriedFunction('callPropWithArity', callPropWithArity, args);
+      testCurriedFunction(callPropWithArity, args);
     });
 
 
@@ -192,7 +192,7 @@
       });
 
 
-      testCurriedFunction('hasOwnProperty', hasOwnProperty, ['funkier', {funkier: 1}]);
+      testCurriedFunction(hasOwnProperty, ['funkier', {funkier: 1}]);
     });
 
 
@@ -221,7 +221,7 @@
       });
 
 
-      testCurriedFunction('hasProperty', hasProperty, ['funkier', {funkier: 1}]);
+      testCurriedFunction(hasProperty, ['funkier', {funkier: 1}]);
     });
 
 
@@ -266,7 +266,7 @@
       });
 
 
-      testCurriedFunction('instanceOf', instanceOf, [Object, {}]);
+      testCurriedFunction(instanceOf, [Object, {}]);
     });
 
 
@@ -322,7 +322,7 @@
       });
 
 
-      testCurriedFunction('isPrototypeOf', isPrototypeOf, [Object.prototype, {}]);
+      testCurriedFunction(isPrototypeOf, [Object.prototype, {}]);
     });
 
 
@@ -423,7 +423,7 @@
       addWorksCorrectlyTests('when prototype is null', null);
 
 
-      testCurriedFunction('createObjectWithProps', createObjectWithProps, [{}, descriptor]);
+      testCurriedFunction(createObjectWithProps, [{}, descriptor]);
     });
 
 
@@ -474,7 +474,7 @@
 
 
       // defineProperty should be curried
-      testCurriedFunction('defineProperty', defineProperty, ['p', {value: 7}, {}]);
+      testCurriedFunction(defineProperty, ['p', {value: 7}, {}]);
     });
 
 
@@ -539,7 +539,7 @@
 
 
       // defineProperties should be curried
-      testCurriedFunction('defineProperties', defineProperties, [descriptors, {}]);
+      testCurriedFunction(defineProperties, [descriptors, {}]);
     });
 
 
@@ -585,7 +585,7 @@
       });
 
 
-      testCurriedFunction('getOwnPropertyDescriptor', getOwnPropertyDescriptor, ['p', {p: 10}]);
+      testCurriedFunction(getOwnPropertyDescriptor, ['p', {p: 10}]);
     });
 
 
@@ -636,7 +636,7 @@
       });
 
 
-      testCurriedFunction('extract', extract, ['p', {p: 10}]);
+      testCurriedFunction(extract, ['p', {p: 10}]);
     });
 
 
@@ -693,7 +693,7 @@
       });
 
 
-      testCurriedFunction('extractOrDefault', extractOrDefault, ['p', 42, {p: 10}]);
+      testCurriedFunction(extractOrDefault, ['p', 42, {p: 10}]);
     });
 
 
@@ -976,7 +976,7 @@
         makeCommonModificationTests(setter, shouldThrow);
         makeCommonCreationTests(setter, shouldThrow);
 
-        testCurriedFunction(desc, setter, ['foo', 42, {reset: function() {return {};}}]);
+        testCurriedFunction(setter, ['foo', 42, {reset: function() {return {};}}]);
       });
     };
 
@@ -1014,7 +1014,7 @@
         });
 
 
-        testCurriedFunction(desc, modifier, ['foo', 42, {reset: function() {return {foo: 1};}}]);
+        testCurriedFunction(modifier, ['foo', 42, {reset: function() {return {foo: 1};}}]);
       });
     };
 
@@ -1088,7 +1088,7 @@
         });
 
 
-        testCurriedFunction(desc, creator, ['foo', 42, {reset: function() {return {};}}]);
+        testCurriedFunction(creator, ['foo', 42, {reset: function() {return {};}}]);
       });
     };
 
@@ -1251,9 +1251,9 @@
 
 
         if (shouldThrow)
-          testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {foo: 1};}}]);
+          testCurriedFunction(deleter, ['foo', {reset: function() {return {foo: 1};}}]);
         else
-          testCurriedFunction(desc, deleter, ['foo', {reset: function() {return {};}}]);
+          testCurriedFunction(deleter, ['foo', {reset: function() {return {};}}]);
       });
     };
 
@@ -1739,7 +1739,7 @@
       });
 
 
-      testCurriedFunction('extend', extend, [{foo: 1}, {reset: function() {return {};}}]);
+      testCurriedFunction(extend, [{foo: 1}, {reset: function() {return {};}}]);
     });
 
 
@@ -1807,7 +1807,7 @@
       });
 
 
-      testCurriedFunction('extendOwn', extendOwn, [{foo: 1}, {reset: function() {return {};}}]);
+      testCurriedFunction(extendOwn, [{foo: 1}, {reset: function() {return {};}}]);
     });
   };
 

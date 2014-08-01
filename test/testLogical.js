@@ -63,7 +63,7 @@
           it('Works as expected' + indexString,
               makeBinaryBooleanTest(fnUnderTest, test.val1, test.val2, test.expected));
 
-          testCurriedFunction(desc + ' ' + indexString, fnUnderTest, [test.val1, test.val2]);
+          testCurriedFunction(fnUnderTest, [test.val1, test.val2], {message: desc + ' ' + indexString});
         });
       });
     };
@@ -174,7 +174,7 @@
           }
 
           var curryArgs = {firstArgs: [test.pred1, test.pred2], thenArgs: ['a']};
-          testCurriedFunction(desc + ' ' + indexString, fnUnderTest, curryArgs);
+          testCurriedFunction(fnUnderTest, curryArgs, {message: desc + ' ' + indexString});
         });
       });
     };

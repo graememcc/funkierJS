@@ -623,7 +623,9 @@
     // There are a number of checks we want to perform on curried functions when testing
     // the 'curry' function. The same checks apply when testing other library functions that we expect
     // to be curried. We generate these tests automatically.
-    var testCurriedFunction = function(message, curried, originalArgs, original) {
+    var testCurriedFunction = function(curried, originalArgs, options) {
+      options = options || {};
+
       // Many of the functions being tested will themselves return functions. This means we generally
       // won't be able to test equality of return values. If originalArgs is an array, then we assume
       // that the function under test does indeed return a primitive value. Otherwise, we assume it is
@@ -636,7 +638,9 @@
       // all args—behaves correctly when partially applied.
       // Initially, I thought original would be mandatory, but realised this will often result in having to
       // reimplement the function under test.
-      original = original || curried;
+      var original = options.original || curried;
+      var message = options.message || 'Curried function';
+
       var args = Array.isArray(originalArgs) ? originalArgs : originalArgs.firstArgs;
       var thenArgs = Array.isArray(originalArgs) ? null : originalArgs.thenArgs;
 

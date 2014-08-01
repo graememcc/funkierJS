@@ -481,13 +481,13 @@
       var f1 = id;
       var badArgs = [1];
       var thenArgs = [1];
-      testCurriedFunction('makeMaybeReturner', makeMaybeReturner, {firstArgs: [badArgs, f1], thenArgs: thenArgs});
+      testCurriedFunction(makeMaybeReturner, {firstArgs: [badArgs, f1], thenArgs: thenArgs});
 
 
       // And so should the returned function
       var f2 = function(x, y) {return x + y;};
       var newFn = makeMaybeReturner([], f2);
-      testCurriedFunction('function returned by makeMaybeReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makeMaybeReturner'});
     });
 
 
@@ -561,13 +561,13 @@
       var f1 = function(x) {return x;}; // XXX ID REFACTORING
       var pred = function(x) {return true;};
       var thenArgs = [1];
-      testCurriedFunction('makePredMaybeReturner', makePredMaybeReturner, {firstArgs: [pred, f1], thenArgs: thenArgs});
+      testCurriedFunction(makePredMaybeReturner, {firstArgs: [pred, f1], thenArgs: thenArgs});
 
 
       // And so should the returned function
       var f2 = function(x, y) {return x + y;};
       var newFn = makePredMaybeReturner(pred, f2);
-      testCurriedFunction('function returned by makePredMaybeReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makePredMaybeReturner'});
     });
 
 
@@ -628,7 +628,7 @@
       // The function returned by makeThrowMaybeReturner should be curried
       var f2 = function(x, y) {return x + y;};
       var newFn = makeThrowMaybeReturner(f2);
-      testCurriedFunction('function returned by makeThrowMaybeReturner', newFn, [2, 3]);
+      testCurriedFunction(newFn, [2, 3], {message: 'function returned by makeThrowMaybeReturner'});
     });
   };
 

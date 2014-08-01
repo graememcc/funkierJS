@@ -48,7 +48,7 @@
         var message = testData.message;
 
         var curried = curry(fn);
-        testCurriedFunction(message, curried, args, fn);
+        testCurriedFunction(curried, args, {original: fn, message: message});
       });
 
 
@@ -215,7 +215,7 @@
         var message = testData.message;
         var curried = curryWithArity(args.length, fn);
 
-        testCurriedFunction(message, curried, args, fn);
+        testCurriedFunction(curried, args, {original: fn, message: message});
       });
 
 
@@ -307,7 +307,7 @@
       // curryWithArity should itself be curried
       var fn = function(a, b) {return a + b;};
       var args = {firstArgs: [fn.length, fn], thenArgs: [41, 1]};
-      testCurriedFunction('curryWithArity', curryWithArity, args);
+      testCurriedFunction(curryWithArity, args);
     });
 
 
