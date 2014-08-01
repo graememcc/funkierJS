@@ -22,7 +22,7 @@
                              'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase', 'split', 'splitRegExp',
                              'splitLimit', 'splitRegExpLimit', 'replaceOneString', 'replaceString',
                              'replaceOneStringWith', 'replaceStringWith','test', 'matches', 'matchesFrom', 'firstMatch',
-                             'firstMatchFrom', 'toLocaleString'];
+                             'firstMatchFrom', 'toLocaleString', 'trim'];
     describeModule('string', string, expectedObjects, expectedFunctions);
 
 
@@ -1023,6 +1023,31 @@
     makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
     makeSingleMatcherTests('firstMatch', string.firstMatch, false, string.matches);
     makeSingleMatcherTests('firstMatchFrom', string.firstMatchFrom, true, string.matchesFrom);
+
+
+    var trimSpec = {
+      name: 'trim',
+      arity: 1
+    };
+
+
+    describeFunction(trimSpec, string.trim, function(trim) {
+      var addWorksCorrectlyTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          var result = trim(str);
+
+          expect(result).to.equal(str.trim());
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', 'abc');
+      addWorksCorrectlyTest('(2)', '  abc');
+      addWorksCorrectlyTest('(3)', 'abc  ');
+      addWorksCorrectlyTest('(4)', '  abc  ');
+
+      testCurriedFunction('trim', trim, [' abc ']);
+    });
   };
 
 

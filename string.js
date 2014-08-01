@@ -575,6 +575,21 @@
     );
 
 
+    var trim = defineValue(
+      'name: trim',
+      'signature: s: string',
+      'classification: string',
+      '',
+      'Returns a string containing the contents of the original string, less any',
+      'leading and trailing whitespace.',
+      '--',
+      'trim(\' abc   \'); // \'abc\'',
+      curry(function(s) {
+        return s.trim();
+      })
+    );
+
+
     var exported = {
       chr: chr,
       firstMatch: firstMatch,
@@ -597,7 +612,8 @@
       toLocaleUpperCase: toLocaleUpperCase,
       toLowerCase: toLowerCase,
       toUpperCase: toUpperCase,
-      toString: toString
+      toString: toString,
+      trim: trim
     };
 
 
