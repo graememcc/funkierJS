@@ -512,10 +512,9 @@
 
 
       // makePredResultReturner should be curried
-      var f1 = function(x) {return x;}; // XXX ID REFACTORING
       var pred = function(x) {return true;};
       var thenArgs = [1];
-      testCurriedFunction(makePredResultReturner, {firstArgs: [pred, f1], thenArgs: thenArgs});
+      testCurriedFunction(makePredResultReturner, {firstArgs: [pred, id], thenArgs: thenArgs});
 
 
       // And so should the returned function
