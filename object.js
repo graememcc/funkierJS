@@ -280,9 +280,6 @@
     // Versions of V8 up to 3.11.9 fail to walk up the prototype chain. Further, when it was fixed, the fix
     // was gated behind a flag, which defaulted to false until 3.13.6, when the flag was flipped and V8 became
     // spec-compliant. The flag was removed in 3.25.4.
-    //
-    // Nevertheless, despite the flag being flipped in 3.13.6, node continues by default to set the flag to
-    // spec-incompliant.
     var engineHandlesProtosCorrectly = (function() {
       var a = function(){};
       Object.defineProperty(a.prototype, 'foo', {writable: false});
@@ -319,6 +316,7 @@
     };
 
 
+   // Utility function, taking a property and an object, returning true if that property is writable
     var checkIfWritable = function(prop, obj) {
       var writable = true;
       var descriptor = findPropertyDescriptor(prop, obj);
@@ -359,8 +357,8 @@
       'a.foo; // 42',
       curry(function(prop, val, obj) {
         // We manually emulate the operation of [[CanPut]], rather than just setting in a
-        // try-catch. We don't want to suppress other errors: for example the set function
-        // might throw
+        // try-catch. We don't want to suppress other errors: for example the property's
+        // setter function might throw
         var writable = checkIfWritable(prop, obj);
 
         if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
@@ -395,6 +393,9 @@
       'Object.freeze(a);',
       'setOrThrow(\'foo\', 42, a); // Throws',
       curry(function(prop, val, obj) {
+        if (!(typeof(obj) === 'object' || typeof(obj) === 'function' || typeof(obj) === 'string') && obj !== null)
+          throw new TypeError('Cannot set property on non-object');
+
         // We *should* be able to just set the property, and trust the JS
         // engine to throw. Sadly, this is untrue; see the comments for
         // engineHandlesProtosCorrectly.
@@ -403,12 +404,15 @@
         if (engineHandlesProtosCorrectly) {
           obj[prop] = val;
         } else {
-          if (checkIfWritable(prop, Object.getPrototypeOf(obj))) {
+          var writable = checkIfWritable(prop, obj);
+
+          if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
+            writable = false;
+
+          if (writable)
             obj[prop] = val;
-          } else {
-            // Spec says throw a TypeError
+          else
             throw new TypeError('Setting property disallowed by prototype');
-          }
         }
 
         return obj;
