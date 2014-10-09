@@ -900,6 +900,113 @@
       });
 
 
+      it('Works correctly for equal recursive array (1)', function() {
+        var a = [1, 2, 3];
+        a[3] = a;
+        var b = [1, 2, 3];
+        b[3] = a;
+
+        expect(deepEqual(a, b)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive array (2)', function() {
+        var a = [1, 2, 3];
+        a[3] = a;
+        var b = [1, 2, 3];
+        b[3] = b;
+
+        expect(deepEqual(a, b)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive array (3)', function() {
+        var a = [1, 2, 3];
+        a[3] = a;
+        var b = [1, 2, 3, 4];
+
+        expect(deepEqual(a, b)).to.be.false;
+      });
+
+
+      it('Works correctly for equal recursive array (4)', function() {
+        var a = [1, 2, 3, 4];
+        var b = [1, 2, 3];
+        a[3] = b;
+
+        expect(deepEqual(a, b)).to.be.false;
+      });
+
+
+      it('Works correctly for equal recursive array (5)', function() {
+        var a = [1, 2, 3];
+        a[4] = [4, 5, a];
+        var b = [1, 2, 3];
+        b[4] = [4, 5, b];
+
+        expect(deepEqual(a, b)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive object (1)', function() {
+        var o = {foo: 42};
+        var a = {bar: o};
+        o.bar = a;
+
+        expect(deepEqual(o, o)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive object (2)', function() {
+        var o1 = {foo: 42};
+        var a = {bar: o1};
+        o1.bar = a;
+
+        var o2 = {foo: 42};
+        var b = {bar: o2};
+        o2.bar = b;
+
+        expect(deepEqual(o1, o2)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive object (3)', function() {
+        var o1 = {foo: 42};
+        var a = {bar: o1};
+        o1.bar = a;
+
+        var o2 = {foo: 43};
+        var b = {bar: o2};
+        o2.bar = b;
+
+        expect(deepEqual(o1, o2)).to.be.false;
+      });
+
+
+      it('Works correctly for equal recursive object (4)', function() {
+        var o1 = {foo: 42, bar: {}};
+        o1.bar.baz = o1;
+
+        var o2 = {foo: 42, bar: {}};
+        o2.bar.baz = o2;
+
+        expect(deepEqual(o1, o2)).to.be.true;
+      });
+
+
+      it('Works correctly for equal recursive object (5)', function() {
+        var o1 = {foo: 42, bar: {}};
+        o1.bar.baz = o1;
+
+        var o2 = {foo: 42, bar: {}};
+        var other = {foo: 43, bar: {}};
+        other.bar.baz = other;
+        o2.bar.baz = other;
+
+        expect(deepEqual(o1, o2)).to.be.false;
+      });
+
+
       testCurriedFunction(deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
     });
 

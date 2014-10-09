@@ -266,19 +266,32 @@
 
 
     // Helper function for deepEqual. Assumes both objects are arrays.
-    var deepEqualArr = function(a, b) {
+    var deepEqualArr = function(a, b, aStack, bStack) {
       if (a.length !== b.length)
         return false;
 
-      return a.every(function(val, i) {
-        return deepEqual(val, b[i]);
-      });
+      for (var i = aStack.length - 1; i >= 0; i--) {
+        if (aStack[i] === a)
+          return bStack[i] === b || bStack[i] === a;
+        if (bStack[i] === b)
+          return false;
+      }
+
+      aStack.push(a);
+      bStack.push(b);
+      var ok = true;
+      for (i = 0; ok && i < a.length; i++)
+        ok = ok && deepEqualInternal(a[i], b[i], aStack, bStack);
+
+      aStack.pop();
+      bStack.pop();
+      return ok;
     };
 
 
     // Helper function for deepEqual. Assumes identity has already been checked, and
     // that a check has been made for both objects being arrays.
-    var deepEqualObj = function(a, b) {
+    var deepEqualObj = function(a, b, aStack, bStack) {
       // Identity should have already been checked (ie a ==== b === null)
       if (a === null || b === null)
         return false;
@@ -290,21 +303,51 @@
       if (Object.getPrototypeOf(a) !== Object.getPrototypeOf(b))
         return false;
 
+      // Check for recursive objects
+      for (var i = aStack.length - 1; i >= 0; i--) {
+        if (aStack[i] === a)
+          return bStack[i] === b || bStack[i] === a;
+        if (bStack[i] === b)
+          return false;
+      }
+
       var aKeys = Object.keys(a);
       var bKeys = Object.keys(b);
       aKeys.sort();
       bKeys.sort();
 
-      if (!deepEqualArr(aKeys, bKeys))
+      if (!deepEqualArr(aKeys, bKeys, aStack, bStack))
         return false;
 
-      return aKeys.every(function(k) {
-        return deepEqual(a[k], b[k]);
-      });
+      aStack.push(a);
+      bStack.push(b);
+      var ok = true;
+      for (i = 0; ok && i < aKeys.length; i++)
+        ok = ok && deepEqualInternal(a[aKeys[i]], b[bKeys[i]], aStack, bStack);
+
+      aStack.pop();
+      bStack.pop();
+      return ok;
     };
 
 
-    // XXX Need to convince myself that not checking non-enumerables is the right thing to do
+    var deepEqualInternal = function(a, b, aStack, bStack) {
+      if (strictEquals(a, b))
+        return true;
+
+      if (typeof(a) !== typeof(b))
+        return false;
+
+      if (typeof(a) !== 'object')
+        return false;
+
+      if (Array.isArray(a) && Array.isArray(b))
+        return deepEqualArr(a, b, aStack, bStack);
+
+      return deepEqualObj(a, b, aStack, bStack);
+    };
+
+
     var deepEqual = defineValue(
       'name: deepEqual',
       'signature: a: any, b: any',
@@ -320,19 +363,7 @@
       '--',
       'deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // true',
       curry(function(a, b) {
-        if (strictEquals(a, b))
-          return true;
-
-        if (typeof(a) !== typeof(b))
-          return false;
-
-        if (typeof(a) !== 'object')
-          return false;
-
-        if (Array.isArray(a) && Array.isArray(b))
-          return deepEqualArr(a, b);
-
-        return deepEqualObj(a, b);
+        return deepEqualInternal(a, b, [], []);
       })
     );
 
