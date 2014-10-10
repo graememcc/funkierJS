@@ -67,8 +67,8 @@
         };
 
 
-        it(message + ' (when pair constructed with new', testMaker(withNew));
-        it(message + ' (when pair constructed without new', testMaker(noNew));
+        it(message + ' (when pair constructed with new)', testMaker(withNew));
+        it(message + ' (when pair constructed without new)', testMaker(noNew));
       };
 
 
