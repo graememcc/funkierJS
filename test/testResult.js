@@ -210,7 +210,7 @@
 
     var makeCommonExtractorTests = function(desc, fnUnderTest, Correct, correctName, opposite, oppositeName) {
       var spec = {
-        name: spec,
+        name: desc,
         arity: 1,
         restrictions: [[Result]],
         validArguments: [[Correct(1)]]
