@@ -28,6 +28,9 @@
       '',
       'If any function has arity > 1, it will be curried, and partially applied when an',
       'argument is supplied to the composed function.',
+      '',
+      'Note in particular that when g has arity >= 1, the first argument will be consumed by g, and the result',
+      'passed to f. If g has arity > 1, then f will be passed a partially applied function.',
       '--',
       'var f1 = function(a) {return a + 1;};',
       'var f2 = function(b) {return b * 2;};',
@@ -49,6 +52,49 @@
 
           var gArgs = gLen > 0 ? [args[0]] : [];
           var fArgs = gLen > 0 ? args.slice(1) : args;
+          return f.apply(null, [g.apply(null, gArgs)].concat(fArgs));
+        });
+      })
+    );
+
+
+    var composeOn = defineValue(
+      'name: composeOn',
+      'signature: argCount: positive integer, f: function, g: function',
+      'classification: base',
+      '',
+      'Similar to [[compose]], composes the two functions f and g, returning a new function which returns',
+      'f(g(<arguments>)). However, the first argCount arguments will be consumed by g, before the result is',
+      'supplied to f. This often enables function creation approximating a point-free style.',
+      '',
+      'The function f must have arity >= 1. A TypeError will be thrown when this is not',
+      'the case.',
+      '',
+      'The function g must have arity <= argCount. A TypeError will be thrown when this is not',
+      'the case.',
+      '',
+      'If any function has arity > 1, it will be curried, and partially applied when an',
+      'argument is supplied to the composed function.',
+      '--',
+      'var f1 = function(a) {return a(2);};',
+      'var f2 = function(c, d, e) {return c * d * e;};',
+      'var f = composeOn(f1, f2); // f(x, y) = 2(x * y);',
+      curry(function(argCount, f, g) {
+        argCount = checkPositiveIntegral(argCount, 'argCount must be non-negative');
+        f = checkFunction(f, {arity: 1, minimum: true, message: 'function f must have arity ≥ 1'});
+        g = checkFunction(g, {arity: argCount, minimum: true, message: 'function g must have arity ≥ ' + argCount});
+
+        var fLen = getRealArity(f);
+        f = curry(f);
+        g = curry(g);
+
+        var curryArity = fLen - 1 + argCount;
+
+        return curryWithArity(curryArity, function() {
+          var args = [].slice.call(arguments);
+
+          var gArgs = argCount > 0 ? args.slice(0, argCount) : [];
+          var fArgs = argCount > 0 ? args.slice(argCount) : args;
           return f.apply(null, [g.apply(null, gArgs)].concat(fArgs));
         });
       })
@@ -510,6 +556,7 @@
     var exported = {
       compose: compose,
       composeMany: composeMany,
+      composeOn: composeOn,
       constant: constant,
       constant0: constant0,
       deepEqual: deepEqual,

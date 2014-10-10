@@ -20,9 +20,10 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = ['compose', 'id', 'constant', 'constant0', 'composeMany', 'flip', 'sectionLeft', 'sectionRight',
-                             'equals', 'strictEquals', 'notEqual', 'strictNotEqual', 'is', 'isNumber', 'isString', 'isBoolean',
-                             'isUndefined', 'isObject', 'isArray', 'isNull', 'isRealObject', 'getType', 'deepEqual'];
+    var expectedFunctions = ['compose', 'composeOn', 'id', 'constant', 'constant0', 'composeMany', 'flip',
+                             'sectionLeft', 'sectionRight', 'equals', 'strictEquals', 'notEqual', 'strictNotEqual',
+                             'is', 'isNumber', 'isString', 'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
+                             'isRealObject', 'getType', 'deepEqual'];
     describeModule('base', base, expectedObjects, expectedFunctions);
 
 
@@ -192,6 +193,160 @@
       var fn = function(a, b) {return a + b + 3;};
       var fn2 = function(a) {return a * 4;};
       testCurriedFunction(compose(fn, fn2), [1, 2], {message: 'Composed Function'});
+    });
+
+
+    var composeOnSpec = {
+      name: 'composeOn',
+      arity: 3,
+      restrictions: [['positive'], ['function: minarity 1'], ['function']],
+      validArguments: [[1], [function(x) {}], [function() {}]]
+    };
+
+
+    describeFunction(composeOnSpec, base.composeOn, function(composeOn) {
+      it('Composes two functions correctly (1)', function() {
+        var f = function(x) {return x + 2;};
+        var g = function(x) {return x + 1;};
+        var composition = composeOn(1, f, g);
+
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('Composes two functions correctly (2)', function() {
+        var f = function(h, x) {return 3 * h(x);};
+        var g = curry(function(x, y, z) {return x + y + z;});
+        var composition = composeOn(2, f, g);
+
+        expect(composition(1, 2, 3)).to.equal(f(g(1, 2), 3));
+      });
+
+
+      it('Calls the second function first', function() {
+        var times7 = function(x) {return x * 7;};
+        var f = curry(function(x, y) {return x(y) * 2;});
+        var g = curry(function(x, y) {return x(y) + 3;});
+        var composition = composeOn(1, f, g);
+
+        expect(composition(times7, 2)).to.not.equal(g(f(times7), 2));
+        expect(composition(times7, 2)).to.equal(f(g(times7), 2));
+      });
+
+
+      it('Returned function has the correct arity (1)', function() {
+        var f = function(x) {};
+        var g = function(x, y) {};
+        var composition = composeOn(1, f, g);
+
+        expect(getRealArity(composition)).to.equal(1);
+      });
+
+
+      it('Returned function has the correct arity (2)', function() {
+        var f = function(x) {};
+        var g = function(x, y) {};
+        var composition = composeOn(2, f, g);
+
+        expect(getRealArity(composition)).to.equal(2);
+      });
+
+
+      it('Returned function has the correct arity (3)', function() {
+        var f = function(x, y) {};
+        var g = function(x, y) {};
+        var composition = composeOn(1, f, g);
+
+        expect(getRealArity(composition)).to.equal(2);
+      });
+
+
+      it('Returned function has the correct arity (4)', function() {
+        var f = function(x, y) {};
+        var g = function(x, y) {};
+        var composition = composeOn(2, f, g);
+
+        expect(getRealArity(composition)).to.equal(3);
+      });
+
+
+      it('Returned function has the correct arity (5)', function() {
+        var f = function(x, y) {};
+        var g = function(x, y) {};
+        var composition = composeOn(0, f, g);
+
+        expect(getRealArity(composition)).to.equal(1);
+      });
+
+
+      it('Throws if the given arity exceeds the function\'s arity (1)', function() {
+        var f = function(x) {};
+        var g = function() {};
+
+        var fn = function() {
+          composeOn(1, f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if the given arity exceeds the function\'s arity (2)', function() {
+        var f = function(x) {};
+        var g = function(x) {};
+
+        var fn = function() {
+          composeOn(3, f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Throws if the outer function has arity 0', function() {
+        var f = function() {};
+        var g = function(x) {};
+
+        var fn = function() {
+          composeOn(1, f, g);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Curries first function if it has arity > 1', function() {
+        var f = function(a, b) {return a(b);};
+        var g = function(x, y, z) {return x * y * z + 1;};
+        var composition = composeOn(2, f, g);
+
+        expect(composition(1, 2)).to.be.a('function');
+        expect(getRealArity(composition(1, 2))).to.equal(1);
+      });
+
+
+      it('Curries second function if it has arity > 1', function() {
+        var f = function(a, b) {return a;};
+        var g = function(x, y, z) {return x * y * z + 1;};
+        var composition = composeOn(2, f, g);
+
+        expect(composition(1)).to.be.a('function');
+        expect(composition(1, 2)).to.be.a('function');
+        expect(composition(1, 2)(1)).to.be.a('function');
+        expect(getRealArity(composition(1, 2)(1))).to.equal(1);
+      });
+
+
+      // composeOn is ternary, and should be curried
+      var fn1 = function(a) {return a(1);};
+      var fn2 = function(a, b, c) {return a + b + c;};
+      var args = {firstArgs: [2, fn1, fn2], thenArgs: [3, 4]};
+      testCurriedFunction(composeOn, args);
+
+      // Also, lets test the composed functions too
+      var fn = function(a, b) {return a + b + 3;};
+      var fn2 = function(a) {return a * 4;};
+      testCurriedFunction(composeOn(1, fn, fn2), [3, 4], {message: 'Composed Function'});
     });
 
 
