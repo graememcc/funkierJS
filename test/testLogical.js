@@ -32,12 +32,12 @@
 
     describeFunction(notSpec, logical.not, function(not) {
       it('Works as expected (1)', function() {
-        expect(not(true)).to.be.false;
+        expect(not(true)).to.equal(false);
       });
 
 
       it('Works as expected (2)', function() {
-        expect(not(false)).to.be.true;
+        expect(not(false)).to.equal(true);
       });
     });
 
@@ -190,19 +190,19 @@
     };
 
 
-    var andTruthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
+    var andPredTruthTable = makePredTruthTable({expected: false, shortCircuits: true}, {expected: false, shortCircuits: true},
                                            {expected: false, shortCircuits: false}, {expected: true, shortCircuits: false});
-    makeBinaryPredicateTestFixture('andPred', logical.andPred, andTruthTable);
+    makeBinaryPredicateTestFixture('andPred', logical.andPred, andPredTruthTable);
 
 
-    var orTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+    var orPredTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
                                           {expected: true, shortCircuits: true}, {expected: true, shortCircuits: true});
-    makeBinaryPredicateTestFixture('orPred', logical.orPred, orTruthTable);
+    makeBinaryPredicateTestFixture('orPred', logical.orPred, orPredTruthTable);
 
 
-    var xorTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
+    var xorPredTruthTable = makePredTruthTable({expected: false, shortCircuits: false}, {expected: true, shortCircuits: false},
                                            {expected: true, shortCircuits: false}, {expected: false, shortCircuits: false});
-    makeBinaryPredicateTestFixture('xorPred', logical.xorPred, xorTruthTable);
+    makeBinaryPredicateTestFixture('xorPred', logical.xorPred, xorPredTruthTable);
   };
 
 

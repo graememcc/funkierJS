@@ -110,7 +110,7 @@
       it('Works correctly (2)', function() {
         var a = 'abc';
 
-        expect(isNaN(toCharCode(10, a))).to.be.true;
+        expect(isNaN(toCharCode(10, a))).to.equal(true);
       });
 
 
@@ -140,7 +140,7 @@
       it('Works correctly (4)', function() {
         var a = '';
 
-        expect(isNaN(ord(a))).to.be.true;
+        expect(isNaN(ord(a))).to.equal(true);
       });
     });
 
@@ -222,7 +222,7 @@
         it('Returns an array ' + message, function() {
           var result = split(splitStr, str);
 
-          expect(base.isArray(result)).to.be.true;
+          expect(base.isArray(result)).to.equal(true);
         });
       };
 
@@ -237,7 +237,7 @@
           return sp !== '-';
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -247,7 +247,7 @@
           return sp.indexOf('-') === -1;
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -284,7 +284,7 @@
         it('Returns an array ' + message, function() {
           var result = splitRegExp(pattern, str);
 
-          expect(base.isArray(result)).to.be.true;
+          expect(base.isArray(result)).to.equal(true);
         });
       };
 
@@ -299,7 +299,7 @@
           return sp !== '-';
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -309,7 +309,7 @@
           return sp.indexOf('-') === -1;
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -344,7 +344,7 @@
         it('Returns an array ' + message, function() {
           var result = splitLimit(splitStr, 1, str);
 
-          expect(base.isArray(result)).to.be.true;
+          expect(base.isArray(result)).to.equal(true);
         });
       };
 
@@ -359,7 +359,7 @@
           return sp !== '-';
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -369,7 +369,7 @@
           return sp.indexOf('-') === -1;
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -406,7 +406,7 @@
         it('Returns an array ' + message, function() {
           var result = splitRegExpLimit(pattern, 10, str);
 
-          expect(base.isArray(result)).to.be.true;
+          expect(base.isArray(result)).to.equal(true);
         });
       };
 
@@ -421,7 +421,7 @@
           return sp !== '-';
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -431,7 +431,7 @@
           return sp.indexOf('-') === -1;
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -514,7 +514,7 @@
           it('Respects meaning of $1 in replacement', function() {
             var s = 'bana';
             var from = /(na)/;
-            var to = '$1$1'
+            var to = '$1$1';
             var result = fnUnderTest(from, to, s);
 
             expect(result).to.equal('banana');
@@ -544,7 +544,7 @@
           it('Respects meaning of $\' in replacement', function() {
             var s = 'bana';
             var from = /ba/;
-            var to = 'ba$\''
+            var to = 'ba$\'';
             var result = fnUnderTest(from, to, s);
 
             expect(result).to.equal('banana');
@@ -554,7 +554,7 @@
           it('Respects meaning of $$ in replacement', function() {
             var s = 'let\'s make some dollar';
             var from = /dollar/;
-            var to = '$$'
+            var to = '$$';
             var result = fnUnderTest(from, to, s);
 
             expect(result).to.equal('let\'s make some $');
@@ -835,7 +835,7 @@
           var args = isFrom ? [r, 5, s] : [r, s];
           var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -847,7 +847,7 @@
             return obj.matchedText === 'a';
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -860,7 +860,7 @@
             return obj.index === (isFrom ? indices[i + 2]  - 5 : indices[i]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -874,7 +874,7 @@
                    res.subexpressions.length === 0;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -897,7 +897,7 @@
           var args = isFrom ? [r, 8, s] : [r, s];
           var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -914,7 +914,7 @@
                    isDigit(obj.matchedText[1]) && isDigit(obj.matchedText[2]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -927,7 +927,7 @@
             return obj.index === (isFrom ? indices[i + 2] - 8 : indices[i]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -944,7 +944,7 @@
                    subs[1] === sub1 && subs[2] === sub2;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 

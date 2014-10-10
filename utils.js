@@ -85,7 +85,7 @@
        */
 
       var isObjectLike = function(v, options) {
-        var options = options || {};
+        options = options || {};
         var strict = options.strict || false;
         var allowNull = options.allowNull || false;
 
@@ -102,7 +102,7 @@
        */
 
       var checkObjectLike = function(v, options) {
-        var options = options || {};
+        options = options || {};
         var message = options.message || 'Value is not an object';
         var allowNull = options.allowNull || false;
 
@@ -147,7 +147,7 @@
        */
 
       var checkArrayLike = function(v, options) {
-        var options = options || {};
+        options = options || {};
         var message = options.message || 'Value is not a string or array';
 
         if (!isArrayLike(v, options.noStrings))

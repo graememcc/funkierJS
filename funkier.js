@@ -33,7 +33,7 @@
 
 
     // Also export help
-    exportedFns['help'] = help;
+    exportedFns.help = help;
 
 
     module.exports = exportedFns;

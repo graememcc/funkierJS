@@ -243,7 +243,7 @@
         var base = 2;
         var result = stringToInt(base, s);
 
-        expect(isNaN(result)).to.be.true;
+        expect(isNaN(result)).to.equal(true);
       });
 
 

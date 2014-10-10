@@ -71,7 +71,7 @@
           var caller = callPropWithArity('calledProp', i);
           caller.apply(null, args.concat([obj]));
 
-          expect(obj.called).to.be.true;
+          expect(obj.called).to.equal(true);
         });
       };
 
@@ -91,6 +91,9 @@
       };
 
 
+      var id = function(x) {return x;};
+      var testObj;
+
       for (var i = 0; i < 6; i++) {
         addReturnedCurriedArityTest(i);
         addReturnedArityTest(i);
@@ -98,7 +101,7 @@
         addReturnedValueTest(i);
 
         // The returned function should be curried
-        var testObj = {prop: function(x) {return x;}};
+        testObj = {prop: id};
         var caller = callPropWithArity('prop', 1);
         testCurriedFunction(caller, [2, testObj], {message: 'Returned function'});
       }
@@ -137,7 +140,7 @@
         var caller = callProp('calledProp');
         var result = caller(obj);
 
-        expect(obj.called).to.be.true;
+        expect(obj.called).to.equal(true);
       });
 
 
@@ -165,7 +168,7 @@
         var obj = {funkier: 1};
         var result = hasOwnProperty('funkier', obj);
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -175,7 +178,7 @@
         var obj = new Constructor();
         var result = hasOwnProperty('funkier', obj);
 
-        expect(result).to.be.false;
+        expect(result).to.equal(false);
       });
 
 
@@ -188,7 +191,7 @@
         };
         var result = hasOwnProperty('foo', obj);
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -207,7 +210,7 @@
         var obj = {funkier: 1};
         var result = hasProperty('funkier', obj);
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -217,7 +220,7 @@
         var obj = new Constructor();
         var result = hasProperty('funkier', obj);
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -235,7 +238,7 @@
 
     describeFunction(ioSpec, object.instanceOf, function(instanceOf) {
       it('Works correctly (1)', function() {
-        expect(instanceOf(Object, {})).to.be.true;
+        expect(instanceOf(Object, {})).to.equal(true);
       });
 
 
@@ -243,7 +246,7 @@
         var Constructor = function() {};
         var obj = new Constructor();
 
-        expect(instanceOf(Constructor, obj)).to.be.true;
+        expect(instanceOf(Constructor, obj)).to.equal(true);
       });
 
 
@@ -253,7 +256,7 @@
         Constructor.prototype = Proto.prototype;
         var obj = new Constructor();
 
-        expect(instanceOf(Proto, obj)).to.be.true;
+        expect(instanceOf(Proto, obj)).to.equal(true);
       });
 
 
@@ -262,7 +265,7 @@
         var Proto = function() {};
         var obj = new Constructor();
 
-        expect(instanceOf(Proto, obj)).to.be.false;
+        expect(instanceOf(Proto, obj)).to.equal(false);
       });
 
 
@@ -278,7 +281,7 @@
 
     describeFunction(ipoSpec, object.isPrototypeOf, function(isPrototypeOf) {
       it('Works correctly (1)', function() {
-        expect(isPrototypeOf(Object.prototype, {})).to.be.true;
+        expect(isPrototypeOf(Object.prototype, {})).to.equal(true);
       });
 
 
@@ -286,7 +289,7 @@
         var Constructor = function() {};
         var obj = new Constructor();
 
-        expect(isPrototypeOf(Constructor.prototype, obj)).to.be.true;
+        expect(isPrototypeOf(Constructor.prototype, obj)).to.equal(true);
       });
 
 
@@ -296,7 +299,7 @@
         Constructor.prototype = Proto.prototype;
         var obj = new Constructor();
 
-        expect(isPrototypeOf(Proto.prototype, obj)).to.be.true;
+        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(true);
       });
 
 
@@ -305,7 +308,7 @@
         var Proto = function() {};
         var obj = new Constructor();
 
-        expect(isPrototypeOf(Proto.prototype, obj)).to.be.false;
+        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(false);
       });
 
 
@@ -318,7 +321,7 @@
         };
         var result = isPrototypeOf(obj, Object);
 
-        expect(result).to.be.false;
+        expect(result).to.equal(false);
       });
 
 
@@ -351,7 +354,7 @@
         var obj = {funkier: 1};
         var result = createObject(obj);
 
-        expect(isPrototypeOf(obj, result)).to.be.true;
+        expect(isPrototypeOf(obj, result)).to.equal(true);
       });
 
 
@@ -367,7 +370,7 @@
         var result = createObject(obj,
                       {prop1: {configurable: false, enumerable: false, writable: false, value: 42}});
 
-        expect(hasOwnProperty('prop1', result)).to.be.false;
+        expect(hasOwnProperty('prop1', result)).to.equal(false);
       });
     });
 
@@ -405,7 +408,7 @@
 
           // Need to call hasOwnProperty in this manner because of the null
           // proto test, which of course will not inherit from Object.prototype
-          expect(Object.prototype.hasOwnProperty.call(result, 'prop1')).to.be.true;
+          expect(Object.prototype.hasOwnProperty.call(result, 'prop1')).to.equal(true);
         });
 
 
@@ -450,7 +453,7 @@
         var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
         defineProperty('prop', descriptor, obj);
 
-        expect(obj.hasOwnProperty('prop')).to.be.true;
+        expect(obj.hasOwnProperty('prop')).to.equal(true);
       });
 
 
@@ -512,7 +515,7 @@
           return obj.hasOwnProperty(p);
         });
 
-        expect(allThere).to.be.true;
+        expect(allThere).to.equal(true);
       });
 
 
@@ -720,10 +723,10 @@
 
 
       it('Behaves correctly if writable false (2)', function() {
-        var a = function() {};
-        defineProperty('foo', {enumerable: true, writable: false, value: 1}, a.prototype);
+        var A = function() {};
+        defineProperty('foo', {enumerable: true, writable: false, value: 1}, A.prototype);
 
-        var b = new a();
+        var b = new A();
         var val = 42;
         var fn = function() {
           setter('foo', val, b);
@@ -761,12 +764,12 @@
 
       it('Behaves correctly if no setter in descriptor (2)', function() {
         var a = (function() {
-          var a = function() {};
+          var A = function() {};
           var privateProp = 1;
           var getter = function() {return privateProp;};
-          defineProperty('foo', {get: getter}, a.prototype);
+          defineProperty('foo', {get: getter}, A.prototype);
 
-          var b = new a();
+          var b = new A();
           return b;
         })();
 
@@ -854,7 +857,7 @@
         var a = {foo: 1};
         setter('foo', 42, a);
 
-        expect(hasOwnProperty('foo', a)).to.be.true;
+        expect(hasOwnProperty('foo', a)).to.equal(true);
       });
 
 
@@ -945,18 +948,18 @@
         var val = 42;
         setter('foo', val, a);
 
-        expect(hasOwnProperty('foo', a)).to.be.true;
+        expect(hasOwnProperty('foo', a)).to.equal(true);
       });
 
 
       it('Creates the property if it only exists on the prototype', function() {
-        var a = function() {};
-        a.prototype.foo = 1;
-        var b = new a();
+        var A = function() {};
+        A.prototype.foo = 1;
+        var b = new A();
         var val = 42;
         setter('foo', val, b);
 
-        expect(hasOwnProperty('foo', b)).to.be.true;
+        expect(hasOwnProperty('foo', b)).to.equal(true);
         expect(b.foo).to.equal(val);
       });
     };
@@ -1116,7 +1119,7 @@
           var a = {foo: 1};
           deleter('foo', a);
 
-          expect(hasOwnProperty('foo', a)).to.be.false;
+          expect(hasOwnProperty('foo', a)).to.equal(false);
         });
 
 
@@ -1134,9 +1137,9 @@
 
 
         it('Behaves correctly if object does not have property but prototype does', function() {
-          var a = function() {};
-          a.prototype.foo = 1;
-          var b = new a();
+          var A = function() {};
+          A.prototype.foo = 1;
+          var b = new A();
           var fn = function() {
             deleter('foo', b);
           };
@@ -1146,7 +1149,7 @@
           else
             expect(fn).to.throw(TypeError);
 
-          expect(hasOwnProperty('foo', Object.getPrototypeOf(b))).to.be.true;
+          expect(hasOwnProperty('foo', Object.getPrototypeOf(b))).to.equal(true);
         });
 
 
@@ -1172,7 +1175,7 @@
           Object.preventExtensions(a);
           deleter('foo', a);
 
-          expect(hasOwnProperty('foo', a)).to.be.false;
+          expect(hasOwnProperty('foo', a)).to.equal(false);
         });
 
 
@@ -1285,8 +1288,8 @@
           return function() {
             var result = fnUnderTest(val);
 
-            expect(Array.isArray(result)).to.be.true;
-            expect(checkArrayContent(result, [])).to.be.true;
+            expect(Array.isArray(result)).to.equal(true);
+            expect(checkArrayContent(result, [])).to.equal(true);
           };
         };
 
@@ -1300,8 +1303,8 @@
         it('Returns empty array for empty object', function() {
           var result = fnUnderTest({});
 
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, [])).to.be.true;
+          expect(Array.isArray(result)).to.equal(true);
+          expect(checkArrayContent(result, [])).to.equal(true);
         });
 
 
@@ -1310,8 +1313,8 @@
             var expected = verifier(obj);
             var result = fnUnderTest(obj);
 
-            expect(Array.isArray(result)).to.be.true;
-            expect(checkArrayContent(result, expected)).to.be.true;
+            expect(Array.isArray(result)).to.equal(true);
+            expect(checkArrayContent(result, expected)).to.equal(true);
           });
         };
 
@@ -1323,14 +1326,14 @@
 
 
         it('Only returns own properties', function() {
-          var f = function() {this.baz = 42};
-          f.prototype = {foo: 1, bar: 2};
-          var a = new f();
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
           var expected = verifier(a);
           var result = fnUnderTest(a);
 
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, expected)).to.be.true;
+          expect(Array.isArray(result)).to.equal(true);
+          expect(checkArrayContent(result, expected)).to.equal(true);
         });
 
 
@@ -1364,8 +1367,8 @@
           return function() {
             var result = fnUnderTest(val);
 
-            expect(Array.isArray(result)).to.be.true;
-            expect(checkArrayContent(result, [])).to.be.true;
+            expect(Array.isArray(result)).to.equal(true);
+            expect(checkArrayContent(result, [])).to.equal(true);
           };
         };
 
@@ -1379,8 +1382,8 @@
         it('Returns empty array for empty object', function() {
           var result = fnUnderTest({});
 
-          expect(Array.isArray(result)).to.be.true;
-          expect(checkArrayContent(result, [])).to.be.true;
+          expect(Array.isArray(result)).to.equal(true);
+          expect(checkArrayContent(result, [])).to.equal(true);
         });
 
 
@@ -1388,11 +1391,11 @@
           var keys = result.map(function(r) {return r[0];});
           var expected = Object.keys(obj);
 
-          expect(Array.isArray(result)).to.be.true;
+          expect(Array.isArray(result)).to.equal(true);
           expect(result.every(function(val) {
             return Array.isArray(val) && val.length === 2;
-          })).to.be.true;
-          expect(checkArrayContent(keys, expected)).to.be.true;
+          })).to.equal(true);
+          expect(checkArrayContent(keys, expected)).to.equal(true);
         };
 
 
@@ -1429,9 +1432,9 @@
 
 
         it('Only returns keys for own properties', function() {
-          var f = function() {this.baz = 42};
-          f.prototype = {foo: 1, bar: 2};
-          var a = new f();
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
           var result = fnUnderTest(a);
 
           verifyKeys(a, result);
@@ -1439,9 +1442,9 @@
 
 
         it('Only returns values for own properties', function() {
-          var f = function() {this.baz = 42};
-          f.prototype = {foo: 1, bar: 2};
-          var a = new f();
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
           var result = fnUnderTest(a);
 
           verifyValues(a, result);
@@ -1474,11 +1477,11 @@
 
 
         it('New object has does not have same prototype', function() {
-          var f = function() {};
-          var a = new f();
+          var F = function() {};
+          var a = new F();
           var clone = fnUnderTest(a);
 
-          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.false;
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(false);
         });
 
 
@@ -1486,7 +1489,7 @@
           var a = [1, 2, 3];
           var clone = fnUnderTest(a);
 
-          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.be.true;
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(true);
         });
 
 
@@ -1496,7 +1499,7 @@
           var origKeys = keys(a);
           var cloneKeys = keys(clone);
 
-          expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
+          expect(checkArrayContent(origKeys, cloneKeys)).to.equal(true);
         });
 
 
@@ -1515,7 +1518,7 @@
           var origKeys = getOwnPropertyNames(a);
           var cloneKeys = getOwnPropertyNames(clone);
 
-          expect(checkArrayContent(origKeys, cloneKeys)).to.be.true;
+          expect(checkArrayContent(origKeys, cloneKeys)).to.equal(true);
         });
 
 
@@ -1525,7 +1528,7 @@
           var clone = fnUnderTest(a);
           var bazDescriptor = getOwnPropertyDescriptor('foo', clone);
 
-          expect(bazDescriptor.enumerable).to.be.true;
+          expect(bazDescriptor.enumerable).to.equal(true);
         });
 
 
@@ -1535,7 +1538,7 @@
           var clone = fnUnderTest(a);
           var bazDescriptor = getOwnPropertyDescriptor('baz', clone);
 
-          expect(bazDescriptor.enumerable).to.be.false;
+          expect(bazDescriptor.enumerable).to.equal(false);
         });
 
 
@@ -1546,7 +1549,7 @@
             return verifier(val, a[i]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -1564,7 +1567,7 @@
             return verifier(clone[k], a[k]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -1572,11 +1575,11 @@
           var a = {};
           defineProperty('foo', {enumerable: true, value: 'a'}, a);
           defineProperty('bar', {enumerable: false, value: 1}, a);
-          var f = function() {};
-          f.prototype = Object.create(a);
+          var F = function() {};
+          F.prototype = Object.create(a);
           defineProperty('fizz', {enumerable: true, value: 3}, a);
           defineProperty('buzz', {enumerable: false, value: 5}, a);
-          var b = new f();
+          var b = new F();
           var clone = fnUnderTest(b);
           var cloneProps = getOwnPropertyNames(clone);
           var hasProp = function(p) {return cloneProps.indexOf(p) !== -1;};
@@ -1638,7 +1641,7 @@
         return val.every(function(newVal, i) {
           return deepCheck(newVal, cloneVal[i]);
         });
-      };
+      }
 
       if (typeof(val) !== 'object' || val === null)
         return val === cloneVal;
@@ -1649,11 +1652,13 @@
       if (val === cloneVal)
         return false;
 
+      var propChecker = function(p) {
+        return deepCheck(val[p], cloneVal[p]);
+      };
+
       while (val !== Object.prototype) {
         var props = object.getOwnPropertyNames(val);
-        if (!props.every(function(p) {
-          return deepCheck(val[p], cloneVal[p]);
-        }))
+        if (!props.every(propChecker))
           return false;
         val = Object.getPrototypeOf(val);
       }

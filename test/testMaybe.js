@@ -96,7 +96,7 @@
       it('Is a Maybe', function() {
         var result = Nothing instanceof Maybe;
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -184,7 +184,7 @@
           var props = Object.getOwnPropertyNames(j);
           var result = props.indexOf('value') !== -1;
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         };
       });
 
@@ -197,7 +197,7 @@
             if (prop === 'value') value = true;
           var result = !value;
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         };
       });
 
@@ -286,23 +286,23 @@
 
     describeFunction(isMaybeSpec, maybe.isMaybe, function(isMaybe) {
       it('Correct for Maybe', function() {
-        expect(isMaybe(Maybe)).to.be.true;
+        expect(isMaybe(Maybe)).to.equal(true);
       });
 
 
       it('Correct for Nothing', function() {
-        expect(isMaybe(Nothing)).to.be.true;
+        expect(isMaybe(Nothing)).to.equal(true);
       });
 
 
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Maybe value (' + (i + 1) + ')', function() {
-          expect(isMaybe(t)).to.be.false;
+          expect(isMaybe(t)).to.equal(false);
         });
 
 
         it('Works correctly (' + (i + 1) + ')', function() {
-          expect(isMaybe(Just(t))).to.be.true;
+          expect(isMaybe(Just(t))).to.equal(true);
         });
       });
     });
@@ -316,23 +316,23 @@
 
     describeFunction(isNothingSpec, isNothing, function(isNothing) {
       it('Correct for Maybe', function() {
-        expect(isNothing(Maybe)).to.be.false;
+        expect(isNothing(Maybe)).to.equal(false);
       });
 
 
       it('Correct for Nothing', function() {
-        expect(isNothing(Nothing)).to.be.true;
+        expect(isNothing(Nothing)).to.equal(true);
       });
 
 
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Maybe value (' + (i + 1) + ')', function() {
-          expect(isNothing(t)).to.be.false;
+          expect(isNothing(t)).to.equal(false);
         });
 
 
         it('Correct for Just (' + (i + 1) + ')', function() {
-          expect(isNothing(Just(t))).to.be.false;
+          expect(isNothing(Just(t))).to.equal(false);
         });
       });
     });
@@ -346,23 +346,23 @@
 
     describeFunction(isJustSpec, isJust, function(isJust) {
       it('Correct for Maybe', function() {
-        expect(isJust(Maybe)).to.be.false;
+        expect(isJust(Maybe)).to.equal(false);
       });
 
 
       it('Correct for Nothing', function() {
-        expect(isJust(Nothing)).to.be.false;
+        expect(isJust(Nothing)).to.equal(false);
       });
 
 
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Maybe value (' + (i + 1) + ')', function() {
-          expect(isJust(t)).to.be.false;
+          expect(isJust(t)).to.equal(false);
         });
 
 
         it('Correct for Just (' + (i + 1) + ')', function() {
-          expect(isJust(Just(t))).to.be.true;
+          expect(isJust(Just(t))).to.equal(true);
         });
       });
     });
@@ -400,7 +400,7 @@
           var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
           newFn.apply(null, args);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
           expect(fArgs).to.deep.equal(args);
         });
       };
@@ -444,7 +444,7 @@
             return isJust(r) && getJustValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -461,7 +461,7 @@
             return isNothing(r);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -515,7 +515,7 @@
           var newFn = makePredMaybeReturner(pred, f);
           newFn(val);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
           expect(arg).to.equal(val);
         });
       });
@@ -530,7 +530,7 @@
             return isJust(r) && getJustValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -548,7 +548,7 @@
             return isNothing(r);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -592,7 +592,7 @@
           return isJust(r) && getJustValue(r) === f(v);
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -619,7 +619,7 @@
           var r = newFn(1);
           var result = isNothing(r);
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       });
 

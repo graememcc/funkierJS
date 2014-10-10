@@ -165,7 +165,7 @@
             return arr.length === requiredArgs;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -252,7 +252,7 @@
             return allArgs[isRTL ? numElems - index : index] === elem;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -279,7 +279,7 @@
             return copy[i] === v;
           });
 
-          expect(sameLength && sameEntries && different).to.be.true;
+          expect(sameLength && sameEntries && different).to.equal(true);
         });
       };
 
@@ -298,7 +298,7 @@
           var result = fnUnderTest.apply(null, argsBefore.concat([data]));
 
           if (type !== 'string')
-            expect(isArray(result)).to.be.true;
+            expect(isArray(result)).to.equal(true);
           else
             expect(typeof(result)).to.equal('string');
         });
@@ -473,7 +473,7 @@
         it('Returns array ' + message, function() {
           var replicated = replicate(count, data);
 
-          expect(isArray(replicated)).to.be.true;
+          expect(isArray(replicated)).to.equal(true);
         });
 
 
@@ -489,7 +489,7 @@
             return e === data;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -525,7 +525,7 @@
           var data = sliceIfNecessary(originalData);
           var mapped = map(f, data);
 
-          expect(isArray(mapped)).to.be.true;
+          expect(isArray(mapped)).to.equal(true);
         });
 
 
@@ -535,7 +535,7 @@
             return val === f(data[i]);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -555,7 +555,7 @@
           return typeof(f) === 'function' && getRealArity(f) === 1;
         });
 
-        expect(allPartiallyApplied).to.be.true;
+        expect(allPartiallyApplied).to.equal(true);
       });
 
 
@@ -646,7 +646,7 @@
           return e === a[i];
         });
 
-        expect(allStrictEqual).to.be.true;
+        expect(allStrictEqual).to.equal(true);
       });
 
 
@@ -688,7 +688,7 @@
               return acc === i;
             });
 
-            expect(accumulatorsCorrect).to.be.true;
+            expect(accumulatorsCorrect).to.equal(true);
           });
         };
 
@@ -861,7 +861,7 @@
               if (calls === data.length - 2)
                 return trigger;
               return okVal;
-            }
+            };
 
             fnUnderTest(f, data);
 
@@ -882,14 +882,14 @@
               if (calls === data.length - 1)
                 return trigger;
               return okVal;
-            }
+            };
 
             fnUnderTest(f, data);
             var result = vals.every(function(elem, i) {
               return data[i] === elem;
             });
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           });
 
 
@@ -902,7 +902,7 @@
               if (calls === data.length - 1)
                 return trigger;
               return okVal;
-            }
+            };
 
             var result = fnUnderTest(f, data);
 
@@ -918,7 +918,7 @@
             var f = function(x) {
               calls += 1;
               return okVal;
-            }
+            };
 
             fnUnderTest(f, data);
 
@@ -935,7 +935,7 @@
               vals.push(x);
               calls += 1;
               return okVal;
-            }
+            };
 
             fnUnderTest(f, data);
 
@@ -943,7 +943,7 @@
               return data[i] === elem;
             });
 
-            expect(calledWithEvery).to.be.true;
+            expect(calledWithEvery).to.equal(true);
           });
 
 
@@ -953,7 +953,7 @@
             var f = function(x) {
               calls += 1;
               return okVal;
-            }
+            };
             var result = fnUnderTest(f, data);
 
             expect(result).to.equal(okVal);
@@ -1063,7 +1063,7 @@
       it('Returns false when called with empty ' + message, function() {
         var found = fnUnderTest(value, data);
 
-        expect(found).to.be.false;
+        expect(found).to.equal(false);
       });
     };
 
@@ -1072,7 +1072,7 @@
       it('Returns true when ' + message, function() {
         var found = fnUnderTest(value, data);
 
-        expect(found).to.be.true;
+        expect(found).to.equal(true);
       });
     };
 
@@ -1125,7 +1125,7 @@
       addElementNotFoundTest(elementWith, 'arraylike predicate returns false', alwaysFalse, makeArrayLike('a', 'b'));
       addElementNotFoundTest(elementWith, 'string predicate returns false', isDigit, 'abcde');
 
-      addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7},
+      addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7;},
                                        [{foo: 1}, {foo: 7}, {foo: 4}]);
       addElementFoundTest(elementWith, 'predicate matches arraylike element', fooIs42,
                                        makeArrayLike({foo: 4}, {foo: 42}));
@@ -1155,7 +1155,7 @@
         var args = hasStep ? [0, 1, b] : [0, b];
         var result = fnUnderTest.apply(null, args);
 
-        expect(array.last(result) < b).to.be.true;
+        expect(array.last(result) < b).to.equal(true);
       });
 
 
@@ -1164,7 +1164,7 @@
         var args = hasStep ? [1.1, 1.1, b] : [1.1, b];
         var result = fnUnderTest.apply(null, args);
 
-        expect(array.last(result) < b).to.be.true;
+        expect(array.last(result) < b).to.equal(true);
       });
     };
 
@@ -1195,7 +1195,7 @@
             return (i === 0 && val === a) || (val === arr[i - 1] + 1);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -1246,7 +1246,7 @@
             return (i === 0 && val === a) || (val === arr[i - 1] + step);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -1272,7 +1272,7 @@
         var b = 10;
         var result = rangeStep(a, step, b);
 
-        expect(array.last(result) > b).to.be.true;
+        expect(array.last(result) > b).to.equal(true);
       });
 
 
@@ -1339,7 +1339,7 @@
               return val === data[i];
             });
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           });
         };
 
@@ -1379,7 +1379,7 @@
           var data = sliceIfNecessary(originalData);
           var dropped = drop(count, data);
 
-          expect(valuesEqual(data, dropped)).to.be.true;
+          expect(valuesEqual(data, dropped)).to.equal(true);
         });
       };
 
@@ -1398,7 +1398,7 @@
               return val === data[i + count];
             });
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           });
         };
 
@@ -1463,7 +1463,7 @@
                 return val === data[fnUnderTest === array.tail ? i + 1 : i];
               });
 
-              expect(valuesCorrect).to.be.true;
+              expect(valuesCorrect).to.equal(true);
             });
           };
 
@@ -1505,7 +1505,7 @@
               var data = sliceIfNecessary(originalData);
               var result = fnUnderTest(data);
 
-              expect(isArray(result)).to.be.true;
+              expect(isArray(result)).to.equal(true);
             });
 
 
@@ -1517,7 +1517,7 @@
                 return typeof(val) === 'string';
                });
 
-               expect(elementsHaveCorrectType).to.be.true;
+               expect(elementsHaveCorrectType).to.equal(true);
             });
 
 
@@ -1527,7 +1527,7 @@
                 return val.length === (fnUnderTest === array.tails ? data.length - i : i);
               });
 
-              expect(elementLengthsCorrect).to.be.true;
+              expect(elementLengthsCorrect).to.equal(true);
             });
 
 
@@ -1542,7 +1542,7 @@
                 });
               });
 
-              expect(elementsCorrect).to.be.true;
+              expect(elementsCorrect).to.equal(true);
             });
           };
 
@@ -1583,7 +1583,7 @@
           var data = sliceIfNecessary(originalData);
           var sameValue = copy(data) === data;
 
-          expect(sameValue).to.be.false;
+          expect(sameValue).to.equal(false);
         });
 
 
@@ -1592,7 +1592,7 @@
           var copied = copy(data);
 
 
-          expect(valuesEqual(data, copied)).to.be.true;
+          expect(valuesEqual(data, copied)).to.equal(true);
         });
 
 
@@ -1602,7 +1602,7 @@
             return val === data[i];
           });
 
-          expect(membersAreCopies).to.be.true;
+          expect(membersAreCopies).to.equal(true);
         });
       };
 
@@ -1667,7 +1667,7 @@
             var data = sliceIfNecessary(originalData);
             var result = slice(from, to, data).length === Math.min(data.length - from, to - from);
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           });
 
 
@@ -1680,7 +1680,7 @@
               return val === data[from + i];
             });
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           });
         };
 
@@ -1737,7 +1737,7 @@
             fnUnderTest(newPredicate, data);
             var calledCorrectly = called === expectedLength + (expectedLength === data.length ? 0 : 1);
 
-            expect(calledCorrectly).to.be.true;
+            expect(calledCorrectly).to.equal(true);
           });
 
 
@@ -1750,7 +1750,7 @@
               return val === data[isTakeWhile ? i : i + expectedLength];
             });
 
-            expect(membersCorrect).to.be.true;
+            expect(membersCorrect).to.equal(true);
           });
         };
 
@@ -1830,7 +1830,7 @@
 
               var elementsCorrect = newVal.every(isPrepend ? prependCheck : appendCheck);
 
-              expect(elementsCorrect).to.be.true;
+              expect(elementsCorrect).to.equal(true);
             });
           };
 
@@ -1878,7 +1878,7 @@
           var result = concat(first, second);
 
           if (expectedType === 'array')
-            expect(isArray(result)).to.be.true;
+            expect(isArray(result)).to.equal(true);
           else
             expect(result).to.be.a('string');
         });
@@ -1903,7 +1903,7 @@
             return v === (i < first.length ? first[i] : second[i - first.length]);
           });
 
-          expect(valsCorrect).to.be.true;
+          expect(valsCorrect).to.equal(true);
         });
 
 
@@ -1914,7 +1914,7 @@
           var secondLength = second.length;
           concat(first, second);
 
-          expect(first.length === firstLength && second.length === secondLength).to.be.true;
+          expect(first.length === firstLength && second.length === secondLength).to.equal(true);
         });
       };
 
@@ -1987,7 +1987,7 @@
           var val = originalData.slice();
           var result = intersperse(',', val);
 
-          expect(valuesEqual(val, result)).to.be.true;
+          expect(valuesEqual(val, result)).to.equal(true);
         });
       };
 
@@ -2018,7 +2018,7 @@
             return v === data[i / 2];
           });
 
-          expect(originalElementsPresent).to.be.true;
+          expect(originalElementsPresent).to.equal(true);
         });
 
 
@@ -2034,7 +2034,7 @@
             return v === intersperseValue;
           });
 
-          expect(interspersedCorrectly).to.be.true;
+          expect(interspersedCorrectly).to.equal(true);
         });
       };
 
@@ -2083,7 +2083,7 @@
             return v === data[originalLength - i];
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -2111,7 +2111,7 @@
           if (typeof(val) !== 'function') {
             expect(data[result]).to.equal(val);
           } else {
-            expect(val(data[result])).to.be.true;
+            expect(val(data[result])).to.equal(true);
           }
         }
       });
@@ -2227,7 +2227,7 @@
         });
 
         expect(args.length).to.equal(data.length - from);
-        expect(calledWithEvery).to.be.true;
+        expect(calledWithEvery).to.equal(true);
       });
     };
 
@@ -2254,7 +2254,7 @@
         });
 
         expect(args.length).to.equal(index + 1 - from);
-        expect(iteratedOverValue).to.be.true;
+        expect(iteratedOverValue).to.equal(true);
       });
     };
 
@@ -2278,7 +2278,7 @@
           var data = sliceIfNecessary(originalData);
           findWith(f, data);
 
-          expect(called).to.be.false;
+          expect(called).to.equal(false);
         });
 
 
@@ -2433,7 +2433,7 @@
           var data = sliceIfNecessary(originalData);
           var result = occurrences(val, data);
 
-          expect(isArray(result)).to.be.true;
+          expect(isArray(result)).to.equal(true);
         });
 
 
@@ -2443,7 +2443,7 @@
             return i >= 0 && i < data.length && data[i] === val;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
 
 
@@ -2455,7 +2455,7 @@
             return v !== val;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -2495,7 +2495,7 @@
           var data = sliceIfNecessary(originalData);
           var result = occurrencesWith(p, data);
 
-          expect(isArray(result)).to.be.true;
+          expect(isArray(result)).to.equal(true);
         });
 
 
@@ -2520,7 +2520,7 @@
           });
 
           expect(args.length).to.equal(data.length);
-          expect(calledWithEvery).to.be.true;
+          expect(calledWithEvery).to.equal(true);
         });
 
 
@@ -2530,7 +2530,7 @@
             return i >= 0 && i < data.length && p(data[i]);
           });
 
-          expect(indicesValid).to.be.true;
+          expect(indicesValid).to.equal(true);
         });
 
 
@@ -2543,7 +2543,7 @@
             return p(v) === false;
           });
 
-          expect(noneMissing).to.be.true;
+          expect(noneMissing).to.equal(true);
         });
       };
 
@@ -2553,7 +2553,7 @@
       addTests('string when value not found', alwaysFalse, 'funkier');
       addTests('array (1)', strictEquals(1), [2, 1, 3]);
       addTests('array (2)', strictEquals(1), [2, 1, 1, 3, 1]);
-      addTests('array (3)', function(x) {return x.foo = 3;},
+      addTests('array (3)', function(x) {return x.foo === 3;},
               [{foo: 3}, {foo: 42}, {foo: 3}, {foo: 3}, {foo: undefined}]);
       addTests('arraylike (1)', strictEquals(2), [2, 1, 3]);
       addTests('arraylike (2)', strictEquals(2), [2, 1, 1, 2, 2]);
@@ -2583,7 +2583,7 @@
       };
 
 
-      var tests = [
+      var degenerateTests = [
         {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
         {name: 'arraylike', tests: [{type: 'empty', value: makeArrayLike()},
                                     {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
@@ -2591,9 +2591,9 @@
       ];
 
 
-      tests.forEach(function(left) {
+      degenerateTests.forEach(function(left) {
         left.tests.forEach(function(leftTest) {
-          tests.forEach(function(right) {
+          degenerateTests.forEach(function(right) {
             right.tests.forEach(function(rightTest) {
               if (leftTest.type === 'normal' && rightTest.type === 'normal')
                 return;
@@ -2612,7 +2612,7 @@
           var r = right.slice();
           var result = zip(l, r);
 
-          expect(isArray(result)).to.be.true;
+          expect(isArray(result)).to.equal(true);
         });
 
 
@@ -2633,7 +2633,7 @@
             return isPair(p);
           });
 
-          expect(allPairs).to.be.true;
+          expect(allPairs).to.equal(true);
         });
 
 
@@ -2644,7 +2644,7 @@
             return fst(p) === l[i];
           });
 
-          expect(firstsCorrect).to.be.true;
+          expect(firstsCorrect).to.equal(true);
         });
 
 
@@ -2655,7 +2655,7 @@
             return snd(p) === r[i];
           });
 
-          expect(secondsCorrect).to.be.true;
+          expect(secondsCorrect).to.equal(true);
         });
       };
 
@@ -2711,7 +2711,7 @@
       };
 
 
-      var tests = [
+      var degenerateTests = [
         {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
         {name: 'arraylike', tests: [{type: 'empty', value: makeArrayLike()},
                                     {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
@@ -2719,9 +2719,9 @@
       ];
 
 
-      tests.forEach(function(left) {
+      degenerateTests.forEach(function(left) {
         left.tests.forEach(function(leftTest) {
-          tests.forEach(function(right) {
+          degenerateTests.forEach(function(right) {
             right.tests.forEach(function(rightTest) {
               if (leftTest.type === 'normal' && rightTest.type === 'normal')
                 return;
@@ -2740,7 +2740,7 @@
           var r = right.slice();
           var result = zipWith(f, l, r);
 
-          expect(isArray(result)).to.be.true;
+          expect(isArray(result)).to.equal(true);
         });
 
 
@@ -2761,7 +2761,7 @@
             return p === f(l[i], r[i]);
           });
 
-          expect(elementsCorrect).to.be.true;
+          expect(elementsCorrect).to.equal(true);
         });
       };
 
@@ -2813,7 +2813,7 @@
           return data.indexOf(val) !== -1;
         });
 
-        expect(copiedFromSource).to.be.true;
+        expect(copiedFromSource).to.equal(true);
       });
 
 
@@ -2828,7 +2828,7 @@
           return data.indexOf(unique[i - 1]) < data.indexOf(val);
         });
 
-        expect(sameOrder).to.be.true;
+        expect(sameOrder).to.equal(true);
       });
     };
 
@@ -2859,7 +2859,7 @@
             return array.occurrences(val, unique).length === 1;
           });
 
-          expect(allUnique).to.be.true;
+          expect(allUnique).to.equal(true);
         });
       };
 
@@ -2936,7 +2936,7 @@
             });
           });
 
-          expect(allUnique).to.be.true;
+          expect(allUnique).to.equal(true);
         });
       };
 
@@ -2999,7 +2999,7 @@
             return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
           });
 
-          expect(copiedFromSource).to.be.true;
+          expect(copiedFromSource).to.equal(true);
         });
 
 
@@ -3013,7 +3013,7 @@
             return sorted[i - 1] <= val;
           });
 
-          expect(isSorted).to.be.true;
+          expect(isSorted).to.equal(true);
         });
       };
 
@@ -3069,7 +3069,7 @@
             return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
           });
 
-          expect(copiedFromSource).to.be.true;
+          expect(copiedFromSource).to.equal(true);
         });
 
 
@@ -3083,7 +3083,7 @@
             return f(sorted[i - 1], val) <= 0;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -3152,7 +3152,7 @@
         it('Works for degenerate ' + message + ' case', function() {
           var result = unzip(data);
 
-          expect(isPair(result)).to.be.true;
+          expect(isPair(result)).to.equal(true);
           expect(fst(result)).to.deep.equal([]);
           expect(snd(result)).to.deep.equal([]);
         });
@@ -3168,7 +3168,7 @@
           var data = sliceIfNecessary(originalData);
           var result = unzip(data);
 
-          expect(isPair(result)).to.be.true;
+          expect(isPair(result)).to.equal(true);
         });
 
 
@@ -3176,7 +3176,7 @@
           var data = sliceIfNecessary(originalData);
           var firstIsArray = isArray(fst(unzip(data)));
 
-          expect(firstIsArray).to.be.true;
+          expect(firstIsArray).to.equal(true);
         });
 
 
@@ -3184,7 +3184,7 @@
           var data = sliceIfNecessary(originalData);
           var secondIsArray = isArray(snd(unzip(data)));
 
-          expect(secondIsArray).to.be.true;
+          expect(secondIsArray).to.equal(true);
         });
 
 
@@ -3208,7 +3208,7 @@
           var data = sliceIfNecessary(originalData);
           var originalUnaffected = unzip(data) !== data;
 
-          expect(originalUnaffected).to.be.true;
+          expect(originalUnaffected).to.equal(true);
         });
 
 
@@ -3218,7 +3218,7 @@
             return fst(data[i]) === val;
           });
 
-          expect(firstCorrect).to.be.true;
+          expect(firstCorrect).to.equal(true);
         });
 
 
@@ -3228,7 +3228,7 @@
             return snd(data[i]) === val;
           });
 
-          expect(secondCorrect).to.be.true;
+          expect(secondCorrect).to.equal(true);
         });
       };
 
@@ -3297,7 +3297,7 @@
             return v === data[i - 1];
           });
 
-          expect(elementsCorrect).to.be.true;
+          expect(elementsCorrect).to.equal(true);
         });
       };
 
@@ -3384,7 +3384,7 @@
             return v === data[i + 1];
           });
 
-          expect(elementsCorrect).to.be.true;
+          expect(elementsCorrect).to.equal(true);
         });
       };
 
@@ -3436,7 +3436,7 @@
             return v === val;
           });
 
-          expect(elementsCorrect).to.be.true;
+          expect(elementsCorrect).to.equal(true);
         });
       };
 
@@ -3478,7 +3478,7 @@
           return v === data[i];
         });
 
-        expect(elementsCorrect).to.be.true;
+        expect(elementsCorrect).to.equal(true);
       });
     };
 
@@ -3503,7 +3503,6 @@
       testAdder('array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
 
       addCommonRemoveNotFoundTests('arraylike when value not found', fnUnderTest, 4, makeArrayLike(1, 2, 3));
-      var obj = {foo: 42};
       addCommonRemoveNotFoundTests('arraylike when value not strictly equal', fnUnderTest, obj,
                                    makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
       testAdder('arraylike when value strictly equal', obj, makeArrayLike({foo: 1}, obj, {foo: 3}));
@@ -3551,7 +3550,7 @@
           return v === data[i];
         });
 
-        expect(elementsCorrect).to.be.true;
+        expect(elementsCorrect).to.equal(true);
       });
 
 
@@ -3655,7 +3654,7 @@
           return data[i + offset] === v;
         });
 
-        expect(elementsCorrect).to.be.true;
+        expect(elementsCorrect).to.equal(true);
       });
 
 
@@ -3734,12 +3733,12 @@
         var data = sliceIfNecessary(originalData);
         var replaced = fnUnderTest(val, newVal, data);
 
-        // Can't use chai's deepEqual: it won't be true for arraylike
+        // Can't use chai's deepEqual: it won't equal(true) for arraylike
         var allCorrect = replaced.every(function(v, i) {
           return v === data[i];
         });
 
-        expect(allCorrect).to.be.true;
+        expect(allCorrect).to.equal(true);
       });
     };
 
@@ -3757,7 +3756,6 @@
       testAdder('array when value strictly equal', obj, {foo: 62}, [{foo: 1}, obj, {foo: 3}]);
 
       addCommonReplaceNotFoundTests('arraylike when value not found', fnUnderTest, 4, 5, makeArrayLike(1, 2, 3));
-      var obj = {foo: 42};
       addCommonReplaceNotFoundTests('arraylike when value not strictly equal', fnUnderTest, obj, {foo: 52},
                        makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
       testAdder('arraylike when value strictly equal', obj, {foo: 62}, makeArrayLike({foo: 1}, obj, {foo: 3}));
@@ -3799,7 +3797,7 @@
           return v === data[i];
         });
 
-        expect(elementsCorrect).to.be.true;
+        expect(elementsCorrect).to.equal(true);
       });
 
 
@@ -3892,7 +3890,7 @@
           return data[i] === v;
         });
 
-        expect(elementsCorrect).to.be.true;
+        expect(elementsCorrect).to.equal(true);
       });
 
 
@@ -3917,7 +3915,7 @@
           return idx === originalOcc[i];
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
     };
 
@@ -4039,7 +4037,7 @@
             return true;
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -4106,7 +4104,7 @@
           var data = sliceIfNecessary(originalData);
           var result = flatten(data);
 
-          expect(isArray(result)).to.be.true;
+          expect(isArray(result)).to.equal(true);
         });
 
 
@@ -4164,7 +4162,7 @@
             return sameType && val === data[Math.floor(i / 2)][i % 2];
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 

@@ -93,12 +93,12 @@
 
 
         it('Behaves correctly with string when noStrings parameter explicitly false', function() {
-          expect(isArrayLike('a', false)).to.be.true;
+          expect(isArrayLike('a', false)).to.equal(true);
         });
 
 
         it('Behaves correctly with string when noStrings parameter explicitly true', function() {
-          expect(isArrayLike('a', true)).to.be.false;
+          expect(isArrayLike('a', true)).to.equal(false);
         });
       });
 
@@ -263,7 +263,7 @@
 
 
           it('Behaves correctly for object when allowNull ' + allowNull + ' and strict ' + strict, function() {
-            expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.be.true;
+            expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.equal(true);
           });
         };
 
@@ -566,7 +566,7 @@
 
             default:
               return arg + ': foo';
-          };
+          }
         });
 
         if ('text' in callData.argMap && 'customText' in options && options.customText) {
@@ -1035,8 +1035,8 @@
             // Restore things so mocha can write out as normal
             stateRestorer();
 
-            // Now we want called to be true, but we also want to confirm it was our text that was printed
-            expect(writer.called).to.be.true;
+            // Now we want called to equal(true), but we also want to confirm it was our text that was printed
+            expect(writer.called).to.equal(true);
             expect(writer.text.indexOf(ourText[0])).to.not.equal(-1);
           });
         };
@@ -1055,8 +1055,8 @@
             // Restore things so mocha can write out as normal
             restorer();
 
-            // Now we want called to be true, but we also want to confirm it was our text
-            expect(writer.called).to.be.true;
+            // Now we want called to equal(true), but we also want to confirm it was our text
+            expect(writer.called).to.equal(true);
             expect(writer.text.length).to.be.greaterThan(0);
           });
         };
@@ -1165,7 +1165,7 @@
               return t === customText[i - 2];
             });
 
-            expect(textCorrect).to.be.true;
+            expect(textCorrect).to.equal(true);
           });
         };
 

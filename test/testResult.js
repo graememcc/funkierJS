@@ -85,10 +85,10 @@
       };
 
 
-      describeFunction(spec, constructorFunction, function(constructorFunction) {
+      describeFunction(spec, constructorFunction, function(ConstructorFunction) {
         it('Throws when called with no arguments (1)', function() {
           var fn = function() {
-            new constructorFunction();
+            new ConstructorFunction();
           };
 
           expect(fn).to.throw(TypeError);
@@ -106,7 +106,7 @@
 
         var makeTest = function(message, testMaker) {
           var withNew = function() {
-            return new constructorFunction(1);
+            return new ConstructorFunction(1);
           };
 
 
@@ -153,7 +153,7 @@
             var props = Object.getOwnPropertyNames(o);
             var result = props.indexOf('value') !== -1;
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           };
         });
 
@@ -166,7 +166,7 @@
               if (prop === 'value') value = true;
             var result = !value;
 
-            expect(result).to.be.true;
+            expect(result).to.equal(true);
           };
         });
 
@@ -194,7 +194,7 @@
 
         tests.forEach(function(t, i) {
           it('toString works correctly (' + (i + 1) + ')', function() {
-            var o = new constructorFunction(t);
+            var o = new ConstructorFunction(t);
             var s = o.toString();
 
             expect(s).to.equal('Result {' + toStringText + ' ' + valueStringifier(t) + '}');
@@ -208,12 +208,12 @@
     makeConstructorTests('Err', Err, getErrValue, 'Err');
 
 
-    var makeCommonExtractorTests = function(desc, fnUnderTest, correct, correctName, opposite, oppositeName) {
+    var makeCommonExtractorTests = function(desc, fnUnderTest, Correct, correctName, opposite, oppositeName) {
       var spec = {
         name: spec,
         arity: 1,
         restrictions: [[Result]],
-        validArguments: [[correct(1)]]
+        validArguments: [[Correct(1)]]
       };
 
 
@@ -238,14 +238,14 @@
 
         tests.forEach(function(t, i) {
           it('Works correctly (' + (i + 1) + ')', function() {
-            var j = new correct(t);
+            var j = new Correct(t);
 
             expect(fnUnderTest(j)).to.equal(t);
           });
 
 
           it('Works correctly (' + (i + 2) + ')', function() {
-            var j = correct(t);
+            var j = Correct(t);
 
             expect(fnUnderTest(j)).to.equal(t);
           });
@@ -266,23 +266,23 @@
 
     describeFunction(isResultSpec, result.isResult, function(isResult) {
       it('Correct for Result', function() {
-        expect(isResult(Result)).to.be.true;
+        expect(isResult(Result)).to.equal(true);
       });
 
 
       tests.forEach(function(t, i) {
         it('Returns false if called with non-Result value (' + (i + 1) + ')', function() {
-          expect(isResult(t)).to.be.false;
+          expect(isResult(t)).to.equal(false);
         });
 
 
         it('Works correctly for Ok (' + (i + 1) + ')', function() {
-          expect(isResult(Ok(t))).to.be.true;
+          expect(isResult(Ok(t))).to.equal(true);
         });
 
 
         it('Works correctly for Err (' + (i + 1) + ')', function() {
-          expect(isResult(Err(t))).to.be.true;
+          expect(isResult(Err(t))).to.equal(true);
         });
       });
     });
@@ -297,23 +297,23 @@
 
       describeFunction(spec, fnUnderTest, function(fnUnderTest) {
         it('Correct for Result', function() {
-          expect(fnUnderTest(Result)).to.be.false;
+          expect(fnUnderTest(Result)).to.equal(false);
         });
 
 
         tests.forEach(function(t, i) {
           it('Returns false if called with non-Result value (' + (i + 1) + ')', function() {
-            expect(fnUnderTest(t)).to.be.false;
+            expect(fnUnderTest(t)).to.equal(false);
           });
 
 
           it('Correct for ' + oppositeName + ' (' + (i + 1) + ')', function() {
-            expect(fnUnderTest(opposite(t))).to.be.false;
+            expect(fnUnderTest(opposite(t))).to.equal(false);
           });
 
 
           it('Correct for ' + name + ' (' + (i + 1) + ')', function() {
-            expect(fnUnderTest(constructorFn(t))).to.be.true;
+            expect(fnUnderTest(constructorFn(t))).to.equal(true);
           });
         });
       });
@@ -356,7 +356,7 @@
           var newFn = fnUnderTest.apply(null, goodArgs.length > 1 ? [goodArgs[0], f] : [f]);
           newFn.apply(null, args);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
           expect(fArgs).to.deep.equal(args);
         });
       };
@@ -400,7 +400,7 @@
             return isOk(r) && getOkValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -417,7 +417,7 @@
             return isErr(r) && getErrValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -469,7 +469,7 @@
           var newFn = makePredResultReturner(pred, f);
           newFn(val);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
           expect(arg).to.equal(val);
         });
       });
@@ -484,7 +484,7 @@
             return isOk(r) && getOkValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -502,7 +502,7 @@
             return isErr(r) && getErrValue(r) === f(v);
           });
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       };
 
@@ -546,7 +546,7 @@
           return isOk(r) && getOkValue(r) === f(v);
         });
 
-        expect(result).to.be.true;
+        expect(result).to.equal(true);
       });
 
 
@@ -573,7 +573,7 @@
           var r = newFn(1);
           var result = isErr(r) && getErrValue(r) === boom;
 
-          expect(result).to.be.true;
+          expect(result).to.equal(true);
         });
       });
 
@@ -615,7 +615,7 @@
           called = false;
           either(f, id, ok);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
         });
 
 
@@ -658,7 +658,7 @@
           var f = function(x) {called = true; return null;};
           either(id, f, err);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
         });
 
 

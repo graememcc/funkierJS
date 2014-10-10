@@ -46,6 +46,13 @@
 
 
     describe('Funkier exports', function() {
+      var makeExportCorrectTest = function(key, module) {
+        return function() {
+          expect(funkier[key]).to.equal(module[key]);
+        };
+      };
+
+
       imports.forEach(function(importedModule) {
         var name = importedModule.name;
         var module = importedModule.val;
@@ -58,9 +65,7 @@
             continue;
 
           it('funkier.js exports ' + k, exportsProperty(funkier, k));
-          it('funkier.js exports ' + k + ' from ' + name, function() {
-            expect(funkier[k]).to.equal(module[k]);
-          });
+          it('funkier.js exports ' + k + ' from ' + name, makeExportCorrectTest(k, module));
         }
       });
 

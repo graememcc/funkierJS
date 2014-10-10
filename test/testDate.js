@@ -109,7 +109,7 @@
 
 
       // fnUnderTest should have arity 2, so should be curried
-      var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0)};
+      var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0);};
       testCurriedFunction(fnUnderTest, [2, {reset: makeDate}]);
     };
 
@@ -384,7 +384,7 @@
                 return v(d) === 0;
               });
 
-              expect(result).to.be.true;
+              expect(result).to.equal(true);
             };
           };
 

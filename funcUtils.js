@@ -28,7 +28,7 @@
      */
 
     var checkFunction = function(f, options) {
-      var options = options || {};
+      options = options || {};
       var message = options.message || 'Value is not a function';
       var arity = 'arity' in options ? options.arity : null;
       var minimum = options.minimum || false;

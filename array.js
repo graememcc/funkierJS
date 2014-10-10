@@ -1515,7 +1515,7 @@
       curry(function(pred, arr) {
         arr = checkArrayLike(arr, {noStrings: true});
 
-        var pred = notPred(pred);
+        pred = notPred(pred);
         return filter(pred, arr);
       })
     );

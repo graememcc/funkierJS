@@ -281,10 +281,10 @@
     // was gated behind a flag, which defaulted to false until 3.13.6, when the flag was flipped and V8 became
     // spec-compliant. The flag was removed in 3.25.4.
     var engineHandlesProtosCorrectly = (function() {
-      var a = function(){};
-      Object.defineProperty(a.prototype, 'foo', {writable: false});
+      var A = function(){};
+      Object.defineProperty(A.prototype, 'foo', {writable: false});
       var compliant = false;
-      var b = new a();
+      var b = new A();
 
       try {
         b.foo = 1;
@@ -298,7 +298,7 @@
 
     // Utility function for set: work backwards to Object.prototype, looking for a property descriptor
     var findPropertyDescriptor = function(prop, obj) {
-      var descriptor = undefined;
+      var descriptor;
       var toppedOut = false;
 
       while (descriptor === undefined && !toppedOut) {
@@ -741,12 +741,16 @@
           return obj.slice();
 
         var clone = {};
+
+        var forEachFn = function(p) {
+          var descriptor = getOwnPropertyDescriptor(p, obj);
+          defineProperty(p, descriptor, clone);
+        };
+
         while (obj !== Object.prototype) {
           var props = getOwnPropertyNames(obj);
-          props.forEach(function(p) {
-            var descriptor = getOwnPropertyDescriptor(p, obj);
-            defineProperty(p, descriptor, clone);
-          });
+
+          props.forEach(forEachFn);
           obj = Object.getPrototypeOf(obj);
         }
 
@@ -798,14 +802,17 @@
           return deepCopyArray(obj);
 
         var clone = {};
+
+        var forEachFn = function(p) {
+          var descriptor = getOwnPropertyDescriptor(p, obj);
+          if ('value' in descriptor && typeof(descriptor.value) === 'object')
+            descriptor.value = deepClone(descriptor.value);
+          defineProperty(p, descriptor, clone);
+        };
+
         while (obj !== Object.prototype) {
           var props = getOwnPropertyNames(obj);
-          props.forEach(function(p) {
-            var descriptor = getOwnPropertyDescriptor(p, obj);
-            if ('value' in descriptor && typeof(descriptor.value) === 'object')
-              descriptor.value = deepClone(descriptor.value);
-            defineProperty(p, descriptor, clone);
-          });
+          props.forEach(forEachFn);
           obj = Object.getPrototypeOf(obj);
         }
 

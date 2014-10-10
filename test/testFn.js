@@ -26,8 +26,7 @@
 
     var expectedObjects = [];
     var expectedFunctions = ['apply', 'applyWithContext', 'bindWithContext', 'bindWithContextAndArity', 'permuteLeft',
-                             'rotateLeft', 'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'fixpoint',
-                             'callWithContext'];
+                             'rotateLeft', 'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'callWithContext'];
     describeModule('fn', fn, expectedObjects, expectedFunctions);
 
 
@@ -45,12 +44,12 @@
         var f = function() {called = true;};
         apply([], f);
 
-        expect(called).to.be.true;
+        expect(called).to.equal(true);
       });
 
 
       it('Calls f with null execution context', function() {
-        var context = undefined;
+        var context;
         var f = function() {context = this;};
         apply([], f);
 
@@ -126,12 +125,12 @@
         var f = function() {called = true;};
         applyWithContext([], {}, f);
 
-        expect(called).to.be.true;
+        expect(called).to.equal(true);
       });
 
 
       it('Calls f with correct execution context', function() {
-        var context = undefined;
+        var context;
         var o = {};
         var f = function() {context = this;};
         applyWithContext([], o, f);
@@ -172,7 +171,7 @@
 
       it('Returns value of f applied to given arguments (2)', function() {
         var o = {bar: 10};
-        var f = function(x, y) {return x * y * this.bar;;};
+        var f = function(x, y) {return x * y * this.bar;};
         var arg1 = 2;
         var arg2 = 42;
         var result = applyWithContext([arg1, arg2], o, f);
@@ -298,7 +297,7 @@
       var f = function(a, b) {return a - b;};
       testCurriedFunction(fnUnderTest(f), [1, 2], {message: 'Uncurried arity 2 function curries'});
       var g = curry(function(a, b) {return a - b;});
-      testCurriedFunction(fnUnderTest(g), [1, 2]), {message: 'Curried arity 2 function'};
+      testCurriedFunction(fnUnderTest(g), [1, 2], {message: 'Curried arity 2 function'});
     };
 
 
@@ -328,7 +327,7 @@
           // Lack of assignment is deliberate: we only care about the side-effect
           permuted.apply(null, args);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
         });
       };
 
@@ -373,7 +372,7 @@
 
     describe('rotateLeft', function() {
       it('Is a synonym for permuteLeft', function() {
-        expect(fn.rotateLeft === fn.permuteLeft).to.be.true;
+        expect(fn.rotateLeft === fn.permuteLeft).to.equal(true);
       });
     });
 
@@ -404,7 +403,7 @@
           // Lack of assignment is deliberate: we only care about the side-effect
           permuted.apply(null, args);
 
-          expect(called).to.be.true;
+          expect(called).to.equal(true);
         });
       };
 
@@ -449,7 +448,7 @@
 
     describe('rotateRight', function() {
       it('Is a synonym for permuteRight', function() {
-        expect(fn.rotateRight === fn.permuteRight).to.be.true;
+        expect(fn.rotateRight === fn.permuteRight).to.equal(true);
       });
     });
 
@@ -500,14 +499,14 @@
 
 
       // If necessary, the returned function should be curried
-      var f1 = function(x, y) {return x + y + this.foo};
+      var f1 = function(x, y) {return x + y + this.foo;};
       var obj1 = {foo: 6};
       var result = bindWithContext(obj1, f1);
       testCurriedFunction(result, [1, 2], {message: 'bindWithContext bound function'});
 
 
       // bindWithContext should be curried
-      var f2 = function(x) {return x + this.foo};
+      var f2 = function(x) {return x + this.foo;};
       var obj2 = {foo: 5};
       testCurriedFunction(bindWithContext, {firstArgs: [obj2, f2], thenArgs: [2]});
     });
@@ -552,7 +551,7 @@
 
 
       // If necessary, the returned function should be curried
-      var f1 = function(x, y, z) {return x + y + this.foo};
+      var f1 = function(x, y, z) {return x + y + this.foo;};
       var obj1 = {foo: 6};
       var arity1 = 2;
       var result = bindWithContextAndArity(obj1, arity1, f1);
@@ -560,7 +559,7 @@
 
 
       // bindWithContextAndArity should be curried
-      var f2 = function(x) {return x + this.foo};
+      var f2 = function(x) {return x + this.foo;};
       var obj2 = {foo: 5};
       var arity2 = 1;
       testCurriedFunction(bindWithContextAndArity, {firstArgs: [obj2, arity2, f2], thenArgs: [2]});
@@ -608,7 +607,7 @@
 
 
       it('Calls the original function with preserved execution context', function() {
-        var exc = undefined;
+        var exc;
         var f = function(x, y) {exc = this;};
         var g = function() {};
         var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
@@ -658,7 +657,7 @@
 
 
       it('Calls the pre function with preserved execution context', function() {
-        var preExc = undefined;
+        var preExc;
         var pre = function() {preExc = this;};
         var post = function() {};
         var f = function() {};
@@ -682,7 +681,7 @@
         var args = ['funkier'];
         newFn.apply(null, args);
 
-        expect(preCalledBefore).to.be.true;
+        expect(preCalledBefore).to.equal(true);
       });
 
 
@@ -724,7 +723,7 @@
 
 
       it('Calls the post function with preserved execution context', function() {
-        var postExc = undefined;
+        var postExc;
         var post = function() {postExc = this;};
         var f = function() {};
         var pre = function() {};
@@ -748,7 +747,7 @@
         var args = ['funkier'];
         newFn.apply(null, args);
 
-        expect(postCalledAfter).to.be.true;
+        expect(postCalledAfter).to.equal(true);
       });
 
 
@@ -824,136 +823,6 @@
     });
 
 
-    var fixpointSpec = {
-      name: 'fixpoint',
-      arity: 2,
-      restrictions: [[], ['function: arity 1']],
-      validArguments: [[1], [function(x) {return x;}]]
-    };
-
-
-    describeFunction(fixpointSpec, fn.fixpoint, function(fixpoint) {
-      it('Calls function', function() {
-        var called = false;
-        var f = function(a) {called = true; return 1;};
-        fixpoint([], f);
-
-        expect(called).to.be.true;
-      });
-
-
-      it('Calls function with given arguments', function() {
-        var fArgs = null;
-        var f = function(a) {fArgs = [].slice.call(arguments); return 1;};
-        var args = 1;
-        fixpoint(args, f);
-
-        expect(fArgs).to.deep.equal([args]);
-      });
-
-
-      it('Throws after 1000 calls', function() {
-        var called = 0;
-        var f = function(a) {return called++;};
-        var args = 1;
-        var fn = function() {
-          fixpoint(args, f);
-        };
-
-        expect(fn).to.throw(Error);
-        expect(called).to.equal(1000);
-      });
-
-
-      var makeReturnAfterThresholdTest = function(threshold, value1, value2) {
-        // The optional value2 parameter allows us to test by returning deep
-        // equal but not identical values
-        value2 = value2 || value1;
-
-        return function() {
-          var called = 0;
-          var f = function(a) {
-            called++;
-
-            // Return the first object
-            if (called === threshold + 1)
-              return value1;
-
-            // This should trigger the end of the function
-            if (called === threshold + 2)
-              return value2;
-
-            // Return something unique before threshold, and once we've returned the two similar objects (which
-            // shouldn't be reached).
-            return function() {};
-          };
-          var result = fixpoint('a', f);
-
-          expect(called).to.be.lessThan(1000);
-          expect(result).to.deep.equal(value2);
-        };
-      };
-
-
-      var simpleTests = [
-        {name: 'number', value: 1},
-        {name: 'string', value: 'a'},
-        {name: 'boolean', value: true},
-        {name: 'undefined', value: undefined},
-        {name: 'null', value: null},
-        {name: 'function', value: function() {}}];
-
-
-      simpleTests.forEach(function(test, i) {
-        var name = test.name;
-        var value = test.value;
-
-        it('Works correctly for return value of type ' + name,
-           makeReturnAfterThresholdTest(i + 1, value));
-      });
-
-
-      var obj1 = {foo: 1, bar: {baz: 2}};
-      var obj2 = {foo: 1, bar: {baz: 2}};
-      it('Works correctly for objects (1)', makeReturnAfterThresholdTest(3, obj1, obj1));
-      it('Works correctly for objects (2)', makeReturnAfterThresholdTest(3, obj1, obj2));
-
-      var arr1 = [1, [2]];
-      var arr2 = [1, [2]];
-      it('Works correctly for arrays (1)', makeReturnAfterThresholdTest(3, arr1, arr1));
-      it('Works correctly for arrays (2)', makeReturnAfterThresholdTest(3, arr2, arr2));
-
-
-      it('Not fooled by null followed by an object', function() {
-        var obj1 = {foo: 2};
-        var obj2 = {foo: 3};
-
-        var called = 0;
-        var f = function(a) {
-          called++;
-
-          if (called === 1)
-            return null;
-
-          // We shouldn't end up with obj1 as our final result
-          if (called === 2)
-            return obj1;
-
-          return obj2;
-        };
-        called = 0;
-        var result = fixpoint(42, f);
-
-        expect(called).to.be.lessThan(1000);
-        expect(result).to.not.equal(obj1);
-        expect(result).to.equal(obj2);
-      });
-
-
-      testCurriedFunction(fixpoint, [1, Math.cos]);
-    });
-
-
     var callWithContextSpec = {
       name: 'callWithContext',
       arity: 3,
@@ -977,7 +846,7 @@
         it('Calls function with correct arguments ' + message, function() {
           var fArgs = null;
           var f = args.length === 0 ? function() {fArgs = [].slice.call(arguments);} :
-                                      function(a, b, c) {fArgs = [].slice.call(arguments)};
+                                      function(a, b, c) {fArgs = [].slice.call(arguments);};
           var context = {};
           callWithContext(context, args, f);
 

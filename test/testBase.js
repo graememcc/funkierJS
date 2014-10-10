@@ -190,9 +190,9 @@
       testCurriedFunction(compose, args);
 
       // Also, lets test the composed functions too
-      var fn = function(a, b) {return a + b + 3;};
-      var fn2 = function(a) {return a * 4;};
-      testCurriedFunction(compose(fn, fn2), [1, 2], {message: 'Composed Function'});
+      var fn2 = function(a, b) {return a + b + 3;};
+      var fn3 = function(a) {return a * 4;};
+      testCurriedFunction(compose(fn2, fn3), [1, 2], {message: 'Composed Function'});
     });
 
 
@@ -344,9 +344,9 @@
       testCurriedFunction(composeOn, args);
 
       // Also, lets test the composed functions too
-      var fn = function(a, b) {return a + b + 3;};
-      var fn2 = function(a) {return a * 4;};
-      testCurriedFunction(composeOn(1, fn, fn2), [3, 4], {message: 'Composed Function'});
+      var fn3 = function(a, b) {return a + b + 3;};
+      var fn4 = function(a) {return a * 4;};
+      testCurriedFunction(composeOn(1, fn3, fn4), [3, 4], {message: 'Composed Function'});
     });
 
 
@@ -605,9 +605,9 @@
 
       it('Works correctly (2)', function() {
         var args = [
-          function(x) {return x + 3},
-          function(x) {return x + 2},
-          function(x) {return x + 1}
+          function(x) {return x + 3;},
+          function(x) {return x + 2;},
+          function(x) {return x + 1;}
         ];
         var composed = composeMany(args);
 
@@ -899,7 +899,7 @@
       {value: 1, coercible: ['1', true, {valueOf: function() {return 1;}}],
                  notEqual: [0, NaN, false, undefined, null, function() {}, '2', {valueOf: function() {return 2;}}]},
       {value: '1', coercible: [true, {toString: function() {return '1';}}],
-                 notEqual: [0, NaN, '0', undefined, null, function() {}, 'false', {toString: function() {return '0'}}]},
+                 notEqual: [0, NaN, '0', undefined, null, function() {}, 'false', {toString: function() {return '0';}}]},
       {value: false, coercible: [0, '0', {valueOf: function() {return 0;}}],
                  notEqual: [NaN, true, undefined, null, function() {}, 'false', {valueOf: function() {return 1;}}]},
       {value: undefined, coercible: [null],
@@ -1005,7 +1005,7 @@
         var f = new F();
         var g = new G();
 
-        expect(deepEqual(f, g)).to.be.false;
+        expect(deepEqual(f, g)).to.equal(false);
       });
 
 
@@ -1032,7 +1032,7 @@
         var f = Object.create({foo: 1});
         var g = Object.create({foo: 1});
 
-        expect(deepEqual(f, g)).to.be.false;
+        expect(deepEqual(f, g)).to.equal(false);
       });
 
 
@@ -1042,7 +1042,7 @@
         var f = new F();
         var g = new F();
 
-        expect(deepEqual(f, g)).to.be.true;
+        expect(deepEqual(f, g)).to.equal(true);
       });
 
 
@@ -1051,7 +1051,7 @@
         var g = {buzz: 42};
         Object.defineProperty(f, 'foo', {enumerable: false, value: 'a'});
 
-        expect(deepEqual(f, g)).to.be.true;
+        expect(deepEqual(f, g)).to.equal(true);
       });
 
 
@@ -1061,7 +1061,7 @@
         var b = [1, 2, 3];
         b[3] = a;
 
-        expect(deepEqual(a, b)).to.be.true;
+        expect(deepEqual(a, b)).to.equal(true);
       });
 
 
@@ -1071,7 +1071,7 @@
         var b = [1, 2, 3];
         b[3] = b;
 
-        expect(deepEqual(a, b)).to.be.true;
+        expect(deepEqual(a, b)).to.equal(true);
       });
 
 
@@ -1080,7 +1080,7 @@
         a[3] = a;
         var b = [1, 2, 3, 4];
 
-        expect(deepEqual(a, b)).to.be.false;
+        expect(deepEqual(a, b)).to.equal(false);
       });
 
 
@@ -1089,7 +1089,7 @@
         var b = [1, 2, 3];
         a[3] = b;
 
-        expect(deepEqual(a, b)).to.be.false;
+        expect(deepEqual(a, b)).to.equal(false);
       });
 
 
@@ -1099,7 +1099,7 @@
         var b = [1, 2, 3];
         b[4] = [4, 5, b];
 
-        expect(deepEqual(a, b)).to.be.true;
+        expect(deepEqual(a, b)).to.equal(true);
       });
 
 
@@ -1108,7 +1108,7 @@
         var a = {bar: o};
         o.bar = a;
 
-        expect(deepEqual(o, o)).to.be.true;
+        expect(deepEqual(o, o)).to.equal(true);
       });
 
 
@@ -1121,7 +1121,7 @@
         var b = {bar: o2};
         o2.bar = b;
 
-        expect(deepEqual(o1, o2)).to.be.true;
+        expect(deepEqual(o1, o2)).to.equal(true);
       });
 
 
@@ -1134,7 +1134,7 @@
         var b = {bar: o2};
         o2.bar = b;
 
-        expect(deepEqual(o1, o2)).to.be.false;
+        expect(deepEqual(o1, o2)).to.equal(false);
       });
 
 
@@ -1145,7 +1145,7 @@
         var o2 = {foo: 42, bar: {}};
         o2.bar.baz = o2;
 
-        expect(deepEqual(o1, o2)).to.be.true;
+        expect(deepEqual(o1, o2)).to.equal(true);
       });
 
 
@@ -1158,7 +1158,7 @@
         other.bar.baz = other;
         o2.bar.baz = other;
 
-        expect(deepEqual(o1, o2)).to.be.false;
+        expect(deepEqual(o1, o2)).to.equal(false);
       });
 
 

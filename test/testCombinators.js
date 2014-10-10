@@ -104,7 +104,7 @@
         };
         S(f, id, 1);
 
-        expect(called).to.be.true;
+        expect(called).to.equal(true);
         expect(args).to.equal(1);
       });
 
@@ -119,7 +119,7 @@
         };
         S(function(x) {return id;}, f, 1);
 
-        expect(called).to.be.true;
+        expect(called).to.equal(true);
         expect(args).to.equal(1);
       });
 
@@ -155,7 +155,7 @@
         var h = function(x) {return x + 2;};
         S(g, h, 1);
 
-        expect(called).to.be.true;
+        expect(called).to.equal(true);
         expect(args).to.equal(h(1));
       });
 

@@ -38,7 +38,7 @@
       var testFuncs = [
         {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
         {f: function(a, b, c) {return a * b * c;}, args: [4, 5, 6], message: 'Curried ternary function'},
-        {f: function(a, b, c, d) {return a - b - c - d}, args: [10, 9, 8, 7], message: 'Curried quarternary function'}
+        {f: function(a, b, c, d) {return a - b - c - d;}, args: [10, 9, 8, 7], message: 'Curried quarternary function'}
       ];
 
 

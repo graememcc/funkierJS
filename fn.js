@@ -279,42 +279,6 @@
     );
 
 
-    var fixpoint = defineValue(
-      'name: fixpoint',
-      'signature: a: any, f: function',
-      'classification: function',
-      '',
-      'Takes an argument a and a function f of arity 1. Repeatedly calls f, first with',
-      'the argument a then with the result of the previous call until two sequential',
-      'results yield values that [[deepEqual]] deep equal each other. Returns this',
-      'value.',
-      '',
-      'Throws a TypeError if f does not have arity 1. Throws an Error after 1000 calls if no fixpoint has been',
-      'found.',
-      '--',
-      'fixpoint(1, Math.cos); // 0.7390851332151607',
-      curry(function(a, f) {
-        f = checkFunction(f, {arity: 1, message: 'Value must be a function of arity 1'});
-
-        var result = f(a);
-        var calls = 1;
-        var found = false;
-
-        while (calls < 1000 && !found) {
-          calls += 1;
-          var newResult = f(result);
-          found = deepEqual(result, newResult);
-          result = newResult;
-        }
-
-        if (calls === 1000)
-          throw new Error('Unable to find fixpoint in reasonable time');
-
-        return result;
-      })
-    );
-
-
     var callWithContext = defineValue(
       'name: callWithContext',
       'signature: context: Object, args: Array, f: function',
@@ -347,7 +311,6 @@
       bindWithContext: bindWithContext,
       bindWithContextAndArity: bindWithContextAndArity,
       callWithContext: callWithContext,
-      fixpoint: fixpoint,
       permuteLeft: permuteLeft,
       permuteRight: permuteRight,
       pre: pre,
