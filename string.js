@@ -499,6 +499,8 @@
       'supplied regular expression. It is not affected by and does not change the',
       'lastIndex property of the regular expression if it exists.',
       '',
+      'If the index is negative, it is taken as an offset from the end of the string.',
+      '',
       'Throws a TypeError if the first parameter is not a regular expression.',
       '--',
       'var a = matches(/a/, 2, \'banana\');',
