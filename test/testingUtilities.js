@@ -1,3 +1,87 @@
+(function (root, factory) {
+  var dependencies = ['chai'];
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+
+    define(['exports'].concat(dependencies), factory);
+  } else if (typeof exports === 'object') {
+    // CommonJS
+
+    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
+  } else {
+    // Browser globals
+
+    root.commonJsStrict = root.commonJsStrict || {};
+    factory.apply(null, [root].concat(dependencies.map(function(dep) {
+      if (dep.slice(0, 2) == './') dep = dep.slice(2);
+      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
+      return root[dep] || root.commonJsStrict[dep];
+    })));
+  }
+}(this, function(exports, chai) {
+  "use strict";
+
+
+  var expect = chai.expect;
+
+
+  /*
+   * Return a function that tests if an object has the given property
+   *
+   */
+
+  var exportsProperty = function(obj, prop) {
+    return function() {
+      expect(obj).to.have.property(prop);
+    };
+  };
+
+
+  /*
+   * Return a function that tests if an object has the given function
+   *
+   */
+
+  var exportsFunction = function(obj, prop) {
+    return function() {
+      expect(obj[prop]).to.be.a('function');
+    };
+  };
+
+
+  /*
+   * Generate a test suite that ensures a module exports all the expected values and functions
+   *
+   */
+
+  var checkModule = function(name, moduleUnderTest, moduleDescription) {
+    var testDescription = name[0].toUpperCase() + name.slice(1);
+
+    describe(testDescription + ' exports', function() {
+      // Generate existence tests for each expected object
+      if ('expectedObjects' in moduleDescription) {
+        moduleDescription.expectedObjects.forEach(function(o) {
+          it(name + '.js exports \'' + o + '\' property', exportsProperty(moduleUnderTest, o));
+        });
+      }
+
+      // ... and each expected function
+      if ('expectedFunctions' in moduleDescription) {
+        moduleDescription.expectedFunctions.forEach(function(f) {
+          it(name + '.js exports \'' + f + '\' property', exportsProperty(moduleUnderTest, f));
+          it('\'' + f + '\' property of ' + name + '.js is a function', exportsFunction(moduleUnderTest, f));
+        });
+      }
+    });
+  };
+
+
+  exports = exports.commonJsStrict ? (exports.commonJsStrict.testingUtilities = {}) : exports;
+  exports.checkModule = checkModule;
+
+
+}));
 //(function() {
 //  "use strict";
 //
@@ -13,41 +97,6 @@
 //
 //    var utils = require('../utils');
 //    var isObjectLike = utils.isObjectLike;
-//
-//
-//    // Return a function that tests if the object has the given property
-//    var exportsProperty = function(obj, prop) {
-//      return function() {
-//        expect(obj).to.have.property(prop);
-//      };
-//    };
-//
-//
-//    // Return a function that tests if the object has the given function
-//    var exportsFunction = function(obj, prop) {
-//      return function() {
-//        expect(obj[prop]).to.be.a('function');
-//      };
-//    };
-//
-//
-//    // Generate test code that ensures all expected functions and objects are exported by a module
-//    var describeModule = function(name, module, expectedObjects, expectedFunctions) {
-//      var desc = name[0].toUpperCase() + name.slice(1);
-//
-//      describe(desc + ' exports', function() {
-//        // Generate existence tests for each expected object
-//        expectedObjects.forEach(function(o) {
-//          it(name + '.js exports \'' + o + '\' property', exportsProperty(module, o));
-//        });
-//
-//        // ... and each expected function
-//        expectedFunctions.forEach(function(f) {
-//          it(name + '.js exports \'' + f + '\' property', exportsProperty(module, f));
-//          it('\'' + f + '\' property of ' + name + '.js is a function', exportsFunction(module, f));
-//        });
-//      });
-//    };
 //
 //
 //    var isFuncTypeClass = function(tc) {
