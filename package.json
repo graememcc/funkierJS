@@ -2,7 +2,7 @@
   "name": "funkierJS",
   "version": "0.0.1",
   "description": "The functional toolbox for ES5 Javascript",
-  "author": "Graeme McCutcheon <graeme.mccutcheon@glasgowalumni.net>",
+  "author": "Graeme McCutcheon <graeme@graememcc.co.uk> (http://www.graememcc.co.uk/)",
   "main": "funkier.js",
   "directories": {
     "test": "test"
@@ -21,9 +21,10 @@
     "functional"
   ],
   "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^0.6.1",
     "mocha": ">=1.21.4"
   },
-  "author": "Graeme McCutcheon <graeme@graememcc.co.uk> (http://www.graememcc.co.uk/)",
   "license": "MIT",
   "homepage": "https://github.com/graememcc/funkierJS"
 }
