@@ -1,3 +1,34 @@
+(function (root, factory) {
+  var dependencies = [];
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+
+    define(['exports'].concat(dependencies), factory);
+  } else if (typeof exports === 'object') {
+    // CommonJS
+
+    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
+  } else {
+    // Browser globals
+
+    root.commonJsStrict = root.commonJsStrict || {};
+    factory.apply(null, [root].concat(dependencies.map(function(dep) {
+      if (dep.slice(0, 2) == './') dep = dep.slice(2);
+      return root[dep] || root.commonJsStrict[dep];
+    })));
+  }
+}(this, function(exports) {
+
+
+  /*
+   */
+
+  var arity = function(f) { /* TODO: this is temporary while we build the documentation system */ };
+
+
+  exports = exports.commonJsStrict ? (exports.commonJsStrict.curry = {}) : exports;
+}));
 //(function() {
 //  "use strict";
 //
