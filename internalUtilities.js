@@ -1,3 +1,87 @@
+(function (root, factory) {
+  var dependencies = [];
+
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+
+    define(['exports'].concat(dependencies), factory);
+  } else if (typeof exports === 'object') {
+    // CommonJS
+
+    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
+  } else {
+    // Browser globals
+
+    root.commonJsStrict = root.commonJsStrict || {};
+    factory.apply(null, [root].concat(dependencies.map(function(dep) {
+      if (dep.slice(0, 2) == './') dep = dep.slice(2);
+      return root[dep] || root.commonJsStrict[dep];
+    })));
+  }
+}(this, function(exports) {
+  "use strict";
+
+
+  /* checkIntegral: Takes a value and an optional options object. In the following circumstances it will return
+   *                the supplied value (coerced to an integer if necessary):
+   *                  - The value is an integer.
+   *                  - The value can be coerced to an integer, and the options object does not contain a property
+   *                    named "strict" that coerces to true.
+   *
+   *                For all other values, a TypeError will be thrown. The message of the TypeError can be specified
+   *                by including an "errorMessage" property in the options object.
+   *
+   */
+
+  var checkIntegral = function(n, options) {
+    options = options || {};
+    var message = options.errorMessage || 'Value is not an integer';
+
+    if (options.strict && typeof(n) !== 'number')
+      throw new TypeError(message);
+
+    n = n - 0;
+
+    if (isNaN(n) || !isFinite(n))
+      throw new TypeError(message);
+
+    if (n !== Math.round(n))
+      throw new TypeError(message);
+
+    return n;
+  };
+
+
+  /* checkPositiveIntegral: Takes a value and an optional options object. In the following circumstances it will return
+   *                        the supplied value (coerced to an integer if necessary):
+   *                          - The value is a positive integer.
+   *                          - The value can be coerced to a positive integer, and the options object does not contain
+   *                            a property named "strict" that coerces to true.
+   *
+   *                        For all other values, a TypeError will be thrown. The message of the TypeError can be
+   *                        specified by including an "errorMessage" property in the options object.
+   *
+   */
+
+  var checkPositiveIntegral = function(n, options) {
+    options = options || {};
+    var message = options.errorMessage || 'Value is not a positive integer';
+    // Don't mutate the supplied options
+    var newOptions = Object.create(options);
+    newOptions.errorMessage = message;
+    n = checkIntegral(n, newOptions);
+
+    if (n < 0)
+      throw new TypeError(message);
+
+    return n;
+  };
+
+
+  exports = exports.commonJsStrict ? (exports.commonJsStrict.internalUtilities = {}) : exports;
+  exports.checkIntegral = checkIntegral;
+  exports.checkPositiveIntegral = checkPositiveIntegral;
+}));
 //(function() {
 //  // Double scope: we want this code to execute in a non-strict environment where this points to the global
 //  var global = this;
@@ -38,43 +122,6 @@
 //          default:
 //            return v.toString();
 //        }
-//      };
-//
-//
-//      /* checkIntegral: Takes a value and an optional error message. Throws a TypeError, with the given error
-//       *                if specified, when the value cannot be coerced to an integer, and returns the coerced
-//       *                integer in all other cases.
-//       *
-//       */
-//
-//      var checkIntegral = function(n, message) {
-//        message = message || 'Value is not an integer';
-//        n = n - 0;
-//
-//        if (isNaN(n) || !isFinite(n))
-//          throw new TypeError(message);
-//
-//        if (n !== Math.floor(n) || n !== Math.ceil(n))
-//          throw new TypeError(message);
-//
-//        return n;
-//      };
-//
-//
-//      /* checkPositiveIntegral: Takes a value and an optional error message. Throws a TypeError, with the given error
-//       *                        if specified, when the value cannot be coerced to a positive integer, and returns the
-//       *                        coerced integer in all other cases.
-//       *
-//       */
-//
-//      var checkPositiveIntegral = function(n, message) {
-//        message = message || 'Value is not a positive integer';
-//        n = checkIntegral(n, message);
-//
-//        if (n < 0)
-//          throw new TypeError(message);
-//
-//        return n;
 //      };
 //
 //

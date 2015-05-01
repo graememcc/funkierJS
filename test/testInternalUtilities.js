@@ -23,6 +23,178 @@
   "use strict";
 
 
+  var checkModule = testingUtilities.checkModule;
+
+
+  checkModule('internalUtilities', internalUtilities, {
+              expectedFunctions: ['checkIntegral', 'checkPositiveIntegral']});
+
+
+  var expect = chai.expect;
+
+
+  /*
+   * The tests for checkPositiveIntegral and checkIntegral have broadly the same shape: they must both either return
+   * the given argument, or throw an exception. This function automatically installs those tests with the correct
+   * expectations based on the function under tests. This test generation function will exercise the function under
+   * test in both its strict (accepts only numbers) and relaxed (accepts values that coerce to numbers) forms.
+   *
+   */
+
+  var addNumericTests = function(fnUnderTest, options) {
+    options = options || {};
+    var acceptOnlyPositive = options.positiveOnly;
+
+    var addSingleTest = function(type, value, shouldAcceptValue, functionOptions) {
+      functionOptions = functionOptions || {};
+
+      // Confirm that the function under test either returns the given value or throws a type error
+      it('Behaves correctly for ' + type, function() {
+        var result = null;
+        var fn = function() {
+          result = fnUnderTest(value, functionOptions);
+        };
+
+        if (shouldAcceptValue) {
+          expect(fn).to.not.throw(TypeError);
+          // Coerce the value for comparison when necessary
+          expect(result).to.equal(value - 0);
+        } else {
+          expect(fn).to.throw(TypeError);
+        }
+      });
+
+      if (shouldAcceptValue)
+        return;
+
+      // Confirm that the exception thrown is a TypeError
+      it('Returns correct exception for ' + type, function() {
+        var message = 'This was an error';
+        // Be mindful of the existing options: keep them in the prototype chain
+        var opts = Object.create(functionOptions);
+        opts.errorMessage = message;
+        var fn = function() {
+          fnUnderTest(value, opts);
+        };
+
+        expect(fn).to.throw(message);
+      });
+    };
+
+    var checkAcceptsValue = function(type, value, options) {
+      addSingleTest(type, value, true, options);
+    };
+
+    var checkRejectsValue = function(type, value, options) {
+      addSingleTest(type, value, false, options);
+    };
+
+    var notNumericTests = [
+      {type: 'string', value: 'a'},
+      {type: 'function', value: function() {}},
+      {type: 'object', value: {}},
+      {type: 'array', value: [1, 2]},
+      {type: 'undefined', value: undefined}
+    ];
+
+    var nonIntegralTests = [
+      {type: 'NaN', value: NaN},
+      {type: 'negative infinity', value: Number.NEGATIVE_INFINITY},
+      {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
+      {type: 'negative float', value: -1.1},
+      {type: 'float', value: 2.2},
+      {type: 'string containing float', value: '0.1'},
+      {type: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}}
+    ];
+
+    var positiveIntegralTests = [
+      {type: 'integer', value: 2},
+      {type: 'integer expressed as a float', value: 3.0},
+      {type: 'negative zero', value: -0.0}
+    ];
+
+    var coerciblePositiveTests = [
+      {type: 'null', value: null}, // null coerces to 0
+      {type: 'true', value: true}, // booleans should coerce to numbers
+      {type: 'false', value: false},
+      {type: 'string containing positive integer', value: '1'},
+      {type: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}}
+    ];
+
+    var negativeIntegralTests = [
+      {type: 'negative integer', value: -5}
+    ];
+
+    var coercibleNegativeTests = [
+      {type: 'string containing negative integer', value: '-1'},
+      {type: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}}
+    ];
+
+
+    // Neither function should accept values that are not numbers
+    notNumericTests.forEach(function(t) {
+      checkRejectsValue(t.type, t.value);
+    });
+
+
+    // Neither function should accept values that are not integral numbers
+    nonIntegralTests.forEach(function(t) {
+      checkRejectsValue(t.type, t.value);
+    });
+
+
+    // Both functions should accept positive integers
+    positiveIntegralTests.forEach(function(t) {
+      checkAcceptsValue(t.type, t.value);
+    });
+
+
+    // Both functions should accept values coercible to positive integers when called in relaxed mode
+    coerciblePositiveTests.forEach(function(t) {
+      checkAcceptsValue(t.type, t.value);
+    });
+
+
+    // Both functions should reject values coercible to positive integers when called in strict mode
+    coerciblePositiveTests.forEach(function(t) {
+      checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
+    });
+
+
+    // Only checkIntegral should accept negative values
+    negativeIntegralTests.forEach(function(t) {
+      var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
+      testAdder(t.type, t.value);
+    });
+
+
+    // checkIntegral should accept objects coercible to negative values
+    coercibleNegativeTests.forEach(function(t) {
+      var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
+      testAdder(t.type, t.value);
+    });
+
+
+    // All functions should reject objects coercible to negative values in strict mode
+    coercibleNegativeTests.forEach(function(t) {
+      checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
+    });
+  };
+
+
+  describe('checkIntegral', function() {
+    var checkIntegral = internalUtilities.checkIntegral;
+
+    addNumericTests(checkIntegral);
+  });
+
+
+  describe('checkPositiveIntegral', function() {
+    var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
+
+
+    addNumericTests(checkPositiveIntegral, {positiveOnly: true});
+  });
 }));
 //(function() {
 //  // Deliberate outer scope here: we want a non-strict scope where "this" points to the global.
@@ -409,117 +581,6 @@
 //
 //        addStrictTests('function', function() {});
 //        addStrictTests('string', 'abc');
-//      });
-//
-//
-//      // The following arrays are for generating tests that exercise checkIntegral/checkPositiveIntegral.
-//
-//      var notNumericTests = [
-//        {name: 'string', value: 'a'},
-//        {name: 'function', value: function() {}},
-//        {name: 'object', value: {}},
-//        {name: 'array', value: [1, 2]},
-//        {name: 'undefined', value: undefined}
-//      ];
-//
-//
-//      var nonIntegralTests = [
-//        {name: 'NaN', value: NaN, result: false},
-//        {name: 'negative infinity', value: Number.NEGATIVE_INFINITY, result: false},
-//        {name: 'positive infinity', value: Number.POSITIVE_INFINITY, result: false},
-//        {name: 'negative float', value: -1.1, result: false},
-//        {name: 'float', value: 2.2, result: false},
-//        {name: 'string containing float', value: '0.1', result: false},
-//        {name: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}, result: false},
-//      ];
-//
-//
-//      var positiveIntegralTests = [
-//        {name: 'integer', value: 2, result: true},
-//        {name: 'null', value: null, result: true}, // null coerces to 0
-//        {name: 'true', value: true, result: true}, // booleans should coerce to numbers
-//        {name: 'false', value: false, result: true},
-//        {name: 'string containing positive integer', value: '1', result: true},
-//        {name: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}, result: true},
-//      ];
-//
-//
-//      var negativeIntegralTests = [
-//        {name: 'negative integer', value: -5, result: false},
-//        {name: 'string containing negative integer', value: '-1', result: true},
-//        {name: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}, result: true},
-//      ];
-//
-//
-//      // All the tests for the numeric tests will have the same shape, and use the same data.
-//      var addNumericTests = function(fnUnderTest, positiveOnly) {
-//        var addOne = function(name, value, ok) {
-//          it('Behaves correctly for ' + name, function() {
-//            var result = null;
-//            var fn = function() {
-//              result = fnUnderTest(value);
-//            };
-//
-//            if (!ok) {
-//              expect(fn).to.throw(TypeError);
-//            } else {
-//              expect(fn).to.not.throw(TypeError);
-//              expect(result).to.equal(value - 0);
-//            }
-//          });
-//
-//
-//          if (ok)
-//            return;
-//
-//
-//          it('Returns correct exception for ' + name, function() {
-//            var message = 'This was an error';
-//            var fn = function() {
-//              fnUnderTest(value, message);
-//            };
-//
-//            expect(fn).to.throw(message);
-//          });
-//        };
-//
-//
-//        notNumericTests.forEach(function(t) {
-//          addOne(t.name, t.value, false);
-//        });
-//
-//
-//        nonIntegralTests.forEach(function(t) {
-//          addOne(t.name, t.value, false);
-//        });
-//
-//
-//        positiveIntegralTests.forEach(function(t) {
-//          addOne(t.name, t.value, true);
-//        });
-//
-//
-//        negativeIntegralTests.forEach(function(t) {
-//          addOne(t.name, t.value, !positiveOnly);
-//        });
-//      };
-//
-//
-//      // We deliberately use describe rather than our own describeFunction here
-//      // due to the optional parameter.
-//      describe('checkIntegral', function() {
-//        var checkIntegral = utils.checkIntegral;
-//
-//
-//        addNumericTests(checkIntegral, false);
-//      });
-//
-//
-//      describe('checkPositiveIntegral', function() {
-//        var checkPositiveIntegral = utils.checkPositiveIntegral;
-//
-//
-//        addNumericTests(checkPositiveIntegral, true);
 //      });
 //
 //
