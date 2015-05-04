@@ -1,7 +1,10 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     jshint: {
-      all: ['**/*.js', '!**/node_modules/**']
+      all: ['**/*.js', '!**/node_modules/**'],
+      options: {
+        newcap: false
+      }
     },
 
     watch: {
