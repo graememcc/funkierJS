@@ -6,7 +6,7 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var funkier = require('../funkier');
+//    var funkier = require('../../funkier');
 //
 //    // Import utility functions
 //    var testUtils = require('./testUtils');

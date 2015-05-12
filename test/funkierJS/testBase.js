@@ -5,12 +5,12 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //    var curry = curryModule.curry;
 //    var curryWithArity = curryModule.curryWithArity;
 //    var getRealArity = curryModule.getRealArity;
 //
-//    var base = require('../base');
+//    var base = require('../../base');
 //
 //    // Import utility functions
 //    var testUtils = require('./testUtils');

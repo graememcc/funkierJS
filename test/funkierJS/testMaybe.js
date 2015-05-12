@@ -6,15 +6,15 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var maybe = require('../maybe');
+//    var maybe = require('../../maybe');
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //    var getRealArity = curryModule.getRealArity;
 //
-//    var base = require('../base');
+//    var base = require('../../base');
 //    var id = base.id;
 //
-//    var utils = require('../utils');
+//    var utils = require('../../utils');
 //    var valueStringifier = utils.valueStringifier;
 //
 //    // Import utility functions

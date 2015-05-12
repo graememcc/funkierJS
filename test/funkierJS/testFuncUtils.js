@@ -6,7 +6,7 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var funcUtils = require('../funcUtils');
+//    var funcUtils = require('../../funcUtils');
 //
 //    var testUtils = require('./testUtils');
 //    var describeModule = testUtils.describeModule;

@@ -6,14 +6,14 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var fn = require('../fn');
+//    var fn = require('../../fn');
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //    var curry = curryModule.curry;
 //    var curryWithArity = curryModule.curryWithArity;
 //    var getRealArity = curryModule.getRealArity;
 //
-//    var base = require('../base');
+//    var base = require('../../base');
 //    var id = base.id;
 //
 //    // Import utility functions

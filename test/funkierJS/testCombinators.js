@@ -6,9 +6,9 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var combinators = require('../combinators');
+//    var combinators = require('../../combinators');
 //
-//    var base = require('../base');
+//    var base = require('../../base');
 //    var id = base.id;
 //    var constant = base.constant;
 //

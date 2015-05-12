@@ -6,12 +6,12 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var array = require('../array');
+//    var array = require('../../array');
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //    var getRealArity = curryModule.getRealArity;
 //
-//    var base = require('../base');
+//    var base = require('../../base');
 //    var id = base.id;
 //    var isArray = base.isArray;
 //    var equals = base.equals;
@@ -20,7 +20,7 @@
 //    var alwaysTrue = base.constant(true);
 //    var alwaysFalse = base.constant(false);
 //
-//    var pair = require('../pair');
+//    var pair = require('../../pair');
 //    var Pair = pair.Pair;
 //    var isPair = pair.isPair;
 //    var fst = pair.fst;

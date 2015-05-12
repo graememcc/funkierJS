@@ -6,12 +6,12 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var pair = require('../pair');
+//    var pair = require('../../pair');
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //    var getRealArity = curryModule.getRealArity;
 //
-//    var utils = require('../utils');
+//    var utils = require('../../utils');
 //    var valueStringifier = utils.valueStringifier;
 //
 //    // Import utility functions

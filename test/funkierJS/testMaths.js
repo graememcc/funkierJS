@@ -6,7 +6,7 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var maths = require('../maths');
+//    var maths = require('../../maths');
 //
 //    // Import utility functions
 //    var testUtils = require('./testUtils');

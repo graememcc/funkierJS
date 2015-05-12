@@ -1,5 +1,5 @@
 (function (root, factory) {
-  var dependencies = ['chai', '../internalUtilities', './testingUtilities'];
+  var dependencies = ['chai', '../../internalUtilities', './testingUtilities'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.

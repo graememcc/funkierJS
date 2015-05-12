@@ -6,10 +6,10 @@
 //    var chai = require('chai');
 //    var expect = chai.expect;
 //
-//    var curryModule = require('../curry');
+//    var curryModule = require('../../curry');
 //
-//    var base = require('../base');
-//    var logical = require('../logical');
+//    var base = require('../../base');
+//    var logical = require('../../logical');
 //
 //    // Import utility functions
 //    var testUtils = require('./testUtils');
