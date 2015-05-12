@@ -1,6 +1,6 @@
 // XXX Do we intend to allow these tests to be run in the browser?
 (function (root, factory) {
-  var dependencies = ['chai', '../docgen/APIFunction', '../docgen/markdownCreator.js'];
+  var dependencies = ['chai', '../../docgen/APIFunction', '../../docgen/markdownCreator.js'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
