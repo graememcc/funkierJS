@@ -351,17 +351,17 @@
     });
 
 
-    it('Categories are normalized (1)', function() {
+    it('Categories are normalized', function() {
       var obj = APIFunction('fizz', 'foo', 'buzz', {});
 
       expect(obj.category).to.equal('Foo');
     });
 
 
-    it('Categories are normalized (2)', function() {
-      var obj = APIFunction('fizz', 'fOO', 'buzz', {});
+    it('Category normalization preserves camelCasing other than for the first letter', function() {
+      var obj = APIFunction('fizz', 'fooBar', 'buzz', {});
 
-      expect(obj.category).to.equal('Foo');
+      expect(obj.category).to.equal('FooBar');
     });
   });
 }));

@@ -56,7 +56,7 @@
 
     this.name = name;
     this.summary = summary;
-    this.category = category[0].toUpperCase() + category.slice(1).toLowerCase();
+    this.category = category[0].toUpperCase() + category.slice(1);
 
     this.details = options.details ? options.details.slice() : [];
     this.returnType = options.returnType ? options.returnType.slice() : [];
