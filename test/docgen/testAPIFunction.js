@@ -387,5 +387,18 @@
 
       expect(obj.category).to.equal('FooBar');
     });
+
+
+    it('Trailing newlines at the end of examples entries are stripped', function() {
+      var examples = ['Line 1', 'Line 2'];
+      var examplesToSupply = examples.map(function(s, i) {
+        var whitespace = '';
+        for (var j = 0; j < i + 1; j++) whitespace += ' ';
+        return s + whitespace + '\n';
+      });
+
+      var obj = APIFunction('fizz', 'Bar', 'buzz', {examples: examplesToSupply});
+      expect(obj.examples).to.deep.equal(examples);
+    });
   });
 }));

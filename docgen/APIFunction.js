@@ -52,6 +52,9 @@
    * outputs each paragraph separately, but the client must add line-endings to the individual strings to control line
    * length.
    *
+   * Each line of the examples array is assumed to be a line that should be output in a code block. It is assumed that
+   * when converted to markdown line endings will be added as required, so line endings will be automatically stripped.
+   *
    */
 
 
@@ -108,7 +111,7 @@
 
     this.details = options.details ? options.details.slice() : [];
     this.returnType = options.returnType ? options.returnType.slice() : [];
-    this.examples = options.examples ? options.examples.slice() : [];
+    this.examples = options.examples ? options.examples.map(function(s) { return s.replace(/\s*\n?$/, ''); }) : [];
     this.synonyms = options.synonyms ? options.synonyms.slice() : [];
     this.parameters = options.parameters ? options.parameters.map(function(param) {
       var paramType = param.type.slice();
