@@ -396,29 +396,30 @@
     });
 
 
-    it('Trailing newlines at the end of details entries are stripped', function() {
-      var details = ['Line 1', 'Line 2'];
-      var detailsToSupply = details.map(function(s, i) {
+    ['details', 'examples'].forEach(function(propName) {
+      it('Trailing newlines at the end of ' + propName + ' entries are stripped', function() {
+        var values = ['Line 1', 'Line 2'];
+        var valuesToSupply = values.map(function(s, i) {
         var whitespace = '';
         for (var j = 0; j < i + 1; j++) whitespace += ' ';
-        return s + whitespace + '\n';
+          return s + whitespace + '\n';
+        });
+
+        var options = {};
+        options[propName] = valuesToSupply;
+        var obj = APIFunction('fizz', 'Bar', 'buzz', options);
+        expect(obj[propName]).to.deep.equal(values);
       });
 
-      var obj = APIFunction('fizz', 'Bar', 'buzz', {details: detailsToSupply});
-      expect(obj.details).to.deep.equal(details);
-    });
 
-
-    it('Trailing newlines at the end of examples entries are stripped', function() {
-      var examples = ['Line 1', 'Line 2'];
-      var examplesToSupply = examples.map(function(s, i) {
-        var whitespace = '';
-        for (var j = 0; j < i + 1; j++) whitespace += ' ';
-        return s + whitespace + '\n';
+      it('Internal newlines are split in ' + propName + ' entries', function() {
+        var values = ['Line 1', 'Line 2'];
+        var valuesToSupply = [values.join('\n')];
+        var options = {};
+        options[propName] = valuesToSupply;
+        var obj = APIFunction('fizz', 'Bar', 'buzz', options);
+        expect(obj[propName]).to.deep.equal(values);
       });
-
-      var obj = APIFunction('fizz', 'Bar', 'buzz', {examples: examplesToSupply});
-      expect(obj.examples).to.deep.equal(examples);
     });
   });
 }));

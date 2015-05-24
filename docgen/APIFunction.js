@@ -58,11 +58,10 @@
    * Each line of the examples array is assumed to be a line that should be output in a code block. It is assumed that
    * when converted to markdown line endings will be added as required, so line endings will be automatically stripped.
    *
+   * Newline characters within each examples or details line (in other words, not occurring at the end) will cause the
+   * line to be split at that point.
+   *
    */
-
-
-  // TODO: Need to decide what to do if examples or details lines have internal line endings. Split?
-  // TODO: Need to decide what to do if empty line(s) at end of details/examples
 
 
   var verifyParameterProperty = function(elem) {
@@ -106,6 +105,27 @@
   };
 
 
+  /*
+   * Process an array of lines, removing trailing line endings, and splitting on any other line endings. Returns an
+   * empty array when passed undefined.
+   *
+   */
+
+  var processLineArray = function(arr) {
+    if (arr === undefined)
+      return [];
+
+    // Note: whitespace might be significant for examples, so we cannot use trim
+    return arr.reduce(function(soFar, current) {
+      // We must delete any trailing newlines first
+      var lines = current.replace(/\s*$/, '').split('\n');
+
+      // Trim trailing whitespace from the remaining lines
+      return soFar.concat(lines.map(function(s) { return s.replace(/\s*$/, ''); }));
+    }, []);
+  };
+
+
   function APIFunction(name, category, summary, options) {
     if (!(this instanceof APIFunction))
       return new APIFunction(name, category, summary, options);
@@ -116,9 +136,10 @@
     this.summary = summary.trim();
     this.category = category[0].toUpperCase() + category.slice(1);
 
-    this.details = options.details ? options.details.map(function(s) { return s.replace(/\s*\n?$/, ''); }) : [];
+    this.details = processLineArray(options.details);
+    this.examples = processLineArray(options.examples);
+
     this.returnType = options.returnType ? options.returnType.slice() : [];
-    this.examples = options.examples ? options.examples.map(function(s) { return s.replace(/\s*\n?$/, ''); }) : [];
     this.synonyms = options.synonyms ? options.synonyms.slice() : [];
     this.parameters = options.parameters ? options.parameters.map(function(param) {
       var paramType = param.type.slice();
