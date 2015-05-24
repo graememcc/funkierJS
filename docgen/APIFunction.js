@@ -22,7 +22,7 @@
    *   category: all documented functions are assumed to be grouped into categories. This string denotes such a
    *             category.
    *   summary: a string containing a brief overview of the function's functionality. This is assumed to be a brief
-   *            paragraph. The caller must add any required line endings.
+   *            paragraph. The caller must add any required line endings - see below
    *   options: an object containing additional information. See below.
    *
    * The supplied category will be transformed to uppercase the first letter of the category name. In other words,
@@ -45,7 +45,8 @@
    *   type: A non-empty array containing the possible types that the parameter can take
    *
    * It is intended that when output to the console, the summary string will be output verbatim: thus it is incumbent
-   * on the client to insert appropriate line endings to ensure that the output looks acceptable.
+   * on the client to insert appropriate line endings to ensure that line length is appropriate. Note however that the
+   * trailing line length will be stripped, as it is assumed the console output function will add this.
    *
    * Similarly, each entry in the details array is assumed to be a paragraph. It is intended that the in-app help
    * outputs each paragraph separately, but the client must add line-endings to the individual strings to control line
@@ -102,7 +103,7 @@
     verifyParameters(name, category, summary, options);
 
     this.name = name;
-    this.summary = summary;
+    this.summary = summary.trim();
     this.category = category[0].toUpperCase() + category.slice(1);
 
     this.details = options.details ? options.details.slice() : [];

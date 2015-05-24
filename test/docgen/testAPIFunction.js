@@ -207,6 +207,20 @@
     });
 
 
+    it('summary property shorn of trailing newlines', function() {
+      var summary = 'baz';
+      var obj = APIFunction('fizz', 'Bar', summary + '    \n', {});
+      expect(obj.summary).to.equal(summary);
+    });
+
+
+    it('Newlines within the summary are preserved', function() {
+      var summary = 'baz\nfoo';
+      var obj = APIFunction('fizz', 'Bar', summary, {});
+      expect(obj.summary).to.equal(summary);
+    });
+
+
     /*
      * The 'details', 'returnType', 'synonyms' and 'examples' properties all share some common characteristics:
      *   - They are arrays of strings
