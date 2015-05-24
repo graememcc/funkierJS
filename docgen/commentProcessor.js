@@ -346,7 +346,7 @@
   };
 
 
-  exports.commentProcessor = function(lines, debug) {
+  exports.commentProcessor = function(lines) {
     var mode = MODE_AWAITINGNAME;
 
     var mandatoryParameters = {

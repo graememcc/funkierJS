@@ -40,7 +40,6 @@
       it('Throws when setting ' + prop + ' to a value of type ' + type, function() {
         var obj = Object.create(APIPrototype);
         var fn = function() {
-          console.log(prop, type, val);
           obj[prop] = val;
         };
 
