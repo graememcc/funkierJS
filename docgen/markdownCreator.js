@@ -1,5 +1,5 @@
 (function (root, factory) {
-  var dependencies = ['./APIFunction'];
+  var dependencies = ['./APIObject', './APIFunction'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -10,50 +10,51 @@
 
     factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
   }
-}(this, function(exports, APIFunction) {
+}(this, function(exports, APIObject, APIFunction) {
   "use strict";
 
 
   APIFunction = APIFunction.APIFunction;
+  APIObject = APIObject.APIObject;
 
 
   /*
-   * The MarkdownCreator function takes an APIFunction object (or an object denoting a synonym) describing a function,
-   * and produces a fragment of Markdown suitable for inclusion in Markdown documentation. The function takes two
-   * parameters: the APIFunction/synonym object being described, and an object containing options.
+   * The MarkdownCreator function takes an APIFunction or APIObject object (or an object denoting a synonym) describing
+   * a synonym, and produces a fragment of Markdown suitable for inclusion in Markdown documentation. The function takes
+   * two parameters: the APIFunction/APIObject/synonym object being described, and an object containing options.
    *
-   * The function throws if the first parameter is not an APIFunction object, and does not have the required properties
-   * for a synonym object. Likewise, it throws if the second parameter is not an object.
+   * The function throws if the first parameter is not an APIFunction/APIObject object, or does not have the required
+   * properties for a synonym object. Likewise, it throws if the second parameter is not an object.
    *
-   * A synonm object is an object with two mandatory properties: 'name' and 'synonymFor'. 'name' should be the name
+   * A synonym object is an object with two mandatory properties: 'name' and 'synonymFor'. 'name' should be the name
    * under which the function can be invoked, and 'synonymFor' the name of the function which will really be invoked.
    *
-   * The synonym object is provided for smoother developer ergonomics: the client can map over an array containing both
-   * APIFunctions and their synonyms in one fell swoop, instead of having to handle the two separately and somehow
-   * merge the results.
+   * The synonym object is provided for smoother developer ergonomics: the client can map over an array containing
+   * APIFunctions, APIObjects and their synonyms in one fell swoop, instead of having to handle the two separately and
+   * somehow merge the results.
    *
    * When presented with a synonym object, the output will contain a heading for the synonym name, and some
    * explanatory text directing the reader to the documentation for the real function. The link will be to a named
    * anchor within the same page, whose name is the same as that of the real function.
    *
-   * Otherwise, the object is an APIFunction. Again, the output will first contain a heading with the function name.
-   * This might optionally be followed by the category of the function: this behaviour can be controlled by setting
+   * Otherwise, the object is an APIFunction/APIObject. Again, the output will first contain a heading with the object
+   * name. This might optionally be followed by the category of the object: this behaviour can be controlled by setting
    * the 'includeCategory' property of the options object to the appropriate boolean value. (This is useful if the
-   * client is producing documentation which groups the functions by category; there is little sense then of repeating
+   * client is producing documentation which groups the values by category; there is little sense then of repeating
    * the category in the function's documentation.
    *
-   * If the function can be invoked with alternate names, these synonyms will be listed on the next line.
+   * If the object is a function can be invoked with alternate names, these synonyms will be listed on the next line.
    *
-   * A usage line will follow, noting the names of any formal parameters to the function, as found in the 'parameters'
-   * property of the supplied APIFunction.
+   * If the object is a function, a usage line will follow, noting the names of any formal parameters to the function,
+   * as found in the 'parameters' property of the supplied APIFunction.
    *
-   * If the function takes 1 or more parameters, a table will follow. Each row contains the parameter's name, followed
-   * by a list of acceptable types for the parameter.
+   * If the object is a function, and takes 1 or more parameters, a table will follow. Each row contains the parameter's
+   * name, followed by a list of acceptable types for the parameter.
    *
-   * Next, if the function returns a result, a list of types returned will be output.
+   * Next, if the object is a function returning a result, a list of types returned will be output.
    *
-   * Following this, the summary of the function's functionality will be added. If the APIFunction's 'details' property
-   * contains additional explanatory notes, these will immediately follow.
+   * Following this, the summary of the function or object's functionality will be added. If the value's 'details'
+   * property contains additional explanatory notes, these will immediately follow.
    *
    * Finally, any code examples will be appended, formatted as a Markdown code block.
    *
@@ -228,8 +229,9 @@
 
 
   var markdownCreator = function(apiFunction, options) {
-    if (!isRealObject(apiFunction) || !((apiFunction instanceof APIFunction) || isSynonymObject(apiFunction)))
-      throw new Error('Invalid APIFunction object');
+    if (!isRealObject(apiFunction) ||
+        !((apiFunction instanceof APIFunction) || (apiFunction instanceof APIObject) || isSynonymObject(apiFunction)))
+      throw new Error('Invalid object');
 
     if (!isRealObject(options))
       throw new Error('Invalid markdown options');
@@ -237,7 +239,7 @@
     var result = [];
 
     // All function names should be <h3> anchors
-    result.push('<a name = "' + apiFunction.name + '"><section></a>');
+    result.push('<a name = "' + apiFunction.name + '"></a><section>');
     result.push('### ' + apiFunction.name + ' ###');
 
     // Bail early for synonyms
@@ -252,23 +254,25 @@
     if ('includeCategory' in options && options.includeCategory)
       printCategory(apiFunction.category, result);
 
-    // List any synonyms
-    if (apiFunction.synonyms.length > 0)
-      printSynonyms(apiFunction.synonyms, result);
+    if (!(apiFunction instanceof APIObject)) {
+      // List any synonyms
+      if (apiFunction.synonyms.length > 0)
+        printSynonyms(apiFunction.synonyms, result);
 
-    printUsageLine(apiFunction.name, apiFunction.parameters, apiFunction.returnType, result);
-    if (apiFunction.parameters.length === 0 && apiFunction.returnType.length === 0)
-      result.push('');
+      printUsageLine(apiFunction.name, apiFunction.parameters, apiFunction.returnType, result);
+      if (apiFunction.parameters.length === 0 && apiFunction.returnType.length === 0)
+        result.push('');
 
-    // Print a table of the parameters and their allowable types, linking any types specified in the options
-    if (apiFunction.parameters.length > 0)
-      printParameters(apiFunction.parameters, result,
-                      ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
+      // Print a table of the parameters and their allowable types, linking any types specified in the options
+      if (apiFunction.parameters.length > 0)
+        printParameters(apiFunction.parameters, result,
+                        ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
 
-    // Print the possible return types, linking any types specified in the options
-    if (apiFunction.returnType.length > 0)
-      printReturnType(apiFunction.returnType, result,
-                      ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
+      // Print the possible return types, linking any types specified in the options
+      if (apiFunction.returnType.length > 0)
+        printReturnType(apiFunction.returnType, result,
+                        ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
+    }
 
     result.push(apiFunction.summary);
 

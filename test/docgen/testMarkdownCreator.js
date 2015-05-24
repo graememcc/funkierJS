@@ -1,6 +1,6 @@
 // XXX Do we intend to allow these tests to be run in the browser?
 (function (root, factory) {
-  var dependencies = ['chai', '../../docgen/APIFunction', '../../docgen/markdownCreator.js'];
+  var dependencies = ['chai', '../../docgen/APIObject','../../docgen/APIFunction', '../../docgen/markdownCreator.js'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -20,22 +20,24 @@
       return root[dep] || root.commonJsStrict[dep];
     })));
   }
-}(this, function(exports, chai, APIFunction, MarkdownCreator) {
+}(this, function(exports, chai, APIObject, APIFunction, MarkdownCreator) {
   "use strict";
 
 
   var expect = chai.expect;
   APIFunction = APIFunction.APIFunction;
+  APIObject = APIObject.APIObject;
   MarkdownCreator = MarkdownCreator.MarkdownCreator;
 
 
   describe('Markdown creator', function() {
+    // This array is used for test generation, and this requires that details and examples are the first two entries
     var options = {
+      'details':    ['Line 1', '', 'Line 2'],
+      'examples':   ['var x = foo();', '', 'var y = foo();'],
       'synonyms':   ['doIt', 'alternateName'],
       'parameters': [{name: 'x', type: ['Array']}, {name: 'y', type: ['string', 'number']}],
       'returnType': ['number'],
-      'details':    ['Line 1', '', 'Line 2'],
-      'examples':   ['var x = foo();', '', 'var y = foo();']
     };
     var optionalFields = Object.keys(options);
 
@@ -74,7 +76,7 @@
 
     var verifyName = function(name) {
       pos = 0;
-      verifyLine('<a name = "' + name + '"><section></a>');
+      verifyLine('<a name = "' + name + '"></a><section>');
       verifyLine('### ' + name + ' ###');
     };
 
@@ -159,13 +161,15 @@
     };
 
 
-    var testDescription = function(testNumber, testOptions) {
+    var testDescription = function(testNumber, testType, testOptions) {
       var catText = ('includeCategory' in testOptions && testOptions.includeCategory ? '' : 'out') + ' category';
       if (testNumber === 0)
-        return 'Markdown correct when APIFunction contains no optional parameters with' + catText;
+        return 'Markdown correct when ' + testType + ' contains no optional parameters with' + catText;
 
       var asBin = testNumber.toString(2);
-      var contents = optionalFields.filter(function(_, i) { return asBin[i] === '1'; });
+      var contents = (testType === 'APIFunction' ? optionalFields : optionalFields.slice(0, 2)).filter(function(_, i) {
+        return asBin[i] === '1';
+      });
 
       var fieldDesc;
       if (contents.length === 1)
@@ -173,11 +177,11 @@
       else
         fieldDesc = contents.slice(0, -1).join(', ') + ' and ' + contents[contents.length - 1];
 
-      return 'Markdown correct when APIFunction contains ' + fieldDesc + ' options with' + catText;
+      return 'Markdown correct when ' + testType + ' contains ' + fieldDesc + ' options with' + catText;
     };
 
 
-    var makeMarkdownTest = function(testNumber, testOptions) {
+    var makeMarkdownTest = function(testNumber, testType, testOptions) {
       return function() {
         // Build the APIFunction object
         var asBin = testNumber.toString(2);
@@ -193,7 +197,8 @@
         var category = 'Category' + testNumber;
         var summary = 'summary' + testNumber;
 
-        result = MarkdownCreator(APIFunction(name, category, summary, apiOptions), testOptions).split('\n');
+        var constructor = testType === 'APIFunction' ? APIFunction : APIObject;
+        result = MarkdownCreator(constructor(name, category, summary, apiOptions), testOptions).split('\n');
 
         verifyName(name);
 
@@ -203,7 +208,8 @@
         if ('synonyms' in apiOptions)
           verifySynonyms(apiOptions.synonyms);
 
-        verifyUsage(name, apiOptions.parameters, apiOptions.returnType);
+        if (testType !== 'APIObject')
+          verifyUsage(name, apiOptions.parameters, apiOptions.returnType);
 
         if ('parameters' in apiOptions)
           verifyParameters(apiOptions.parameters);
@@ -211,7 +217,7 @@
         if ('returnType' in apiOptions)
           verifyReturnType(apiOptions.returnType);
 
-        if (!('parameters' in apiOptions) && !('returnType' in apiOptions))
+        if (testType === 'APIFunction' && !('parameters' in apiOptions) && !('returnType' in apiOptions))
           verifyLine('');
 
         verifyLine(summary);
@@ -234,8 +240,18 @@
      */
 
     for (var i = 0, l = Math.pow(2, optionalFields.length); i < l; i++) {
-      it(testDescription(i, {includeCategory: true}), makeMarkdownTest(i, {includeCategory: true}));
-      it(testDescription(i, {includeCategory: false}), makeMarkdownTest(i, {includeCategory: false}));
+      it(testDescription(i, 'APIFunction', {includeCategory: true}),
+         makeMarkdownTest(i, 'APIFunction', {includeCategory: true}));
+      it(testDescription(i, 'APIFunction', {includeCategory: false}),
+         makeMarkdownTest(i, 'APIFunction', {includeCategory: false}));
+    }
+
+
+    for (i = 0, l = Math.pow(2, optionalFields.slice(0, 2).length); i < l; i++) {
+      it(testDescription(i, 'APIObject', {includeCategory: true}),
+         makeMarkdownTest(i, 'APIObject', {includeCategory: true}));
+      it(testDescription(i, 'APIObject', {includeCategory: false}),
+         makeMarkdownTest(i, 'APIObject', {includeCategory: false}));
     }
 
 
