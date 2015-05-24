@@ -1,5 +1,5 @@
 (function (root, factory) {
-  var dependencies = [];
+  var dependencies = ['./APIPrototype'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -10,7 +10,7 @@
 
     factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
   }
-}(this, function(exports) {
+}(this, function(exports, APIPrototype) {
   "use strict";
 
 
@@ -64,6 +64,9 @@
    */
 
 
+  APIPrototype = APIPrototype.APIPrototype;
+
+
   var verifyParameterProperty = function(elem) {
     var isString = function(s) {
       return typeof(s) === 'string';
@@ -77,52 +80,34 @@
   };
 
 
-  var verifyParameters = function(name, category, summary, options) {
-    var argumentTypes = ['string', 'string', 'string', 'object'];
-    var typesOK = [].every.call(arguments, function(arg, i) {
-      return typeof(arg) === argumentTypes[i];
-    });
+  var verifyOptions = function(options) {
+    if (typeof(options) !== 'object' || options === null || Array.isArray(options))
+      throw new TypeError('Invalid parameter: options is not an object');
 
-    typesOK = typesOK && !Array.isArray(options) && options !== null;
-    if (!typesOK)
-      throw new TypeError('Invalid parameter!');
+    var optionals = ['returnType',  'synonyms', 'parameters'];
+    var optionTypes = ['string', 'string', 'object'];
 
-    var optionals = ['details', 'examples', 'returnType',  'synonyms', 'parameters'];
-    var optionTypes = ['string', 'string', 'string', 'string',  'object'];
-
+    var failPoint = -1;
     var optionalsOK = optionals.every(function(optProp, i) {
       var opt = options[optProp];
-      return opt === undefined || (Array.isArray(opt) && opt.every(function(elem) {
+      if (opt !== undefined && (!Array.isArray(opt) || !opt.every(function(elem) {
         return typeof(elem) === optionTypes[i];
-      }));
+      }))) {
+        failPoint = i;
+        return false;
+      }
+
+      return true;
     });
 
-    if (optionalsOK && options.parameters !== undefined)
+    if (!optionalsOK)
+      throw new TypeError(optionals[failPoint] + ' is invalid!');
+
+    if (options.parameters !== undefined)
       optionalsOK = options.parameters.every(verifyParameterProperty);
 
     if (!optionalsOK)
-      throw new TypeError('Invalid parameter!');
-  };
-
-
-  /*
-   * Process an array of lines, removing trailing line endings, and splitting on any other line endings. Returns an
-   * empty array when passed undefined.
-   *
-   */
-
-  var processLineArray = function(arr) {
-    if (arr === undefined)
-      return [];
-
-    // Note: whitespace might be significant for examples, so we cannot use trim
-    return arr.reduce(function(soFar, current) {
-      // We must delete any trailing newlines first
-      var lines = current.replace(/\s*$/, '').split('\n');
-
-      // Trim trailing whitespace from the remaining lines
-      return soFar.concat(lines.map(function(s) { return s.replace(/\s*$/, ''); }));
-    }, []);
+      throw new TypeError('Invalid optional parameter!');
   };
 
 
@@ -130,14 +115,13 @@
     if (!(this instanceof APIFunction))
       return new APIFunction(name, category, summary, options);
 
-    verifyParameters(name, category, summary, options);
+    verifyOptions(options);
 
     this.name = name;
-    this.summary = summary.trim();
-    this.category = category[0].toUpperCase() + category.slice(1);
-
-    this.details = processLineArray(options.details);
-    this.examples = processLineArray(options.examples);
+    this.summary = summary;
+    this.category = category;
+    this.details = options.details ? options.details : [];
+    this.examples = options.examples ? options.examples : [];
 
     this.returnType = options.returnType ? options.returnType.slice() : [];
     this.synonyms = options.synonyms ? options.synonyms.slice() : [];
@@ -147,7 +131,7 @@
       return {name: param.name, type: paramType};
     }) : [];
 
-    ['details', 'returnType', 'examples', 'synonyms', 'parameters'].forEach(function(prop) {
+    ['returnType', 'synonyms', 'parameters'].forEach(function(prop) {
       Object.freeze(this[prop]);
     }, this);
 
@@ -157,6 +141,9 @@
 
     Object.freeze(this);
   }
+
+
+  APIFunction.prototype = Object.create(APIPrototype);
 
 
   exports.APIFunction = APIFunction;

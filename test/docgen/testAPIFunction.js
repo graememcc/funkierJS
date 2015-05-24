@@ -1,6 +1,6 @@
 // XXX Do we intend to allow these tests to be run in the browser?
 (function (root, factory) {
-  var dependencies = ['chai', '../../docgen/APIFunction'];
+  var dependencies = ['chai', '../../docgen/APIPrototype', '../../docgen/APIFunction'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -20,11 +20,12 @@
       return root[dep] || root.commonJsStrict[dep];
     })));
   }
-}(this, function(exports, chai, APIFunction) {
+}(this, function(exports, chai, APIPrototype, APIFunction) {
   "use strict";
 
 
   var expect = chai.expect;
+  APIPrototype = APIPrototype.APIPrototype;
   APIFunction = APIFunction.APIFunction;
 
 
@@ -36,6 +37,11 @@
 
     it('Constructor is new agnostic', function() {
       expect(APIFunction('foo', 'Bar', 'baz', {})).to.be.an.instanceOf(APIFunction);
+    });
+
+
+    it('Returned objects should have APIPrototype in their prototype chain', function() {
+      expect(APIPrototype.isPrototypeOf(APIFunction('foo', 'Bar', 'baz', {}))).to.equal(true);
     });
 
 
@@ -84,9 +90,12 @@
      * not an array, or an array that has a non-string member, then the constructor should throw. Every test for this
      * would have the same shape, regardless of the property, so we shall just generate the tests.
      *
+     * Note: we only test the unique properties here: the rest we get for free through APIPrototype being in the
+     * prototype chain (tested above).
+     *
      */
 
-    ['details', 'examples', 'parameters', 'returnType', 'synonyms'].forEach(function(property) {
+    ['parameters', 'returnType', 'synonyms'].forEach(function(property) {
       invalidArrayData.concat([{value: '', type: 'string'}]).forEach(function(invalid) {
         if (invalid.type !== 'array') {
           it('Constructor throws when ' + property + ' has type ' + invalid.type, function() {
@@ -140,7 +149,7 @@
       });
 
 
-      it('Constructor throws when if type array of a parameters entry contains a value of type ' + invalid.type,
+      it('Constructor throws when type array of a parameters entry contains a value of type ' + invalid.type,
          function() {
         var obj = {parameters: [{name: 'p1', type: ['t1']}, {name: 'p2', type: ['t2', invalid.value]}]};
         var fn = function() {

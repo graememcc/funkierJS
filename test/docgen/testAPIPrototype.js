@@ -83,7 +83,6 @@
       it('Throws when setting ' + prop + ' to an array containing a value of type' + type, function() {
         var obj = Object.create(APIPrototype);
         var fn = function() {
-          console.log(prop, type, val);
           obj[prop] = ['val1', val];
         };
 
