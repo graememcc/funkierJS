@@ -172,6 +172,16 @@
 
       expect(fn).to.throw();
     });
+
+
+    it('Constructor throws when a parameter\'s type property is an empty array', function() {
+      var obj = {parameters: [{name: 'p1', type: []}]};
+      var fn = function() {
+        APIFunction('fizz', 'Bar', 'buzz', obj);
+      };
+
+      expect(fn).to.throw();
+    });
   });
 
 

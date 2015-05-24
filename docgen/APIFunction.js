@@ -53,6 +53,20 @@
    *
    */
 
+
+  var verifyParameterProperty = function(elem) {
+    var isString = function(s) {
+      return typeof(s) === 'string';
+    };
+
+    var isObject = elem !== null && !Array.isArray(elem);
+    if (!isObject) return false;
+
+    return typeof(elem.name) === 'string' && Array.isArray(elem.type) && elem.type.length > 0 &&
+           elem.type.every(isString);
+  };
+
+
   var verifyParameters = function(name, category, summary, options) {
     var argumentTypes = ['string', 'string', 'string', 'object'];
     var typesOK = [].every.call(arguments, function(arg, i) {
@@ -73,14 +87,8 @@
       }));
     });
 
-    if (options.parameters !== undefined) {
-      optionalsOK = optionalsOK && options.parameters.every(function(elem) {
-        var isObject = elem !== null && !Array.isArray(elem);
-        return isObject && typeof(elem.name) === 'string' && Array.isArray(elem.type) && elem.type.every(function(s) {
-          return typeof(s) === 'string';
-        });
-      });
-    }
+    if (optionalsOK && options.parameters !== undefined)
+      optionalsOK = options.parameters.every(verifyParameterProperty);
 
     if (!optionalsOK)
       throw new TypeError('Invalid parameter!');
