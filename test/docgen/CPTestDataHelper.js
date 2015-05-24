@@ -99,7 +99,7 @@
       result[p] = current < propIndex ? current : current - diff;
     }, this);
 
-    return decorate(result);
+    return decorate(result, this.tag);
   };
 
 
@@ -141,7 +141,7 @@
         result[p] = this[p] + delta;
     }, this);
 
-    return decorate(result);
+    return decorate(result, this.tag);
   };
 
 
@@ -183,7 +183,7 @@
         result[p] = this[p] + delta;
     }, this);
 
-    return decorate(result);
+    return decorate(result, this.tag);
   };
 
 
@@ -215,11 +215,11 @@
       result[prop] = index - (index <= changePoint ? 0 : delta);
     }, this);
 
-    return decorate(result);
+    return decorate(result, this.tag);
   };
 
 
-  var decorate = function(arr) {
+  var decorate = function(arr, tag) {
     arr.getNextProperty = getNextProperty;
     arr.getPreviousProperty = getPreviousProperty;
     arr.removeProperty = removeProperty;
@@ -228,8 +228,7 @@
     arr.moveAfter = moveAfter;
     arr.getPropertyValue = getPropertyValue;
     arr.replaceProperty = replaceProperty;
-
-    Object.freeze(arr);
+    arr.tag = tag;
     return arr;
   };
 
@@ -256,7 +255,7 @@
       }
     });
 
-    returnVal = decorate(returnVal);
+    returnVal = decorate(returnVal, 'apifunction');
 
     return returnVal;
   };

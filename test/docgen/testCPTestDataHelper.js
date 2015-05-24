@@ -96,8 +96,8 @@
       });
 
 
-      it('Test data is frozen', function() {
-        expect(Object.isFrozen(testData)).to.equal(true);
+      it('Test data is tagged as an apifunction', function() {
+        expect(testData.tag.toLowerCase()).to.equal('apifunction');
       });
     });
 
@@ -343,12 +343,6 @@
         });
 
 
-        it('Result is frozen', function() {
-          var result = testData.removeProperty(propToRemove);
-          expect(Object.isFrozen(result)).to.equal(true);
-        });
-
-
         it('Result is an independent array', function() {
           var result = testData.removeProperty(propToRemove);
           expect(result === testData).to.equal(false);
@@ -366,6 +360,19 @@
         });
 
         expect(allOK).to.equal(true);
+      });
+
+
+      it('Tag is correctly transferred (1)', function() {
+        var result = testData.removeProperty(standardProps[1]);
+        expect(result.tag).to.equal(testData.tag);
+      });
+
+
+      it('Tag is correctly transferred (2)', function() {
+        testData.tag = 'apiobject';
+        var result = testData.removeProperty(standardProps[1]);
+        expect(result.tag).to.equal(testData.tag);
       });
     });
 
@@ -537,17 +544,6 @@
       });
 
 
-      it('Result is frozen', function() {
-        var propToMove = standardProps[2];
-        var newLocation = testData.getPreviousProperty(propToMove);
-
-        // Sanity check
-        expect(newLocation).to.not.equal(undefined);
-        var result = testData.moveBefore(propToMove, newLocation);
-        expect(Object.isFrozen(result)).to.equal(true);
-      });
-
-
       it('Moving to the same location is effectively an identity operation', function() {
         var propToMove = standardProps[1];
         var newLocation = testData.getNextProperty(propToMove);
@@ -596,6 +592,29 @@
         expect(newLocation).to.not.equal(undefined);
         var result = testData.moveBefore(propToMove, newLocation);
         expect(result === testData).to.equal(false);
+      });
+
+
+      it('Tag is correctly transferred (1)', function() {
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveBefore(propToMove, newLocation);
+        expect(result.tag).to.equal(testData.tag);
+      });
+
+
+      it('Tag is correctly transferred (2)', function() {
+        testData.tag = 'apiobject';
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveBefore(propToMove, newLocation);
+        expect(result.tag).to.equal(testData.tag);
       });
     });
 
@@ -767,17 +786,6 @@
       });
 
 
-      it('Result is frozen', function() {
-        var propToMove = standardProps[2];
-        var newLocation = testData.getNextProperty(propToMove);
-
-        // Sanity check
-        expect(newLocation).to.not.equal(undefined);
-        var result = testData.moveAfter(propToMove, newLocation);
-        expect(Object.isFrozen(result)).to.equal(true);
-      });
-
-
       it('Moving to the same location is effectively an identity operation', function() {
         var propToMove = standardProps[1];
         var newLocation = testData.getPreviousProperty(propToMove);
@@ -828,6 +836,29 @@
         expect(newLocation).to.not.equal(undefined);
         var result = testData.moveAfter(propToMove, newLocation);
         expect(result === testData).to.equal(false);
+      });
+
+
+      it('Tag is correctly transferred (1)', function() {
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveAfter(propToMove, newLocation);
+        expect(result.tag).to.equal(testData.tag);
+      });
+
+
+      it('Tag is correctly transferred (2)', function() {
+        testData.tag = 'apiobject';
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveAfter(propToMove, newLocation);
+        expect(result.tag).to.equal(testData.tag);
       });
     });
 
@@ -955,19 +986,27 @@
       });
 
 
-      it('Result is frozen', function() {
-        var result = testData.replaceProperty(standardProps[0], 'foo');
-        expect(Object.isFrozen(result)).to.equal(true);
-      });
-
-
       it('Result is an independent array', function() {
         var result = testData.replaceProperty(standardProps[0], 'foo');
         expect(result === testData).to.equal(false);
       });
+
+
+      it('Tag is correctly transferred (1)', function() {
+        var result = testData.replaceProperty(standardProps[0], 'foo');
+        expect(result.tag).to.equal(testData.tag);
+      });
+
+
+      it('Tag is correctly transferred (2)', function() {
+        testData.tag = 'apiobject';
+        var result = testData.replaceProperty(standardProps[0], 'foo');
+        expect(result.tag).to.equal(testData.tag);
+      });
     });
 
 
+    // XXX Delete me
     // remove etc have expected functions
     // remove etc return new arrays
     // arrays are frozen

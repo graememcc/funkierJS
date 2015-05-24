@@ -1,6 +1,6 @@
 // This file will be used only in the build step, and so doesn't require a UMD wrapper.
 (function (root, factory) {
-  var dependencies = ['./APIFunction'];
+  var dependencies = ['./APIFunction', './APIObject'];
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
@@ -11,32 +11,34 @@
 
     factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
   }
-}(this, function(exports, APIFunction) {
+}(this, function(exports, APIFunction, APIObject) {
   "use strict";
 
 
   /*
-   * The commentProcessor module takes an array of strings, and transforms it into an APIFunction object, verifying
-   * the rules for API function documentation layout. Specifically, we expect the following:
+   * The commentProcessor module takes an array of strings, and transforms it into an APIFunction or APIObject object,
+   * depending on the tag assigned by LineProcessor, verifying the rules for API function documentation layout.
+   * Specifically, we expect the following:
    *
    * The first non-empty line should contain the name of the function, and nothing else
    *
-   * There should be a line containing the category of functions the function in question belongs to. Such a line
-   * should begin with "Category: " followed by the category and nothing else.
+   * (APIFunctions only) There should be a line containing the category of functions the function in question belongs
+   * to. Such a line should begin with "Category: " followed by the category and nothing else.
    *
-   * There may optionally be a line containing synonyms for the function. Such a line should begin with "Synonyms: "
-   * followed by a list of the synonyms, separated by commas, vertical bars, or the word "or".
+   * (APIFunctions only) There may optionally be a line containing synonyms for the function. Such a line should begin
+   * with "Synonyms: " * followed by a list of the synonyms, separated by commas, vertical bars, or the word "or".
    *
-   * There may optionally be a line containing a list of parameters. Each such line should start with "Parameter: ",
-   * be followed by the parameter name followed by a colon, and a list of the possible types of the parameter,
-   * separated by commas, vertical bars, or the word "or". Multiple parameters can be documented on separate lines:
-   * the expectation is that the parameter lines are in the same order as the arguments that the function takes. If
-   * a parameter line provides information contradicting a previous parameter line, an exception is thrown.
+   * (APIFunctions only) There may optionally be a line containing a list of parameters. Each such line should start
+   * with "Parameter: ", be followed by the parameter name followed by a colon, and a list of the possible types of
+   * the parameter, separated by commas, vertical bars, or the word "or". Multiple parameters can be documented on
+   * separate lines: the expectation is that the parameter lines are in the same order as the arguments that the
+   * function takes. If a parameter line provides information contradicting a previous parameter line, an exception is
+   * thrown.
    *
-   * There may optionally be a line containing the possible return types. Such a line should start with "Returns: ",
-   * and be followed by a list of the return types, separated by vertical bars or the word "or". If given, the return
-   * type line must follow any parameter lines. Further, when there are also parameter lines, there should be nothing
-   * else (except empty lines) between the parameter lines and the return line.
+   * (APIFunctions only) There may optionally be a line containing the possible return types. Such a line should start
+   * with "Returns: ", and be followed by a list of the return types, separated by vertical bars or the word "or". If
+   * given, the return type line must follow any parameter lines. Further, when there are also parameter lines, there
+   * should be nothing else (except empty lines) between the parameter lines and the return line.
    *
    * The first non-empty line that is not one of the special lines mentioned above is taken to mark the start of the
    * summary: a short paragraph suitable for providing a simple description of the function's functionality. The
@@ -56,6 +58,7 @@
 
 
   APIFunction = APIFunction.APIFunction;
+  APIObject = APIObject.APIObject;
 
 
   // States for the state machine
@@ -422,6 +425,13 @@
     if (options.examples !== undefined && options.examples.length === 0)
       throw new Error('Examples are degenerate');
 
-    return APIFunction(mandatoryParameters.name, mandatoryParameters.category, summary, options);
+    var constructor = APIFunction;
+    if (lines.tag.toLowerCase() === 'apiobject') {
+      constructor = APIObject;
+      if (options.parameters || options.returnType || options.synonyms)
+        throw new TypeError('APIFunction properties found in an APIObject');
+    }
+
+    return constructor(mandatoryParameters.name, mandatoryParameters.category, summary, options);
   };
 }));
