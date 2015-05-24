@@ -389,6 +389,19 @@
     });
 
 
+    it('Trailing newlines at the end of details entries are stripped', function() {
+      var details = ['Line 1', 'Line 2'];
+      var detailsToSupply = details.map(function(s, i) {
+        var whitespace = '';
+        for (var j = 0; j < i + 1; j++) whitespace += ' ';
+        return s + whitespace + '\n';
+      });
+
+      var obj = APIFunction('fizz', 'Bar', 'buzz', {details: detailsToSupply});
+      expect(obj.details).to.deep.equal(details);
+    });
+
+
     it('Trailing newlines at the end of examples entries are stripped', function() {
       var examples = ['Line 1', 'Line 2'];
       var examplesToSupply = examples.map(function(s, i) {

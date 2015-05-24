@@ -33,8 +33,10 @@
    *             be an empty array if not supplied.
    *   returnType: An array of strings representing the possible types that might be returned by an invocation of the
    *               function. This will be an empty array if not supplied.
-   *   details: An array of strings, each string representing a paragraph of further information about function usage.
-   *            This will be an empty array if not supplied. The caller must add any required line endings.
+   *   details: An array of strings, each string representing a line of explanatory text. In totality, it is assumed
+   *            that the details provide further explanation on function usage beyond that provided by the summary
+   *            line. This will be an empty array if not supplied. Any trailing line endings will be stripped: it is
+   *            assumed output routines can add these where necessary.
    *   examples: An array of strings, each of which represents a line of Javascript illuminating typical usage of the
    *             function. This will be an empty array if not supplied.
    *   parameters: See below. This will be an empty array if not supplied.
@@ -56,6 +58,9 @@
    * when converted to markdown line endings will be added as required, so line endings will be automatically stripped.
    *
    */
+
+
+  // TODO: Need to decide what to do if examples or details lines have internal line endings. Split?
 
 
   var verifyParameterProperty = function(elem) {
@@ -109,7 +114,7 @@
     this.summary = summary.trim();
     this.category = category[0].toUpperCase() + category.slice(1);
 
-    this.details = options.details ? options.details.slice() : [];
+    this.details = options.details ? options.details.map(function(s) { return s.replace(/\s*\n?$/, ''); }) : [];
     this.returnType = options.returnType ? options.returnType.slice() : [];
     this.examples = options.examples ? options.examples.map(function(s) { return s.replace(/\s*\n?$/, ''); }) : [];
     this.synonyms = options.synonyms ? options.synonyms.slice() : [];
