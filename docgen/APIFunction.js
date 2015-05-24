@@ -36,7 +36,8 @@
    *   details: An array of strings, each string representing a line of explanatory text. In totality, it is assumed
    *            that the details provide further explanation on function usage beyond that provided by the summary
    *            line. This will be an empty array if not supplied. Any trailing line endings will be stripped: it is
-   *            assumed output routines can add these where necessary.
+   *            assumed output routines can add these where necessary. Paragraph breaks should be denoted by empty
+   *            lines.
    *   examples: An array of strings, each of which represents a line of Javascript illuminating typical usage of the
    *             function. This will be an empty array if not supplied.
    *   parameters: See below. This will be an empty array if not supplied.
@@ -61,6 +62,7 @@
 
 
   // TODO: Need to decide what to do if examples or details lines have internal line endings. Split?
+  // TODO: Need to decide what to do if empty line(s) at end of details/examples
 
 
   var verifyParameterProperty = function(elem) {

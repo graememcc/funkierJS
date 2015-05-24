@@ -389,6 +389,13 @@
     });
 
 
+    it('Paragraph breaks in details are preserved', function() {
+      var details = ['Line 1', '', 'Line 2', '  ', 'Line 3'];
+      var obj = APIFunction('fizz', 'Bar', 'buzz', {details: details});
+      expect(obj.details).to.deep.equal(details.map(function(s) { return s.trim(); }));
+    });
+
+
     it('Trailing newlines at the end of details entries are stripped', function() {
       var details = ['Line 1', 'Line 2'];
       var detailsToSupply = details.map(function(s, i) {
