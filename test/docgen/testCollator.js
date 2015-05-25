@@ -166,7 +166,7 @@
       });
 
 
-      describe('Category names', function() {
+      describe('getCategories', function() {
         it('Category names returned in alphabetical order', function() {
           var expected = ['Cat1', 'Cat2', 'Cat3'];
           expect(collated.getCategories()).to.deep.equal(expected);
@@ -174,7 +174,7 @@
       });
 
 
-      describe('By category', function() {
+      describe('byCategory', function() {
         it('Returns empty array when category not recognised', function() {
           expect(collated.byCategory('NonExistantCategory')).to.deep.equal([]);
         });
@@ -201,7 +201,7 @@
       });
 
 
-      describe('By name', function() {
+      describe('byName', function() {
         it('Works as expected', function() {
           var expected = [
             testData[0][0], {name: 'Cat1Func2', synonymFor: 'Cat1Func1'}, {name: 'Cat1Func3', synonymFor: 'Cat1Func1'},
@@ -210,6 +210,19 @@
           ];
 
           expect(collated.byName()).to.deep.equal(expected);
+        });
+      });
+
+
+      describe('allNames', function() {
+        it('Works as expected', function() {
+          var expected = [
+            testData[0][0], {name: 'Cat1Func2', synonymFor: 'Cat1Func1'}, {name: 'Cat1Func3', synonymFor: 'Cat1Func1'},
+            testData[1][2], testData[2][0], {name: 'Cat1Func6', synonymFor: 'Cat1Func5'}, testData[0][1], testData[1][0],
+            testData[1][1]
+          ].map(function(val) { return val.name; });
+
+          expect(collated.getNames()).to.deep.equal(expected);
         });
       });
     });

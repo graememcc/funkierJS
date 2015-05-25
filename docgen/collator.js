@@ -88,7 +88,16 @@
     Object.freeze(values);
     this._byCategory = values;
 
+    namesFound.sort();
+    Object.freeze(namesFound);
+    this._names = namesFound;
+
     Object.freeze(this);
+  };
+
+
+  Collator.prototype.getNames = function() {
+    return this._names;
   };
 
 
