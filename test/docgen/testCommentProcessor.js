@@ -143,7 +143,7 @@
            * cases where the name is duplicated - a second name line would be regarded as a summary line, so this scenario
            * will be exercised by the tests looking for out-of-order fields.
            *
-           * Duplicated code examples are tested separately
+           * Duplicated code examples are tested separately.
            *
            */
 
@@ -227,6 +227,223 @@
               expect(fn).to.not.throw();
             });
           });
+
+
+          /*
+           * Generate tests that ensure left indentation is consistent.
+           *
+           */
+
+          ['category', 'summary'].forEach(function(field) {
+            it('Throws if ' + field + ' has indentation when name field does not for ' + type, function() {
+              testData = makeType(testData, type);
+              testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+                return '  ' + line;
+              }));
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Throws if ' + field + ' has more indentation than name field for ' + type, function() {
+              testData = makeType(testData, type);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add more indentation to the field
+              testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+                return '  ' + line;
+              }));
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Throws if ' + field + ' has less indentation than name field for ' + type, function() {
+              testData = makeType(testData, type);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add remove indentation from the field
+              testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+                return line.trim();
+              }));
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+          });
+
+
+          /*
+           * The left indentation requirements on examples and details are slightly different. We expect that the first
+           * line has the same amount of indentation as name, but for later lines it is permissible to have more. It is
+           * still never permissible to have less.
+           *
+           */
+
+          ['details', 'examples'].forEach(function(field) {
+            it('Throws if if first line of ' + field + ' has indentation when name does not for ' + type, function() {
+              testData = makeType(testData, type);
+              var newValue = ['  ' + field + ':'].concat(testData.getPropertyValue(field).slice(1));
+              testData = testData.replaceProperty(field, newValue);
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Throws if first line of ' + field + ' has more indentation than name for ' + type, function() {
+              testData = makeType(testData, type);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add more indentation to the first line of the field. Note that the first "line" of examples
+              // is the examples keyword; it is this which must be aligned.
+              var existing = testData.getPropertyValue(field);
+              testData = testData.replaceProperty(field, ['  ' + existing[0]].concat(existing.slice(1)));
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Throws if ' + field + ' has less indentation than name (1) for ' + type, function() {
+              // In this test, we blanket deindent all the lines
+              testData = makeType(testData, type);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add remove indentation from the field
+              testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+                return line.trim();
+              }));
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Throws if ' + field + ' has less indentation than name (2) for ' + type, function() {
+              // In this test, we test the case where only one line has less indentation
+              testData = makeType(testData, type);
+
+              // Ensure the field has multiple lines
+              testData = testData.replaceProperty(field, [field + ':', 'Line 2', 'Line 3']);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add remove indentation from the field
+              var existing = testData.getPropertyValue(field);
+              testData = testData.replaceProperty(field, [existing[0], existing[1].trim(), existing[2]]);
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+
+
+            it('Does not throw if line of ' + field + ' other than first has more indentation than name for ' + type,
+               function() {
+              // Ensure the field has multiple lines
+              testData = testData.replaceProperty(field, [field + ':', 'Line 2', 'Line 3']);
+
+              // First, we need to apply consistent indentation to everything
+              var indentation = '  ';
+              testData = testData.applyToAll(function(val) {
+                return val.map(function(s) { return indentation + s; });
+              });
+
+              // Then add more indentation to the third line of the field
+              var existing = testData.getPropertyValue(field);
+              testData = testData.replaceProperty(field, [existing[0], existing[1], '  ' + existing[2]]);
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.not.throw();
+            });
+          });
+
+
+          it('Throws if later examples lines have less indentation than the first (1) for ' + type, function() {
+            // In this test, we test the case where there is other indentation, and the first line is not indented
+            testData = makeType(testData, type);
+
+            testData = testData.replaceProperty('examples', ['Examples: ', '  Correct indent', 'Unindented line',
+                                                             '  Correct indent']);
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if later examples lines have less indentation than the first (2) for ' + type, function() {
+            // In this test, we test the case where there is no other indentation
+            testData = makeType(testData, type);
+
+            // Ensure the field has multiple lines
+            testData = testData.replaceProperty('examples', ['Examples:', 'Correct indent', 'Incorrect', 'Correct']);
+
+            var indentation = '  ';
+            testData = testData.applyToAll(function(val) {
+              return val.map(function(s) { return indentation + s; });
+            });
+
+            var existing = testData.getPropertyValue('examples');
+            var newExamples = existing.map(function (s) { return s.indexOf('Incorrect') === -1 ? s : s.trim() });
+            testData = testData.replaceProperty('examples', newExamples);
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
         });
       });
 
@@ -261,7 +478,7 @@
          * information is repeated. Another test checks to ensure that lines containing the same parameter name but
          * conflicting information is rejected.
          *
-         * Duplicated code examples are tested separately
+         * Duplicated code examples are tested separately.
          *
          */
 
@@ -378,6 +595,11 @@
         });
 
 
+        /*
+         * Generate tests that ensure left indentation is consistent.
+         *
+         */
+
         ['parameter', 'return type', 'synonyms'].forEach(function(field) {
           it('Does not throw if ' + field + ' not present', function() {
             testData = testData.removeProperty(field);
@@ -386,6 +608,59 @@
             };
 
             expect(fn).to.not.throw();
+          });
+
+
+          it('Throws if ' + field + ' has indentation when name field does not', function() {
+            testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+              return '  ' + line;
+            }));
+
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if ' + field + ' has more indentation than name field', function() {
+            // First, we need to apply consistent indentation to everything
+            var indentation = '  ';
+            testData = testData.applyToAll(function(val) {
+              return val.map(function(s) { return indentation + s; });
+            });
+
+            // Then add more indentation to the field
+            testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+              return '  ' + line;
+            }));
+
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if ' + field + ' has less indentation than name field', function() {
+            // First, we need to apply consistent indentation to everything
+            var indentation = '  ';
+            testData = testData.applyToAll(function(val) {
+              return val.map(function(s) { return indentation + s; });
+            });
+
+            // Then add remove indentation from the field
+            testData = testData.replaceProperty(field, testData.getPropertyValue(field).map(function(line) {
+              return line.trim();
+            }));
+
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
           });
         });
       });
@@ -479,6 +754,16 @@
 
               expect(commentProcessor(testData)[property]).to.equal(props[property]);
             });
+
+
+            it(property + ' has common indentation stripped for ' + dataType, function() {
+              testData = makeType(testData, dataType);
+              var indented = testData.applyToAll(function(arr) {
+                return arr.map(function(s) { return '  ' + s; });
+              });
+
+              expect(commentProcessor(indented)[property]).to.deep.equal(commentProcessor(testData)[property]);
+            });
           });
 
 
@@ -506,6 +791,18 @@
             var summary = ['Summary line 1.', 'Summary line 2.', 'Summary line 3.', ''];
             testData = testData.replaceProperty('summary', summary);
             expect(commentProcessor(testData).summary).to.deep.equal(summary.slice(0, -1).join('\n'));
+          });
+
+
+          it('Merging of multiple summary lines accounts for indentation for ' + dataType, function() {
+            testData = makeType(testData, dataType);
+            var summary = ['Summary line 1.', 'Summary line 2.', 'Summary line 3.', ''];
+            testData = testData.replaceProperty('summary', summary);
+            var indented = testData.applyToAll(function(arr) {
+              return arr.map(function(s) { return '  ' + s; });
+            });
+
+            expect(commentProcessor(indented).summary).to.deep.equal(summary.slice(0, -1).join('\n'));
           });
 
 
@@ -606,8 +903,18 @@
               testData = makeType(testData, dataType);
 
               var prop = (propName !== 'return type' ? propName : 'returnType');
-              testData = testData.removeProperty(prop);
-              expect(commentProcessor(testData)[prop]).to.deep.equal([]);
+              testData = testData.removeProperty(propName);
+              expect(commentProcessor(testData)[propName]).to.deep.equal([]);
+            });
+
+
+            it(propName + ' has common indentation stripped for ' + dataType, function() {
+              testData = makeType(testData, dataType);
+              var indented = testData.applyToAll(function(arr) {
+                return arr.map(function(s) { return '  ' + s; });
+              });
+
+              expect(commentProcessor(indented)[propName]).to.deep.equal(commentProcessor(testData)[propName]);
             });
           });
 
@@ -624,16 +931,80 @@
           });
 
 
-          // TODO: Decide upon our approach to whitespace for examples
           it('category is whitespace insensitive for ' + dataType, function() {
             testData = makeType(testData, dataType);
 
             var existing = testData.getPropertyValue('category');
             var newData = testData.replaceProperty('category', existing.map(function(s) {
-              return '  ' + s.replace(':', '  :  ');
+              return s.replace(':', '  :  ');
             }));
 
             expect(commentProcessor(newData).category).to.deep.equal(commentProcessor(testData).category);
+          });
+
+
+          it('Details have indentation in lines other than first preserved for ' + dataType, function() {
+            testData = makeType(testData, dataType);
+
+            // Ensure we have a multi-line field. Note that all lines other than the first have indentation
+            // additional to the common indentation that will be applied below
+            var expected = ['Details line 1', '  line 2 with indent', '  line 3 with indent', 'line 4'];
+            testData = testData.replaceProperty('details', expected);
+            var indented = testData.applyToAll(function(arr) {
+              return arr.map(function(s) { return '  ' + s; });
+            });
+
+            expect(commentProcessor(indented).details).to.deep.equal(expected);
+          });
+
+
+          it('Examples have indentation in lines other than first preserved for ' + dataType, function() {
+            testData = makeType(testData, dataType);
+
+            // Ensure we have a multi-line field. Note that all lines other than the first have indentation
+            // additional to the common indentation that will be applied below
+            var expected = ['Examples:', 'Examples line 1', '  line 2 with indent', '  line 3 with indent', 'line 4'];
+            testData = testData.replaceProperty('examples', expected);
+            var indented = testData.applyToAll(function(arr) {
+              return arr.map(function(s) { return '  ' + s; });
+            });
+
+            expect(commentProcessor(indented).examples).to.deep.equal(expected.slice(1));
+          });
+
+
+          it('Examples have indentation level set by first line of examples stripped (1) for ' + dataType, function() {
+            // First we test the case where the rest of the data has no indent
+            testData = makeType(testData, dataType);
+
+            // Ensure we have a multi-line field. Note that all lines other than the first have indentation
+            // additional to the common indentation that will be applied below
+            var expected = ['Examples line 1', '  line 2 with even more indent', '  line 3 with indent', 'line 4'];
+            // Let's indent all the example lines
+            var toReplace = ['Examples:'].concat(expected.map(function(s) { return '  ' + s; }));
+            testData = testData.replaceProperty('examples', toReplace);
+
+            expect(commentProcessor(testData).examples).to.deep.equal(expected);
+          });
+
+
+          it('Examples have indentation level set by first line of examples stripped (2) for ' + dataType, function() {
+            // This time round, we also have a common indent in play. Thus the examples should have the common indent
+            // and the example specific indent removed
+            testData = makeType(testData, dataType);
+
+            // Ensure we have a multi-line field. Note that all lines other than the first have indentation
+            // additional to the common indentation that will be applied below
+            var expected = ['Examples line 1', '  line 2 with even more indent', '  line 3 with indent', 'line 4'];
+            // Let's indent all the example lines
+            var toReplace = ['Examples:'].concat(expected.map(function(s) { return '  ' + s; }));
+            testData = testData.replaceProperty('examples', toReplace);
+
+            var indented = testData.applyToAll(function(arr) {
+              return arr.map(function(s) { return '  ' + s; });
+            });
+
+            expect(commentProcessor(indented).examples).to.deep.equal(expected);
           });
 
 
@@ -753,10 +1124,20 @@
             var prop = (propName !== 'return type' ? propName : 'returns');
             var existing = testData.getPropertyValue(propName);
             var newData = testData.replaceProperty(propName, existing.map(function(s) {
-                return '  ' + s.replace(':', '  :  ');
+                return s.replace(':', '  :  ');
             }));
 
             expect(commentProcessor(newData)[prop]).to.deep.equal(commentProcessor(testData)[prop]);
+          });
+
+
+          it(propName + ' is indentation insensitive', function() {
+            var prop = (propName !== 'return type' ? propName : 'returns');
+            var indented = testData.applyToAll(function(arr) {
+              return arr.map(function(s) { return '  ' + s; });
+            });
+
+            expect(commentProcessor(indented)[prop]).to.deep.equal(commentProcessor(testData)[prop]);
           });
         });
 

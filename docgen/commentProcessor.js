@@ -51,6 +51,18 @@
    * After the summary (and optionally details), there may optionally be code examples. This is denoted by a line
    * consisting only of "Examples:". All lines from this point on will be considered as examples.
    *
+   * The line containing the name establishes the indentation level for the following lines: all lines will be expected
+   * to have the same amount of whitespace; this whitespace will be stripped from each line. An error will be thrown if
+   * any line is encountered that has more indentation, with two exceptions:
+   *
+   *  - Detailed help lines other than the first may have extra indentation for aesthetic purposes: only the
+   *    indentation amount established earlier will be removed
+   *
+   *  - Examples may be indented further: the first non-trivial line occurring after "Examples:" establishes the
+   *    minimum indentation for examples lines. That level of whitespace will be stripped from each examples line.
+   *
+   * Any line that is found to have less indentation will cause an error.
+   *
    */
 
 
@@ -83,13 +95,16 @@
     if (line.indexOf(':') !== -1)
       throw new Error('No function name specified!');
 
-
+    // Test that only one word was encountered
     var nameMatch = /^\s*((?:\w|\$)+)\s*$/.exec(line);
-
     if (!nameMatch)
       throw new Error('Invalid line encountered!');
 
     params.name = nameMatch[1];
+
+    // Calculate the global indent
+    var remainingWhitespace = /^\s+/.exec(line);
+    params.globalIndent = remainingWhitespace === null ? 0 : remainingWhitespace[0].length;
     return MODE_OPTIONALS;
   };
 
@@ -188,6 +203,35 @@
 
 
   /*
+   * Checks that the line has at least the minimum amount of indentation required, throwing when it does not.
+   *
+   */
+
+  var checkMinimumIndent = function(line, indentLevel) {
+    var indentRegExp = new RegExp(indentLevel === 0 ? '^\\S' : '^\\s{' + indentLevel + '}');
+    if (!indentRegExp.test(line))
+      throw new Error('Inconsistent indentation! Line \'' + line + '\' has less indentation than surrounding docs');
+  };
+
+
+  /*
+   * Removes the global indentation from a line, throwing if there is additional indentation remaining.
+   *
+   */
+
+  var removeIndent = function(line, indentLevel) {
+    checkMinimumIndent(line, indentLevel);
+
+    var orig =  line;
+    line = line.slice(indentLevel);
+    if (/^\s/.test(line))
+      throw new Error('Inconsistent indentation! Line \'' + orig + '\' has more indentation than surrounding docs');
+
+    return line;
+  };
+
+
+  /*
    * Processes a line suspected of containing either a keyword or the summary, and fills out the appropriate field
    * and makes the appopriate mode transition.
    *
@@ -198,6 +242,7 @@
 
   var processKeywordLine = function(line, params, options, currentMode) {
     if (/^\s*$/.test(line)) return currentMode;
+    line = removeIndent(line, params.globalIndent);
 
     // The line either contains a "special line" or is the start of the summary
     var lineKeyword = getLineKeyword(line);
@@ -267,6 +312,8 @@
     if (/^\s*$/.test(line))
       return MODE_DETAILS;
 
+    line = removeIndent(line, params.globalIndent);
+
     // When we are processing the summary, we allow code samples, but no other keywords
     var lineKeyword = getLineKeyword(line);
     if (lineKeyword) {
@@ -290,10 +337,25 @@
    *
    */
 
-  var processDetailsLine = function(line, options) {
+  var processDetailsLine = function(line, params, options) {
+    if (!(/^\s*$/.test(line))) {
+      // Note: we can only use removeIndent for the first line; we allow further indents on later lines
+      if (options.details === null || options.details.length === 0) {
+        // First non-trivial line
+        line = removeIndent(line, params.globalIndent);
+      } else {
+        checkMinimumIndent(line, params.globalIndent);
+        line = line.slice(params.globalIndent);
+      }
+    }
+
     var lineKeyword = getLineKeyword(line);
     if (lineKeyword) {
       if (lineKeyword === 'examples') {
+        // The examples keyword must be indented correctly (but account for the fact that we've already removed the
+        // global indent)
+        checkMinimumIndent(line, 0);
+
         options.examples = [];
         return  MODE_EXAMPLES;
       }
@@ -317,15 +379,36 @@
    *
    */
 
-  var processExamplesLine = function(line, options) {
+  var processExamplesLine = function(line, params, options) {
     var lineKeyword = getLineKeyword(line);
 
     if (lineKeyword)
       throw new Error('Data line cannot appear in examples');
 
     // We ignore empty lines after the start of the examples marker
-    if (/^\s*\n?$/.test(line) && options.examples.length === 0)
+    if (/^\s*\n?$/.test(line)) {
+      if (options.examples.length > 0)
+        options.examples.push('');
       return MODE_EXAMPLES;
+    }
+
+    if (options.examplesIndent === null) {
+      // The indent level has not been set, so this must be the first non-empty line (if it was empty we would have
+      // returned early above). First, we must check that it meets the minimum indent. Note, we cannot use removeIndent
+      // as this line might be establishing an example block indent, which may well be bigger.
+      if (params.globalIndent > 0)
+        checkMinimumIndent(line, params.globalIndent);
+      line = line.slice(params.globalIndent);
+
+      // How much indent is left? This establishes the indent for the remainder of the examples lines.
+      var remainingWhitespace = /^\s+/.exec(line);
+      options.examplesIndent = remainingWhitespace === null ? 0 : remainingWhitespace[0].length;
+      line = line.slice(options.examplesIndent);
+    } else {
+      // We cannot use removeIndent, as additional indent is permissible
+      checkMinimumIndent(line, params.globalIndent + options.examplesIndent);
+      line = line.slice(params.globalIndent + options.examplesIndent);
+    }
 
     options.examples.push(line);
     return MODE_EXAMPLES;
@@ -356,17 +439,21 @@
     var mandatoryParameters = {
       name: null,
       category: null,
-      summary: null
+      summary: null,
+      globalIndent: 0,
     };
+
+    // Note, that as a slight hack to avoid passing more in/out params around, we store some indent information in
+    // the options object, deleting it before we pass it to the constructor
 
     var options = {
       details:  null,
       synonyms:  null,
       returnType:  null,
       parameters:  null,
-      examples:  null
+      examples:  null,
+      examplesIndent: null
     };
-
 
     lines.forEach(function(line) {
       var lineKeyword, separator;
@@ -387,11 +474,11 @@
           break;
 
         case MODE_DETAILS:
-          mode = processDetailsLine(line, options);
+          mode = processDetailsLine(line, mandatoryParameters, options);
           break;
 
         case MODE_EXAMPLES:
-          mode = processExamplesLine(line, options);
+          mode = processExamplesLine(line, mandatoryParameters, options);
           break;
 
         default:
@@ -435,6 +522,10 @@
       if (options.parameters || options.returnType || options.synonyms)
         throw new TypeError('APIFunction properties found in an APIObject');
     }
+
+    // Delete temporary values
+    delete options.globalIndent;
+    delete options.examplesIndent;
 
     return constructor(mandatoryParameters.name, mandatoryParameters.category, summary, options);
   };
