@@ -219,6 +219,17 @@
   };
 
 
+  var applyToAll = function(fn) {
+    var result = null;
+    testDataProps.forEach(function(prop) {
+      if (this[prop] === undefined) return;
+
+      result = (result !== null ? result : this).replaceProperty(prop, fn(this.getPropertyValue(prop), prop));
+    }, this);
+    return result;
+  };
+
+
   var decorate = function(arr, tag) {
     arr.getNextProperty = getNextProperty;
     arr.getPreviousProperty = getPreviousProperty;
@@ -228,6 +239,7 @@
     arr.moveAfter = moveAfter;
     arr.getPropertyValue = getPropertyValue;
     arr.replaceProperty = replaceProperty;
+    arr.applyToAll = applyToAll;
     arr.tag = tag;
     return arr;
   };

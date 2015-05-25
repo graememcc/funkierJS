@@ -51,7 +51,7 @@
 
 
     var expectedFunctions = ['getPreviousProperty', 'getNextProperty', 'getPropertyLength', 'removeProperty',
-                             'moveBefore', 'moveAfter', 'getPropertyValue', 'replaceProperty'];
+                             'moveBefore', 'moveAfter', 'getPropertyValue', 'replaceProperty', 'applyToAll'];
 
 
     describe('Initial status', function() {
@@ -1006,12 +1006,84 @@
     });
 
 
-    // XXX Delete me
-    // remove etc have expected functions
-    // remove etc return new arrays
-    // arrays are frozen
-    // insertBefore
-    // insertAfter
-    // returntype/returnType/return type recognised as returns
+    describe('applyToAll', function() {
+      it('Returned result has the expected properties', function() {
+        var result = testData.applyToAll(function(x) { return x; });
+
+        var hasAllProps = standardProps.every(function(prop) {
+          return result[prop] !== undefined;
+        });
+
+        expect(hasAllProps).to.equal(true);
+      });
+
+
+      it('Returned result has standard functions', function() {
+        var result = testData.applyToAll(function(x) { return x; });
+
+        var hasAllFunctions = expectedFunctions.every(function(prop) {
+          return result[prop] !== undefined && typeof(result[prop]) === 'function';
+        });
+
+        expect(hasAllFunctions).to.equal(true);
+      });
+
+
+      it('Called with all properties (1)', function() {
+        var calledWith = {};
+        standardProps.forEach(function(p) { calledWith[p] = false; });
+        var f = function(x, prop) { calledWith[prop] = true; };
+        var result = testData.applyToAll(f);
+        var calledForAll = standardProps.every(function(p) { return calledWith[p]; });
+
+        expect(calledForAll).to.equal(true);
+      });
+
+
+      it('Called with all properties (2)', function() {
+        var calledWith = {};
+        standardProps.forEach(function(p) { calledWith[p] = null; });
+        var f = function(x, prop) { calledWith[prop] = x; };
+        var result = testData.applyToAll(f);
+        var calledWithCorrectData  = standardProps.every(function(p) {
+          var val = testData.getPropertyValue(p);
+          return Array.isArray(calledWith[p]) && val.every(function(s, i) { return calledWith[p][i] === s; });
+        });
+
+        expect(calledWithCorrectData).to.equal(true);
+      });
+
+
+      it('Called with all properties (3)', function() {
+        var calledWith = {};
+        standardProps.forEach(function(p) { calledWith[p] = false; });
+        var f = function(x, prop) { calledWith[prop] = true; };
+        var result = testData.removeProperty(standardProps[1]).applyToAll(f);
+        var calledForAll = standardProps.every(function(p) {
+          return p === standardProps[1] ? !calledWith[p] : calledWith[p];
+        });
+
+        expect(calledForAll).to.equal(true);
+      });
+
+
+      it('Result is an independent array', function() {
+        var result = testData.applyToAll(function(x) { return x; });
+        expect(result === testData).to.equal(false);
+      });
+
+
+      it('Tag is correctly transferred (1)', function() {
+        var result = testData.applyToAll(function(x) { return x; });
+        expect(result.tag).to.equal(testData.tag);
+      });
+
+
+      it('Tag is correctly transferred (2)', function() {
+        testData.tag = 'apiobject';
+        var result = testData.applyToAll(function(x) { return x; });
+        expect(result.tag).to.equal(testData.tag);
+      });
+    });
   });
 }));
