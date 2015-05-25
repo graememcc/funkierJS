@@ -436,7 +436,7 @@
             });
 
             var existing = testData.getPropertyValue('examples');
-            var newExamples = existing.map(function (s) { return s.indexOf('Incorrect') === -1 ? s : s.trim() });
+            var newExamples = existing.map(function (s) { return s.indexOf('Incorrect') === -1 ? s : s.trim(); });
             testData = testData.replaceProperty('examples', newExamples);
             var fn = function() {
               commentProcessor(testData);
