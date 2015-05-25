@@ -347,6 +347,10 @@
 
 
   exports.commentProcessor = function(lines) {
+    var tag = lines.tag.toLowerCase();
+    if (tag !== 'apifunction' && tag != 'apiobject')
+      throw new Error('Unrecognised tag');
+
     var mode = MODE_AWAITINGNAME;
 
     var mandatoryParameters = {
@@ -426,7 +430,7 @@
       throw new Error('Examples are degenerate');
 
     var constructor = APIFunction;
-    if (lines.tag.toLowerCase() === 'apiobject') {
+    if (tag === 'apiobject') {
       constructor = APIObject;
       if (options.parameters || options.returnType || options.synonyms)
         throw new TypeError('APIFunction properties found in an APIObject');

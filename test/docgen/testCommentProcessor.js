@@ -37,269 +37,404 @@
   });
 
 
+  /*
+   * Helper function for transforming automatically generated test data into the form required for APIObject
+   * construction if required.
+   *
+   */
+
+  var makeType = function(testData, type) {
+    type = type.toLowerCase();
+    if (type === 'apifunction') return testData;
+
+    testData = testData.removeProperty('parameters').removeProperty('synonyms').removeProperty('returns');
+    testData.tag = 'apiobject';
+    return testData;
+  };
+
+
+
   describe('commentProcessor', function() {
     commentProcessor = commentProcessor.commentProcessor;
 
 
     describe('Behaviour', function() {
-      it('Throws if first non-degenerate line contains more than one word', function() {
-        var testData = ['  myvar some more text', '', 'A badly written comment'];
-        var fn = function() {
-          commentProcessor(testData);
-        };
+      describe('Common behaviours', function() {
+        ['APIFunction', 'APIObject'].forEach(function(type) {
+          it('Throws if data not tagged when data has shape of ' + type, function() {
+            testData = makeType(testData, type);
+            delete testData.tag;
+            var fn = function() {
+              commentProcessor(testData);
+            };
 
-        expect(fn).to.throw();
-      });
+            expect(fn).to.throw();
+          });
 
 
-      /*
-       * Generate tests that ensure comments where the function name is not first are rejected. We don't explicitly check
-       * for the summary line, as we can assume it will be a line containing more than one word; another test detects
-       * whether such lines are rejected.
-       *
-       */
 
-      ['category', 'parameter', 'return type', 'synonyms', 'examples'].forEach(function(field) {
-        it('Throws when ' + field + ' appears before the function name', function() {
-          testData = testData.moveBefore(field, 'name');
-          var fn = function() {
-            commentProcessor(testData);
-          };
+          it('Throws if first non-degenerate line contains more than one word for ' + type, function() {
+            var testData = ['  myvar some more text', '', 'A badly written comment'];
+            testData.tag = type.toLowerCase();
+            var fn = function() {
+              commentProcessor(testData);
+            };
 
-          expect(fn).to.throw();
+            expect(fn).to.throw();
+          });
+
+
+          /*
+           * Generate tests that ensure comments where the function name is not first are rejected. We don't explicitly check
+           * for the summary line, as we can assume it will be a line containing more than one word; another test detects
+           * whether such lines are rejected.
+           *
+           */
+
+          ['category', 'examples'].forEach(function(field) {
+            it('Throws when ' + field + ' appears before the function name for ' + type, function() {
+              testData = makeType(testData, type);
+              testData = testData.moveBefore(field, 'name');
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+          });
+
+
+          it('Throws if category field contains more than one word for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.replaceProperty('category', 'Category: foo bar');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if category field missing for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.removeProperty('category');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if summary missing for ' + type, function() {
+            testData = makeType(testData, type);
+            // Need to remove both summary and details, or details will be detected as the summary
+            testData = testData.removeProperty('summary').removeProperty('details');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          /*
+           * Generate tests that ensure comments containing multiple magic fields are rejected. We don't explicitly check
+           * cases where the name is duplicated - a second name line would be regarded as a summary line, so this scenario
+           * will be exercised by the tests looking for out-of-order fields.
+           *
+           * Duplicated code examples are tested separately
+           *
+           */
+
+          ['category', 'examples'].forEach(function(field) {
+            it('Throws if ' + field + ' field is duplicated for ' + type, function() {
+              testData = makeType(testData, type);
+              var fieldData = testData.getPropertyValue(field);
+              testData = testData.replaceProperty(field, fieldData.concat(fieldData));
+              var fn = function() {
+                 commentProcessor(testData);
+              };
+
+              expect(fn).to.throw();
+            });
+          });
+
+
+          it('Throws if code examples are duplicated (2) for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.concat(['Examples: ']);
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if category field appears after the summary and details for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.moveAfter('category', 'details');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if category field appears after the summary and before details for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.moveBefore('category', 'details');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if code examples before summary for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.moveBefore('examples', 'summary');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if code examples are degenerate for ' + type, function() {
+            testData = makeType(testData, type);
+            testData = testData.replaceProperty('examples', ['Examples:']);
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          ['details', 'examples'].forEach(function(field) {
+            it('Does not throw if ' + field + ' not present', function() {
+              testData = makeType(testData, type);
+              testData = testData.removeProperty(field);
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.not.throw();
+            });
+          });
         });
       });
 
 
-      it('Throws if category field contains more than one word', function() {
-        testData = testData.replaceProperty('category', 'Category: foo bar');
-        var fn = function() {
-           commentProcessor(testData);
-        };
+      describe('APIFunction specific', function() {
 
-        expect(fn).to.throw();
-      });
+        /*
+         * Generate tests that ensure comments where the function name is not first are rejected. We don't explicitly check
+         * for the summary line, as we can assume it will be a line containing more than one word; another test detects
+         * whether such lines are rejected.
+         *
+         */
 
+        ['parameter', 'return type', 'synonyms'].forEach(function(field) {
+          it('Throws when ' + field + ' appears before the function name', function() {
+            testData = testData.moveBefore(field, 'name');
+            var fn = function() {
+              commentProcessor(testData);
+            };
 
-      it('Throws if category field missing', function() {
-        testData = testData.removeProperty('category');
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
-
-
-      it('Throws if summary missing', function() {
-        // Need to remove both summary and details, or details will be detected as the summary
-        testData = testData.removeProperty('summary').removeProperty('details');
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
+            expect(fn).to.throw();
+          });
+        });
 
 
-      /*
-       * Generate tests that ensure comments containing multiple magic fields are rejected. We don't explicitly check
-       * cases where the name is duplicated - a second name line would be regarded as a summary line, so this scenario
-       * will be exercised by the tests looking for out-of-order fields.
-       *
-       * Note that for the parameter field, we precisely test that two lines containing the exact same parameter
-       * information is repeated. Another test checks to ensure that lines containing the same parameter name but
-       * conflicting information is rejected.
-       *
-       * Duplicated code examples are tested separately
-       *
-       */
+        /*
+         * Generate tests that ensure comments containing multiple magic fields are rejected. We don't explicitly check
+         * cases where the name is duplicated - a second name line would be regarded as a summary line, so this scenario
+         * will be exercised by the tests looking for out-of-order fields.
+         *
+         * Note that for the parameter field, we precisely test that two lines containing the exact same parameter
+         * information is repeated. Another test checks to ensure that lines containing the same parameter name but
+         * conflicting information is rejected.
+         *
+         * Duplicated code examples are tested separately
+         *
+         */
 
-      ['category', 'parameter', 'return type', 'synonyms', 'examples'].forEach(function(field) {
-        it('Throws if ' + field + ' field is duplicated', function() {
-          var fieldData = testData.getPropertyValue(field);
-          testData = testData.replaceProperty(field, fieldData.concat(fieldData));
+        ['parameter', 'return type', 'synonyms'].forEach(function(field) {
+          it('Throws if ' + field + ' field is duplicated', function() {
+            var fieldData = testData.getPropertyValue(field);
+            testData = testData.replaceProperty(field, fieldData.concat(fieldData));
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+        });
+
+
+        it('Throws if parameter testData contain conflicting information', function() {
+          var badParams = ['Parameter: x: number', 'Parameter: x: string'];
+          testData = testData.replaceProperty('parameter', badParams);
           var fn = function() {
              commentProcessor(testData);
           };
 
           expect(fn).to.throw();
         });
-      });
 
 
-      it('Throws if code examples are duplicated (2)', function() {
-        testData = testData.concat(['Examples: ']);
-        var fn = function() {
-           commentProcessor(testData);
-        };
+        /*
+         * Generate tests that ensure comments where information fields appear after the summary are rejected.
+         *
+         */
 
-        expect(fn).to.throw();
-      });
+        ['parameter', 'return type', 'synonyms'].forEach(function(field) {
+          it('Throws if ' + field + ' field appears after the summary and details', function() {
+            testData = testData.moveAfter(field, 'details');
+            var fn = function() {
+               commentProcessor(testData);
+            };
 
-
-      it('Throws if parameter testData contain conflicting information', function() {
-        var badParams = ['Parameter: x: number', 'Parameter: x: string'];
-        testData = testData.replaceProperty('parameter', badParams);
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
+            expect(fn).to.throw();
+          });
 
 
-      /*
-       * Generate tests that ensure comments where information fields appear after the summary are rejected.
-       *
-       */
+          it('Throws if ' + field + ' field appears after the summary and before details', function() {
+            testData = testData.moveBefore(field, 'details');
+            var fn = function() {
+               commentProcessor(testData);
+            };
 
-      ['category', 'parameter', 'return type', 'synonyms'].forEach(function(field) {
-        it('Throws if ' + field + ' field appears after the summary and details', function() {
-          testData = testData.moveAfter(field, 'details');
+            expect(fn).to.throw();
+          });
+        });
+
+
+        /*
+         * Generate tests that ensure comments containing certain fields between parameter and return type fields are rejected.
+         *
+         */
+
+        ['category', 'synonyms', 'examples'].forEach(function(field) {
+          it('Throws if ' + field + ' field appears between the parameters and return type', function() {
+            testData = testData.moveAfter(field, 'parameter');
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+
+
+          it('Throws if ' + field + ' field appears between parameters fields', function() {
+            var fieldData = testData.getPropertyValue(field);
+            var params = ['Parameter: x: number', 'Parameter: y: string'];
+            params.splice.apply(params, [1, 0].concat(fieldData));
+            testData = testData.replaceProperty('parameter', params);
+            var fn = function() {
+               commentProcessor(testData);
+            };
+
+            expect(fn).to.throw();
+          });
+        });
+
+
+        it('More than one parameter OK', function() {
+          testData = testData.replaceProperty('parameter', ['Parameter: x: string', 'Parameter: y: number']);
           var fn = function() {
              commentProcessor(testData);
           };
 
-          expect(fn).to.throw();
+          expect(fn).to.not.throw();
         });
 
 
-        it('Throws if ' + field + ' field appears after the summary and before details', function() {
-          testData = testData.moveBefore(field, 'details');
-          var fn = function() {
-             commentProcessor(testData);
-          };
-
-          expect(fn).to.throw();
-        });
-      });
-
-
-      /*
-       * Generate tests that ensure comments containing certain fields between parameter and return type fields are rejected.
-       *
-       */
-
-      ['category', 'synonyms', 'examples'].forEach(function(field) {
-        it('Throws if ' + field + ' field appears between the parameters and return type', function() {
-          testData = testData.moveAfter(field, 'parameter');
-          var fn = function() {
-             commentProcessor(testData);
-          };
-
-          expect(fn).to.throw();
-        });
-
-
-        it('Throws if ' + field + ' field appears between parameters fields', function() {
-          var fieldData = testData.getPropertyValue(field);
-          var params = ['Parameter: x: number', 'Parameter: y: string'];
-          params.splice.apply(params, [1, 0].concat(fieldData));
-          testData = testData.replaceProperty('parameter', params);
-          var fn = function() {
-             commentProcessor(testData);
-          };
-
-          expect(fn).to.throw();
-        });
-      });
-
-
-      it('Throws if code examples before summary', function() {
-        testData = testData.moveAfter('returns', 'examples');
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
-
-
-      it('Throws if code examples are degenerate', function() {
-        testData = testData.replaceProperty('examples', ['Examples:']);
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
-
-
-      it('More than one parameter OK', function() {
-        testData = testData.replaceProperty('parameter', ['Parameter: x: string', 'Parameter: y: number']);
-        var fn = function() {
-           commentProcessor(testData);
-        };
-
-        expect(fn).to.not.throw();
-      });
-
-
-      it('Fields are case insensitive', function() {
-        var tag = testData.tag;
-        testData = testData.map(function(s) { return s.toUpperCase(); });
-        testData.tag = tag;
-        var fn = function() {
-          commentProcessor(testData);
-        };
-
-        expect(fn).to.not.throw();
-      });
-
-
-      ['parameter', 'return type', 'synonyms', 'details', 'examples'].forEach(function(field) {
-        it('Does not throw if ' + field + ' not present', function() {
-          testData = testData.removeProperty(field);
+        it('Fields are case insensitive', function() {
+          var tag = testData.tag;
+          testData = testData.map(function(s) { return s.toUpperCase(); });
+          testData.tag = tag;
           var fn = function() {
             commentProcessor(testData);
           };
 
           expect(fn).to.not.throw();
         });
+
+
+        it('Does not throw if no parameters or return type present', function() {
+          testData = testData.removeProperty('parameter').removeProperty('return type');
+          var fn = function() {
+            commentProcessor(testData);
+          };
+
+          expect(fn).to.not.throw();
+        });
+
+
+        ['parameter', 'return type', 'synonyms'].forEach(function(field) {
+          it('Does not throw if ' + field + ' not present', function() {
+            testData = testData.removeProperty(field);
+            var fn = function() {
+              commentProcessor(testData);
+            };
+
+            expect(fn).to.not.throw();
+          });
+        });
       });
 
 
-      it('Does not throw if no parameters or return type present', function() {
-        testData = testData.removeProperty('parameter').removeProperty('return type');
-        var fn = function() {
-          commentProcessor(testData);
-        };
+      describe('APIObject specific behaviours', function() {
+        it('Throws if data is tagged as apiobject, and parameters present', function() {
+          testData.tag = 'apiobject';
+          testData = testData.removeProperty('returns').removeProperty('synonyms');
+          var fn = function() {
+            commentProcessor(testData);
+          };
 
-        expect(fn).to.not.throw();
-      });
-
-
-      it('Throws if data is tagged as apiobject, and parameters present', function() {
-        testData = testData.removeProperty('returns').removeProperty('synonyms');
-        testData.tag = 'apiobject';
-        var fn = function() {
-          commentProcessor(testData);
-        };
-
-        expect(fn).to.throw();
-      });
+          expect(fn).to.throw();
+        });
 
 
-      it('Throws if data is tagged as apiobject, and return type present', function() {
-        testData = testData.removeProperty('parameters').removeProperty('synonyms');
-        testData.tag = 'apiobject';
-        var fn = function() {
-          commentProcessor(testData);
-        };
+        it('Throws if data is tagged as apiobject, and return type present', function() {
+          testData.tag = 'apiobject';
+          testData = testData.removeProperty('parameters').removeProperty('synonyms');
+          var fn = function() {
+            commentProcessor(testData);
+          };
 
-        expect(fn).to.throw();
-      });
+          expect(fn).to.throw();
+        });
 
 
-      it('Throws if data is tagged as apiobject, and synonyms present', function() {
-        testData = testData.removeProperty('parameters').removeProperty('synonyms');
-        testData.tag = 'apiobject';
-        var fn = function() {
-          commentProcessor(testData);
-        };
+        it('Throws if data is tagged as apiobject, and synonyms present', function() {
+          testData.tag = 'apiobject';
+          testData = testData.removeProperty('parameters').removeProperty('synonyms');
+          var fn = function() {
+            commentProcessor(testData);
+          };
 
-        expect(fn).to.throw();
+          expect(fn).to.throw();
+        });
+
+
+        it('Fields are case insensitive', function() {
+          testData = makeType(testData, 'apiobject');
+          testData = testData.map(function(s) { return s.toUpperCase(); });
+          testData.tag = 'apiobject';
+          var fn = function() {
+            commentProcessor(testData);
+          };
+
+          expect(fn).to.not.throw();
+        });
       });
     });
 
@@ -337,15 +472,6 @@
 
 
       describe('Common results', function() {
-        var makeType = function(testData, type) {
-          if (type === 'apifunction') return testData;
-
-          testData = testData.removeProperty('parameters').removeProperty('synonyms').removeProperty('returns');
-          testData.tag = 'apiobject';
-          return testData;
-        };
-
-
         ['apifunction', 'apiobject'].forEach(function(dataType) {
           ['name', 'category', 'summary'].forEach(function(property) {
             it(property + ' is correct for ' + dataType, function() {
