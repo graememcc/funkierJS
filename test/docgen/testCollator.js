@@ -127,6 +127,36 @@
                   function() { return [APIFunction('bar', 'fizz', 'buzz', {synonyms: ['a3', 'a1']})];});
 
 
+      addDualTest('an APIFunction has the same name as a category (1)',
+                  function() { return [APIFunction('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIFunction('fizz', 'cat', 'buzz', {})];});
+
+
+      addDualTest('an APIFunction has the same name as a category (2)',
+                  function() { return [APIObject('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIFunction('fizz', 'cat', 'buzz', {})];});
+
+
+      addDualTest('an APIObject has the same name as a category (1)',
+                  function() { return [APIFunction('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIObject('fizz', 'cat', 'buzz', {})];});
+
+
+      addDualTest('an APIFunction has the same name as a category (2)',
+                  function() { return [APIObject('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIObject('fizz', 'cat', 'buzz', {})];});
+
+
+      addDualTest('a synonym has the same name as a category (1)',
+                  function() { return [APIFunction('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIFunction('bar', 'cat', 'buzz', {synonyms: ['fizz']})];});
+
+
+      addDualTest('a synonym has the same name as a category (2)',
+                  function() { return [APIObject('foo', 'fizz', 'buzz', {})];},
+                  function() { return [APIFunction('bar', 'cat', 'buzz', {synonyms: ['fizz']})];});
+
+
 
       it('Doesn\'t throw when called with an empty array', function() {
         var fn = function() {

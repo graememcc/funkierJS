@@ -43,6 +43,9 @@
           throw new Error('Non-APIFunction/APIObject value found');
 
         var cat = val.category;
+        if (namesFound.indexOf(cat) !== -1)
+          throw new Error('Category matches an earlier function name');
+
         if (namesFound.indexOf(val.name) !== -1)
           throw new Error('Duplicate name found');
 
@@ -52,6 +55,16 @@
               throw new Error('Duplicate name found');
           });
         }
+
+        var existingCategories = Object.keys(values);
+        var alreadyHaveNameAsCategory = function(s) {
+          s = s[0].toUpperCase() + s.slice(1);
+          return existingCategories.indexOf(s) !== -1;
+        };
+
+        if (alreadyHaveNameAsCategory(val.name) ||
+            (Array.isArray(val.synonyms) && val.synonyms.some(alreadyHaveNameAsCategory)))
+          throw new Error('Name matches a category');
 
         if (values[cat] === undefined) values[cat] = [];
 
