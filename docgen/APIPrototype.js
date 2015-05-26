@@ -62,12 +62,24 @@
   };
 
 
+  var verifyNameCat = function(val, self, otherProp) {
+    var other = self[otherProp];
+    if (other === undefined) return;
+    if (val.toLowerCase() === other.toLowerCase())
+      throw new Error('name and category cannot match (even approximately)');
+  };
+
+
   exports.APIPrototype = {
     get name() { return this.__name; },
-    set name(val) { verifyString(val, 'name'); this.__name = val; },
+    set name(val) { verifyString(val, 'name'); verifyNameCat(val, this, '__category'); this.__name = val; },
 
     get category() { return this.__category; },
-    set category(val) { verifyString(val, 'category'); this.__category = val[0].toUpperCase() + val.slice(1); },
+    set category(val) {
+      verifyString(val, 'category');
+      verifyNameCat(val, this, '__name');
+      this.__category = val[0].toUpperCase() + val.slice(1);
+    },
 
     get summary() { return this.__summary; },
     set summary(val) { verifyString(val, 'summary'); this.__summary = val.trim(); },

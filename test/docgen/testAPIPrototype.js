@@ -210,6 +210,42 @@
     });
 
 
+    /*
+     * Add tests that show that a function name cannot match a category (regardless of case).
+     *
+     */
+
+    var addMatchingNameTests = function(description, nameVal, catVal) {
+      it('Throw when name and category match ' + description + ' (name set first)', function() {
+        var obj = Object.create(APIPrototype);
+        obj.name = nameVal;
+        var fn = function() {
+          obj.category = catVal;
+        };
+
+        expect(fn).to.throw();
+      });
+
+
+      it('Throw when name and category match ' + description + ' (category set first)', function() {
+        var obj = Object.create(APIPrototype);
+        obj.category = catVal;
+        var fn = function() {
+          obj.name = nameVal;
+        };
+
+        expect(fn).to.throw();
+      });
+    };
+
+
+    [{name: 'Foo', cat: 'Foo', description: 'exactly'}, {name: 'foo', cat: 'Foo', description: 'approximately (1)'},
+     {name: 'Foo', cat: 'foo', description: 'approximately (2)'},
+     {name: 'foo', cat: 'foo', description: 'approximately (3)'}].forEach(function(test) {
+      addMatchingNameTests(test.description, test.name, test.cat);
+    });
+
+
     ['details', 'examples'].forEach(function(propName) {
       it('Trailing newlines at the end of ' + propName + ' entries are stripped', function() {
         var values = ['Line 1', 'Line 2'];
