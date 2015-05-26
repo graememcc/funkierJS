@@ -12,13 +12,15 @@ module.exports = function(grunt) {
       docs: {
         src: ['lib/components/*.js'],
         markdownNameFile: 'docs/markdown/byName.md',
-        markdownCategoryFile: 'docs/markdown/byCategory.md'
+        markdownNamePre: 'docs/templates/markdownNamePre.md',
+        markdownCategoryFile: 'docs/markdown/byCategory.md',
+        markdownCategoryPre: 'docs/templates/markdownCategoryPre.md',
       }
     },
 
 
     watch: {
-      files: ['lib/**/*.js', 'test/**/*.js', 'docgen/**/*.js'],
+      files: ['lib/**/*.js', 'test/**/*.js', 'docgen/**/*.js', 'Gruntfile.js'],
       tasks: ['jshint', 'docs']
     }
   });
@@ -34,7 +36,9 @@ module.exports = function(grunt) {
     var files = this.filesSrc;
     var data = {
       markdownNameFile:     this.data.markdownNameFile,
-      markdownCategoryFile: this.data.markdownCategoryFile
+      markdownCategoryFile: this.data.markdownCategoryFile,
+      markdownByNamePre:     this.data.markdownNamePre,
+      markdownByCategoryPre: this.data.markdownCategoryPre
     };
 
     var documentationCreator = require('./docgen/documentationCreator');
