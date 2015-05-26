@@ -217,7 +217,7 @@
 
       pos = 0;
       verifyName('bar');
-      verifyLine('See [`foo`](#foo)');
+      verifyLine('See `foo`');
       verifyLine('***');
     });
 

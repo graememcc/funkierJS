@@ -196,7 +196,7 @@ module.exports = (function() {
 
     // Bail early for synonyms
     if ('synonymFor' in apiFunction) {
-      result.push('See [`' + apiFunction.synonymFor + '`](#' + apiFunction.synonymFor + ')');
+      result.push('See `' + apiFunction.synonymFor + '`');
       result.push('***');
       return result.join('\n');
     }
