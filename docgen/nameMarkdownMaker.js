@@ -16,7 +16,7 @@ module.exports = (function() {
    *
    */
 
-  var categoryMarkdownMaker = function(collator, filename, options) {
+  var nameMarkdownMaker = function(collator, filename, options) {
     options = options || {};
 
     var categories = collator.getCategories();
@@ -37,5 +37,5 @@ module.exports = (function() {
   };
 
 
-  return categoryMarkdownMaker;
+  return nameMarkdownMaker;
 })();
