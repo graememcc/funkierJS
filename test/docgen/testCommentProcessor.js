@@ -444,6 +444,52 @@
 
             expect(fn).to.throw();
           });
+
+
+          /*
+           * Generate tests that show that lines which may prove problematic when generating HTML from Markdown are
+           * disallowed from appearing in the text fields.
+           *
+           */
+
+          var problematicLineTests = [
+            {name: 'usage', value: '** Usage: **'},
+            {name: 'parameters', value: 'Parameters:'},
+            {name: 'synonyms', value: '* Synonyms: * `s1` | `s2`'}
+          ];
+
+          ['summary', 'details', 'examples'].forEach(function(field) {
+            problematicLineTests.forEach(function(test) {
+              it('Problematic ' + test.name + ' line allowed if no options supplied', function() {
+                testData = testData.replaceProperty(field, [field + ':', test.value, 'Line 3']);
+                var fn = function() {
+                  commentProcessor(testData);
+                };
+
+                expect(fn).to.not.throw();
+              });
+
+
+              it('Problematic ' + test.name + ' line allowed if options explicitly allow', function() {
+                testData = testData.replaceProperty(field, [field + ':', test.value, 'Line 3']);
+                var fn = function() {
+                  commentProcessor(testData, {allowProblematicForHTMLGeneration: true});
+                };
+
+                expect(fn).to.not.throw();
+              });
+
+
+              it('Problematic ' + test.name + ' line disallowed when options disallow', function() {
+                testData = testData.replaceProperty(field, [field + ':', test.value, 'Line 3']);
+                var fn = function() {
+                  commentProcessor(testData, {allowProblematicForHTMLGeneration: false});
+                };
+
+                expect(fn).to.throw();
+              });
+            });
+          });
         });
       });
 

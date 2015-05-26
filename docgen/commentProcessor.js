@@ -232,6 +232,20 @@
 
 
   /*
+   * Checks whether a line from a text field could prove problematic when generating HTML from any Markdown that
+   * would be generated from this comment.
+   *
+   * XXX This creates an unfortunate coupling between this file and the HTML generators.
+   *
+   */
+
+  var checkLineForHTMLGeneration = function(line) {
+    if (line.indexOf('** Usage: **') === 0 || line.indexOf('Parameters:') === 0 || line.indexOf('* Synonyms: *') === 0)
+      throw new Error('Line will prove problematic for HTML generation from markdown ' + line);
+  };
+
+
+  /*
    * Processes a line suspected of containing either a keyword or the summary, and fills out the appropriate field
    * and makes the appopriate mode transition.
    *
@@ -240,7 +254,7 @@
    *
    */
 
-  var processKeywordLine = function(line, params, options, currentMode) {
+  var processKeywordLine = function(line, params, options, currentMode, allowProblematic) {
     if (/^\s*$/.test(line)) return currentMode;
     line = removeIndent(line, params.globalIndent);
 
@@ -296,6 +310,9 @@
     }
 
     // Otherwise this is the start of the summary
+    if (!allowProblematic)
+      checkLineForHTMLGeneration(line);
+
     params.summary = [line];
     return MODE_SUMMARY;
   };
@@ -308,7 +325,7 @@
    *
    */
 
-  var processSummaryLine = function(line, params, options) {
+  var processSummaryLine = function(line, params, options, allowProblematic) {
     if (/^\s*$/.test(line))
       return MODE_DETAILS;
 
@@ -325,6 +342,9 @@
       throw new Error('Unexpected documentation line in summary!' + line);
     }
 
+    if (!allowProblematic)
+      checkLineForHTMLGeneration(line);
+
     params.summary.push(line);
     return MODE_SUMMARY;
   };
@@ -337,7 +357,7 @@
    *
    */
 
-  var processDetailsLine = function(line, params, options) {
+  var processDetailsLine = function(line, params, options, allowProblematic) {
     if (!(/^\s*$/.test(line))) {
       // Note: we can only use removeIndent for the first line; we allow further indents on later lines
       if (options.details === null || options.details.length === 0) {
@@ -366,8 +386,12 @@
     if (options.details === null) options.details = [];
 
     // Skip over repeated trailing empty lines at the beginning
-    if (options.details.length > 0 || !(/^\s*\n?$/.test(line)))
+    if (options.details.length > 0 || !(/^\s*\n?$/.test(line))) {
+      if (!allowProblematic)
+        checkLineForHTMLGeneration(line);
+
       options.details.push(line);
+    }
 
     return MODE_DETAILS;
   };
@@ -379,7 +403,7 @@
    *
    */
 
-  var processExamplesLine = function(line, params, options) {
+  var processExamplesLine = function(line, params, options, allowProblematic) {
     var lineKeyword = getLineKeyword(line);
 
     if (lineKeyword)
@@ -410,6 +434,9 @@
       line = line.slice(params.globalIndent + options.examplesIndent);
     }
 
+    if (!allowProblematic)
+      checkLineForHTMLGeneration(line);
+
     options.examples.push(line);
     return MODE_EXAMPLES;
   };
@@ -429,7 +456,9 @@
   };
 
 
-  exports.commentProcessor = function(lines) {
+  exports.commentProcessor = function(lines, generationOptions) {
+    generationOptions = generationOptions || {allowProblematicForHTMLGeneration: true};
+
     var tag = lines.tag.toLowerCase();
     if (tag !== 'apifunction' && tag != 'apiobject')
       throw new Error('Unrecognised tag');
@@ -455,6 +484,8 @@
       examplesIndent: null
     };
 
+    var allowProblematic = generationOptions.allowProblematicForHTMLGeneration;
+
     lines.forEach(function(line) {
       var lineKeyword, separator;
 
@@ -466,19 +497,19 @@
         case MODE_OPTIONALS:
         case MODE_PARAMETERS:
         case MODE_POSTPARAMETERS:
-          mode = processKeywordLine(line, mandatoryParameters, options, mode);
+          mode = processKeywordLine(line, mandatoryParameters, options, mode, allowProblematic);
           break;
 
         case MODE_SUMMARY:
-          mode = processSummaryLine(line, mandatoryParameters, options);
+          mode = processSummaryLine(line, mandatoryParameters, options, allowProblematic);
           break;
 
         case MODE_DETAILS:
-          mode = processDetailsLine(line, mandatoryParameters, options);
+          mode = processDetailsLine(line, mandatoryParameters, options, allowProblematic);
           break;
 
         case MODE_EXAMPLES:
-          mode = processExamplesLine(line, mandatoryParameters, options);
+          mode = processExamplesLine(line, mandatoryParameters, options, allowProblematic);
           break;
 
         default:
