@@ -82,7 +82,7 @@
 
       var addDualTest = function(description, makeFirst, makeSecond) {
         it('Throws if ' + description + ' (values occur in same array)', function() {
-          var data = [[].concat(makeFirst).concat(makeSecond)];
+          var data = [[].concat(makeFirst()).concat(makeSecond())];
           var fn = function() {
             new Collator(data);
           };
@@ -92,7 +92,7 @@
 
 
         it('Throws if ' + description + ' (values occur in same array)', function() {
-          var data = [[].concat(makeFirst), [].concat(makeSecond)];
+          var data = [[].concat(makeFirst()), [].concat(makeSecond())];
           var fn = function() {
             new Collator(data);
           };
