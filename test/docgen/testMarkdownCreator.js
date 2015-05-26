@@ -88,8 +88,8 @@
 
     var verifySynonyms = function(synonyms) {
       synonyms = synonyms.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : ''); });
-      synonyms = synonyms.join();
-      verifyLine('* Synonyms: * ' + synonyms);
+      synonyms = synonyms.join('');
+      verifyLine('*Synonyms:* ' + synonyms);
       verifyLine('');
     };
 
@@ -100,7 +100,8 @@
 
       var params = parameters.map(function(p) { return p.name; }).join(', ');
       var rtn = returnType.length > 0 ? '`var result = ' : '`';
-      verifyLine('** Usage: ** ' + rtn + name + '(' + params + ');`');
+      verifyLine('**Usage:** ' + rtn + name + '(' + params + ');`');
+      verifyLine('');
     };
 
 
@@ -196,9 +197,6 @@
 
         if ('returnType' in apiOptions)
           verifyReturnType(apiOptions.returnType);
-
-        if (testType === 'APIFunction' && !('parameters' in apiOptions) && !('returnType' in apiOptions))
-          verifyLine('');
 
         verifyLine(summary);
 

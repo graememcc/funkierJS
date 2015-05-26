@@ -93,7 +93,7 @@
    */
 
   var printSynonyms = function(synonyms, result) {
-    result.push('* Synonyms: * ' + synonyms.map(printAType));
+    result.push('*Synonyms:* ' + synonyms.map(printAType).join(''));
     result.push('');
   };
 
@@ -113,7 +113,8 @@
   var printUsageLine = function(name, parameters, returnType, result) {
     var rtn = returnType.length > 0 ? '`var result = ' : '`';
     var params = parameters.map(function(p) { return p.name; }).join(', ');
-    result.push('** Usage: ** ' + rtn + name + '(' + params + ');`');
+    result.push('**Usage:** ' + rtn + name + '(' + params + ');`');
+    result.push('');
   };
 
 
@@ -223,8 +224,6 @@
         printSynonyms(apiFunction.synonyms, result);
 
       printUsageLine(apiFunction.name, apiFunction.parameters, apiFunction.returnType, result);
-      if (apiFunction.parameters.length === 0 && apiFunction.returnType.length === 0)
-        result.push('');
 
       // Print a table of the parameters and their allowable types, linking any types specified in the options
       if (apiFunction.parameters.length > 0)
