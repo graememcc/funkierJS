@@ -125,7 +125,7 @@
    */
 
   var printAType = function(type, i, arr) {
-    return '`' + type + '`' + (i !== arr.length ? ' | ' : '');
+    return '`' + type + '`' + (i !== arr.length - 1 ? ' | ' : '');
   };
 
 
@@ -141,7 +141,7 @@
 
   var printParameters = function(parameters, result) {
     var printAParam = function(param, i, arr) {
-      result.push(param.name + ' ' + param.type.map(printAType).join('') + (i !== arr.length ? '  ' : ''));
+      result.push(param.name + ' ' + param.type.map(printAType).join('') + (i !== arr.length - 1 ? '  ' : ''));
     };
     result.push('Parameters:  ');
     parameters.forEach(printAParam);

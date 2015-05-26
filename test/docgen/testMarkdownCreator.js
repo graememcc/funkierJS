@@ -87,7 +87,7 @@
 
 
     var verifySynonyms = function(synonyms) {
-      synonyms = synonyms.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+      synonyms = synonyms.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : ''); });
       synonyms = synonyms.join();
       verifyLine('* Synonyms: * ' + synonyms);
       verifyLine('');
@@ -107,16 +107,18 @@
     var verifyParameters = function(parameters) {
       verifyLine('Parameters:  ');
       parameters.forEach(function(param, i, arr) {
-        var types = param.type.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+        var types = param.type.map(function (s, i, arr) {
+          return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : '');
+        });
         types = types.join('');
-        verifyLine(param.name + ' ' + types + (i !== arr.length ? '  ' : ''));
+        verifyLine(param.name + ' ' + types + (i !== arr.length - 1 ? '  ' : ''));
       });
       verifyLine('');
     };
 
 
     var verifyReturnType = function(returnType) {
-      var types = returnType.map(function(s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+      var types = returnType.map(function(s, i, arr) { return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : ''); });
       verifyLine('Returns: ' + types.join(''));
       verifyLine('');
     };
