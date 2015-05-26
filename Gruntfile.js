@@ -15,6 +15,12 @@ module.exports = function(grunt) {
         markdownNamePre: 'docs/templates/markdownNamePre.md',
         markdownCategoryFile: 'docs/markdown/byCategory.md',
         markdownCategoryPre: 'docs/templates/markdownCategoryPre.md',
+        HTMLNameFile: 'docs/html/byName.html',
+        HTMLNamePre: 'docs/templates/HTMLNamePre.html',
+        HTMLNamePost: 'docs/templates/HTMLNamePost.html',
+        HTMLCategoryFile: 'docs/html/byCategory.html',
+        HTMLCategoryPre: 'docs/templates/HTMLCategoryPre.html',
+        HTMLCategoryPost: 'docs/templates/HTMLCategoryPost.html',
       }
     },
 
@@ -35,10 +41,17 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('docs', function() {
     var files = this.filesSrc;
     var data = {
-      markdownNameFile:     this.data.markdownNameFile,
-      markdownCategoryFile: this.data.markdownCategoryFile,
+      markdownNameFile:      this.data.markdownNameFile,
+      markdownCategoryFile:  this.data.markdownCategoryFile,
       markdownByNamePre:     this.data.markdownNamePre,
-      markdownByCategoryPre: this.data.markdownCategoryPre
+      markdownByCategoryPre: this.data.markdownCategoryPre,
+      HTMLNameFile:          this.data.HTMLNameFile,
+      HTMLCategoryFile:      this.data.HTMLCategoryFile,
+      HTMLByNamePre:         this.data.HTMLNamePre,
+      HTMLByNamePost:        this.data.HTMLNamePost,
+      HTMLByCategoryPre:     this.data.HTMLCategoryPre,
+      HTMLByCategoryPost:    this.data.HTMLCategoryPost,
+      toLink:                this.data.toLink
     };
 
     var documentationCreator = require('./docgen/documentationCreator');
