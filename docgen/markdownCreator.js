@@ -48,8 +48,8 @@
    * If the object is a function, a usage line will follow, noting the names of any formal parameters to the function,
    * as found in the 'parameters' property of the supplied APIFunction.
    *
-   * If the object is a function, and takes 1 or more parameters, a table will follow. Each row contains the parameter's
-   * name, followed by a list of acceptable types for the parameter.
+   * If the object is a function, and takes 1 or more parameters, a paragraph will follow, with each line containg the
+   * name of one parameter, followed by a list of acceptable types for the parameter.
    *
    * Next, if the object is a function returning a result, a list of types returned will be output.
    *
@@ -62,14 +62,6 @@
    * be wrapped in an HTML5 section tag.
    *
    * Lists of types, function names and parameter names will be formatted with Markdown inline code formatting.
-   * Further, they will be wrapped in HTML unordered list tags; it is assumed that they will be displayed on one line,
-   * so Markdown list formatting cannot be used. It is assumed if converting to HTML that the client will provide
-   * appropriate CSS to display the list elements inline.
-   *
-   * Types and return values may be values that are expected to be documented elsewhere. In that case, one can add a
-   * 'toLink' array property to the options object. Any values in the parameter and return type lists that match a
-   * value in the 'toLink' array will be formatted as a link. The link will be to a named anchor assumed to be
-   * elsewhere within the same Markdown document, and will have the same name as the string being linked.
    *
    */
 
@@ -101,41 +93,8 @@
    */
 
   var printSynonyms = function(synonyms, result) {
-    var synonymText = synonyms.map(function(s) {
-      return '<li>`' + s + '`</li>';
-    });
-    result.push('*Synonyms:* <ul class="synonymsList">' + synonymText.join(', ') + '</ul>');
+    result.push('* Synonyms:* ' + synonyms.map(printAType));
     result.push('');
-  };
-
-
-  /*
-   * Given a string "type", apply inline code Markdown markup to it and return it inside a list item HTML tag.
-   * In addition, if the string exactly matches one of the entries in the toLink array, then it will additionally
-   * be marked up as a link to a named anchor with the same name in the same page.
-   *
-   */
-
-  var linkTypeIfRequired = function(toLink, type) {
-    if (toLink.indexOf(type) !== -1)
-      return '<li>[`' + type + '`](#' + type + ')</li>';
-
-    return '<li>`' + type + '`</li>';
-  };
-
-
-  /*
-   * Print a row of a table describing the formal parameters of a function. See the comment for the function
-   * printParameters below.
-   *
-   */
-
-  var printAParam = function(result, toLink, param) {
-    result.push('      <tr>');
-    result.push('        <td>`' + param.name + '`</td>');
-    var paramTypeText = param.type.map(linkTypeIfRequired.bind(null, toLink)).join(' | ');
-    result.push('        <td><ul class="typeList">' + paramTypeText + '</ul></td>');
-    result.push('      </tr>');
   };
 
 
@@ -154,46 +113,51 @@
   var printUsageLine = function(name, parameters, returnType, result) {
     var rtn = returnType.length > 0 ? '`var result = ' : '`';
     var params = parameters.map(function(p) { return p.name; }).join(', ');
-    result.push('** Usage: ** ' + rtn + name + '(' + params + ');`');
+    result.push('** Usage:** ' + rtn + name + '(' + params + ');`');
   };
 
 
   /*
-   * Prints a table containing the formal parameters of a function.
+   * Helper function for printing types separated by pipe characters, and enclosed in Markdown markup for inline
+   * code. This function is intended to be invoked by a map call; the parameters are the standard ones supplied to
+   * a mapping function.
    *
-   * Each row will contain two data cells: the first containing the name of the parameter, the second a list of the
-   * acceptable types for the parameter.
+   */
+
+  var printAType = function(type, i, arr) {
+    return '`' + type + '`' + (i !== arr.length ? ' | ' : '');
+  };
+
+
+  /*
+   * Prints a paragraph detailing the formal parameters of a function.
    *
-   * The name and parameter types will be marked up with the Markdown tags for inline code. If a string exactly
-   * matching the name of one of the types appears in the 'toLink' array, then that string will be further marked
-   * up as a link. The link will be to a named anchor with the same name in the same page; there is currently no way to
-   * override this.
+   * After an initial line denoting the start of parameter output, each line will contain the name of the parameter,
+   * followed by the types accepted, with each type separated by pipe (|) characters, and enclosed in Markdown markup
+   * for inline code.
    *
    * The array of parameters should be non-empty. The resulting lines are appended to the provided 'result' array.
    */
 
-  var printParameters = function(parameters, result, toLink) {
-    result.push('<div class="usage">');
-    result.push('  <table class="usageTable">');
-    result.push('    <tbody>');
-    parameters.forEach(printAParam.bind(null, result, toLink));
-    result.push('    </tbody>');
-    result.push('  </table>');
-    result.push('</div>');
+  var printParameters = function(parameters, result) {
+    var printAParam = function(param, i, arr) {
+      result.push(param.name + ' ' + param.type.map(printAType).join('') + (i !== arr.length ? '  ' : ''));
+    };
+    result.push('Parameters:  ');
+    parameters.forEach(printAParam);
+    result.push('');
   };
 
 
   /*
-   * Prints a line describing the possible types that can be returned from a function. If any of the types are
-   * exactly match the types in the 'toLink' array, then that string will be marked up as a link to a named anchor
-   * of the same name within the current page.
+   * Prints a line describing the possible types that can be returned from a function. Each type will be separated by a
+   * pipe character, and will be enclosed in Markdown markup for inline code.
    *
    * The returnType array is assumed to be non-empty. The generated line will be appended to the given 'result' array.
    */
 
   var printReturnType = function(returnType, result, toLink) {
-    var returnDetail = returnType.map(linkTypeIfRequired.bind(null, toLink)).join(' | ');
-    result.push('Returns: <ul class="typeList">' + returnDetail + '</ul>');
+    result.push('Returns: ' + returnType.map(printAType).join(''));
     result.push('');
   };
 
@@ -239,13 +203,12 @@
     var result = [];
 
     // All function names should be <h3> anchors
-    result.push('<a name = "' + apiFunction.name + '"></a><section>');
     result.push('### ' + apiFunction.name + ' ###');
 
     // Bail early for synonyms
     if ('synonymFor' in apiFunction) {
       result.push('See [`' + apiFunction.synonymFor + '`](#' + apiFunction.synonymFor + ')');
-      result.push('</section>');
+      result.push('***');
       return result.join('\n');
     }
 
@@ -265,13 +228,11 @@
 
       // Print a table of the parameters and their allowable types, linking any types specified in the options
       if (apiFunction.parameters.length > 0)
-        printParameters(apiFunction.parameters, result,
-                        ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
+        printParameters(apiFunction.parameters, result);
 
       // Print the possible return types, linking any types specified in the options
       if (apiFunction.returnType.length > 0)
-        printReturnType(apiFunction.returnType, result,
-                        ('toLink' in options && Array.isArray(options.toLink) ? options.toLink : []));
+        printReturnType(apiFunction.returnType, result);
     }
 
     result.push(apiFunction.summary);
@@ -284,7 +245,7 @@
     if (apiFunction.examples.length > 0)
       printExamples(apiFunction.examples, result);
 
-    result.push('</section>');
+    result.push('***');
     return result.join('\n');
   };
 

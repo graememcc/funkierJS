@@ -76,7 +76,6 @@
 
     var verifyName = function(name) {
       pos = 0;
-      verifyLine('<a name = "' + name + '"></a><section>');
       verifyLine('### ' + name + ' ###');
     };
 
@@ -88,8 +87,9 @@
 
 
     var verifySynonyms = function(synonyms) {
-      synonyms = synonyms.map(function (s) { return '<li>`' + s + '`</li>'; }).join(', ');
-      verifyLine('*Synonyms:* <ul class="synonymsList">' + synonyms + '</ul>');
+      synonyms = synonyms.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+      synonyms = synonyms.join();
+      verifyLine('* Synonyms:* ' + synonyms);
       verifyLine('');
     };
 
@@ -100,46 +100,24 @@
 
       var params = parameters.map(function(p) { return p.name; }).join(', ');
       var rtn = returnType.length > 0 ? '`var result = ' : '`';
-      verifyLine('** Usage: ** ' + rtn + name + '(' + params + ');`');
+      verifyLine('** Usage:** ' + rtn + name + '(' + params + ');`');
     };
 
 
-    var verifyParameters = function(parameters, toLink) {
-      toLink = toLink || [];
-
-      verifyLine('<div class="usage">');
-      verifyLine('  <table class="usageTable">');
-      verifyLine('    <tbody>');
-      parameters.forEach(function(param) {
-        verifyLine('      <tr>');
-        verifyLine('        <td>`' + param.name + '`</td>');
-
-        var paramTypeText = '<ul class="typeList">' + param.type.map(function(type) {
-          if (toLink.indexOf(type) !== -1)
-            return '<li>[`' + type + '`](#' + type + ')</li>';
-          return '<li>`' + type + '`</li>';
-        }).join(' | ') + '</ul>';
-
-        verifyLine('        <td>' + paramTypeText + '</td>');
-        verifyLine('      </tr>');
+    var verifyParameters = function(parameters) {
+      verifyLine('Parameters:  ');
+      parameters.forEach(function(param, i, arr) {
+        var types = param.type.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+        types = types.join('');
+        verifyLine(param.name + ' ' + types + (i !== arr.length ? '  ' : ''));
       });
-
-      verifyLine('    </tbody>');
-      verifyLine('  </table>');
-      verifyLine('</div>');
+      verifyLine('');
     };
 
 
-    var verifyReturnType = function(returnType, toLink) {
-      toLink = toLink || [];
-
-      var returnDetail = returnType.map(function(s) {
-        if (toLink.indexOf(s) !== -1)
-          return '<li>[`' + s + '`](#' + s + ')</li>';
-        return '<li>`' + s + '`</li>';
-      }).join(' | ');
-
-      verifyLine('Returns: <ul class="typeList">' + returnDetail + '</ul>');
+    var verifyReturnType = function(returnType) {
+      var types = returnType.map(function(s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
+      verifyLine('Returns: ' + types.join(''));
       verifyLine('');
     };
 
@@ -228,7 +206,7 @@
         if ('examples' in apiOptions)
           verifyExamples(apiOptions.examples);
 
-        verifyLine('</section>');
+        verifyLine('***');
       };
     };
 
@@ -262,41 +240,8 @@
       pos = 0;
       verifyName('bar');
       verifyLine('See [`foo`](#foo)');
-      verifyLine('</section>');
+      verifyLine('***');
     });
-
-
-    var makeLinkTest = function(testOptions) {
-      return function() {
-        // Build the APIFunction object
-        var apiOptions = {parameters: [{name: 'x', type: ['number', 'LinkType']},
-                                       {name: 'y', type: ['string']},
-                                       {name: 'z', type: ['LinkType', 'Object']}],
-                          returnType: ['LinkType', 'foo', 'number']};
-
-        var name = 'test';
-        var category = 'Category';
-        var summary = 'summary';
-
-        var opts = Object.create(testOptions);
-        opts.toLink = ['LinkType', 'foo'];
-        result = MarkdownCreator(APIFunction(name, category, summary, apiOptions), opts).split('\n');
-
-        verifyName(name);
-
-        if ('includeCategory' in testOptions && testOptions.includeCategory)
-          verifyCategory(category);
-
-        verifyUsage(name, apiOptions.parameters, apiOptions.returnType);
-        verifyParameters(apiOptions.parameters, opts.toLink);
-        verifyReturnType(apiOptions.returnType, opts.toLink);
-        verifyLine(summary);
-      };
-    };
-
-
-    it('Types in parameters and return types linked correctly (with category)', makeLinkTest({includeCategory: true}));
-    it('Types in parameters and return types linked correctly (without category)', makeLinkTest({includeCategory: false}));
 
 
     /*
