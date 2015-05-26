@@ -27,12 +27,14 @@ module.exports = (function() {
 
 
   var fs = require('fs');
+  var path = require('path');
   var collator = require('./collator');
   var esprima = require('esprima');
   var lineProcessor = require('./lineProcessor');
   var commentProcessor = require('./commentProcessor');
   var nameMarkdownMaker = require('./nameMarkdownMaker');
   var categoryMarkdownMaker = require('./categoryMarkdownMaker');
+  var HTMLMaker = require('./HTMLMaker');
 
 
   /*
@@ -127,6 +129,48 @@ module.exports = (function() {
   };
 
 
+  /*
+   * Outputs a file documenting all functions in alphabetical order to the filename specified in the HTMLNameFile
+   * property in the given options object. Note, on its own, this will only prodce an HTML fragment; supply additional
+   * HTML in the files named by the HTMLByNamePre and HTMLByNamePost properties in the options object.
+   *
+   */
+
+  var outputHTMLByName = function(collatedObjects, markdown, data) {
+    if (data.HTMLNameFile === undefined)
+      throw new Error('No filename supplied for HTML by name output');
+    if (data.HTMLCategoryFile === undefined)
+      throw new Error('No category filename supplied for HTML by name output');
+
+    // Calculate the relative filename
+    var relative = path.relative(path.dirname(data.HTMLNameFile), path.dirname(data.HTMLCategoryFile)) +
+                   path.basename(data.HTMLCategoryFile);
+
+    var pre = data.HTMLByNamePre ? fs.readFileSync(data.HTMLByNamePre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.HTMLByNamePost ? fs.readFileSync(data.HTMLByNamePost, {encoding: 'utf-8'}).split('\n') : [];
+    HTMLMaker(collatedObjects, markdown, data.HTMLNameFile, {pre: pre, post: post, categoryFile: relative,
+                                                             typesToLink: data.typesToLink});
+  };
+
+
+  /*
+   * Outputs a file documenting all functions grouped by category to the filename specified in the HTMLCategoryFile
+   * property in the given options object. Note, on its own, this will only prodce an HTML fragment; supply additional
+   * HTML in the files named by the HTMLByCategoryPre and HTMLByCategoryPost properties in the options object.
+   *
+   */
+
+  var outputHTMLByCategory = function(collatedObjects, markdown, data) {
+    if (data.HTMLCategoryFile === undefined)
+      throw new Error('No category filename supplied for HTML by category output');
+
+    var pre = data.HTMLByCategoryPre ? fs.readFileSync(data.HTMLByCategoryPre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.HTMLByCategoryPost ? fs.readFileSync(data.HTMLByCategoryPost, {encoding: 'utf-8'}).split('\n') : [];
+    HTMLMaker(collatedObjects, markdown, data.HTMLCategoryFile, {pre: pre, post: post, isCategory: true,
+                                                             typesToLink: data.typesToLink});
+  };
+
+
   var documentCreator = function(files, data) {
     if (!Array.isArray(files) || files.length === 0)
       throw new Error('No files found');
@@ -139,6 +183,8 @@ module.exports = (function() {
 
     var markdownNameOutput = outputMarkdownByName(collated, data);
     var markdownByCategory = outputMarkdownByCategory(collated, data);
+    outputHTMLByName(collated, markdownNameOutput, data);
+    outputHTMLByCategory(collated, markdownByCategory , data);
   };
 
 

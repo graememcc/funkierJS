@@ -21,8 +21,8 @@ This line should begin the detail.
     var a = arity(f);
 ***
 ### bar ###
-See [`arity`](#arity)
+See `arity`
 ***
 ### foo ###
-See [`arity`](#arity)
+See `arity`
 ***
