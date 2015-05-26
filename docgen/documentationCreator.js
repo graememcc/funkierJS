@@ -92,40 +92,38 @@ module.exports = (function() {
 
 
   /*
-   * Outputs a file documenting all functions in alphabetical order to the filename specified in the markdownNameFile
-   * property in the given options object, returning an array containing the Markdown that was produced (less any
-   * additional Markdown that was supplied to bookend the output; such Markdown should be supplied in the files named
-   * by the markdownByNamePre and markdownByNamePost properties in the options object.
+   * Outputs a file documenting all functions in alphabetical order to the filename specified in the dest property of
+   * the given data object, returning an array containing the Markdown that was produced (less any additional Markdown
+   * that was supplied to bookend the output; such Markdown should be supplied in the files named by the pre and
+   * post properties in the data object.
    *
    */
 
   var outputMarkdownByName = function(collatedObjects, data) {
-    if (data.markdownNameFile === undefined)
+    if (data.dest === undefined)
       throw new Error('No filename supplied for Markdown by name output');
 
-    var pre = data.markdownByNamePre ? fs.readFileSync(data.markdownByNamePre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.markdownByNamePost ? fs.readFileSync(data.markdownByNamePost, {encoding: 'utf-8'}).split('\n') : [];
-    return nameMarkdownMaker(collatedObjects, data.markdownNameFile, {pre: pre, post: post});
+    var pre = data.pre ? fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.post ? fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
+    return nameMarkdownMaker(collatedObjects, data.dest, {pre: pre, post: post});
   };
 
 
   /*
-   * Outputs a file documenting all functions in alphabetical order to the filename specified in the
-   * markdownCategoryFile property in the given data object, returning an array containing the Markdown that was
-   * produced (less any additional Markdown that was supplied to bookend the output; such Markdown should be supplied
-   * in the files named by the markdownByCategoryPre and markdownByCategoryPost properties in the options object.
+   * Outputs a file documenting all functions in alphabetical order to the filename specified in the dest property of
+   * the given data object, returning an array containing the Markdown that was produced (less any additional Markdown
+   * that was supplied to bookend the output; such Markdown should be supplied in the files named by the pre and
+   * post properties in the data object.
    *
    */
 
   var outputMarkdownByCategory = function(collatedObjects, data) {
-    if (data.markdownCategoryFile === undefined)
+    if (data.dest === undefined)
       throw new Error('No filename supplied for Markdown by category output');
 
-    var pre = data.markdownByCategoryPre ?
-                fs.readFileSync(data.markdownByCategoryPre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.markdownByCategoryPost ?
-                 fs.readFileSync(data.markdownByCategoryPost, {encoding: 'utf-8'}).split('\n') : [];
-    return categoryMarkdownMaker(collatedObjects, data.markdownCategoryFile, {pre: pre, post: post});
+    var pre = data.pre ?  fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.post ?  fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
+    return categoryMarkdownMaker(collatedObjects, data.dest, {pre: pre, post: post});
   };
 
 
@@ -134,44 +132,49 @@ module.exports = (function() {
    * property in the given options object. Note, on its own, this will only prodce an HTML fragment; supply additional
    * HTML in the files named by the HTMLByNamePre and HTMLByNamePost properties in the options object.
    *
+   * The data object may additionally contain a toLink property, detailing type strings that should be formatted as
+   * links when encountered (see the HTMLMaker documentation for details).
+   *
    */
 
   var outputHTMLByName = function(collatedObjects, markdown, data) {
-    if (data.HTMLNameFile === undefined)
+    if (data.byName.dest === undefined)
       throw new Error('No filename supplied for HTML by name output');
-    if (data.HTMLCategoryFile === undefined)
+    if (data.byCategory.dest === undefined)
       throw new Error('No category filename supplied for HTML by name output');
 
     // Calculate the relative filename
-    var relative = path.relative(path.dirname(data.HTMLNameFile), path.dirname(data.HTMLCategoryFile)) +
-                   path.basename(data.HTMLCategoryFile);
+    var relative = path.relative(path.dirname(data.byName.dest), path.dirname(data.byCategory.dest)) +
+                   path.basename(data.byCategory.dest);
 
-    var pre = data.HTMLByNamePre ? fs.readFileSync(data.HTMLByNamePre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.HTMLByNamePost ? fs.readFileSync(data.HTMLByNamePost, {encoding: 'utf-8'}).split('\n') : [];
-    HTMLMaker(collatedObjects, markdown, data.HTMLNameFile, {pre: pre, post: post, categoryFile: relative,
-                                                             typesToLink: data.typesToLink});
+    var pre = data.byName.pre ? fs.readFileSync(data.byName.pre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.byName.post ? fs.readFileSync(data.byName.post, {encoding: 'utf-8'}).split('\n') : [];
+    HTMLMaker(collatedObjects, markdown, data.byName.dest, {pre: pre, post: post, categoryFile: relative,
+                                                            typesToLink: data.toLink});
   };
 
 
   /*
-   * Outputs a file documenting all functions grouped by category to the filename specified in the HTMLCategoryFile
-   * property in the given options object. Note, on its own, this will only prodce an HTML fragment; supply additional
-   * HTML in the files named by the HTMLByCategoryPre and HTMLByCategoryPost properties in the options object.
+   * Outputs a file documenting all functions grouped by category to the filename specified in the dest property in the
+   * given data object. Note, on its own, this will only prodce an HTML fragment; supply additional HTML in the files
+   * named by the pre and post properties in the data object.
+   *
+   * The data object may additionally contain a toLink property, detailing type strings that should be formatted as
+   * links when encountered (see the HTMLMaker documentation for details).
    *
    */
 
   var outputHTMLByCategory = function(collatedObjects, markdown, data) {
-    if (data.HTMLCategoryFile === undefined)
+    if (data.dest === undefined)
       throw new Error('No category filename supplied for HTML by category output');
 
-    var pre = data.HTMLByCategoryPre ? fs.readFileSync(data.HTMLByCategoryPre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.HTMLByCategoryPost ? fs.readFileSync(data.HTMLByCategoryPost, {encoding: 'utf-8'}).split('\n') : [];
-    HTMLMaker(collatedObjects, markdown, data.HTMLCategoryFile, {pre: pre, post: post, isCategory: true,
-                                                             typesToLink: data.typesToLink});
+    var pre = data.pre ? fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.post ? fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
+    HTMLMaker(collatedObjects, markdown, data.dest, {pre: pre, post: post, isCategory: true, typesToLink: data.toLink});
   };
 
 
-  var documentCreator = function(files, data) {
+  var documentCreator = function(files, markdownData, htmlData) {
     if (!Array.isArray(files) || files.length === 0)
       throw new Error('No files found');
 
@@ -181,10 +184,13 @@ module.exports = (function() {
     var objects = parseAPIComments(apiComments);
     var collated = collator(objects);
 
-    var markdownNameOutput = outputMarkdownByName(collated, data);
-    var markdownByCategory = outputMarkdownByCategory(collated, data);
-    outputHTMLByName(collated, markdownNameOutput, data);
-    outputHTMLByCategory(collated, markdownByCategory , data);
+    var markdownNameOutput = outputMarkdownByName(collated, markdownData.byName);
+    var markdownByCategory = outputMarkdownByCategory(collated, markdownData.byCategory);
+
+    outputHTMLByName(collated, markdownNameOutput, htmlData);
+    // Don't assume we're allowed to mutate the given options object
+    var htmlByCategoryData = Object.create(htmlData.byCategory, {'toLink': {value: htmlData.toLink}});
+    outputHTMLByCategory(collated, markdownByCategory , htmlByCategoryData);
   };
 
 

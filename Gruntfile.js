@@ -9,18 +9,28 @@ module.exports = function(grunt) {
 
 
     docs: {
-      docs: {
+      all: {
         src: ['lib/components/*.js'],
-        markdownNameFile: 'docs/markdown/byName.md',
-        markdownNamePre: 'docs/templates/markdownNamePre.md',
-        markdownCategoryFile: 'docs/markdown/byCategory.md',
-        markdownCategoryPre: 'docs/templates/markdownCategoryPre.md',
-        HTMLNameFile: 'docs/html/byName.html',
-        HTMLNamePre: 'docs/templates/HTMLNamePre.html',
-        HTMLNamePost: 'docs/templates/HTMLNamePost.html',
-        HTMLCategoryFile: 'docs/html/byCategory.html',
-        HTMLCategoryPre: 'docs/templates/HTMLCategoryPre.html',
-        HTMLCategoryPost: 'docs/templates/HTMLCategoryPost.html',
+        docs: {
+          markdown: {
+            byName: {dest: 'docs/markdown/byName.md', pre: 'docs/templates/markdownNamePre.md' },
+            byCategory: { dest: 'docs/markdown/byCategory.md', pre: 'docs/templates/markdownCategoryPre.md' }
+          },
+
+          html: {
+            byName: {
+              dest: 'docs/html/byName.html',
+              pre: 'docs/templates/HTMLNamePre.html',
+              post: 'docs/templates/HTMLNamePost.html'
+            },
+
+            byCategory: {
+              dest: 'docs/html/byCategory.html',
+              pre: 'docs/templates/HTMLCategoryPre.html',
+              post: 'docs/templates/HTMLCategoryPost.html'
+            }
+          }
+        }
       }
     },
 
@@ -40,22 +50,8 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('docs', function() {
     var files = this.filesSrc;
-    var data = {
-      markdownNameFile:      this.data.markdownNameFile,
-      markdownCategoryFile:  this.data.markdownCategoryFile,
-      markdownByNamePre:     this.data.markdownNamePre,
-      markdownByCategoryPre: this.data.markdownCategoryPre,
-      HTMLNameFile:          this.data.HTMLNameFile,
-      HTMLCategoryFile:      this.data.HTMLCategoryFile,
-      HTMLByNamePre:         this.data.HTMLNamePre,
-      HTMLByNamePost:        this.data.HTMLNamePost,
-      HTMLByCategoryPre:     this.data.HTMLCategoryPre,
-      HTMLByCategoryPost:    this.data.HTMLCategoryPost,
-      toLink:                this.data.toLink
-    };
-
     var documentationCreator = require('./docgen/documentationCreator');
-    documentationCreator(files, data);
+    documentationCreator(files, this.data.docs.markdown, this.data.docs.html);
   });
 
 
