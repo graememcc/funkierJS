@@ -1,16 +1,4 @@
-(function (root, factory) {
-  var dependencies = ['./APIPrototype'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else {
-    // Assume CommonJS. The docgen system is node only (although we support requireJS to run the tests in a browser)
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  }
-}(this, function(exports, APIPrototype) {
+module.exports = (function() {
   "use strict";
 
 
@@ -54,7 +42,7 @@
    */
 
 
-  APIPrototype = APIPrototype.APIPrototype;
+  var APIPrototype = require('./APIPrototype');
 
 
   function APIObject(name, category, summary, options) {
@@ -77,5 +65,5 @@
   APIObject.prototype = Object.create(APIPrototype);
 
 
-  exports.APIObject = APIObject;
-}));
+  return APIObject;
+})();

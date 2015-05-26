@@ -72,7 +72,7 @@ module.exports = (function() {
    */
 
   var getAPIComments = function(blockComments) {
-    return blockComments.map(lineProcessor.LineProcessor);
+    return blockComments.map(lineProcessor);
   };
 
 
@@ -84,7 +84,7 @@ module.exports = (function() {
 
   var parseAPIComments = function(APIComments) {
     return APIComments.map(function(perFileAPIComments) {
-      return perFileAPIComments.map(commentProcessor.commentProcessor);
+      return perFileAPIComments.map(commentProcessor);
     });
   };
 
@@ -135,7 +135,7 @@ module.exports = (function() {
     var blockComments = getComments(contents);
     var apiComments = getAPIComments(blockComments);
     var objects = parseAPIComments(apiComments);
-    var collated = collator.Collator(objects);
+    var collated = collator(objects);
 
     var markdownNameOutput = outputMarkdownByName(collated, data);
     var markdownByCategory = outputMarkdownByCategory(collated, data);

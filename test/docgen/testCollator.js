@@ -1,33 +1,11 @@
-// XXX Do we intend to allow these tests to be run in the browser
-(function (root, factory) {
-  var dependencies = ['chai', '../../docgen/APIFunction', '../../docgen/APIObject', '../../docgen/collator'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  } else {
-    // Browser globals
-
-    root.commonJsStrict = root.commonJsStrict || {};
-    factory.apply(null, [root].concat(dependencies.map(function(dep) {
-      if (dep.slice(0, 2) == './') dep = dep.slice(2);
-      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
-      return root[dep] || root.commonJsStrict[dep];
-    })));
-  }
-}(this, function(exports, chai, APIFunction, APIObject, Collator) {
+(function() {
   "use strict";
 
 
-  var expect = chai.expect;
-  APIFunction = APIFunction.APIFunction;
-  APIObject = APIObject.APIObject;
-  Collator = Collator.Collator;
+  var expect = require('chai').expect;
+  var APIFunction = require('../../docgen/APIFunction');
+  var APIObject = require('../../docgen/APIObject');
+  var Collator = require('../../docgen/collator');
 
 
   describe('Collator', function() {
@@ -257,4 +235,4 @@
       });
     });
   });
-}));
+})();

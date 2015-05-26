@@ -1,16 +1,4 @@
-(function (root, factory) {
-  var dependencies = [];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else {
-    // Assume CommonJS. The docgen system is node only (although we support requireJS to run the tests in a browser)
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  }
-}(this, function(exports) {
+module.exports = (function() {
   "use strict";
 
 
@@ -70,7 +58,7 @@
   };
 
 
-  exports.APIPrototype = {
+  return {
     get name() { return this.__name; },
     set name(val) { verifyString(val, 'name'); verifyNameCat(val, this, '__category'); this.__name = val; },
 
@@ -102,4 +90,4 @@
     },
     set examples(arr) { verifyStringArray(arr, 'examples'); this.__examples = processLineArray(arr); },
   };
-}));
+})();

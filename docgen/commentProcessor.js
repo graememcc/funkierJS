@@ -1,17 +1,4 @@
-// This file will be used only in the build step, and so doesn't require a UMD wrapper.
-(function (root, factory) {
-  var dependencies = ['./APIFunction', './APIObject'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else {
-    // Assume CommonJS. The docgen system is node only (although we support requireJS to run the tests in a browser)
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  }
-}(this, function(exports, APIFunction, APIObject) {
+module.exports = (function() {
   "use strict";
 
 
@@ -69,8 +56,8 @@
   var makeUnique = function() { return {}; };
 
 
-  APIFunction = APIFunction.APIFunction;
-  APIObject = APIObject.APIObject;
+  var APIFunction = require('./APIFunction');
+  var APIObject = require('./APIObject');
 
 
   // States for the state machine
@@ -456,7 +443,7 @@
   };
 
 
-  exports.commentProcessor = function(lines, generationOptions) {
+  return function(lines, generationOptions) {
     generationOptions = generationOptions || {allowProblematicForHTMLGeneration: true};
 
     var tag = lines.tag.toLowerCase();
@@ -560,4 +547,4 @@
 
     return constructor(mandatoryParameters.name, mandatoryParameters.category, summary, options);
   };
-}));
+})();

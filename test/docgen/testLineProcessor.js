@@ -1,35 +1,12 @@
-// XXX Do we intend to allow these tests to be run in the browser?
-(function (root, factory) {
-  var dependencies = ['chai', '../../docgen/lineProcessor'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  } else {
-    // Browser globals
-
-    root.commonJsStrict = root.commonJsStrict || {};
-    factory.apply(null, [root].concat(dependencies.map(function(dep) {
-      if (dep.slice(0, 2) == './') dep = dep.slice(2);
-      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
-      return root[dep] || root.commonJsStrict[dep];
-    })));
-  }
-}(this, function(exports, chai, LineProcessor) {
+(function() {
   "use strict";
 
 
-  var expect = chai.expect;
+  var expect = require('chai').expect;
+  var LineProcessor = require('../../docgen/lineProcessor');
 
 
   describe('LineProcessor', function() {
-    LineProcessor = LineProcessor.LineProcessor;
-
     ['apifunction', 'apiobject'].forEach(function(tag) {
       it('LineProcessor recognises a line with an <' + tag + '> opening tag', function() {
         var recognised = ['<' + tag + '>'];
@@ -226,4 +203,4 @@
     });
     // XXX Should we trim leading whitespace? That will depend on Markdown syntax and our use of it
   });
-}));
+})();

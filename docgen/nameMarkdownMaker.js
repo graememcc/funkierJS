@@ -2,7 +2,7 @@ module.exports = (function() {
   "use strict";
 
   var fs = require('fs');
-  var markdownCreator = require('./markdownCreator').MarkdownCreator;
+  var markdownCreator = require('./markdownCreator');
 
 
   /*

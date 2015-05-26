@@ -1,32 +1,10 @@
-// XXX Do we intend to allow these tests to be run in the browser?
-(function (root, factory) {
-  var dependencies = ['chai', '../../docgen/APIPrototype', '../../docgen/APIObject'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  } else {
-    // Browser globals
-
-    root.commonJsStrict = root.commonJsStrict || {};
-    factory.apply(null, [root].concat(dependencies.map(function(dep) {
-      if (dep.slice(0, 2) == './') dep = dep.slice(2);
-      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
-      return root[dep] || root.commonJsStrict[dep];
-    })));
-  }
-}(this, function(exports, chai, APIPrototype, APIObject) {
+(function() {
   "use strict";
 
 
-  var expect = chai.expect;
-  APIPrototype = APIPrototype.APIPrototype;
-  APIObject = APIObject.APIObject;
+  var expect = require('chai').expect;
+  var APIPrototype = require('../../docgen/APIPrototype');
+  var APIObject = require('../../docgen/APIObject');
 
 
   describe('APIObject constructor', function() {
@@ -233,4 +211,4 @@
       });
     });
   });
-}));
+})();

@@ -1,34 +1,12 @@
-// XXX Do we intend to allow these tests to be run in the browser
-(function (root, factory) {
-  var dependencies = ['chai', './CPTestDataHelper', '../../docgen/APIFunction', '../../docgen/APIObject',
-                      '../../docgen/commentProcessor'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  } else {
-    // Browser globals
-
-    root.commonJsStrict = root.commonJsStrict || {};
-    factory.apply(null, [root].concat(dependencies.map(function(dep) {
-      if (dep.slice(0, 2) == './') dep = dep.slice(2);
-      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
-      return root[dep] || root.commonJsStrict[dep];
-    })));
-  }
-}(this, function(exports, chai, CPTestDataHelper, APIFunction, APIObject, commentProcessor) {
+(function() {
   "use strict";
 
 
-  var expect = chai.expect;
-  var createTestData = CPTestDataHelper.createTestData;
-  APIFunction = APIFunction.APIFunction;
-  APIObject = APIObject.APIObject;
+  var expect = require('chai').expect;
+  var createTestData = require('./CPTestDataHelper').createTestData;
+  var APIFunction = require('../../docgen/APIFunction');
+  var APIObject = require('../../docgen/APIObject');
+  var commentProcessor = require('../../docgen/commentProcessor');
 
 
   var testData;
@@ -55,9 +33,6 @@
 
 
   describe('commentProcessor', function() {
-    commentProcessor = commentProcessor.commentProcessor;
-
-
     describe('Behaviour', function() {
       describe('Common behaviours', function() {
         ['APIFunction', 'APIObject'].forEach(function(type) {
@@ -1230,4 +1205,4 @@
       });
     });
   });
-}));
+})();
