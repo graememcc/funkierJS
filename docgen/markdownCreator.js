@@ -93,7 +93,7 @@
    */
 
   var printSynonyms = function(synonyms, result) {
-    result.push('* Synonyms:* ' + synonyms.map(printAType));
+    result.push('* Synonyms: * ' + synonyms.map(printAType));
     result.push('');
   };
 
@@ -113,7 +113,7 @@
   var printUsageLine = function(name, parameters, returnType, result) {
     var rtn = returnType.length > 0 ? '`var result = ' : '`';
     var params = parameters.map(function(p) { return p.name; }).join(', ');
-    result.push('** Usage:** ' + rtn + name + '(' + params + ');`');
+    result.push('** Usage: ** ' + rtn + name + '(' + params + ');`');
   };
 
 

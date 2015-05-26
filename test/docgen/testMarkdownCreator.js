@@ -89,7 +89,7 @@
     var verifySynonyms = function(synonyms) {
       synonyms = synonyms.map(function (s, i, arr) { return '`' + s + '`' + (i !== arr.length ? ' | ' : ''); });
       synonyms = synonyms.join();
-      verifyLine('* Synonyms:* ' + synonyms);
+      verifyLine('* Synonyms: * ' + synonyms);
       verifyLine('');
     };
 
@@ -100,7 +100,7 @@
 
       var params = parameters.map(function(p) { return p.name; }).join(', ');
       var rtn = returnType.length > 0 ? '`var result = ' : '`';
-      verifyLine('** Usage:** ' + rtn + name + '(' + params + ');`');
+      verifyLine('** Usage: ** ' + rtn + name + '(' + params + ');`');
     };
 
 
