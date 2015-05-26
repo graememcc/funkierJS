@@ -56,7 +56,7 @@
    * length.
    *
    * Each line of the examples array is assumed to be a line that should be output in a code block. It is assumed that
-   * when converted to markdown line endings will be added as required, so line endings will be automatically stripped.
+   * when converted to Markdown line endings will be added as required, so line endings will be automatically stripped.
    *
    * Newline characters within each examples or details line (in other words, not occurring at the end) will cause the
    * line to be split at that point.

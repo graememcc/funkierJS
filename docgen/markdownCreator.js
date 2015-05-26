@@ -199,7 +199,7 @@
       throw new Error('Invalid object');
 
     if (!isRealObject(options))
-      throw new Error('Invalid markdown options');
+      throw new Error('Invalid Markdown options');
 
     var result = [];
 

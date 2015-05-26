@@ -241,7 +241,7 @@
 
   var checkLineForHTMLGeneration = function(line) {
     if (line.indexOf('** Usage: **') === 0 || line.indexOf('Parameters:') === 0 || line.indexOf('* Synonyms: *') === 0)
-      throw new Error('Line will prove problematic for HTML generation from markdown ' + line);
+      throw new Error('Line will prove problematic for HTML generation from Markdown ' + line);
   };
 
 
