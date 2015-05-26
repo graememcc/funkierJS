@@ -132,8 +132,8 @@
 
     it('Synonyms lines rendered correctly (1)', function() {
       var text = '*Synonyms:* `foo`';
-      var expected = '<p class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
-                     '<code class="synonymName">foo</code></li></ul></p>\n';
+      var expected = '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
+                     '<code class="synonymName">foo</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -141,9 +141,9 @@
 
     it('Synonyms lines rendered correctly (2)', function() {
       var text = '*Synonyms:* `foo` | `bar`';
-      var expected = '<p class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
-                     '<code class="synonymName">foo</code></li> | ' +
-                     '<li class="synonym"><code class="synonymName">bar</code></li></ul></p>\n';
+      var expected = '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
+                     '<code class="synonymName">foo</code></li>' +
+                     '<li class="synonym"><code class="synonymName">bar</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -151,8 +151,8 @@
 
     it('Return type rendered correctly when nothing linkable provided', function() {
       var text = 'Returns: `number`';
-      var expected = '<p class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
-                     '<code class="returnType type">number</code></li></ul></p>\n';
+      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+                     '<code class="returnType type">number</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -161,8 +161,8 @@
     it('Return type rendered correctly when linkables provided but don\'t match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string']});
       var text = 'Returns: `number`';
-      var expected = '<p class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
-                     '<code class="returnType type">number</code></li></ul></p>\n';
+      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+                     '<code class="returnType type">number</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -171,9 +171,9 @@
     it('Return type rendered correctly when linkables provided and match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['number']});
       var text = 'Returns: `number`';
-      var expected = '<p class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
                      '<a class="typeLink" href="#number">' +
-                     '<code class="returnType type">number</code></a></li></ul></p>\n';
+                     '<code class="returnType type">number</code></a></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -182,11 +182,11 @@
     it('Return type rendered correctly when linkables provided and some match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string', 'Foo']});
       var text = 'Returns: `number` | `string` | `Foo`';
-      var expected = '<p class="returns">Returns: ' +
+      var expected = '<div class="returns">Returns: ' +
                      '<ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code>' +
-                     '</li> | <li class="returnItem"><a class="typeLink" href="#string">' +
-                     '<code class="returnType type">string</code></a></li> | <li class="returnItem">' +
-                     '<a class="typeLink" href="#foo"><code class="returnType type">Foo</code></a></li></ul></p>\n';
+                     '</li><li class="returnItem"><a class="typeLink" href="#string">' +
+                     '<code class="returnType type">string</code></a></li><li class="returnItem">' +
+                     '<a class="typeLink" href="#foo"><code class="returnType type">Foo</code></a></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });

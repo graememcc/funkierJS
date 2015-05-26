@@ -52,12 +52,12 @@ module.exports = (function() {
     text = text.slice('Returns: <code>'.length).trim();
     var types = text.split(/<\/code>(?: \| <code>)?/).filter(function(s) { return s !== ''; });
 
-    return '<p class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' + types.map(function(t) {
+    return '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' + types.map(function(t) {
       var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
       return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
              '<code class="returnType type">' + t + '</code>' +
              (shouldLink ? '</a>' : '');
-    }).join('</li> | <li class="returnItem">') + '</li></ul></p>\n';
+    }).join('</li><li class="returnItem">') + '</li></ul></div>\n';
   };
 
 
@@ -65,10 +65,10 @@ module.exports = (function() {
     text = text.slice('<em>Synonyms:</em> <code>'.length).trim();
     var names = text.split(/<\/code>(?: \| <code>)?/).filter(function(s) { return s !== ''; });
 
-    return '<p class="synonyms"><em>Synonyms:</em> <ul class="synonymsList">' +
+    return '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList">' +
       names.map(function(n) {
         return '<li class="synonym"><code class="synonymName">' + n + '</code></li>';
-      }).join(' | ') + '</ul></p>\n';
+      }).join('') + '</ul></div>\n';
   };
 
 
@@ -88,7 +88,7 @@ module.exports = (function() {
           var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
           return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
             '<code class="paramType type">' + t + '</code>' + (shouldLink ? '</a>' : '');
-        }).join('</li> | <li class="paramsItem">') + '</li></ul>';
+        }).join('</li><li class="paramsItem">') + '</li></ul>';
       }).join('</li><li class="param">') + '</li></ol></section>\n';
   };
 
