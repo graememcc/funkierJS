@@ -8,7 +8,7 @@ module.exports = function(grunt) {
     },
 
 
-    docs: {
+    generation: {
       all: {
         src: ['lib/components/*.js'],
         docs: {
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
 
     watch: {
       files: ['lib/**/*.js', 'test/**/*.js', 'docgen/**/*.js', 'Gruntfile.js'],
-      tasks: ['jshint', 'docs']
+      tasks: ['jshint', 'generation']
     }
   });
 
@@ -48,12 +48,6 @@ module.exports = function(grunt) {
   });
 
 
-  grunt.registerMultiTask('docs', function() {
-    var files = this.filesSrc;
-    var documentationCreator = require('./docgen/documentationCreator');
-    documentationCreator(files, this.data.docs.markdown, this.data.docs.html);
-  });
-
-
+  grunt.loadTasks('customGruntTasks');
   grunt.registerTask('default', ['watch']);
 };
