@@ -227,7 +227,8 @@ module.exports = (function() {
    */
 
   var checkLineForHTMLGeneration = function(line) {
-    if (line.indexOf('** Usage: **') === 0 || line.indexOf('Parameters:') === 0 || line.indexOf('* Synonyms: *') === 0)
+    if (line.indexOf('** Usage: **') === 0 || line.indexOf('Parameters:') === 0 || line.indexOf('* Synonyms: *') === 0 ||
+        line.indexOf('See ' === 0 || /^((\*|-)\s?){3,}/.test(line)))
       throw new Error('Line will prove problematic for HTML generation from Markdown ' + line);
   };
 

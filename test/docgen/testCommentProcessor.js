@@ -430,7 +430,16 @@
           var problematicLineTests = [
             {name: 'usage', value: '** Usage: **'},
             {name: 'parameters', value: 'Parameters:'},
-            {name: 'synonyms', value: '* Synonyms: * `s1` | `s2`'}
+            {name: 'synonyms', value: '* Synonyms: * `s1` | `s2`'},
+            {name: 'synonym ref', value: 'See foo'},
+            {name: 'h1', value: '# foo #'},
+            {name: 'h2', value: '## foo ##'},
+            {name: 'h3', value: '### foo ###'},
+            {name: 'h4', value: '#### foo ####'},
+            {name: 'horizontal rule 1', value: '---'},
+            {name: 'horizontal rule 2', value: '* * * * * *'},
+            {name: 'horizontal rule 3', value: '***'},
+            {name: 'horizontal rule 4', value: '- - - -'},
           ];
 
           ['summary', 'details', 'examples'].forEach(function(field) {
