@@ -58,8 +58,9 @@
 
         var existingCategories = Object.keys(values);
         var alreadyHaveNameAsCategory = function(s) {
-          s = s[0].toUpperCase() + s.slice(1);
-          return existingCategories.indexOf(s) !== -1;
+          return existingCategories.some(function(t) {
+            return s.toLowerCase() === t.toLowerCase();
+          });
         };
 
         if (alreadyHaveNameAsCategory(val.name) ||
