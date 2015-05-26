@@ -3,7 +3,7 @@
 ### arity ###
 Category: Function
 
-*Synonyms:* `foo`
+*Synonyms:* `foo` | `bar`
 
 **Usage:** `var result = arity(f);`
 
@@ -19,6 +19,9 @@ This line should begin the detail.
 
 #### Examples ####
     var a = arity(f);
+***
+### bar ###
+See [`arity`](#arity)
 ***
 ### foo ###
 See [`arity`](#arity)
