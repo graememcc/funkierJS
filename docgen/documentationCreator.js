@@ -101,8 +101,8 @@ module.exports = (function() {
     if (data.markdownNameFile === undefined)
       throw new Error('No filename supplied for Markdown by name output');
 
-    var pre = data.markdownByNamePre ? fs.readFileSync(data.markdownByNamePre, {encoding: 'utf-8'}) : [];
-    var post = data.markdownByNamePost ? fs.readFileSync(data.markdownByNamePost, {encoding: 'utf-8'}) : [];
+    var pre = data.markdownByNamePre ? fs.readFileSync(data.markdownByNamePre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.markdownByNamePost ? fs.readFileSync(data.markdownByNamePost, {encoding: 'utf-8'}).split('\n') : [];
     return nameMarkdownMaker(collatedObjects, data.markdownNameFile, {pre: pre, post: post});
   };
 
@@ -119,8 +119,10 @@ module.exports = (function() {
     if (data.markdownCategoryFile === undefined)
       throw new Error('No filename supplied for Markdown by category output');
 
-    var pre = data.markdownByCategoryPre ? fs.readFileSync(data.markdownByCategoryPre, {encoding: 'utf-8'}) : [];
-    var post = data.markdownByCategoryPost ? fs.readFileSync(data.markdownByCategoryPost, {encoding: 'utf-8'}) : [];
+    var pre = data.markdownByCategoryPre ?
+                fs.readFileSync(data.markdownByCategoryPre, {encoding: 'utf-8'}).split('\n') : [];
+    var post = data.markdownByCategoryPost ?
+                 fs.readFileSync(data.markdownByCategoryPost, {encoding: 'utf-8'}).split('\n') : [];
     return categoryMarkdownMaker(collatedObjects, data.markdownCategoryFile, {pre: pre, post: post});
   };
 
