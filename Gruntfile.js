@@ -7,9 +7,19 @@ module.exports = function(grunt) {
       }
     },
 
+
+    docs: {
+      docs: {
+        src: ['lib/components/*.js'],
+        markdownNameFile: 'docs/markdown/byName.md',
+        markdownCategoryFile: 'docs/markdown/byCategory.md'
+      }
+    },
+
+
     watch: {
-      files: ['**/*.js'],
-      tasks: ['jshint']
+      files: ['lib/**/*.js', 'test/**/*.js', 'docgen/**/*.js'],
+      tasks: ['jshint', 'docs']
     }
   });
 
@@ -17,6 +27,18 @@ module.exports = function(grunt) {
   var tasks = ['jshint', 'watch'];
   tasks.map(function(task) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
+  });
+
+
+  grunt.registerMultiTask('docs', function() {
+    var files = this.filesSrc;
+    var data = {
+      markdownNameFile:     this.data.markdownNameFile,
+      markdownCategoryFile: this.data.markdownCategoryFile
+    };
+
+    var documentationCreator = require('./docgen/documentationCreator');
+    documentationCreator(files, data);
   });
 
 
