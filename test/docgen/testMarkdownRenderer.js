@@ -17,7 +17,7 @@
 
     it('Encountering a <h2> produces a section tag containing the <h2>', function() {
       var text = '## foo ##';
-      var expected = '<section class="categoryRef" name="foo">\n<h2 class="categoryName">foo</h2>\n';
+      var expected = '<section class="categoryRef" id="foo">\n<h2 class="categoryName">foo</h2>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -25,7 +25,7 @@
 
     it('Encountering a <h3> produces a section tag containing the <h3>', function() {
       var text = '### foo ###';
-      var expected = '<section class="functionRef" name="foo">\n<h3 class="functionName">foo</h3>\n';
+      var expected = '<section class="functionRef" id="foo">\n<h3 class="functionName">foo</h3>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });

@@ -126,10 +126,10 @@ module.exports = (function() {
     renderer.heading = function(text, level, raw) {
       if (level === 2) {
         var pre = categoryOpened ? '</section>\n' : '';
-        return pre + '<section class="categoryRef" name="' + text + '">\n' +
+        return pre + '<section class="categoryRef" id="' + text + '">\n' +
                '<h2 class="categoryName">' + text + '</h2>\n';
       } else if (level === 3) {
-        return '<section class="functionRef" name="' + text + '">\n' +
+        return '<section class="functionRef" id="' + text + '">\n' +
                '<h3 class="functionName">' + text + '</h3>\n';
       } else if (level === 4) {
         return '<section class="examples"><h4>' + text + '</h4>\n';
