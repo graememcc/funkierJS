@@ -224,9 +224,10 @@ module.exports = (function() {
 
     var categoryFile = null;
     if (generationOptions.categoryFile) {
-      // The client provided options will include the absolute filename; for linking we will compute the relative
-      // filename
-      categoryFile = path.relative(path.dirname(data.dest), path.dirname(generationOptions.categoryFile)) +
+      // The client provided options will presumably be relative to process.cwd. Resolve them and calculate
+      // the relative filename
+      categoryFile = path.relative(path.dirname(path.resolve(process.cwd(), data.dest)),
+                                   path.dirname(path.resolve(process.cwd(), generationOptions.categoryFile))) +
                      path.basename(generationOptions.categoryFile);
     }
 
