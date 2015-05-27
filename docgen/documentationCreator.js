@@ -200,12 +200,25 @@ module.exports = (function() {
    *
    */
 
-  var outputHTML = function(markdown, data, generationOptions) {
+  var outputHTML = function(collated, markdown, data, generationOptions) {
     if (data.dest === undefined)
       throw new Error('No filename supplied for Markdown by name output');
 
     var pre = readSurroundingFile(data.pre);
-    var post = (generationOptions.isCategory ? ['</section>'] : []).concat(readSurroundingFile(data.post));
+    var post = readSurroundingFile(data.post);
+    if (generationOptions.isCategory) {
+      var categories = collated.getCategories();
+      pre.push('<section class="categoryContents">\n');
+      pre.push('<h2 class="categoryListHeader">Categories</h2>\n');
+      pre.push('<ul class="categoryList">\n');
+      pre = pre.concat(categories.map(function(cat) {
+        return '<li class="categoryListItem"><a href="#' + cat.toLowerCase() + '">' + cat + '</a></li>\n';
+      }));
+      pre.push('</ul>\n');
+      pre.push('</section>\n');
+
+      post = ['</section>'].concat(post);
+    }
 
     var categoryFile = null;
     if (generationOptions.categoryFile) {
@@ -264,13 +277,13 @@ module.exports = (function() {
 
         // Don't assume we're allowed to mutate the given options object
         var byNameData = Object.create(data.html.byName, {'toLink': {value: typesToLink}});
-        outputHTML(byNameMarkdown, byNameData, {categoryFile: categoryFile});
+        outputHTML(collated, byNameMarkdown, byNameData, {categoryFile: categoryFile});
       }
 
       if (data.html.byCategory && data.html.byCategory.dest) {
         // Don't assume we're allowed to mutate the given options object
         var byCategoryData = Object.create(data.html.byCategory, {'toLink': {value: typesToLink}});
-        outputHTML(byCategoryMarkdown, byCategoryData, {isCategory: true});
+        outputHTML(collated, byCategoryMarkdown, byCategoryData, {isCategory: true});
       }
     }
   };
