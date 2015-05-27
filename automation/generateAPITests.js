@@ -111,7 +111,6 @@ module.exports = (function() {
     buffer.push('');
     buffer.push('    beforeEach(function() {');
 
-    names = names.filter(function(o) { return (o instanceof APIFunction) || (o instanceof APIObject); });
     names = '      documentedNames = [\'help\', ' + names.map(function(o) { return '\'' + o.name + '\''; }).join(', ') + '];';
     while (names.length > 120) {
       var last = names.slice(0, 120).lastIndexOf(', ') + 1;
