@@ -38,7 +38,7 @@
     ];
 
 
-    ['name', 'category', 'summary'].forEach(function(prop) {
+    ['name', 'category', 'filename', 'summary'].forEach(function(prop) {
       invalidStringData.forEach(function(test) {
         addInvalidPropTest(prop, test.name, test.value);
       });
@@ -96,7 +96,7 @@
     };
 
 
-    ['name', 'category', 'summary'].forEach(function(prop) {
+    ['name', 'category', 'filename', 'summary'].forEach(function(prop) {
       addValidStringPropTest(prop);
     });
 

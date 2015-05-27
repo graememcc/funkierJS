@@ -9,38 +9,35 @@
 
   describe('APIObject constructor', function() {
     it('Constructor returns an object of the correct type', function() {
-      expect(new APIObject('foo', 'Bar', 'baz', {})).to.be.an.instanceOf(APIObject);
+      expect(new APIObject('foo', 'a.js', 'Bar', 'baz', {})).to.be.an.instanceOf(APIObject);
     });
 
 
     it('Constructor is new agnostic', function() {
-      expect(APIObject('foo', 'Bar', 'baz', {})).to.be.an.instanceOf(APIObject);
+      expect(APIObject('foo', 'a.js', 'Bar', 'baz', {})).to.be.an.instanceOf(APIObject);
     });
 
 
     it('Returned objects should have APIPrototype in their prototype chain', function() {
-      expect(APIPrototype.isPrototypeOf(APIObject('foo', 'Bar', 'baz', {}))).to.equal(true);
+      expect(APIPrototype.isPrototypeOf(APIObject('foo', 'a.js', 'Bar', 'baz', {}))).to.equal(true);
     });
 
 
     /*
-     * Invalid test generation: The constructor takes four parameters. The first three should be strings, and the
-     * fourth an object. We wish to test that the constructor throws when supplied an argument of invalid type at each
+     * Invalid test generation: The constructor takes five parameters. The first four should be strings, and the
+     * last an object. We wish to test that the constructor throws when supplied an argument of invalid type at each
      * position. We generate these tests automatically.
      *
      */
 
-    var constructInvalidParamTest = function(parameterNumber) {
-      var paramName = ['name', 'category', 'summary', 'options'][parameterNumber];
-
+    ['name', 'filename', 'category', 'summary', 'options'].forEach(function(paramName, i, arr) {
       var stringInvalids = [1, true, {}, [], function() {}, undefined, null];
       var objectInvalids = [1, true, 'abc', [], function() {}, undefined, null];
-      var invalids = [stringInvalids, stringInvalids, stringInvalids, objectInvalids];
 
-      invalids[parameterNumber].map(function(invalid, i) {
-        it('Constructor throws when ' + paramName + ' is invalid (' + (i + 1) + ')', function() {
-          var args = ['foo', 'Bar', 'baz', {}];
-          args[parameterNumber] = invalid;
+      (i === arr.length - 1 ? objectInvalids: stringInvalids).map(function(invalid, j) {
+        it('Constructor throws when ' + paramName + ' is invalid (' + (j + 1) + ')', function() {
+          var args = ['foo', 'a.js', 'Bar', 'baz', {}];
+          args[i] = invalid;
           var fn = function() {
             APIObject.apply(null, args);
           };
@@ -48,47 +45,49 @@
           expect(fn).to.throw();
         });
       });
-    };
-
-
-    for (var i = 0; i < 4; i++) {
-      constructInvalidParamTest(i);
-    }
+    });
   });
 
 
   describe('APIObject objects', function() {
     it('name property correct', function() {
       var name = 'fizz';
-      var obj = APIObject(name, 'Bar', 'baz', {});
+      var obj = APIObject(name, 'a.js', 'Bar', 'baz', {});
       expect(obj.name).to.equal(name);
+    });
+
+
+    it('filename property correct', function() {
+      var filename = 'a.js';
+      var obj = APIObject('fizz', filename, 'Bar', 'baz', {});
+      expect(obj.filename).to.equal(filename);
     });
 
 
     it('category property correct', function() {
       var category = 'Bar';
-      var obj = APIObject('fizz', category, 'baz', {});
+      var obj = APIObject('fizz', 'a.js', category, 'baz', {});
       expect(obj.category).to.equal(category);
     });
 
 
     it('summary property correct', function() {
       var summary = 'baz';
-      var obj = APIObject('fizz', 'Bar', summary, {});
+      var obj = APIObject('fizz', 'a.js', 'Bar', summary, {});
       expect(obj.summary).to.equal(summary);
     });
 
 
     it('summary property shorn of trailing newlines', function() {
       var summary = 'baz';
-      var obj = APIObject('fizz', 'Bar', summary + '    \n', {});
+      var obj = APIObject('fizz', 'a.js', 'Bar', summary + '    \n', {});
       expect(obj.summary).to.equal(summary);
     });
 
 
     it('Newlines within the summary are preserved', function() {
       var summary = 'baz\nfoo';
-      var obj = APIObject('fizz', 'Bar', summary, {});
+      var obj = APIObject('fizz', 'a.js', 'Bar', summary, {});
       expect(obj.summary).to.equal(summary);
     });
 
@@ -106,7 +105,7 @@
 
     ['details', 'examples'].forEach(function(property) {
       it(property + ' is an empty array if not provided', function() {
-        var obj = APIObject('fizz', 'Bar', 'baz', {});
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', {});
         expect(obj[property]).to.deep.equal([]);
       });
 
@@ -115,7 +114,7 @@
         var expected = ['line 1', 'line 2', 'line 3'];
         var options = {};
         options[property] = expected;
-        var obj = APIObject('fizz', 'Bar', 'baz', options);
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', options);
         expect(obj[property]).to.deep.equal(expected);
       });
 
@@ -124,7 +123,7 @@
         var expected = ['line 1', 'line 2', 'line 3'];
         var options = {};
         options[property] = expected;
-        var obj = APIObject('fizz', 'Bar', 'baz', options);
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', options);
         expect(obj[property] === expected).to.equal(false);
       });
 
@@ -133,21 +132,21 @@
         var expected = ['line 1', 'line 2', 'line 3'];
         var options = {};
         options[property] = expected;
-        var obj = APIObject('fizz', 'Bar', 'baz', options);
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', options);
 
         expect(Object.isFrozen(obj[property])).to.equal(true);
       });
 
 
       it(property + ' array is immutable (2)', function() {
-        var obj = APIObject('fizz', 'Bar', 'baz', {});
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', {});
         expect(Object.isFrozen(obj[property])).to.equal(true);
       });
     });
 
 
     it('Returned objects are immutable (1)', function() {
-      var obj = APIObject('fizz', 'Bar', 'baz', {});
+      var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', {});
 
       expect(Object.isFrozen(obj)).to.equal(true);
     });
@@ -158,21 +157,21 @@
         details: ['line 1', 'line 2'],
         examples: ['line 1']
       };
-      var obj = APIObject('fizz', 'Bar', 'baz', options);
+      var obj = APIObject('fizz', 'a.js', 'Bar', 'baz', options);
 
       expect(Object.isFrozen(obj)).to.equal(true);
     });
 
 
     it('Categories are normalized', function() {
-      var obj = APIObject('fizz', 'foo', 'buzz', {});
+      var obj = APIObject('fizz', 'a.js', 'foo', 'buzz', {});
 
       expect(obj.category).to.equal('Foo');
     });
 
 
     it('Category normalization preserves camelCasing other than for the first letter', function() {
-      var obj = APIObject('fizz', 'fooBar', 'buzz', {});
+      var obj = APIObject('fizz', 'a.js', 'fooBar', 'buzz', {});
 
       expect(obj.category).to.equal('FooBar');
     });
@@ -180,7 +179,7 @@
 
     it('Paragraph breaks in details are preserved', function() {
       var details = ['Line 1', '', 'Line 2', '  ', 'Line 3'];
-      var obj = APIObject('fizz', 'Bar', 'buzz', {details: details});
+      var obj = APIObject('fizz', 'a.js', 'Bar', 'buzz', {details: details});
       expect(obj.details).to.deep.equal(details.map(function(s) { return s.trim(); }));
     });
 
@@ -196,7 +195,7 @@
 
         var options = {};
         options[propName] = valuesToSupply;
-        var obj = APIObject('fizz', 'Bar', 'buzz', options);
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'buzz', options);
         expect(obj[propName]).to.deep.equal(values);
       });
 
@@ -206,7 +205,7 @@
         var valuesToSupply = [values.join('\n')];
         var options = {};
         options[propName] = valuesToSupply;
-        var obj = APIObject('fizz', 'Bar', 'buzz', options);
+        var obj = APIObject('fizz', 'a.js', 'Bar', 'buzz', options);
         expect(obj[propName]).to.deep.equal(values);
       });
     });

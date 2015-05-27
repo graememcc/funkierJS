@@ -78,6 +78,11 @@
       it('Test data is tagged as an apifunction', function() {
         expect(testData.tag.toLowerCase()).to.equal('apifunction');
       });
+
+
+      it('Test data has a file tag', function() {
+        expect(testData.file).to.equal('a.js');
+      });
     });
 
 
@@ -342,6 +347,12 @@
       });
 
 
+      it('File is correctly transferred', function() {
+        var result = testData.removeProperty(standardProps[1]);
+        expect(result.file).to.equal(testData.file);
+      });
+
+
       it('Tag is correctly transferred (1)', function() {
         var result = testData.removeProperty(standardProps[1]);
         expect(result.tag).to.equal(testData.tag);
@@ -571,6 +582,17 @@
         expect(newLocation).to.not.equal(undefined);
         var result = testData.moveBefore(propToMove, newLocation);
         expect(result === testData).to.equal(false);
+      });
+
+
+      it('File is correctly transferred', function() {
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveBefore(propToMove, newLocation);
+        expect(result.file).to.equal(testData.file);
       });
 
 
@@ -818,6 +840,17 @@
       });
 
 
+      it('File is correctly transferred', function() {
+        var propToMove = standardProps[2];
+        var newLocation = testData.getPreviousProperty(propToMove);
+
+        // Sanity check
+        expect(newLocation).to.not.equal(undefined);
+        var result = testData.moveAfter(propToMove, newLocation);
+        expect(result.file).to.equal(testData.file);
+      });
+
+
       it('Tag is correctly transferred (1)', function() {
         var propToMove = standardProps[2];
         var newLocation = testData.getPreviousProperty(propToMove);
@@ -971,6 +1004,12 @@
       });
 
 
+      it('File is correctly transferred', function() {
+        var result = testData.replaceProperty(standardProps[0], 'foo');
+        expect(result.file).to.equal(testData.file);
+      });
+
+
       it('Tag is correctly transferred (1)', function() {
         var result = testData.replaceProperty(standardProps[0], 'foo');
         expect(result.tag).to.equal(testData.tag);
@@ -1049,6 +1088,12 @@
       it('Result is an independent array', function() {
         var result = testData.applyToAll(function(x) { return x; });
         expect(result === testData).to.equal(false);
+      });
+
+
+      it('File is correctly transferred', function() {
+        var result = testData.applyToAll(function(x) { return x; });
+        expect(result.file).to.equal(testData.file);
       });
 
 

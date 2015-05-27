@@ -61,7 +61,7 @@ module.exports = (function() {
         if ('synonyms' in val) {
           val.synonyms.forEach(function(syn) {
             namesFound.push(syn);
-            var synonymInfo = {name: syn, synonymFor: val.name};
+            var synonymInfo = {name: syn, filename: val.filename, synonymFor: val.name};
             Object.freeze(synonymInfo);
             values[cat].push(synonymInfo);
             all.push(synonymInfo);

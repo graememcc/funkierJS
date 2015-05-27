@@ -7,7 +7,8 @@ module.exports = (function() {
    * takes the following parameters:
    *
    *   name: the name of the function being described as a string.
-   *   category: all documented functions are assumed to be grouped into categories. This string denotes such a
+   *   filename: the file in which the function was found
+   *   category: all documented values are assumed to be grouped into categories. This string denotes such a
    *             category.
    *   summary: a string containing a brief overview of the function's functionality. This is assumed to be a brief
    *            paragraph. The caller must add any required line endings - see below
@@ -99,13 +100,14 @@ module.exports = (function() {
   };
 
 
-  function APIFunction(name, category, summary, options) {
+  function APIFunction(name, filename, category, summary, options) {
     if (!(this instanceof APIFunction))
-      return new APIFunction(name, category, summary, options);
+      return new APIFunction(name, filename, category, summary, options);
 
     verifyOptions(options);
 
     this.name = name;
+    this.filename =filename;
     this.summary = summary;
     this.category = category;
     this.details = options.details ? options.details : [];

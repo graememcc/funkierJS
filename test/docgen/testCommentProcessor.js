@@ -607,6 +607,7 @@
           var tag = testData.tag;
           testData = testData.map(function(s) { return s.toUpperCase(); });
           testData.tag = tag;
+          testData.file = 'a.js';
           var fn = function() {
             commentProcessor(testData);
           };
@@ -734,6 +735,7 @@
           testData = makeType(testData, 'apiobject');
           testData = testData.map(function(s) { return s.toUpperCase(); });
           testData.tag = 'apiobject';
+          testData.file = 'a.js';
           var fn = function() {
             commentProcessor(testData);
           };
@@ -771,14 +773,15 @@
           synonyms:  afterColon(testData.getPropertyValue('synonyms')).split(',').map(function(s) {return s.trim();}),
           summary:  testData.getPropertyValue('summary').slice(0, -1).join('\n'),
           details:  testData.getPropertyValue('details'),
-          examples:  testData.getPropertyValue('examples').slice(1)
+          examples:  testData.getPropertyValue('examples').slice(1),
+          filename: testData.file
         };
       });
 
 
       describe('Common results', function() {
         ['apifunction', 'apiobject'].forEach(function(dataType) {
-          ['name', 'category', 'summary'].forEach(function(property) {
+          ['name', 'filename', 'category', 'summary'].forEach(function(property) {
             it(property + ' is correct for ' + dataType, function() {
               testData = makeType(testData, dataType);
 

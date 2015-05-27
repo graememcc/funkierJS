@@ -62,7 +62,7 @@ module.exports = (function() {
 
   var loadFiles = function(files) {
     return files.map(function(file) {
-      return fs.readFileSync(file, {encoding: 'utf-8'});
+      return {name: file, contents: fs.readFileSync(file, {encoding: 'utf-8'})};
     });
   };
 
@@ -74,12 +74,14 @@ module.exports = (function() {
 
   var getComments = function(fileContents) {
     return fileContents.map(function(file) {
-      var syntax = esprima.parse(file, {comment: true});
+      var syntax = esprima.parse(file.contents, {comment: true});
 
       return syntax.comments.filter(function(comment) {
         return comment.type === 'Block';
       }).map(function(comment) {
-        return comment.value.trim().split('\n');
+        var lines = comment.value.trim().split('\n');
+        lines.file = file.name;
+        return lines;
       });
     });
   };

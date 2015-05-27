@@ -62,6 +62,9 @@ module.exports = (function() {
     get name() { return this.__name; },
     set name(val) { verifyString(val, 'name'); verifyNameCat(val, this, '__category'); this.__name = val; },
 
+    get filename() { return this.__filename; },
+    set filename(val) { verifyString(val, 'filename'); this.__filename = val; },
+
     get category() { return this.__category; },
     set category(val) {
       verifyString(val, 'category');

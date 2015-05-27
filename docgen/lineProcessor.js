@@ -13,6 +13,10 @@ module.exports = (function() {
    *   - A comment block contains at most one </apifunction> or <apiobject> delimiter, and it is the only item present
    *     on the line (modulo whitespace and preceding / trailing comment formatting asterisks)
    *   - The tags are consistent
+   *   - The supplied comment block was tagged with the file it came from in a 'file' property (the returned filtered
+   *     array will preserve this property).
+   *
+   * The returned array will have a property named 'tagh' denoting the type of tag found (without angle brackets).
    *
    */
 
@@ -59,6 +63,9 @@ module.exports = (function() {
     var closingRegExp = regexps[tagFound].closing;
     var oppositeRegExp = regexps[tagFound].opposite;
 
+    if (lines.file === undefined)
+      throw new Error('Comments were not tag with their file origin');
+
     var result = lines.reduce(function(result, line) {
       if (openingRegExp.test(line)) {
         // Remove the opening delimiter, or throw if we have more than one, or it is not the only item on the line
@@ -87,6 +94,7 @@ module.exports = (function() {
     }, []);
 
     result.tag = tagFound;
+    result.file = lines.file;
     return result;
   };
 

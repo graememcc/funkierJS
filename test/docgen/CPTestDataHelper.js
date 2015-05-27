@@ -77,7 +77,7 @@ module.exports = (function() {
       result[p] = current < propIndex ? current : current - diff;
     }, this);
 
-    return decorate(result, this.tag);
+    return decorate(result, this.tag, this.file);
   };
 
 
@@ -119,7 +119,7 @@ module.exports = (function() {
         result[p] = this[p] + delta;
     }, this);
 
-    return decorate(result, this.tag);
+    return decorate(result, this.tag, this.file);
   };
 
 
@@ -161,7 +161,7 @@ module.exports = (function() {
         result[p] = this[p] + delta;
     }, this);
 
-    return decorate(result, this.tag);
+    return decorate(result, this.tag, this.file);
   };
 
 
@@ -193,7 +193,7 @@ module.exports = (function() {
       result[prop] = index - (index <= changePoint ? 0 : delta);
     }, this);
 
-    return decorate(result, this.tag);
+    return decorate(result, this.tag, this.file);
   };
 
 
@@ -208,7 +208,7 @@ module.exports = (function() {
   };
 
 
-  var decorate = function(arr, tag) {
+  var decorate = function(arr, tag, file) {
     arr.getNextProperty = getNextProperty;
     arr.getPreviousProperty = getPreviousProperty;
     arr.removeProperty = removeProperty;
@@ -218,7 +218,10 @@ module.exports = (function() {
     arr.getPropertyValue = getPropertyValue;
     arr.replaceProperty = replaceProperty;
     arr.applyToAll = applyToAll;
+
     arr.tag = tag;
+    arr.file = file;
+
     return arr;
   };
 
@@ -245,7 +248,7 @@ module.exports = (function() {
       }
     });
 
-    returnVal = decorate(returnVal, 'apifunction');
+    returnVal = decorate(returnVal, 'apifunction', 'a.js');
 
     return returnVal;
   };

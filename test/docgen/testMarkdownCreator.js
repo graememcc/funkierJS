@@ -157,7 +157,7 @@
         var summary = 'summary' + testNumber;
 
         var constructor = testType === 'APIFunction' ? APIFunction : APIObject;
-        result = MarkdownCreator(constructor(name, category, summary, apiOptions), testOptions).split('\n');
+        result = MarkdownCreator(constructor(name, 'a.js', category, summary, apiOptions), testOptions).split('\n');
 
         verifyName(name);
 

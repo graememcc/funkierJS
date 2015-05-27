@@ -546,6 +546,6 @@ module.exports = (function() {
     delete options.globalIndent;
     delete options.examplesIndent;
 
-    return constructor(mandatoryParameters.name, mandatoryParameters.category, summary, options);
+    return constructor(mandatoryParameters.name, lines.file, mandatoryParameters.category, summary, options);
   };
 })();

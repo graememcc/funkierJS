@@ -6,10 +6,11 @@ module.exports = (function() {
    * An APIObject is an object representing the documentation of an object found in the source code. The constructor
    * takes the following parameters:
    *
-   *   name: the name of the function being described as a string.
-   *   category: all documented functions are assumed to be grouped into categories. This string denotes such a
+   *   name: the name of the object being described as a string.
+   *   filename: the name of the file in which the object was found.
+   *   category: all documented values are assumed to be grouped into categories. This string denotes such a
    *             category.
-   *   summary: a string containing a brief overview of the function's functionality. This is assumed to be a brief
+   *   summary: a string containing a brief overview of the object's purpose. This is assumed to be a brief
    *            paragraph. The caller must add any required line endings - see below
    *   options: an object containing additional information. See below.
    *
@@ -18,12 +19,11 @@ module.exports = (function() {
    *
    * As noted above, additional detail can be supplied in the options object. The following properties are recognised:
    *   details: An array of strings, each string representing a line of explanatory text. In totality, it is assumed
-   *            that the details provide further explanation on function usage beyond that provided by the summary
-   *            line. This will be an empty array if not supplied. Any trailing line endings will be stripped: it is
-   *            assumed output routines can add these where necessary. Paragraph breaks should be denoted by empty
-   *            lines.
+   *            that the details provide further explanation on usage beyond that provided by the summary line. This
+   *            will be an empty array if not supplied. Any trailing line endings will be stripped: it is assumed
+   *            output routines can add these where necessary. Paragraph breaks should be denoted by empty lines.
    *   examples: An array of strings, each of which represents a line of Javascript illuminating typical usage of the
-   *             function. This will be an empty array if not supplied.
+   *             value. This will be an empty array if not supplied.
    *
    * It is intended that when output to the console, the summary string will be output verbatim: thus it is incumbent
    * on the client to insert appropriate line endings to ensure that line length is appropriate. Note however that the
@@ -45,14 +45,15 @@ module.exports = (function() {
   var APIPrototype = require('./APIPrototype');
 
 
-  function APIObject(name, category, summary, options) {
+  function APIObject(name, filename, category, summary, options) {
     if (!(this instanceof APIObject))
-      return new APIObject(name, category, summary, options);
+      return new APIObject(name, filename, category, summary, options);
 
     if (typeof(options) !== 'object' || options === null || Array.isArray(options))
       throw new TypeError('Options is not an object!');
 
     this.name = name;
+    this.filename = filename;
     this.summary = summary;
     this.category = category;
     this.details = options.details ? options.details : [];
