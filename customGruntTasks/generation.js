@@ -6,7 +6,13 @@ module.exports = (function() {
     grunt.registerMultiTask('generation', function() {
       var files = this.filesSrc;
       var documentationCreator = require('../docgen/documentationCreator');
-      documentationCreator(files, this.data.docs.markdown, this.data.docs.html);
+
+      var data = {
+        markdown: this.data.docs.markdown,
+        html:     this.data.docs.html
+      };
+
+      documentationCreator(files, data);
     });
   };
 })();

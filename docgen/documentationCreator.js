@@ -7,34 +7,52 @@ module.exports = (function() {
    *
    * The first parameter required is an array of filenames to consider. This is assumed to come from the Grunt task.
    *
-   * Next, comes an object of additional data. At a minimum, the following properties must be present:
-   *   - markdownNameFile:   the filename that is to contain Markdown for the documented values ordered alphabetically
-   *   - markdownCategoryFile:   the filename where Markdown for the functions documented values grouped by category
+   * Next, come an object of options. The following might be present:
    *
-   * Optionally, it may also contain the following values:
-   *   - markdownNamePre: the name of a file containing Markdown to be output before the generated Markdown in the
-   *                      file documenting values ordered by name
-   *   - markdownNamePost: the name of a file containing Markdown to be output after the generated Markdown in the
-   *                       file documenting values ordered by name
-   *   - markdownCategoryPre: the name of a file containing Markdown to be output before the generated Markdown in
-   *                          file documenting values grouped by category
-   *   - markdownCategoryPost: the name of a file containing Markdown to be output after the generated Markdown in the
-   *                           file documenting values grouped by category
+   * - markdown: An object possibly containing two additional objects controlling generation of markdown documentation:
+   *   - byName: an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *   - byCategory: an object which, if present and valid, will trigger creation of documentation where the documented
+   *                 values are grouped by category.
+   * - html: An object possibly containing two additional objects controlling generation of HTML documentation:
+   *   - byName: an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *   - byCategory: an object which, if present and valid, will trigger creation of documentation where the documented
+   *                 values are grouped by category.
+   *   - toLink: an optional array of strings that, if their lowercase equivalents are found in a list of types when
+   *             generating HTML documentation, will trigger creation of links to a named anchor '#s' on the page being
+   *             generated, where s is the lowercase equivalent of the matching string. Note: it is not currently
+   *             possible to modify case sensitivity of the matching, or to link to locations other than the page being
+   *             generated. As a convenience, all documented functions and objects will be linked, so there is no need
+   *             to provide those names in this array.
+   *
+   * As noted above, both the "html" and "markdown" objects can contain "byName" and "byCategory" option objects. Those
+   * objects can contain the following properties:
+   *
+   * - dest: The filename where output will be written. If not present, the type of output in question will not be
+   *         generated
+   * - pre:  An optional filename whose contents will be prepended to the file being generated
+   * - post:  An optional filename whose contents will be appended to the file being generated
+   *
+   * When generating HTML "by name", lines denoting the category a value belongs to will contain a link to the "by
+   * category" documentation. This imposes some additional requirements when generating HTML A-Z documentation. One
+   * of the following must be true:
+   *   - the html.byCategory object is present and has a valid 'dest' field naming the "by category" file to be
+   *     generated
+   *   - the html.byName object has an additional field 'categoryFile', naming the "by category" documentation file
+   *
+   * When both conditions hold, a check will ensure that the definitions are consistent: i.e. point to the same file.
    *
    */
-
-  var makeUnique = function() { return {}; };
-
 
   var fs = require('fs');
   var path = require('path');
   var collator = require('./collator');
   var esprima = require('esprima');
+  var marked = require('marked');
+
   var lineProcessor = require('./lineProcessor');
   var commentProcessor = require('./commentProcessor');
-  var nameMarkdownMaker = require('./nameMarkdownMaker');
-  var categoryMarkdownMaker = require('./categoryMarkdownMaker');
-  var HTMLMaker = require('./HTMLMaker');
+  var markdownCreator = require('./markdownCreator');
+  var markdownRenderer = require('./markdownRenderer');
 
 
   /*
@@ -92,89 +110,120 @@ module.exports = (function() {
 
 
   /*
-   * Outputs a file documenting all functions in alphabetical order to the filename specified in the dest property of
-   * the given data object, returning an array containing the Markdown that was produced (less any additional Markdown
-   * that was supplied to bookend the output; such Markdown should be supplied in the files named by the pre and
-   * post properties in the data object.
+   * If the given filename is defined, read the file contents into an array, and split on line endings. Otherwise
+   * return an empty array.
    *
    */
 
-  var outputMarkdownByName = function(collatedObjects, data) {
+  var readSurroundingFile = function(name) {
+    return name ? fs.readFileSync(name, {encoding: 'utf-8'}).split('\n') : [];
+  };
+
+
+  /*
+   * Ensures every line in the given array of strings has an explicit line ending, and then flattens
+   * the array into one string.
+   *
+   */
+
+  var flattenFile = function(lines) {
+    return lines.map(function(line) {
+      return /\n$/.test(line) ? line : line + '\n';
+    }).join('');
+  };
+
+
+  /*
+   * Produces markdown for the "A-Z" documentation of the known objects, returning an array of strings.
+   *
+   */
+
+  var produceMarkdownByName = function(collatedObjects) {
+    var categories = collatedObjects.getCategories();
+    var fileContents = [];
+
+    categories.forEach(function(cat) {
+      var fns = collatedObjects.byName();
+
+      fns.forEach(function(fn) {
+        fileContents = fileContents.concat(markdownCreator(fn, {includeCategory: true}).split('\n'));
+      });
+    });
+
+    return fileContents;
+  };
+
+
+  /*
+   * Produces markdown for the "A-Z" documentation of the known objects, returning an array of strings.
+   *
+   */
+
+  var produceMarkdownByCategory = function(collatedObjects) {
+    var categories = collatedObjects.getCategories();
+    var fileContents = [];
+
+    categories.forEach(function(cat) {
+      var fns = collatedObjects.byName();
+
+      fileContents.push('## ' + cat + '##');
+      fns.forEach(function(fn) {
+        fileContents = fileContents.concat(markdownCreator(fn, {includeCategory: false}).split('\n'));
+      });
+    });
+
+    return fileContents;
+  };
+
+
+  /*
+   * Outputs a file containing the given contents, bookended by the contents of the 'pre' and 'post' files optionally
+   * named in the data object.
+   *
+   */
+
+  var outputFile = function(contents, data) {
     if (data.dest === undefined)
       throw new Error('No filename supplied for Markdown by name output');
 
-    var pre = data.pre ? fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.post ? fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
-    return nameMarkdownMaker(collatedObjects, data.dest, {pre: pre, post: post});
+    var pre = readSurroundingFile(data.pre);
+    var post = readSurroundingFile(data.post);
+
+    var toWrite = pre.concat(contents).concat(post);
+    fs.writeFileSync(data.dest, flattenFile(toWrite), {encoding: 'utf-8'});
   };
 
 
   /*
-   * Outputs a file documenting all functions in alphabetical order to the filename specified in the dest property of
-   * the given data object, returning an array containing the Markdown that was produced (less any additional Markdown
-   * that was supplied to bookend the output; such Markdown should be supplied in the files named by the pre and
-   * post properties in the data object.
+   * Generates HTML from the given markdown, and outputs it to the file denoted by the 'dest' field in data, bookended
+   * by the contents of the filenames optionally provided in data.pre and data.post.
    *
    */
 
-  var outputMarkdownByCategory = function(collatedObjects, data) {
+  var outputHTML = function(markdown, data, generationOptions) {
     if (data.dest === undefined)
-      throw new Error('No filename supplied for Markdown by category output');
+      throw new Error('No filename supplied for Markdown by name output');
 
-    var pre = data.pre ?  fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.post ?  fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
-    return categoryMarkdownMaker(collatedObjects, data.dest, {pre: pre, post: post});
+    var pre = readSurroundingFile(data.pre);
+    var post = (generationOptions.isCategory ? ['</section>'] : []).concat(readSurroundingFile(data.post));
+
+    var categoryFile = null;
+    if (generationOptions.categoryFile) {
+      // The client provided options will include the absolute filename; for linking we will compute the relative
+      // filename
+      categoryFile = path.relative(path.dirname(data.dest), path.dirname(generationOptions.categoryFile)) +
+                     path.basename(generationOptions.categoryFile);
+    }
+
+    var renderer = markdownRenderer(data.toLink, {isCategory: generationOptions.isCategory,
+                                                  categoryFile: categoryFile});
+    var fileContents = marked(markdown.join('\n'), {renderer: renderer}).split('\n');
+    var toWrite = pre.concat(fileContents).concat(post);
+    fs.writeFileSync(data.dest, flattenFile(toWrite), {encoding: 'utf-8'});
   };
 
 
-  /*
-   * Outputs a file documenting all functions in alphabetical order to the filename specified in the HTMLNameFile
-   * property in the given options object. Note, on its own, this will only prodce an HTML fragment; supply additional
-   * HTML in the files named by the HTMLByNamePre and HTMLByNamePost properties in the options object.
-   *
-   * The data object may additionally contain a toLink property, detailing type strings that should be formatted as
-   * links when encountered (see the HTMLMaker documentation for details).
-   *
-   */
-
-  var outputHTMLByName = function(collatedObjects, markdown, data) {
-    if (data.byName.dest === undefined)
-      throw new Error('No filename supplied for HTML by name output');
-    if (data.byCategory.dest === undefined)
-      throw new Error('No category filename supplied for HTML by name output');
-
-    // Calculate the relative filename
-    var relative = path.relative(path.dirname(data.byName.dest), path.dirname(data.byCategory.dest)) +
-                   path.basename(data.byCategory.dest);
-
-    var pre = data.byName.pre ? fs.readFileSync(data.byName.pre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.byName.post ? fs.readFileSync(data.byName.post, {encoding: 'utf-8'}).split('\n') : [];
-    HTMLMaker(collatedObjects, markdown, data.byName.dest, {pre: pre, post: post, categoryFile: relative,
-                                                            typesToLink: data.toLink});
-  };
-
-
-  /*
-   * Outputs a file documenting all functions grouped by category to the filename specified in the dest property in the
-   * given data object. Note, on its own, this will only prodce an HTML fragment; supply additional HTML in the files
-   * named by the pre and post properties in the data object.
-   *
-   * The data object may additionally contain a toLink property, detailing type strings that should be formatted as
-   * links when encountered (see the HTMLMaker documentation for details).
-   *
-   */
-
-  var outputHTMLByCategory = function(collatedObjects, markdown, data) {
-    if (data.dest === undefined)
-      throw new Error('No category filename supplied for HTML by category output');
-
-    var pre = data.pre ? fs.readFileSync(data.pre, {encoding: 'utf-8'}).split('\n') : [];
-    var post = data.post ? fs.readFileSync(data.post, {encoding: 'utf-8'}).split('\n') : [];
-    HTMLMaker(collatedObjects, markdown, data.dest, {pre: pre, post: post, isCategory: true, typesToLink: data.toLink});
-  };
-
-
-  var documentCreator = function(files, markdownData, htmlData) {
+  var documentCreator = function(files, data) {
     if (!Array.isArray(files) || files.length === 0)
       throw new Error('No files found');
 
@@ -184,13 +233,46 @@ module.exports = (function() {
     var objects = parseAPIComments(apiComments);
     var collated = collator(objects);
 
-    var markdownNameOutput = outputMarkdownByName(collated, markdownData.byName);
-    var markdownByCategory = outputMarkdownByCategory(collated, markdownData.byCategory);
+    var byNameMarkdown = null;
+    if ((data.markdown && data.markdown.byName && data.markdown.byName.dest) ||
+        (data.html && data.html.byName && data.html.byName.dest))
+      byNameMarkdown = produceMarkdownByName(collated);
 
-    outputHTMLByName(collated, markdownNameOutput, htmlData);
-    // Don't assume we're allowed to mutate the given options object
-    var htmlByCategoryData = Object.create(htmlData.byCategory, {'toLink': {value: htmlData.toLink}});
-    outputHTMLByCategory(collated, markdownByCategory , htmlByCategoryData);
+    var byCategoryMarkdown = null;
+    if ((data.markdown && data.markdown.byCategory && data.markdown.byCategory.dest) ||
+        (data.html && data.html.byCategory && data.html.byCategory.dest))
+      byCategoryMarkdown = produceMarkdownByCategory(collated);
+
+    if (data.markdown && data.markdown.byName && data.markdown.byName.dest)
+      outputFile(byNameMarkdown, data.markdown.byName);
+
+    if (data.markdown && data.markdown.byCategory && data.markdown.byCategory.dest)
+      outputFile(byCategoryMarkdown, data.markdown.byCategory);
+
+    if (data.html) {
+      var typesToLink = collated.getNames();
+      if (Array.isArray(data.html.toLink))
+        typesToLink = typesToLink.concat(data.html.toLink);
+
+      if (data.html.byName && data.html.byName.dest) {
+        // First we must establish the location of the category file
+        var categoryFile = data.html.byCategory ? data.html.byCategory.dest : undefined;
+
+        if (categoryFile !== undefined && data.html.byName.categoryFile &&
+            data.html.byName.categoryFile !== categoryFile)
+          throw new Error('Inconsistent category file locations found');
+
+        // Don't assume we're allowed to mutate the given options object
+        var byNameData = Object.create(data.html.byName, {'toLink': {value: typesToLink}});
+        outputHTML(byNameMarkdown, byNameData, {categoryFile: categoryFile});
+      }
+
+      if (data.html.byCategory && data.html.byCategory.dest) {
+        // Don't assume we're allowed to mutate the given options object
+        var byCategoryData = Object.create(data.html.byCategory, {'toLink': {value: typesToLink}});
+        outputHTML(byCategoryMarkdown, byCategoryData, {isCategory: true});
+      }
+    }
   };
 
 
