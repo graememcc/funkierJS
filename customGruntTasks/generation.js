@@ -7,12 +7,15 @@ module.exports = (function() {
       var files = this.filesSrc;
       var documentationCreator = require('../docgen/documentationCreator');
 
-      var data = {
-        markdown: this.data.docs.markdown,
-        html:     this.data.docs.html
+      var options = {
+        markdown: this.data[this.target].markdown,
+        html:     this.data[this.target].html
       };
 
-      documentationCreator(files, data);
+      if (this.data[this.target].additional)
+        options.additional = this.data[this.target].additional;
+
+      documentationCreator(files, options);
     });
   };
 })();

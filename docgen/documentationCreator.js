@@ -238,6 +238,28 @@ module.exports = (function() {
   };
 
 
+  /*
+   * Invoke an additional user defined task.
+   *
+   */
+
+  var processAdditionalTask = function(collated, task) {
+    var file = task.file;
+    if (typeof(file) !== 'string')
+      throw new Error('Additional task supplied without file');
+
+    // Assume the task's filename is relative to process.cwd()
+    var filePath = path.resolve(process.cwd(), file);
+    var current = __dirname;
+    var taskDir = path.dirname(filePath);
+    var relativePath = path.relative(current, taskDir);
+    if (relativePath === '')
+      relativePath = '.';
+
+    require(relativePath + path.sep + path.basename(file, path.extname(file)))(collated, task.options);
+  };
+
+
   var documentCreator = function(files, data) {
     if (!Array.isArray(files) || files.length === 0)
       throw new Error('No files found');
@@ -287,6 +309,13 @@ module.exports = (function() {
         var byCategoryData = Object.create(data.html.byCategory, {'toLink': {value: typesToLink}});
         outputHTML(collated, byCategoryMarkdown, byCategoryData, {isCategory: true});
       }
+    }
+
+    if (data.additional) {
+      var tasks = Object.keys(data.additional);
+      tasks.forEach(function(t) {
+        processAdditionalTask(collated, data.additional[t]);
+      });
     }
   };
 
