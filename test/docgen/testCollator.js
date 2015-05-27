@@ -162,7 +162,7 @@
           ],
           [
             APIObject('Cat2Obj1', 'b.js', 'Cat2', '', {}),
-            APIObject('Cat3Obj1', 'c.js', 'Cat3', '', {}),
+            APIObject('Cat3Obj1', 'e/c.js', 'Cat3', '', {}),
             APIFunction('Cat1Func4', 'a.js', 'Cat1', '', {})
           ],
           [
@@ -233,6 +233,14 @@
           ].map(function(val) { return val.name; });
 
           expect(collated.getNames()).to.deep.equal(expected);
+        });
+      });
+
+
+      describe('getFileNames', function() {
+        it('Works as expected', function() {
+          var expected = ['a.js', 'b.js', 'd.js', 'e/c.js'];
+          expect(collated.getFileNames()).to.deep.equal(expected);
         });
       });
     });

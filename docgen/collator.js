@@ -21,6 +21,7 @@ module.exports = (function() {
 
     var values = {};
     var namesFound = [];
+    var filesFound = [];
     var all = [];
 
     arrays.forEach(function(arr) {
@@ -44,6 +45,9 @@ module.exports = (function() {
           });
         }
 
+        var filename = val.filename;
+        if (filesFound.indexOf(filename) === -1) filesFound.push(filename);
+
         var existingCategories = Object.keys(values);
         var alreadyHaveNameAsCategory = function(s) {
           return existingCategories.some(function(t) {
@@ -61,7 +65,7 @@ module.exports = (function() {
         if ('synonyms' in val) {
           val.synonyms.forEach(function(syn) {
             namesFound.push(syn);
-            var synonymInfo = {name: syn, filename: val.filename, synonymFor: val.name};
+            var synonymInfo = {name: syn, filename: filename, synonymFor: val.name};
             Object.freeze(synonymInfo);
             values[cat].push(synonymInfo);
             all.push(synonymInfo);
@@ -94,6 +98,10 @@ module.exports = (function() {
     Object.freeze(namesFound);
     this._names = namesFound;
 
+    filesFound.sort();
+    Object.freeze(filesFound);
+    this._files = filesFound;
+
     Object.freeze(this);
   };
 
@@ -105,6 +113,11 @@ module.exports = (function() {
 
   Collator.prototype.getCategories = function() {
     return this._categories;
+  };
+
+
+  Collator.prototype.getFileNames = function() {
+    return this._files;
   };
 
 
