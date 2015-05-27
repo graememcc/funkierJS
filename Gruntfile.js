@@ -29,6 +29,10 @@ module.exports = function(grunt) {
             pre: 'docs/templates/HTMLCategoryPre.html',
             post: 'docs/templates/HTMLCategoryPost.html'
           }
+        },
+
+        additional: {
+          makeOnlineHelp: { file: 'automation/generateHelp.js', options: { dest: 'lib/help.js' } }
         }
       },
 
@@ -50,7 +54,8 @@ module.exports = function(grunt) {
       },
 
       helpGeneration: {
-        files: ['customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js', 'lib/**/*.js'],
+        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js',
+                'lib/components/**.*js'],
         tasks: ['generation:docs']
       },
 

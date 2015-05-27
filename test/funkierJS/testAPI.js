@@ -68,7 +68,7 @@
 
 
     beforeEach(function() {
-      documentedNames = ['arity'];
+      documentedNames = ['help', 'arity'];
     });
 
 
