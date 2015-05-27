@@ -6,6 +6,46 @@ module.exports = (function() {
   var APIObject = require('./APIObject');
 
 
+  /*
+   * A collator object is used to describe all the documented values found by the documentation generation system,
+   * and allows a client to query them in various interesting ways. It takes as input an array of arrays, each array
+   * containing APIFunction and APIObject objects (the assumption being that all the values in the same array originate
+   * from the same source file) and returns an object with the following methods:
+   *
+   *  - getNames: returns an array, sorted in lexicograohical order, of the names of all the values encountered. This
+   *              includes entries for each synonym where values have synonyms.
+   *
+   *  - getCategories: returns an array, sorted in lexicograohical order, of all the categories the documented values
+   *                   were ascribed to. Each category shall appear only once, regardless of how many objects were
+   *                   found.
+   *
+   *  - getFileNames: returns an array, sorted in lexicograohical order, of all the filenames that were found to contain
+   *                  the documented values.
+   *
+   *  - byName: returns an array of all the documented values found, sorted by name. Where a value has synonyms, there
+   *            will be an entry for the synonym: this will be an object with three properties:
+   *              * name: the name of the synonym
+   *              * filename: the filename in which it was found
+   *              * synonymFor: the value that is aliased
+   *
+   *            All other values will be the original APIFunction and APIObjects created from parsing the documentation
+   *            comments.
+   *
+   *  - byCategory: given the name of a category from the array returned by getCategories, returns an array containing
+   *                all the values belonging to this category. As with 'byName' above, this will include additional
+   *                objects to represent synonyms of other values. See the comment for 'byName' above regarding the
+   *                form of such objects. The array is sorted by the name of the values.
+   *
+   * The collator imposes some constraints on the data it is provided with. It will throw if any of the following occur:
+   *
+   *  - Two objects represent a value with the same name
+   *
+   *  - The synonym of one documentation object matches the name or synonym of another
+   *
+   *  - The lowercase equivalent of the name or synonym of an object matches the name of a category
+   *
+   */
+
   var sort = function(a, b) {
     var name1 = a.name;
     var name2 = b.name;
