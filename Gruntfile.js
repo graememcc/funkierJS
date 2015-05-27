@@ -1,7 +1,8 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     jshint: {
-      all: ['**/*.js', '!**/node_modules/**'],
+      all: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
+            'test/**/*.js'],
       options: {
         newcap: false
       }
@@ -29,19 +30,33 @@ module.exports = function(grunt) {
             post: 'docs/templates/HTMLCategoryPost.html'
           }
         }
+      },
+
+
+      autoTests: {
+        src: ['lib/components/*.js'],
+        additional: {
+          makeTests: { file: 'automation/generateAPITests.js', options: { dest: 'test/funkierJS/testAPI.js' } }
+        }
       }
     },
 
 
     watch: {
       lint: {
-        files: ['customGruntTasks/generation.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'],
+        files: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
+              'test/**/*.js'],
         tasks: ['jshint']
       },
 
       helpGeneration: {
         files: ['customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js', 'lib/**/*.js'],
         tasks: ['generation:docs']
+      },
+
+      testGeneration: {
+        files: ['automation/generateAPITests.js', 'lib/**/*.js'],
+        tasks: ['generation:autoTests']
       }
     }
   });

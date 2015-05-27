@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "The functional toolbox for ES5 Javascript",
   "author": "Graeme McCutcheon <graeme@graememcc.co.uk> (http://www.graememcc.co.uk/)",
-  "main": "funkier.js",
+  "main": "lib/funkier.js",
   "directories": {
     "test": "test"
   },
