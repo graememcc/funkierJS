@@ -11,24 +11,22 @@ module.exports = function(grunt) {
     generation: {
       docs: {
         src: ['lib/components/*.js'],
-        docs: {
-          markdown: {
-            byName: {dest: 'docs/markdown/byName.md', pre: 'docs/templates/markdownNamePre.md' },
-            byCategory: { dest: 'docs/markdown/byCategory.md', pre: 'docs/templates/markdownCategoryPre.md' }
+        markdown: {
+          byName: {dest: 'docs/markdown/byName.md', pre: 'docs/templates/markdownNamePre.md' },
+          byCategory: { dest: 'docs/markdown/byCategory.md', pre: 'docs/templates/markdownCategoryPre.md' }
+        },
+
+        html: {
+          byName: {
+            dest: 'docs/html/index.html',
+            pre: 'docs/templates/HTMLNamePre.html',
+            post: 'docs/templates/HTMLNamePost.html'
           },
 
-          html: {
-            byName: {
-              dest: 'docs/html/index.html',
-              pre: 'docs/templates/HTMLNamePre.html',
-              post: 'docs/templates/HTMLNamePost.html'
-            },
-
-            byCategory: {
-              dest: 'docs/html/byCategory.html',
-              pre: 'docs/templates/HTMLCategoryPre.html',
-              post: 'docs/templates/HTMLCategoryPost.html'
-            }
+          byCategory: {
+            dest: 'docs/html/byCategory.html',
+            pre: 'docs/templates/HTMLCategoryPre.html',
+            post: 'docs/templates/HTMLCategoryPost.html'
           }
         }
       }

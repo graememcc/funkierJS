@@ -8,12 +8,12 @@ module.exports = (function() {
       var documentationCreator = require('../docgen/documentationCreator');
 
       var options = {
-        markdown: this.data[this.target].markdown,
-        html:     this.data[this.target].html
+        markdown: this.data.markdown,
+        html:     this.data.html
       };
 
-      if (this.data[this.target].additional)
-        options.additional = this.data[this.target].additional;
+      if (this.data.additional)
+        options.additional = this.data.additional;
 
       documentationCreator(files, options);
     });
