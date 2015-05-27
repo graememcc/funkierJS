@@ -101,6 +101,40 @@ module.exports = (function() {
   };
 
 
+  var addExportsDocumentedTests = function(names, buffer) {
+    buffer.push('  });');
+    buffer.push('');
+    buffer.push('');
+    buffer.push('  describe(\'Exported values\', function() {');
+    buffer.push('    var documentedNames;');
+    buffer.push('');
+    buffer.push('');
+    buffer.push('    beforeEach(function() {');
+
+    names = names.filter(function(o) { return (o instanceof APIFunction) || (o instanceof APIObject); });
+    names = '      documentedNames = [' + names.map(function(o) { return '\'' + o.name + '\''; }).join(', ') + '];';
+    while (names.length > 120) {
+      var last = names.slice(0, 120).lastIndexOf(', ') + 1;
+      buffer.push(names.slice(0, last));
+      names = '        ' + names.slice(last);
+    }
+    buffer.push(names);
+    buffer.push('    });');
+    buffer.push('');
+    buffer.push('');
+    buffer.push('    Object.keys(funkier).forEach(function(k) {');
+    buffer.push('      var prop = funkier[k];');
+    buffer.push('      if (k[0] === \'_\' || prop === null ||');
+    buffer.push('          (typeof(prop) !== \'object\' && typeof(prop) !== \'function\'))');
+    buffer.push('        return;');
+    buffer.push('');
+    buffer.push('      it(k + \' is documented\', function() {');
+    buffer.push('        expect(documentedNames.indexOf(k)).to.not.equal(-1);');
+    buffer.push('      });');
+    buffer.push('    });');
+  };
+
+
   return function(collated, options) {
     var buffer = preamble;
     
@@ -138,6 +172,9 @@ module.exports = (function() {
 
       pushPostscript();
     });
+
+
+    addExportsDocumentedTests(byName, buffer);
 
     buffer = buffer.concat(postscript).map(function(s) {
       return /\n$/.test(s) ? s : s + '\n';

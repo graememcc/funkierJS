@@ -61,4 +61,26 @@
       });
     });
   });
+
+
+  describe('Exported values', function() {
+    var documentedNames;
+
+
+    beforeEach(function() {
+      documentedNames = ['arity'];
+    });
+
+
+    Object.keys(funkier).forEach(function(k) {
+      var prop = funkier[k];
+      if (k[0] === '_' || prop === null ||
+          (typeof(prop) !== 'object' && typeof(prop) !== 'function'))
+        return;
+
+      it(k + ' is documented', function() {
+        expect(documentedNames.indexOf(k)).to.not.equal(-1);
+      });
+    });
+  });
 })();
