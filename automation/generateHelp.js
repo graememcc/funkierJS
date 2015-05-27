@@ -59,7 +59,7 @@ module.exports = (function() {
       buffer.push('        case funkier.' + documentedValue.name + ':');
       buffer.push('          console.log(\'' + documentedValue.name + ':\');');
       documentedValue.summary.split('\n').forEach(function(line) {
-        buffer.push('          console.log(\'' + line + '\');');
+        buffer.push('          console.log(\'' + line.replace('\'', '\\\'') + '\');');
       });
       buffer.push('          console.log(\'\');');
       if (documentedValue instanceof APIFunction) {
