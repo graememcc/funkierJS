@@ -1,12 +1,68 @@
 module.exports = function(grunt) {
   grunt.initConfig({
     jshint: {
-      all: ['**/*.js', '!**/node_modules/**']
+      all: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
+            'test/**/*.js'],
+      options: {
+        newcap: false
+      }
     },
 
+
+    generation: {
+      docs: {
+        src: ['lib/components/*.js'],
+        markdown: {
+          byName: {dest: 'docs/markdown/byName.md', pre: 'docs/templates/markdownNamePre.md' },
+          byCategory: { dest: 'docs/markdown/byCategory.md', pre: 'docs/templates/markdownCategoryPre.md' }
+        },
+
+        html: {
+          byName: {
+            dest: 'docs/html/index.html',
+            pre: 'docs/templates/HTMLNamePre.html',
+            post: 'docs/templates/HTMLNamePost.html'
+          },
+
+          byCategory: {
+            dest: 'docs/html/byCategory.html',
+            pre: 'docs/templates/HTMLCategoryPre.html',
+            post: 'docs/templates/HTMLCategoryPost.html'
+          }
+        },
+
+        additional: {
+          makeOnlineHelp: { file: 'automation/generateHelp.js', options: { dest: 'lib/help.js' } }
+        }
+      },
+
+
+      autoTests: {
+        src: ['lib/components/*.js'],
+        additional: {
+          makeTests: { file: 'automation/generateAPITests.js', options: { dest: 'test/funkierJS/testAPI.js' } }
+        }
+      }
+    },
+
+
     watch: {
-      files: ['**/*.js'],
-      tasks: ['jshint']
+      lint: {
+        files: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
+              'test/**/*.js'],
+        tasks: ['jshint']
+      },
+
+      helpGeneration: {
+        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js',
+                'lib/components/**.*js'],
+        tasks: ['generation:docs']
+      },
+
+      testGeneration: {
+        files: ['automation/generateAPITests.js', 'lib/**/*.js'],
+        tasks: ['generation:autoTests']
+      }
     }
   });
 
@@ -17,5 +73,6 @@ module.exports = function(grunt) {
   });
 
 
+  grunt.loadTasks('customGruntTasks');
   grunt.registerTask('default', ['watch']);
 };
