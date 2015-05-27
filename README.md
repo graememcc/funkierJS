@@ -30,6 +30,3 @@ In funkierJS, all of the following will additionally work:
 I have recently reset this project, to enable me to review the API, smooth out inconsistencies, transition to a
 Browserify build and possibly remove functions with limited utility. As functions are reviewed, they will be
 uncommented and reinstated.
-
-Currently I am reworking the documentation generation system (on the documentation branch). This work will merge
-soon: work on the library proper will resume immediately after.
