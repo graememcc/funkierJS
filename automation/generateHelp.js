@@ -34,7 +34,7 @@ module.exports = (function() {
 
   var postscript = [
     '        default:',
-    '          console.log(\'No help available\');', 
+    '          console.log(\'No help available\');',
     '      }',
     '    };',
     '',
@@ -45,7 +45,7 @@ module.exports = (function() {
 
   return function(collated, options) {
     var buffer = preamble;
-    
+
     var byName = collated.byName();
 
     byName.forEach(function(documentedValue) {
@@ -58,6 +58,13 @@ module.exports = (function() {
 
       buffer.push('        case funkier.' + documentedValue.name + ':');
       buffer.push('          console.log(\'' + documentedValue.name + ':\');');
+      buffer.push('          console.log(\'\');');
+      if ((documentedValue instanceof APIFunction) && documentedValue.synonyms.length > 0) {
+        var syns = 'Synonyms: ' + documentedValue.synonyms.join(', ');
+        buffer.push('          console.log(\'' + syns + '\');');
+        buffer.push('          console.log(\'\');');
+      }
+
       documentedValue.summary.split('\n').forEach(function(line) {
         buffer.push('          console.log(\'' + line.replace('\'', '\\\'') + '\');');
       });
