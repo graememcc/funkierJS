@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 
 
     generation: {
-      all: {
+      docs: {
         src: ['lib/components/*.js'],
         docs: {
           markdown: {
@@ -36,8 +36,15 @@ module.exports = function(grunt) {
 
 
     watch: {
-      files: ['lib/**/*.js', 'test/**/*.js', 'docgen/**/*.js', 'Gruntfile.js'],
-      tasks: ['jshint', 'generation']
+      lint: {
+        files: ['customGruntTasks/generation.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js', 'test/**/*.js'],
+        tasks: ['jshint']
+      },
+
+      helpGeneration: {
+        files: ['customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js', 'lib/**/*.js'],
+        tasks: ['generation:docs']
+      }
     }
   });
 
