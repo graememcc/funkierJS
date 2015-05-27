@@ -1,23 +1,22 @@
-//(function() {
-//  "use strict";
-//
-//
+(function() {
+  "use strict";
+
+
 //  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
+  var expect = require('chai').expect;
 //
-//    var curryModule = require('../../curry');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
+  var curryModule = require('../../lib/components/curry');
+
+  // Import utility functions
+  var testUtils = require('./testingUtilities');
+  var checkModule = testUtils.checkModule;
+  var checkFunction = testUtils.checkFunction;
 //    var testCurriedFunction = testUtils.testCurriedFunction;
 //
 //
-//    var expectedObjects = [];
-//    var expectedFunctions = ['curry', 'curryWithArity', 'getRealArity'];
-//    describeModule('curry', curryModule, expectedObjects, expectedFunctions);
+  var expectedObjects = [];
+  var expectedFunctions = [/*'curry', 'curryWithArity', */'arityOf'];
+  checkModule('curry', curryModule, expectedObjects, expectedFunctions);
 //
 //
 //    // Many of the tests use curry, id and getRealArity: let's pull them out for convenience
@@ -311,26 +310,37 @@
 //    });
 //
 //
-//    // We can't use describeFunction for getRealArity, as describeFunction uses it
-//    describe('getRealArity', function() {
-//      var getRealArity = curryModule.getRealArity;
-//      var curryWithArity = curryModule.curryWithArity;
-//
-//
-//      it('Works correctly for an uncurried function (1)', function() {
-//        var fn = function() {};
-//
-//        expect(getRealArity(fn)).to.equal(fn.length);
-//      });
-//
-//
-//      it('Works correctly for an uncurried function (2)', function() {
-//        var fn = function(x, y) {};
-//
-//        expect(getRealArity(fn)).to.equal(fn.length);
-//      });
-//
-//
+
+
+  var aritySpec = {
+    name: 'arityOf',
+    restrictions: [['function']],
+    validArguments: [[function() {}]]
+  };
+
+
+  checkFunction(aritySpec, curryModule.arityOf, function(arityOf) {
+    it('Works correctly for an uncurried function (1)', function() {
+      var fn = function() {};
+
+      expect(arityOf(fn)).to.equal(fn.length);
+    });
+
+
+    it('Works correctly for an uncurried function (2)', function() {
+      var fn = function(x) {};
+
+      expect(arityOf(fn)).to.equal(fn.length);
+    });
+
+
+    it('Works correctly for an uncurried function (3)', function() {
+      var fn = function(x, y) {};
+
+        expect(arityOf(fn)).to.equal(fn.length);
+      });
+
+
 //      it('Works correctly for a curried function (1)', function() {
 //        var fn = function(x, y) {};
 //        var curried = curry(fn);
@@ -370,7 +380,7 @@
 //
 //        expect(getRealArity(curried(1, 1))).to.equal(fn.length - 2);
 //      });
-//    });
+  });
 //  };
 //
 //
@@ -382,4 +392,4 @@
 //  } else {
 //    testFixture(require, exports, module);
 //  }
-//})();
+})();

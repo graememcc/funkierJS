@@ -19,24 +19,21 @@
 <h2 class="categoryName">Function</h2>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">foo</code></li><li class="synonym"><code class="synonymName">bar</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arity(f);</code></p>
+<p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
+</section>
+<section class="functionRef" id="arityOf">
+<h3 class="functionName">arityOf</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">arity</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arityOf(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>This is a temporary comment for testing the integration of the documentation system.
-This line should be merged to the line above.</p>
-<p>This line should begin the detail.</p>
+<p>Reports the real arity of a function. If the function has not been curried by funkier.js, this simply returns the
+function&#39;s length property. For a function that has been curried, the arity of the original function will be
+reported (the function&#39;s length property will always be 0 or 1 in this case). For a partially applied function,
+the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var a = arity(f);
+<pre><code>arityOf(function(x) {}); // =&gt; 1;
 </code></pre></section>
-</section>
-<section class="functionRef" id="bar">
-<h3 class="functionName">bar</h3>
-<p class="see">See <a class="synonymLink" href="#arity"><code class="synonymCode">arity</code></a></p>
-</section>
-<section class="functionRef" id="foo">
-<h3 class="functionName">foo</h3>
-<p class="see">See <a class="synonymLink" href="#arity"><code class="synonymCode">arity</code></a></p>
 </section>
 
 </section>

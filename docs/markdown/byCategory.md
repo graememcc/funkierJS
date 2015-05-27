@@ -2,26 +2,23 @@
 
 ## Function##
 ### arity ###
-*Synonyms:* `foo` | `bar`
+See `arityOf`
+***
+### arityOf ###
+*Synonyms:* `arity`
 
-**Usage:** `var result = arity(f);`
+**Usage:** `var result = arityOf(f);`
 
 Parameters:  
 f `function`
 
 Returns: `number`
 
-This is a temporary comment for testing the integration of the documentation system.
-This line should be merged to the line above.
-
-This line should begin the detail.
+Reports the real arity of a function. If the function has not been curried by funkier.js, this simply returns the
+function's length property. For a function that has been curried, the arity of the original function will be
+reported (the function's length property will always be 0 or 1 in this case). For a partially applied function,
+the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
-    var a = arity(f);
-***
-### bar ###
-See `arity`
-***
-### foo ###
-See `arity`
+    arityOf(function(x) {}); // => 1;
 ***

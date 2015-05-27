@@ -16,48 +16,36 @@
       });
 
 
-      it('funkierJS\'s arity is indeed the documented value', function() {
+      it('arity is a synonym for arityOf', function() {
+        expect(funkier.arity).to.equal(funkier.arityOf);
+      });
+    });
+
+
+    describe('arityOf', function() {
+      it('arityOf exists', function() {
+        expect(funkier).to.have.a.property('arityOf');
+      });
+
+
+      it('funkierJS\'s arityOf is indeed the documented value', function() {
         var module = require('../../lib/components/curry');
-        expect(funkier.arity).to.equal(module.arity);
+        expect(funkier.arityOf).to.equal(module.arityOf);
       });
 
 
-      it('arity is a function', function() {
-        expect(funkier.arity).to.be.a('function');
+      it('arityOf is a function', function() {
+        expect(funkier.arityOf).to.be.a('function');
       });
 
 
-      it('arity has documented arity', function() {
-        expect(funkier.arityOf(funkier.arity)).to.equal(1);
+      it('arityOf has documented arity', function() {
+        expect(funkier.arityOf(funkier.arityOf)).to.equal(1);
       });
 
 
-      it('arity is curried', function() {
-        expect(funkier.arityOf._isCurried(funkier.arity)).to.equal(true);
-      });
-    });
-
-
-    describe('bar', function() {
-      it('bar exists', function() {
-        expect(funkier).to.have.a.property('bar');
-      });
-
-
-      it('bar is a synonym for arity', function() {
-        expect(funkier.bar).to.equal(funkier.arity);
-      });
-    });
-
-
-    describe('foo', function() {
-      it('foo exists', function() {
-        expect(funkier).to.have.a.property('foo');
-      });
-
-
-      it('foo is a synonym for arity', function() {
-        expect(funkier.foo).to.equal(funkier.arity);
+      it('arityOf is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.arityOf)).to.equal(true);
       });
     });
   });
@@ -68,7 +56,7 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'arity'];
+      documentedNames = ['help', 'arity', 'arityOf'];
     });
 
 
