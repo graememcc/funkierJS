@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 
           html: {
             byName: {
-              dest: 'docs/html/byName.html',
+              dest: 'docs/html/index.html',
               pre: 'docs/templates/HTMLNamePre.html',
               post: 'docs/templates/HTMLNamePost.html'
             },
