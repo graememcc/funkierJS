@@ -43,14 +43,14 @@ module.exports = (function() {
    *
    */
 
-  var fs = require('fs');
   var path = require('path');
-  var collator = require('./collator');
   var esprima = require('esprima');
+  var fs = require('fs');
   var marked = require('marked');
 
-  var lineProcessor = require('./lineProcessor');
+  var collator = require('./collator');
   var commentProcessor = require('./commentProcessor');
+  var lineProcessor = require('./lineProcessor');
   var markdownCreator = require('./markdownCreator');
   var markdownRenderer = require('./markdownRenderer');
 
@@ -136,6 +136,27 @@ module.exports = (function() {
 
 
   /*
+   * Attempt to create a directory for an output file, and write the supplied file contents to it.
+   *
+   */
+
+  var writeFile = function(dest, contents) {
+    var mkdirp = require('mkdirp');
+    var dir = path.dirname(dest);
+
+    // No need to check for existence: mkdirp does that for us
+    try {
+      mkdirp.sync(dir);
+    } catch (e) {
+      throw new Error('Error thrown when trying to create destination directory for ' + dir + ': ' + e.code);
+    }
+
+    // Just let any errors from the file operation bubble up to the client
+    fs.writeFileSync(dest, contents, {encoding: 'utf-8'});
+  };
+
+
+  /*
    * Produces markdown for the "A-Z" documentation of the known objects, returning an array of strings.
    *
    */
@@ -192,7 +213,7 @@ module.exports = (function() {
     var post = readSurroundingFile(data.post);
 
     var toWrite = pre.concat(contents).concat(post);
-    fs.writeFileSync(data.dest, flattenFile(toWrite), {encoding: 'utf-8'});
+    writeFile(data.dest, flattenFile(toWrite));
   };
 
 
@@ -235,7 +256,7 @@ module.exports = (function() {
                                                   categoryFile: categoryFile});
     var fileContents = marked(markdown.join('\n'), {renderer: renderer}).split('\n');
     var toWrite = pre.concat(fileContents).concat(post);
-    fs.writeFileSync(data.dest, flattenFile(toWrite), {encoding: 'utf-8'});
+    writeFile(data.dest, flattenFile(toWrite));
   };
 
 
