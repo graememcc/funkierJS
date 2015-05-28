@@ -63,7 +63,7 @@ module.exports = function(grunt) {
       },
 
       testGeneration: {
-        files: ['automation/generateAPITests.js', 'lib/**/*.js'],
+        files: ['automation/generateAPITests.js', 'Gruntfile.js', 'lib/**/*.js'],
         tasks: ['generation:autoTests']
       }
     }
