@@ -282,6 +282,46 @@ module.exports = (function() {
   };
 
 
+  /*
+   * Output any requested Markdown documentation
+   *
+   */
+
+  var createRequestedMarkdown = function(byNameMarkdown, byCategoryMarkdown, markdownRequest) {
+    if (markdownRequest && markdownRequest.byName && markdownRequest.byName.dest)
+      outputFile(byNameMarkdown, markdownRequest.byName);
+
+    if (markdownRequest && markdownRequest.byCategory && markdownRequest.byCategory.dest)
+      outputFile(byCategoryMarkdown, markdownRequest.byCategory);
+  };
+
+
+  var createRequestedHTML = function(byNameMarkdown, byCategoryMarkdown, collated, HTMLRequest) {
+    var typesToLink = collated.getNames();
+    if (Array.isArray(HTMLRequest.toLink))
+      typesToLink = typesToLink.concat(HTMLRequest.toLink);
+
+    if (HTMLRequest.byName && HTMLRequest.byName.dest) {
+      // First we must establish the location of the category file
+      var categoryFile = HTMLRequest.byCategory ? HTMLRequest.byCategory.dest : undefined;
+
+      if (categoryFile !== undefined && HTMLRequest.byName.categoryFile &&
+          HTMLRequest.byName.categoryFile !== categoryFile)
+        throw new Error('Inconsistent category file locations found');
+
+      // Don't assume we're allowed to mutate the given options object
+      var byNameData = Object.create(HTMLRequest.byName, {'toLink': {value: typesToLink}});
+      outputHTML(collated, byNameMarkdown, byNameData, {categoryFile: categoryFile});
+    }
+
+    if (HTMLRequest.byCategory && HTMLRequest.byCategory.dest) {
+      // Don't assume we're allowed to mutate the given options object
+      var byCategoryData = Object.create(HTMLRequest.byCategory, {'toLink': {value: typesToLink}});
+      outputHTML(collated, byCategoryMarkdown, byCategoryData, {isCategory: true});
+    }
+  };
+
+
   var documentCreator = function(files, data) {
     if (!Array.isArray(files) || files.length === 0)
       throw new Error('No files found');
@@ -302,36 +342,10 @@ module.exports = (function() {
         (data.html && data.html.byCategory && data.html.byCategory.dest))
       byCategoryMarkdown = produceMarkdownByCategory(collated);
 
-    if (data.markdown && data.markdown.byName && data.markdown.byName.dest)
-      outputFile(byNameMarkdown, data.markdown.byName);
+    createRequestedMarkdown(byNameMarkdown, byCategoryMarkdown, data.markdown);
 
-    if (data.markdown && data.markdown.byCategory && data.markdown.byCategory.dest)
-      outputFile(byCategoryMarkdown, data.markdown.byCategory);
-
-    if (data.html) {
-      var typesToLink = collated.getNames();
-      if (Array.isArray(data.html.toLink))
-        typesToLink = typesToLink.concat(data.html.toLink);
-
-      if (data.html.byName && data.html.byName.dest) {
-        // First we must establish the location of the category file
-        var categoryFile = data.html.byCategory ? data.html.byCategory.dest : undefined;
-
-        if (categoryFile !== undefined && data.html.byName.categoryFile &&
-            data.html.byName.categoryFile !== categoryFile)
-          throw new Error('Inconsistent category file locations found');
-
-        // Don't assume we're allowed to mutate the given options object
-        var byNameData = Object.create(data.html.byName, {'toLink': {value: typesToLink}});
-        outputHTML(collated, byNameMarkdown, byNameData, {categoryFile: categoryFile});
-      }
-
-      if (data.html.byCategory && data.html.byCategory.dest) {
-        // Don't assume we're allowed to mutate the given options object
-        var byCategoryData = Object.create(data.html.byCategory, {'toLink': {value: typesToLink}});
-        outputHTML(collated, byCategoryMarkdown, byCategoryData, {isCategory: true});
-      }
-    }
+    if (data.html)
+      createRequestedHTML(byNameMarkdown, byCategoryMarkdown, collated, data.html);
 
     if (data.additional) {
       var tasks = Object.keys(data.additional);
