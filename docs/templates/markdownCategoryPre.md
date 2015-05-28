@@ -1,1 +1,0 @@
-# FunkierJS API: By Category #

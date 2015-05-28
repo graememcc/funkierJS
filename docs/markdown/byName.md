@@ -1,4 +1,4 @@
-# FunkierJS API: By Name #
+# funkierJS API #
 
 ### arity ###
 See `arityOf`

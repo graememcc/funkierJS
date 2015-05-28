@@ -1,4 +1,4 @@
-# FunkierJS API: By Category #
+# funkierJS API: By Category #
 
 ## Function##
 ### arity ###

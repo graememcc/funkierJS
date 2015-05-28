@@ -1,5 +1,8 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+    templateDir: 'docs/templates',
+
+
     jshint: {
       all: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
             'test/**/*.js'],
@@ -13,21 +16,21 @@ module.exports = function(grunt) {
       docs: {
         src: ['lib/components/*.js'],
         markdown: {
-          byName: {dest: 'docs/markdown/byName.md', pre: 'docs/templates/markdownNamePre.md' },
-          byCategory: { dest: 'docs/markdown/byCategory.md', pre: 'docs/templates/markdownCategoryPre.md' }
+          byName: {dest: 'docs/markdown/byName.md', pre: '<%= templateDir %>/markdown/namePre.md' },
+          byCategory: { dest: 'docs/markdown/byCategory.md', pre: '<%= templateDir %>/markdown/categoryPre.md' }
         },
 
         html: {
           byName: {
             dest: 'docs/html/index.html',
-            pre: 'docs/templates/HTMLNamePre.html',
-            post: 'docs/templates/HTMLNamePost.html'
+            pre: '<%= templateDir %>/html/namePre.html',
+            post: '<%= templateDir %>/html/namePost.html'
           },
 
           byCategory: {
             dest: 'docs/html/byCategory.html',
-            pre: 'docs/templates/HTMLCategoryPre.html',
-            post: 'docs/templates/HTMLCategoryPost.html'
+            pre: '<%= templateDir %>/html/categoryPre.html',
+            post: '<%= templateDir %>/html/categoryPost.html'
           }
         },
 
@@ -54,8 +57,8 @@ module.exports = function(grunt) {
       },
 
       helpGeneration: {
-        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', 'docs/templates/*', 'docgen/**/*.js',
-                'lib/components/**.*js'],
+        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', '<%= templateDir %>/*/categoryP*',
+                '<%= templateDir %>/*/nameP*', 'docgen/**/*.js',  'Gruntfile.js', 'lib/components/**.*js'],
         tasks: ['generation:docs']
       },
 
