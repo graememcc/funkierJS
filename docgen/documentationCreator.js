@@ -10,27 +10,33 @@ module.exports = (function() {
    * Next, come an object of options. The following might be present:
    *
    * - markdown: An object possibly containing two additional objects controlling generation of markdown documentation:
-   *   - byName: an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *   - byName:     an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *
    *   - byCategory: an object which, if present and valid, will trigger creation of documentation where the documented
    *                 values are grouped by category.
-   * - html: An object possibly containing two additional objects controlling generation of HTML documentation:
-   *   - byName: an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *
+   * - html:     An object possibly containing two additional objects controlling generation of HTML documentation:
+   *
+   *   - byName:     an object which, if present and valid, will trigger creation of a A-Z documentation reference.
+   *
    *   - byCategory: an object which, if present and valid, will trigger creation of documentation where the documented
    *                 values are grouped by category.
-   *   - toLink: an optional array of strings that, if their lowercase equivalents are found in a list of types when
-   *             generating HTML documentation, will trigger creation of links to a named anchor '#s' on the page being
-   *             generated, where s is the lowercase equivalent of the matching string. Note: it is not currently
-   *             possible to modify case sensitivity of the matching, or to link to locations other than the page being
-   *             generated. As a convenience, all documented functions and objects will be linked, so there is no need
-   *             to provide those names in this array.
+   *
+   *   - toLink:     an optional array of strings that, if their lowercase equivalents are found in a list of types when
+   *                 generating HTML documentation, will trigger creation of links to a named anchor '#s' on the page
+   *                 being generated, where s is the lowercase equivalent of the matching string. Note: it is not 
+   *                 currently possible to modify case sensitivity of the matching, or to link to locations other than
+   *                 the page being generated. As a convenience, all documented functions and objects will be linked,
+   *                 so there is no need to provide those names in this array.
    *
    * As noted above, both the "html" and "markdown" objects can contain "byName" and "byCategory" option objects. Those
    * objects can contain the following properties:
    *
-   * - dest: The filename where output will be written. If not present, the type of output in question will not be
-   *         generated
-   * - pre:  An optional filename whose contents will be prepended to the file being generated
-   * - post:  An optional filename whose contents will be appended to the file being generated
+   * - dest:  The filename where output will be written. If not present, the type of output in question will not be
+   *          generated
+   *
+   * - pre:   (Optional) Either a string filename whose contents should be read and prepended, or an array of strings
+   *          to prepend
    *
    * When generating HTML "by name", lines denoting the category a value belongs to will contain a link to the "by
    * category" documentation. This imposes some additional requirements when generating HTML A-Z documentation. One
@@ -118,6 +124,7 @@ module.exports = (function() {
    */
 
   var readSurroundingFile = function(name) {
+    if (Array.isArray(name)) return name;
     return name ? fs.readFileSync(name, {encoding: 'utf-8'}).split('\n') : [];
   };
 
