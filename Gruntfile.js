@@ -1,11 +1,15 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+
+
     templateDir: 'docs/templates',
 
 
     jshint: {
       all: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
             'test/**/*.js'],
+
       options: {
         newcap: false
       }
@@ -13,8 +17,17 @@ module.exports = function(grunt) {
 
 
     generation: {
+      autoTests: {
+        src: ['lib/components/*.js'],
+        additional: {
+          makeTests: { file: 'automation/generateAPITests.js', options: { dest: 'test/funkierJS/testAPI.js' } }
+        }
+      },
+
+
       docs: {
         src: ['lib/components/*.js'],
+
         markdown: {
           byName: {dest: 'docs/markdown/byName.md', pre: '<%= templateDir %>/markdown/namePre.md' },
           byCategory: { dest: 'docs/markdown/byCategory.md', pre: '<%= templateDir %>/markdown/categoryPre.md' }
@@ -40,11 +53,43 @@ module.exports = function(grunt) {
       },
 
 
-      autoTests: {
+      versionedDocs: {
         src: ['lib/components/*.js'],
-        additional: {
-          makeTests: { file: 'automation/generateAPITests.js', options: { dest: 'test/funkierJS/testAPI.js' } }
+
+        markdown: {
+          byName: {dest: 'docs/<%= pkg.version %>/markdown/byName.md',
+                   pre: '<%= templateDir %>/markdown/nameVersionedPre.md' },
+          byCategory: { dest: 'docs/<%= pkg.version %>/markdown/byCategory.md',
+                        pre: '<%= templateDir %>/markdown/categoryVersionedPre.md' }
+        },
+
+        html: {
+          byName: {
+            dest: 'docs/<%= pkg.version %>/html/index.html',
+            pre: '<%= templateDir %>/html/nameVersionedPre.html',
+            post: '<%= templateDir %>/html/namePost.html'
+          },
+
+          byCategory: {
+            dest: 'docs/<%= pkg.version %>/html/byCategory.html',
+            pre: '<%= templateDir %>/html/categoryVersionedPre.html',
+            post: '<%= templateDir %>/html/categoryPost.html'
+          }
         }
+      }
+    },
+
+
+    bump: {
+      options: {
+        files: ['package.json', 'docs/templates/*/categoryV*', 'docs/templates/*/nameV*'],
+        commit: true,
+        commitMessage: 'Release v%VERSION%',
+        createTag: true,
+        push: false,
+        gitDescribeOptions: '--tags --always --abbrev=1 --dirty=-d',
+        globalReplace: true,
+        regExp: /(['"]?version['"]?[ ]*:?[ ]*['"]?)(\d+\.\d+\.\d+(-\.\d+)?(-\d+)?)[\d||A-a|.|-]*(['"]?)/i
       }
     },
 
@@ -54,6 +99,13 @@ module.exports = function(grunt) {
         files: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
               'test/**/*.js'],
         tasks: ['jshint']
+      },
+
+      docVersionGeneration: {
+        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js',
+                '<%= templateDir %>/*/categoryVersionedP*', '<%= templateDir %>/*/nameVersionedP*', 'docgen/**/*.js',
+                'Gruntfile.js'],
+        tasks: ['generation:versionedDocs']
       },
 
       helpGeneration: {
@@ -74,6 +126,7 @@ module.exports = function(grunt) {
   tasks.map(function(task) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
   });
+  grunt.loadNpmTasks('grunt-bump');
 
 
   grunt.loadTasks('customGruntTasks');
