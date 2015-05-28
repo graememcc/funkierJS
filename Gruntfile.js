@@ -29,21 +29,29 @@ module.exports = function(grunt) {
         src: ['lib/components/*.js'],
 
         markdown: {
-          byName: {dest: 'docs/markdown/byName.md', pre: '<%= templateDir %>/markdown/namePre.md' },
-          byCategory: { dest: 'docs/markdown/byCategory.md', pre: '<%= templateDir %>/markdown/categoryPre.md' }
+          byName: {dest: 'docs/markdown/byName.md', pre: '<%= templateDir %>/markdown/pre.md',
+                   preReplace: [{search: /TITLE/, replace: 'funkierJS API'}]},
+
+          byCategory: { dest: 'docs/markdown/byCategory.md', pre: '<%= templateDir %>/markdown/pre.md',
+                        preReplace:
+                          [{search: /TITLE/, replace: 'funkierJS API: By Category'}]}
         },
 
         html: {
           byName: {
             dest: 'docs/html/index.html',
-            pre: '<%= templateDir %>/html/namePre.html',
-            post: '<%= templateDir %>/html/namePost.html'
+            pre: '<%= templateDir %>/html/pre.html',
+            preReplace: [{search: /TITLE/,   replace: 'funkierJS API'},
+                         {search: /HEADING/, replace: 'funkierJS API'}],
+            post: '<%= templateDir %>/html/post.html'
           },
 
           byCategory: {
             dest: 'docs/html/byCategory.html',
-            pre: '<%= templateDir %>/html/categoryPre.html',
-            post: '<%= templateDir %>/html/categoryPost.html'
+            pre: '<%= templateDir %>/html/pre.html',
+            preReplace: [{search: /TITLE/,   replace: 'funkierJS API: By Category'},
+                         {search: /HEADING/, replace: 'funkierJS API: By Category'}],
+            post: '<%= templateDir %>/html/post.html'
           }
         },
 
@@ -58,22 +66,32 @@ module.exports = function(grunt) {
 
         markdown: {
           byName: {dest: 'docs/<%= pkg.version %>/markdown/byName.md',
-                   pre: '<%= templateDir %>/markdown/nameVersionedPre.md' },
+                   pre: '<%= templateDir %>/markdown/pre.md',
+                   preReplace: [{search: /TITLE/,   replace: 'funkierJS API (version <%= pkg.version %>)'},
+                                {search: /HEADING/, replace: 'funkierJS API (version <%= pkg.version %>)'}]},
+
           byCategory: { dest: 'docs/<%= pkg.version %>/markdown/byCategory.md',
-                        pre: '<%= templateDir %>/markdown/categoryVersionedPre.md' }
+                        pre: '<%= templateDir %>/markdown/pre.md',
+                        preReplace:
+                          [{search: /TITLE/,   replace: 'funkierJS API: By Category (version <%= pkg.version %>)'},
+                           {search: /HEADING/, replace: 'funkierJS API (version <%= pkg.version %>)'}]},
         },
 
         html: {
           byName: {
             dest: 'docs/<%= pkg.version %>/html/index.html',
-            pre: '<%= templateDir %>/html/nameVersionedPre.html',
-            post: '<%= templateDir %>/html/namePost.html'
+            pre: '<%= templateDir %>/html/pre.html',
+            preReplace: [{search: /TITLE/,   replace: 'funkierJS API (version <%= pkg.version %>)'},
+                         {search: /HEADING/, replace: 'funkierJS API (version <%= pkg.version %>)'}],
+            post: '<%= templateDir %>/html/post.html'
           },
 
           byCategory: {
             dest: 'docs/<%= pkg.version %>/html/byCategory.html',
-            pre: '<%= templateDir %>/html/categoryVersionedPre.html',
-            post: '<%= templateDir %>/html/categoryPost.html'
+            pre: '<%= templateDir %>/html/pre.html',
+            preReplace: [{search: /TITLE/,   replace: 'funkierJS API: By Category (version <%= pkg.version %>)'},
+                         {search: /HEADING/, replace: 'funkierJS API: By Category (version <%= pkg.version %>)'}],
+            post: '<%= templateDir %>/html/post.html'
           }
         }
       }
@@ -103,14 +121,14 @@ module.exports = function(grunt) {
 
       docVersionGeneration: {
         files: ['automation/generateHelp.js', 'customGruntTasks/generation.js',
-                '<%= templateDir %>/*/categoryVersionedP*', '<%= templateDir %>/*/nameVersionedP*', 'docgen/**/*.js',
+                '<%= templateDir %>/*/post*', '<%= templateDir %>/*/pre*', 'docgen/**/*.js',
                 'Gruntfile.js'],
         tasks: ['generation:versionedDocs']
       },
 
       helpGeneration: {
-        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', '<%= templateDir %>/*/categoryP*',
-                '<%= templateDir %>/*/nameP*', 'docgen/**/*.js',  'Gruntfile.js', 'lib/components/**.*js'],
+        files: ['automation/generateHelp.js', 'customGruntTasks/generation.js', '<%= templateDir %>/*/post*',
+                '<%= templateDir %>/*/pre*', 'docgen/**/*.js',  'Gruntfile.js', 'lib/components/**.*js'],
         tasks: ['generation:docs']
       },
 
