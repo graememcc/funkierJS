@@ -7,17 +7,19 @@
 
   // Import utility functions
   var testUtils = require('./testingUtilities');
+  var ANYVALUE = testUtils.ANYVALUE;
   var checkModule = testUtils.checkModule;
   var checkFunction = testUtils.checkFunction;
 
 
   var expectedObjects = [];
-  var expectedFunctions = [/*'curry', */ 'curryWithArity', 'arityOf'];
+  var expectedFunctions = ['curry', 'curryWithArity', 'arityOf'];
   checkModule('curry', curryModule, expectedObjects, expectedFunctions);
 
 
-  // Several functions are used all over the place. Pull them out now, to avoid an endless need to prefix
+  // The functions in this module are used in the tests for other functions. Pull them out now, to avoid an endless need to prefix
   var arityOf = curryModule.arityOf;
+  var curry = curryModule.curry;
   var curryWithArity = curryModule.curryWithArity;
 
 
@@ -58,123 +60,118 @@
   };
 
 
-//    // Many of the tests use curry, id and getRealArity: let's pull them out for convenience
-//    var curry = curryModule.curry;
-//
-//
-//    var currySpec = {
-//      name: 'curry',
-//      arity: 1,
-//      restrictions: [['function']],
-//      validArguments: [[function() {}]]
-//    };
-//
-//
-//    describeFunction(currySpec, curry, function(curry) {
-//      // We shall test curry with binary, ternary, and quarternary functions
-//      var testFuncs = [
-//        {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
-//        {f: function(a, b, c) {return a * b * c;}, args: [4, 5, 6], message: 'Curried ternary function'},
-//        {f: function(a, b, c, d) {return a - b - c - d;}, args: [10, 9, 8, 7], message: 'Curried quarternary function'}
-//      ];
-//
-//
-//      testFuncs.forEach(function(testData) {
-//        var fn = testData.f;
-//        var args = testData.args;
-//        var message = testData.message;
-//
-//        var curried = curry(fn);
-//        testCurriedFunction(curried, args, {original: fn, message: message});
-//      });
-//
-//
-//      it('Underlying function called with anticipated arguments when curried function called with superfluous arguments', function() {
-//        var fArgs = [];
-//        var f = function(a, b) {fArgs = [].slice.call(arguments);};
-//        var curried = curry(f);
-//        var args = [1, 2, 4, 'a'];
-//        // Lack of assignment here is deliberate: we are interested in the side effect
-//        curried(args[0], args[1], args[2], args[3]);
-//
-//        expect(fArgs).to.deep.equal(args.slice(0, f.length));
-//      });
-//
-//
-//      it('Currying a function of length 0 returns a function of length 0', function() {
-//        var f = function() {};
-//        var curried = curry(f);
-//
-//        expect(getRealArity(curried)).to.equal(0);
-//      });
-//
-//
-//      it('Currying a function of length 1 returns a function of length 1', function() {
-//        var f = function(x) {};
-//        var curried = curry(f);
-//
-//        expect(getRealArity(curried)).to.equal(1);
-//      });
-//
-//
-//      it('Previously curried function not recurried', function() {
-//        var f = curry(function(a, b) {});
-//
-//        expect(curry(f)).to.equal(f);
-//      });
-//
-//
-//      it('Currying preserves execution context (1)', function() {
-//        var f = curry(function(a, b) {return this;});
-//        var context = {f: f};
-//        var result = context.f(1, 2);
-//
-//        expect(result).to.equal(context);
-//      });
-//
-//
-//      it('Currying preserves execution context (2)', function() {
-//        var f = curry(function(a, b) {return this;});
-//        var context = {f: f};
-//        var result = context.f(1)(2);
-//
-//        expect(result).to.equal(context);
-//      });
-//
-//
-//      it('Currying preserves execution context (3)', function() {
-//        var f = curry(function() {return this;});
-//        var context = {f: f};
-//        var result = context.f();
-//
-//        expect(result).to.equal(context);
-//      });
-//
-//
-//      it('Calling a curried function that expects no arguments does not throw', function() {
-//        var f = curry(function() {return 42;});
-//        var fn = function() {
-//          f();
-//        };
-//
-//        expect(f).to.not.throw(TypeError);
-//      });
-//
-//
-//      it('Calling a curried function that awaits further arguments with no arguments throws', function() {
-//        var f = curry(function(x) {return 42;});
-//        var fn = function() {
-//          f();
-//        };
-//
-//        expect(f).to.throw(TypeError);
-//      });
-//    });
+  var currySpec = {
+    name: 'curry',
+    arity: 1,
+    restrictions: [['function']],
+    validArguments: [ANYVALUE]
+  };
+
+
+  checkFunction(currySpec, curry, function(curry) {
+    // We shall test curry with binary, ternary, and quarternary functions
+    var testFuncs = [
+      {f: function(a, b) {return a + b;}, args: [2, 3], message: 'Curried binary function'},
+      {f: function(a, b, c) {return a * b * c;}, args: [4, 5, 6], message: 'Curried ternary function'},
+      {f: function(a, b, c, d) {return a - b - c - d;}, args: [10, 9, 8, 7], message: 'Curried quarternary function'}
+    ];
+
+
+    testFuncs.forEach(function(testData) {
+      var fn = testData.f;
+      var args = testData.args;
+      var message = testData.message;
+
+      var curried = curry(fn);
+      testCurriedFunction(curried, fn, args, message);
+    });
+
+
+    it('Underlying function called with specified argument count when invoked with superfluous arguments', function() {
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); };
+      var curried = curry(f);
+      var args = [1, 2, 4, 'a'];
+      curried(args[0], args[1], args[2], args[3]);
+
+      expect(invokedArgs).to.deep.equal(args.slice(0, f.length));
+    });
+
+
+    it('Currying a function of length 0 returns a function of length 0', function() {
+      var f = function() {};
+      var curried = curry(f);
+
+      expect(arityOf(curried)).to.equal(0);
+    });
+
+
+    it('Currying a function of length 1 returns a function of length 1', function() {
+      var f = function(x) {};
+      var curried = curry(f);
+
+      expect(arityOf(curried)).to.equal(1);
+    });
+
+
+    it('Previously curried function not recurried', function() {
+      var f = curry(function(a, b) {});
+
+      expect(curry(f)).to.equal(f);
+    });
+
+
+    it('Currying binds to null execution context (1)', function() {
+      var f = curry(function(a, b) {return this;});
+      var context = {f: f};
+      var result = context.f(1, 2);
+
+      expect(result).to.equal(null);
+    });
+
+
+    it('Currying binds to null execution context (2)', function() {
+      var f = curry(function(a, b) {return this;});
+      var context = {f: f};
+      var result = context.f(1)(2);
+
+      expect(result).to.equal(null);
+    });
+
+
+    it('Currying binds to null execution context (3)', function() {
+      var f = curry(function() {return this;});
+      var context = {f: f};
+      var result = context.f();
+
+      expect(result).to.equal(null);
+    });
+
+
+    it('Calling a curried function that expects no arguments does not throw', function() {
+      var f = curry(function() {return 42;});
+      var fn = function() {
+        f();
+      };
+
+      expect(f).to.not.throw();
+    });
+
+
+    it('Calling a curried function that awaits further arguments with no arguments throws', function() {
+      var f = curry(function(x) {return 42;});
+      var fn = function() {
+        f();
+      };
+
+      expect(f).to.throw();
+    });
+  });
 
 
   var curryWithAritySpec = {
     name: 'curryWithArity',
-    restrictions: [['natural'], ['function']],
+    restrictions: [['strictNatural'], ['function']],
     validArguments: [[1], [function() {}]]
   };
 
@@ -253,8 +250,7 @@
     });
 
 
-    it('Underlying function called with specified argument count when invoked with superfluous arguments',
-      function() {
+    it('Underlying function called with specified argument count when invoked with superfluous arguments', function() {
       var invokedArgs = [];
       var f = function(a, b) { invokedArgs = [].slice.call(arguments); };
       var args = [1, 2, 4, 'a'];
@@ -360,7 +356,7 @@
     });
 
 
-    it('Functions can be recurried when not partially applied', function() {
+    it('Functions can be recurried when not partially applied (1)', function() {
       var invokedArgs = [];
       var f = function(a, b) { invokedArgs = [].slice.call(arguments); };
       var args = [1, 'x', 4, 'a', null];
@@ -375,13 +371,30 @@
 
       expect(invokedArgs).to.deep.equal(args);
     });
+
+
+    it('Functions can be recurried when not partially applied (2)', function() {
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); };
+      var args = [1, 'x', 4, 'a', null];
+
+      var intermediate = curry(f);
+      intermediate.apply(null, args);
+      // Sanity check
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+      invokedArgs = [];
+      var curried = curryWithArity(5, intermediate);
+      curried(args[0])(args[1])(args[2])(args[3])(args[4]);
+
+      expect(invokedArgs).to.deep.equal(args);
+    });
   });
 
 
   var aritySpec = {
     name: 'arityOf',
     restrictions: [['function']],
-    validArguments: [[function() {}]]
+    validArguments: ANYVALUE
   };
 
 
@@ -433,12 +446,12 @@
     });
 
 
-//      it('Works correctly for a curried function (1)', function() {
-//        var fn = function(x, y) {};
-//        var curried = curry(fn);
-//
-//        expect(getRealArity(curried)).to.equal(fn.length);
-//      });
+    it('Works correctly for a curried function (1)', function() {
+      var fn = function(x, y) {};
+      var curried = curry(fn);
+
+      expect(arityOf(curried)).to.equal(fn.length);
+    });
 
 
     it('Works correctly for a curried function (2)', function() {
@@ -450,56 +463,56 @@
     });
 
 
-//      it('Reports arguments outstanding for partially applied function (1)', function() {
-//        var fn = function(x, y, z) {};
-//        var curried = curry(fn);
-//
-//        expect(getRealArity(curried(1))).to.equal(fn.length - 1);
-//      });
-//
-//
-//      it('Reports arguments outstanding for partially applied function (2)', function() {
-//        var fn = function(x, y, z) {};
-//        var curried = curry(fn);
-//
-//        expect(getRealArity(curried(1)(1))).to.equal(fn.length - 2);
-//      });
-//
-//
-//      it('Reports arguments outstanding for partially applied function (3)', function() {
-//        var fn = function(x, y, z) {};
-//        var curried = curry(fn);
-//
-//        expect(getRealArity(curried(1, 1))).to.equal(fn.length - 2);
-//      });
-//
-//
-//    it('Recognises when a function is curried (1)', function() {
-//      var fn = curry(function() {});
-//
-//      expect(arityOf._isCurried(fn)).to.equal(true);
-//    });
-//
-//
-//    it('Recognises when a function is curried (2)', function() {
-//      var fn = curry(function(x) {});
-//
-//      expect(arityOf._isCurried(fn)).to.equal(true);
-//    });
-//
-//
-//    it('Recognises when a function is curried (3)', function() {
-//      var fn = curry(function(x, y) {});
-//
-//      expect(arityOf._isCurried(fn)).to.equal(true);
-//    });
-//
-//
-//    it('Recognises when a function is curried (4)', function() {
-//      var fn = curry(function(x, y) {})(1);
-//
-//      expect(arityOf._isCurried(fn)).to.equal(true);
-//    });
+      it('Reports arguments outstanding for partially applied function (1)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(arityOf(curried(1))).to.equal(fn.length - 1);
+      });
+
+
+      it('Reports arguments outstanding for partially applied function (2)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(arityOf(curried(1)(1))).to.equal(fn.length - 2);
+      });
+
+
+      it('Reports arguments outstanding for partially applied function (3)', function() {
+        var fn = function(x, y, z) {};
+        var curried = curry(fn);
+
+        expect(arityOf(curried(1, 1))).to.equal(fn.length - 2);
+      });
+
+
+    it('Recognises when a function is curried (1)', function() {
+      var fn = curry(function() {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (2)', function() {
+      var fn = curry(function(x) {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (3)', function() {
+      var fn = curry(function(x, y) {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (4)', function() {
+      var fn = curry(function(x, y) {})(1);
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
 
 
     it('Recognises when a function is curried (5)', function() {

@@ -50,6 +50,34 @@
     });
 
 
+    describe('curry', function() {
+      it('curry exists', function() {
+        expect(funkier).to.have.a.property('curry');
+      });
+
+
+      it('funkierJS\'s curry is indeed the documented value', function() {
+        var module = require('../../lib/components/curry');
+        expect(funkier.curry).to.equal(module.curry);
+      });
+
+
+      it('curry is a function', function() {
+        expect(funkier.curry).to.be.a('function');
+      });
+
+
+      it('curry has documented arity', function() {
+        expect(funkier.arityOf(funkier.curry)).to.equal(1);
+      });
+
+
+      it('curry is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.curry)).to.equal(true);
+      });
+    });
+
+
     describe('curryWithArity', function() {
       it('curryWithArity exists', function() {
         expect(funkier).to.have.a.property('curryWithArity');
@@ -84,7 +112,7 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'arity', 'arityOf', 'curryWithArity'];
+      documentedNames = ['help', 'arity', 'arityOf', 'curry', 'curryWithArity'];
     });
 
 

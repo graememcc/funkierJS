@@ -28,11 +28,50 @@ the amount of arguments not yet supplied will be returned.</p>
 <pre><code>arityOf(function(x) {}); // =&gt; 1;
 </code></pre></section>
 </section>
+<section class="functionRef" id="curry">
+<h3 class="functionName">curry</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Curries the given function f, returning a function which accepts the same number of arguments as the original
+function&#39;s length property, but which may be partially applied. The function can be partially applied by passing
+arguments one at a time, or by passing several arguments at once. The function can also be called with more
+arguments than the given function&#39;s length, but the superfluous arguments will be ignored, and will not be
+passed to the original function. If the curried function or any subsequent partial applications require at least
+one argument, then calling the function with no arguments will throw. <code>curry</code> throws if its argument is not a
+function.</p>
+<p>Currying a function that has already been curried will return the exact same function.</p>
+<p>The returned function will have a length of 1, unless the original function will have length 0, in which case
+the result also has length 0. Note that when currying functions of length 0 and 1 that the results will be
+different functions from those passed in.</p>
+<p>If you need a function which accepts an argument count that differs from the function&#39;s length property,
+use <code>curryWithArity</code>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y, z) { console.log(x, y, z); }
+
+var g = curry(f);
+
+g(4);  // =&gt; a function awaiting two arguments
+
+g(4)(2); // =&gt; a function awaiting one argument
+
+g(4)(2)(&#39;z&#39;); // =&gt; 4, 2, &#39;z&#39; logged
+
+g(&#39;a&#39;, &#39;b&#39;)(&#39;c&#39;); // =&gt; &#39;a&#39;, &#39;b&#39; &#39;c&#39; logged
+
+g(&#39;x&#39;)(&#39;y&#39;, &#39;z&#39;); // =&gt; &#39;x&#39;, &#39;y&#39; &#39;z&#39; logged
+
+g(&#39;d&#39;, &#39;e&#39;, &#39;f&#39;); // =&gt; &#39;d&#39;, &#39;e&#39; &#39;f&#39; logged
+
+curry(g) === g;  // =&gt; true
+</code></pre></section>
+</section>
 <section class="functionRef" id="curryWithArity">
 <h3 class="functionName">curryWithArity</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Curries the given function f to the supplied arity, which need not equal the function&#39;s length. The function will
 be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original
@@ -58,12 +97,18 @@ requires the given number of arguments before calling the original function with
 and some of the ones supplied to the recurried function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(x, y) { console.log(x, y); }
+
 var g = curryWithArity(1, f);
-g(7);  // =&gt; 1, undefined
+
+g(7);  // =&gt; 1, undefined logged
+
 var h = curryWithArity(3, f);
+
 var j = h(2, &#39;a&#39;);
-j(9);  // =&gt; 2, &#39;a&#39;
-h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39;
+
+j(9);  // =&gt; 2, &#39;a&#39; logged
+
+h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
 </code></pre></section>
 </section>
 
