@@ -82,7 +82,8 @@
       {type: 'negative float', value: -1.1},
       {type: 'float', value: 2.2},
       {type: 'string containing float', value: '0.1'},
-      {type: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}}
+      {type: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}},
+      {type: 'object evaluating to float via string', value: {valueOf: function() {return '1.1';}}}
     ];
 
     var positiveIntegralTests = [
@@ -96,7 +97,10 @@
       {type: 'true', value: true}, // booleans should coerce to numbers
       {type: 'false', value: false},
       {type: 'string containing positive integer', value: '1'},
-      {type: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}}
+      {type: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}},
+      {type: 'object evaluating to positive integer via string', value: {valueOf: function() {return '2';}}},
+      {type: 'object evaluating to positive integer via boolean', value: {valueOf: function() {return true;}}},
+      {type: 'object evaluating to positive integer via null', value: {valueOf: function() {return null;}}}
     ];
 
     var negativeIntegralTests = [
@@ -105,7 +109,8 @@
 
     var coercibleNegativeTests = [
       {type: 'string containing negative integer', value: '-1'},
-      {type: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}}
+      {type: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}},
+      {type: 'object evaluating to negative integer via string', value: {valueOf: function() {return '-2';}}}
     ];
 
 
