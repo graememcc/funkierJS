@@ -296,35 +296,35 @@
     });
 
 
-    it('Previously curried function not recurried to same arity (1)', function() {
+    it('Calling with curried function and function\'s arity returns original (1)', function() {
       var f = curryWithArity(2, function(a, b) {});
 
       expect(curryWithArity(2, f)).to.equal(f);
     });
 
 
-    it('Previously curried function not recurried to same arity (2)', function() {
+    it('Calling with curried function and function\'s arity returns original (2)', function() {
       var f = curryWithArity(1, function(a, b) {});
 
       expect(curryWithArity(1, f)).to.equal(f);
     });
 
 
-    it('Previously curried function not recurried to same arity (3)', function() {
+    it('Calling with curried function and function\'s arity returns original (3)', function() {
       var f = curryWithArity(0, function(a, b) {});
 
       expect(curryWithArity(0, f)).to.equal(f);
     });
 
 
-    it('Previously curried function not recurried to same arity (4)', function() {
+    it('Calling with curried function and function\'s arity returns original (4)', function() {
       var f = curryWithArity(1, function(a) {});
 
       expect(curryWithArity(1, f)).to.equal(f);
     });
 
 
-    it('Previously curried function not recurried to same arity (5)', function() {
+    it('Calling with curried function and function\'s arity returns original (5)', function() {
       var f = curryWithArity(0, function() {});
 
       expect(curryWithArity(0, f)).to.equal(f);
