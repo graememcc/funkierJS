@@ -1,36 +1,14 @@
-(function (root, factory) {
-  var dependencies = ['chai', '../../internalUtilities', './testingUtilities'];
-
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-
-    define(['exports'].concat(dependencies), factory);
-  } else if (typeof exports === 'object') {
-    // CommonJS
-
-    factory.apply(null, [exports].concat(dependencies.map(function(dep) { return require(dep); })));
-  } else {
-    // Browser globals
-
-    root.commonJsStrict = root.commonJsStrict || {};
-    factory.apply(null, [root].concat(dependencies.map(function(dep) {
-      if (dep.slice(0, 2) == './') dep = dep.slice(2);
-      if (dep.slice(0, 3) == '../') dep = dep.slice(3);
-      return root[dep] || root.commonJsStrict[dep];
-    })));
-  }
-}(this, function(exports, chai, internalUtilities, testingUtilities) {
+(function() {
   "use strict";
 
 
-  var checkModule = testingUtilities.checkModule;
+  var internalUtilities = require('../../lib/internalUtilities');
+  var expect = require('chai').expect;
+  var checkModule = require('./testingUtilities').checkModule;
 
 
   checkModule('internalUtilities', internalUtilities, {
               expectedFunctions: ['checkIntegral', 'checkPositiveIntegral']});
-
-
-  var expect = chai.expect;
 
 
   /*
@@ -195,7 +173,7 @@
 
     addNumericTests(checkPositiveIntegral, {positiveOnly: true});
   });
-}));
+})();
 //(function() {
 //  // Deliberate outer scope here: we want a non-strict scope where "this" points to the global.
 //
