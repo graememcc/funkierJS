@@ -81,7 +81,7 @@ module.exports = (function() {
   Object.freeze(ANYVALUE);
 
 
-  var typeclasses = [/*'integer',*/ 'positive', /*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var typeclasses = [/*'integer',*/ 'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
       return true;
@@ -96,14 +96,16 @@ module.exports = (function() {
 
   var primitiveTypeOf = {
     'function': 'function',
-    'natural':  'number'
+    'natural':  'number',
+    'strictNatural':  'number'
   };
 
 
   var restrictionVerifiers = {
     'function': function(f) { return typeof(f) === 'function'; },
 
-    'natural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; }
+    'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
+    'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; }
   };
 
 
@@ -117,19 +119,13 @@ module.exports = (function() {
   //
 
   var verifyRestrictions = function(name, restrictions, typicalArguments) {
-    // If the caller wants the testsuite to generate the typical arguments, then they'll be valid by default
-    if (typicalArguments === ANYVALUE) return;
-
+    // Assumption: caller has checked that restrictions is an array
     restrictions.forEach(function(typeRestrictions, i) {
       var failBecause = function(reason) {
         throw new Error(name + ': Spec error for positional argument ' + (i + 1) + ': ' + reason);
       };
 
-      if (typeRestrictions === NO_RESTRICTIONS && typicalArguments[i].length === 0)
-        failBecause('Unrestricted argument at this position needs a typical argument supplied');
-
-      // We can let the test generator pick the arguments for a particular position
-      if (typicalArguments[i] === ANYVALUE) return;
+      if (typeRestrictions === NO_RESTRICTIONS) return;
 
       // typeRestrictions is an array of restrictions for parameter i
       typeRestrictions.forEach(function(expectedType, j) {
@@ -200,7 +196,6 @@ module.exports = (function() {
       });
     });
 
-
     if (restrictions.every(function(r) { return r === NO_RESTRICTIONS; }))
       throw new Error(name + 'has an unneccesary restrictions property. Please remove it');
   };
@@ -213,30 +208,50 @@ module.exports = (function() {
    */
 
   var makeBogusFor = function(restrictionsForPosition) {
+    // Note that the typeclasses indicate what typeclass an instance of the type *could* be a value of after coercsion,
+    // not necessarily the typeclass of the value given
     var bogusPrimitives = [
-      {type: 'number',    value: 2,             typeclasses: [/*'integer', 'positive' */]},
-      {type: 'boolean',   value: true,          typeclasses: [/*'integer', 'positive' */]},
+      {type: 'number',    value: 2,             typeclasses: [/*'integer',*/ 'natural', 'strictNatural']},
+      {type: 'boolean',   value: true,          typeclasses: [/*'integer',*/ 'natural']},
       {type: 'string',    value: 'x',
-         typeclasses: [/* 'integer', 'positive', 'arraylike', 'objectlike', 'objectlikeornull' */]},
+         typeclasses: [/* 'integer', 'natural', 'arraylike', 'objectlike', 'objectlikeornull' */]},
       {type: 'undefined', value: undefined,     typeclasses: []},
-      {type: 'null',      value: null,          typeclasses: [/*'integer', 'positive', 'objectlikeornull' */]},
+      {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
       {type: 'function',  value: function() {}, typeclasses: [/*'function', 'objectlike', 'objectlikeornull' */]},
-      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', 'positive', 'objectlike','objectlikeornull' */]}, // XXX Why is object in the integer typeclass? Because of valueOf?
+      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', 'natural', 'objectlike','objectlikeornull' */]},
       {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull' */]}
     ];
 
+    var naturalCommon = [
+      {type: 'negative', value: -1}, {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
+      {type: 'negative infinity', value: Number.NEGATIVE_INFINITY}, {type: 'non-integral', value: 1.5},
+      {type: 'NaN', value: Number.NaN}, {type: 'string coercing to negative', value: '-1'},
+      {type: 'string coercing to non-integral', value: '1.2'},
+      {type: 'object coercing to negative', value: {valueOf: function() { return -1; }}},
+      {type: 'object coercing to infinity', value: {valueOf: function() { return Number.POSITIVE_INFINITY; }}},
+      {type: 'object coercing to negative infinity', value: {valueOf: function() { return Number.NEGATIVE_INFINITY; }}},
+      {type: 'object coercing to non-integral', value: {valueOf: function() { return 1.2; }}}];
+
+
     var bogusForTypeClass = {
-      natural: [{type: 'negative', value: -1}, {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
-                {type: 'negative infinity', value: Number.NEGATIVE_INFINITY}, {type: 'non-integral', value: 1.5},
-                {type: 'NaN', value: Number.NaN}]
+      natural: naturalCommon,
+      strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
+                                            value: {valueOf: function() { return null; }}},
+                                           {type: 'object coercing to boolean',
+                                            value: {valueOf: function() { return true; }}},
+                                           {type: 'object coercing to number via string',
+                                            value: {valueOf: function() { return '1'; }}}])
     };
 
     // If the restriction is the constructor of a given type, then all of the above are invalid
     if (restrictionsForPosition.length === 1 && typeof(restrictionsForPosition[0]) === 'function')
       return bogusPrimitives.slice();
 
-    var disallowed = function(t) { return restrictionsForPosition.indexOf(t.type ? t.type : t) === -1; };
-    var bogus = bogusPrimitives.filter(function(v) { return disallowed(v) && v.typeclasses.every(disallowed); });
+    var bogus = bogusPrimitives.filter(function(v) {
+      return restrictionsForPosition.indexOf(v.type) === -1 && v.typeclasses.every(function(t) {
+        return restrictionsForPosition.indexOf(t) === -1;
+      });
+    });
 
     return bogus.concat(restrictionsForPosition.reduce(function(soFar, restriction) {
       if (!isTypeClass(restriction)) return soFar;
@@ -263,24 +278,29 @@ module.exports = (function() {
 
   var buildAnArgumentsArray = function(typicalArguments, restrictions) {
     var buildArgumentsForPosition = function(arr, restrictions) {
+      if (restrictions === NO_RESTRICTIONS) {
+        if (arr === ANYVALUE) return [[{type: 'number', value: 42}]];
+        return arr.map(function(val) { return [{type: typeof(val), value: val}]; });
+      }
+
       if (arr === ANYVALUE) return restrictions.map(function(r) { return [pickValidForRestriction(r)]; });
       return arr.map(function(arg, i) { return [{type: restrictions[i], value: arg}]; });
     };
 
     // Assumption: typicalArguments and restrictions have the same length
-    if (restrictions.length === 0) return [];
-    if (typicalArguments === ANYVALUE && restrictions.length === 0) return [];
+    if (typicalArguments.length === 0) return [];
 
-    // Note: typicalArguments is either an array or ANYVALUE
-    var laterPositions = Array.isArray(typicalArguments) ? typicalArguments.slice(1) : ANYVALUE;
-    var remaining = buildAnArgumentsArray(laterPositions, restrictions.slice(1));
+    var remaining = buildAnArgumentsArray(typicalArguments.slice(1), restrictions.slice(1));
 
-    var first = Array.isArray(typicalArguments) ? typicalArguments[0] : ANYVALUE;
-    var firstPositionalArguments = buildArgumentsForPosition(first, restrictions[0]);
-    return firstPositionalArguments.reduce(function(soFar, call) {
-      soFar = soFar.concat(remaining.map(function(arr) { return call.concat(arr); }));
-      return soFar;
-    }, []);
+    var firstPositionalArguments = buildArgumentsForPosition(typicalArguments[0], restrictions[0]);
+    if (remaining.length > 0) {
+      return firstPositionalArguments.reduce(function(soFar, call) {
+        soFar = soFar.concat(remaining.map(function(arr) { return call.concat(arr); }));
+        return soFar;
+      }, []);
+    } else {
+      return firstPositionalArguments;
+    }
   };
 
 
@@ -334,6 +354,8 @@ module.exports = (function() {
     // First, we perform various sanity checks to ensure I have written the spec correctly
     var arity = arityOf(fnUnderTest);
 
+    // We assume checkFunction has ensured that both restrictions and typicalArguments are arrays, and in particular
+    // has already converted ANYVALUE to an array of ANYVALUE the same length as restrictions
     if (restrictions.length !== arity)
       throw new Error('Too few restrictions provided to test generation function for ' + name + ': it has arity ' +
                        arity + ' but only ' + restrictions.length + ' restrictions provided.');
@@ -343,36 +365,41 @@ module.exports = (function() {
                        arity + ' but only ' + restrictions.length + ' restrictions provided.');
 
     typicalArguments.forEach(function(g, i) {
-      if (g.length === 0)
-        throw new Error('No valid arguments supplied for parameter ' + (i + 1) + ' of ' + name);
+      if (g === ANYVALUE) {
+        typicalArguments[i] = restrictions[i] !== NO_RESTRICTIONS ?
+                                restrictions[i].map(function(_) { return ANYVALUE; }) : [ANYVALUE];
+      } else {
+        if (g.length === 0)
+          throw new Error('No valid arguments supplied for parameter ' + (i + 1) + ' of ' + name);
+      }
     });
 
     verifyRestrictions(name, restrictions, typicalArguments);
 
+    var addOne = function(call) {
+      var args = call.map(function(c) { return c.value; });
+      var signature = '(' + call.map(function(c) { return c.type; }).join(', ') + ')';
+
+      it('Throws with type signature ' + signature, function() {
+        var fn = function() {
+          fnUnderTest.apply(null, args);
+        };
+
+        expect(fn).to.throw();
+      });
+    };
+
     // Now we've checked that I'm not an idiot, we can generate the tests!
     restrictions.forEach(function(typeRestrictions, i) {
       // Skip if its impossible for an argument at this position to have an invalid type
-      if (typeRestrictions.length === NO_RESTRICTIONS)
+      if (typeRestrictions === NO_RESTRICTIONS)
         return;
 
-      var left = Array.isArray(typicalArguments) ? typicalArguments.slice(0, i) : ANYVALUE;
-      var right = Array.isArray(typicalArguments) ? typicalArguments.slice(i + 1) : ANYVALUE;
+      var left = typicalArguments.slice(0, i);
+      var right = typicalArguments.slice(i + 1);
       var argumentsLeft = buildAnArgumentsArray(left, restrictions.slice(0, i));
       var argumentsRight = buildAnArgumentsArray(right, restrictions.slice(i + 1));
       var bogusArguments = makeBogusFor(typeRestrictions);
-
-      var addOne = function(call) {
-        var args = call.map(function(c) { return c.value; });
-        var signature = '(' + call.map(function(c) { return c.type; }).join(', ') + ')';
-
-        it('Throws with type signature ' + signature, function() {
-          var fn = function() {
-            fnUnderTest.apply(null, args);
-          };
-
-          expect(fn).to.throw();
-        });
-      };
 
       var getType = function(t) { return t === null ? null : (Array.isArray(t) ? 'array' : typeof(t)); };
 
@@ -432,17 +459,29 @@ module.exports = (function() {
   };
 
 
-  // Generate a text fixture code that checks a function has a given length, and possibly that it is curried,
-  // and then calls remainingTests with the function under test in order to add function-specific tests
+  // Generate a text fixture code containing tests that check the function throws when invoked with various combinations
+  // of bad parameters, and then calls remainingTests to add function-specific tests
   var checkFunction = function(spec, fnUnderTest, remainingTests) {
     var name = spec.name;
 
     describe(name, function() {
       if ('restrictions' in spec) {
-        if (!Array.isArray(spec.restrictions) || !Array.isArray(spec.validArguments))
-          throw new Error('One (or both) of the restrictions and validArguments in ' + name + '\'s spec is malformed');
+        // It would be somewhat pointless to explicitly say there are no restrictions at all, but check for it
+        // just in case
+        if (spec.restrictions !== NO_RESTRICTIONS) {
+          if (!Array.isArray(spec.restrictions) || (spec.validArguments !== undefined &&
+                                                    spec.validArguments !== ANYVALUE &&
+                                                    !Array.isArray(spec.validArguments)))
+            throw new Error('One (or both) of the restrictions and validArguments in ' + name + '\'s spec is malformed');
 
-        checkTypeRestrictions(name, fnUnderTest, spec.restrictions, spec.validArguments);
+          if (spec.validArguments === undefined || spec.validArguments === ANYVALUE)
+            spec.validArguments = spec.restrictions.map(function(_) { return ANYVALUE; });
+
+          checkTypeRestrictions(name, fnUnderTest, spec.restrictions, spec.validArguments);
+        } else {
+          if (spec.validArguments !== undefined && spec.validArguments !== ANYVALUE)
+            throw new Error(name + 'has an unneccesary validArguments property. Please remove it');
+        }
       } else if ('validArguments' in spec) {
         throw new Error(name + 'has an unneccesary validArguments property. Please remove it');
       }
