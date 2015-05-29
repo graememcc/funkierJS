@@ -35,6 +35,43 @@ the amount of arguments not yet supplied will be returned.</p>
 <pre><code>arityOf(function(x) {}); // =&gt; 1;
 </code></pre></section>
 </section>
+<section class="functionRef" id="curryWithArity">
+<h3 class="functionName">curryWithArity</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Curries the given function f to the supplied arity, which need not equal the function&#39;s length. The function will
+be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original
+function will be called with a null execution context. It is possible to partially apply the resulting function,
+and indeed the further resulting function(s). The resulting function and its partial applications will throw if
+they require at least one argument, but are invoked without any. <code>curryWithArity</code> throws if the arity is not a
+natural number, or if the second parameter is not a function.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf">arityOf</a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function. One use case of <code>curryWithArity</code> is
+to create unique functions from functions that accept optional arguments. For example, one common error involves
+mapping over an array with <code>parseInt</code>, which has an optional <em>radix</em> parameter. <code>Array.prototype.map</code> invokes
+the mapping function with additional metadata such as the position of the current element; when these factors
+collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
+<code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
+one argument.</p>
+<p>It is possible to recurry previously curried functions, however generally it only makes sense to recurry a
+function that has not been partially applied: this will be equivalent to currying the original function.
+Recurrying a partially applied function will likely not work as you expect: the new function will be one that
+requires the given number of arguments before calling the original function with the partially applied arguments
+and some of the ones supplied to the recurried function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y) { console.log(x, y); }
+var g = curryWithArity(1, f);
+g(7);  // =&gt; 1, undefined
+var h = curryWithArity(3, f);
+var j = h(2, &#39;a&#39;);
+j(9);  // =&gt; 2, &#39;a&#39;
+h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39;
+</code></pre></section>
+</section>
 
 </section>
       </main>
