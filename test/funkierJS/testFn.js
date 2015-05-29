@@ -512,60 +512,6 @@
 //    });
 //
 //
-//    var bindWithContextAndAritySpec = {
-//      name: 'bindWithContextAndArity',
-//      arity: 3,
-//      restrictions: [['objectlike'], ['positive'], ['function']],
-//      validArguments: [[{}], [0], [function() {}]]
-//    };
-//
-//
-//    describeFunction(bindWithContextAndAritySpec, fn.bindWithContextAndArity, function(bindWithContextAndArity) {
-//      addReturnsFunctionTest(bindWithContextAndArity, [{}, 0, function() {}]);
-//
-//
-//      var addCorrectArityTest = function(message, arity, f) {
-//        it('Returned function has correct arity ' + message, function() {
-//          var obj = {};
-//          var result = bindWithContextAndArity(obj, arity, f);
-//
-//          expect(getRealArity(result)).to.equal(arity);
-//        });
-//      };
-//
-//
-//      addCorrectArityTest('(1)', 0, function() {});
-//      addCorrectArityTest('(2)', 1, function() {});
-//      addCorrectArityTest('(3)', 1, function(x) {});
-//      addCorrectArityTest('(4)', 1, function(x, y) {});
-//
-//
-//      it('Binds to context', function() {
-//        var f = function() {return this;};
-//        var obj = {};
-//        var arity = 0;
-//        var result = bindWithContextAndArity(obj, arity, f)();
-//
-//        expect(result).to.equal(obj);
-//      });
-//
-//
-//      // If necessary, the returned function should be curried
-//      var f1 = function(x, y, z) {return x + y + this.foo;};
-//      var obj1 = {foo: 6};
-//      var arity1 = 2;
-//      var result = bindWithContextAndArity(obj1, arity1, f1);
-//      testCurriedFunction(result, [1, 2], {message: 'bindWithContextAndArity bound function'});
-//
-//
-//      // bindWithContextAndArity should be curried
-//      var f2 = function(x) {return x + this.foo;};
-//      var obj2 = {foo: 5};
-//      var arity2 = 1;
-//      testCurriedFunction(bindWithContextAndArity, {firstArgs: [obj2, arity2, f2], thenArgs: [2]});
-//    });
-//
-//
 //    var addCommonWrapTests = function(fnUnderTest, isWrap) {
 //      isWrap = isWrap || false;
 //

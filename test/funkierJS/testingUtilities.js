@@ -97,6 +97,7 @@ module.exports = (function() {
   var primitiveTypeOf = {
     'function': 'function',
     'natural':  'number',
+    'objectlike': 'object',
     'strictNatural':  'number'
   };
 
@@ -105,6 +106,8 @@ module.exports = (function() {
     'function': function(f) { return typeof(f) === 'function'; },
 
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
+    'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
+                                        typeof(o) === 'string';},
     'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; }
   };
 
@@ -214,12 +217,12 @@ module.exports = (function() {
       {type: 'number',    value: 2,             typeclasses: [/*'integer',*/ 'natural', 'strictNatural']},
       {type: 'boolean',   value: true,          typeclasses: [/*'integer',*/ 'natural']},
       {type: 'string',    value: 'x',
-         typeclasses: [/* 'integer', 'natural', 'arraylike', 'objectlike', 'objectlikeornull' */]},
+         typeclasses: [/* 'integer', */ 'natural', /* 'arraylike', */'objectlike', /*'objectlikeornull' */]},
       {type: 'undefined', value: undefined,     typeclasses: []},
       {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
-      {type: 'function',  value: function() {}, typeclasses: [/*'function', 'objectlike', 'objectlikeornull' */]},
-      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', 'natural', 'objectlike','objectlikeornull' */]},
-      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull' */]}
+      {type: 'function',  value: function() {}, typeclasses: [/*'function',*/ 'objectlike', /*'objectlikeornull' */]},
+      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'objectlike',/*'objectlikeornull' */]},
+      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike' /*, 'strictarraylike',  'objectlikeornull' */]}
     ];
 
     var naturalCommon = [
@@ -235,6 +238,7 @@ module.exports = (function() {
 
     var bogusForTypeClass = {
       natural: naturalCommon,
+      objectlike: [],
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
                                             value: {valueOf: function() { return null; }}},
                                            {type: 'object coercing to boolean',

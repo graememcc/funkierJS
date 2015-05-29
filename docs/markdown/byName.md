@@ -23,6 +23,64 @@ the amount of arguments not yet supplied will be returned.
 #### Examples ####
     arityOf(function(x) {}); // => 1;
 ***
+### bindWithContextAndArity ###
+Category: Function
+
+**Usage:** `var result = bindWithContextAndArity(n, ctx, f);`
+
+Parameters:  
+n `strictNatural`  
+ctx `objectlike`  
+f `function`
+
+Returns: `function`
+
+Given an arity, object and function, returns a curried function whose execution context is permanently bound to
+the supplied execution context.
+
+Curries the given function f to the supplied arity, which need not equal the function's length, and permanently
+binds the resulting function to the supplied execution context. The function will be called when that number of
+arguments have been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting
+function, and indeed the further resulting function(s). The resulting function and its partial applications will
+throw if they require at least one argument, but are invoked without any. `bindWithContextAndArity` throws if the
+arity is not a natural number, if the second parameter is not an acceptable type for an execution context, or if
+the last parameter is not a function.
+
+The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
+wrapped function will be invoked.
+
+As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function.
+
+In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
+makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
+original function. To be able to recurry a curried function to a different arity, the execution context given
+must be the exact object that was previously used to create the function being recurried. It is an error to
+try and recurry a curried function bound to one execution context to another. In particular, functions curried
+with [`curry`](#curry) or [`curryWithArity`](#curryWithArity) cannot be curried with an execution context: they
+have already been bound with an implicit `null` execution context. `bindWithContextAndArity` will throw in that
+case.
+
+Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
+curry such functions won't throw, but they will not work as expected.
+
+#### Examples ####
+    var obj = {foo: 42};
+    
+    var f = function(x, y) { return this.foo + x; };
+    
+    var g = bindWithContextAndArity(1, obj, f);
+    
+    g(3); // returns 45
+    
+    var h = bindWithContextAndArity(3, obj, g); // OK, same context object
+    h(2)(3, 4); // returns 44
+    
+    var err = bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don't match
+    
+    var ok = bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
+***
 ### curry ###
 Category: Function
 
@@ -49,6 +107,12 @@ different functions from those passed in.
 
 If you need a function which accepts an argument count that differs from the function's length property,
 use `curryWithArity`.
+
+Note that you cannot pass in functions that have been bound to a specific execution context using
+[`bindWithContextAndArity`](#bindWithContextAndArity): allowing those would break the invariant that functions
+curried with `curry` are invoked with a null execution context. Thus an error is thrown in such cases. (However,
+funkierJS cannot tell if a function has been bound with the native `bind` method. Currying such functions might
+lead to unexpected results).
 
 #### Examples ####
     var f = function(x, y, z) { console.log(x, y, z); }
@@ -100,11 +164,19 @@ collide, one ends up trying to convert to numbers whose radix equals the array i
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
 one argument.
 
-It is possible to recurry previously curried functions, however generally it only makes sense to recurry a
-function that has not been partially applied: this will be equivalent to currying the original function.
-Recurrying a partially applied function will likely not work as you expect: the new function will be one that
-requires the given number of arguments before calling the original function with the partially applied arguments
-and some of the ones supplied to the recurried function.
+It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
+however generally it only makes sense to recurry a function that has not been partially applied: this will be
+equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
+expect: the new function will be one that requires the given number of arguments before calling the original
+function with the partially applied arguments and some of the ones supplied to the recurried function.
+
+You cannot however pass in functions that have been bound to a specific execution context using
+[`bindWithContextAndArity`](#bindWithContextAndArity): `curryWithArity` promises to invoke functions with a null
+execution context, but those functions have a fixed execution context that cannot be overridden. An error is
+thrown if the function has been bound to an execution context in this way.
+
+Note however that funkierJS has no visibility into the execution contexts of functions bound using the native
+function `bind` method. Attempting to curry these might lead to surprising results, and should be avoided.
 
 #### Examples ####
     var f = function(x, y) { console.log(x, y); }

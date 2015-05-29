@@ -50,6 +50,34 @@
     });
 
 
+    describe('bindWithContextAndArity', function() {
+      it('bindWithContextAndArity exists', function() {
+        expect(funkier).to.have.a.property('bindWithContextAndArity');
+      });
+
+
+      it('funkierJS\'s bindWithContextAndArity is indeed the documented value', function() {
+        var module = require('../../lib/components/curry');
+        expect(funkier.bindWithContextAndArity).to.equal(module.bindWithContextAndArity);
+      });
+
+
+      it('bindWithContextAndArity is a function', function() {
+        expect(funkier.bindWithContextAndArity).to.be.a('function');
+      });
+
+
+      it('bindWithContextAndArity has documented arity', function() {
+        expect(funkier.arityOf(funkier.bindWithContextAndArity)).to.equal(3);
+      });
+
+
+      it('bindWithContextAndArity is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bindWithContextAndArity)).to.equal(true);
+      });
+    });
+
+
     describe('curry', function() {
       it('curry exists', function() {
         expect(funkier).to.have.a.property('curry');
@@ -112,7 +140,7 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'arity', 'arityOf', 'curry', 'curryWithArity'];
+      documentedNames = ['help', 'arity', 'arityOf', 'bindWithContextAndArity', 'curry', 'curryWithArity'];
     });
 
 
