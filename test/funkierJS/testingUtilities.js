@@ -71,6 +71,42 @@ module.exports = (function() {
   Object.freeze(NO_RESTRICTIONS);
 
 
+  /*
+   * A special sentinel value to denote that we want the test harness to generate valid arguments for a particular
+   * argument position.
+   *
+   */
+
+  var ANYVALUE = {};
+  Object.freeze(ANYVALUE);
+
+
+  var typeclasses = [/*'integer',*/ 'positive', /*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var isTypeClass = function(restriction) {
+    if (typeclasses.indexOf(restriction) !== -1)
+      return true;
+    /*
+    if (isFuncTypeClass(restriction))
+      return true;
+    */
+
+    return false;
+  };
+
+
+  var primitiveTypeOf = {
+    'function': 'function',
+    'natural':  'number'
+  };
+
+
+  var restrictionVerifiers = {
+    'function': function(f) { return typeof(f) === 'function'; },
+
+    'natural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; }
+  };
+
+
   // Before checkTypeRestrictions generates the type tests, it is prudent to confirm I wrote  the spec correctly.
   // Specifically, we need to ensure that if that, for example, the "restrictions" field requires parameter 0 to be a
   // number or boolean, then the "validArguments" for that parameter should contain a number and a boolean (at the
@@ -80,18 +116,27 @@ module.exports = (function() {
   // typeclasses: arraylike etc, which map to more than one type.
   //
 
-  var verifyRestrictions = function(name, restrictions, validArguments) {
+  var verifyRestrictions = function(name, restrictions, typicalArguments) {
+    // If the caller wants the testsuite to generate the typical arguments, then they'll be valid by default
+    if (typicalArguments === ANYVALUE) return;
+
     restrictions.forEach(function(typeRestrictions, i) {
       var failBecause = function(reason) {
         throw new Error(name + ': Spec error for positional argument ' + (i + 1) + ': ' + reason);
       };
 
-      if (typeRestrictions === NO_RESTRICTIONS && validArguments[i].length === 0)
+      if (typeRestrictions === NO_RESTRICTIONS && typicalArguments[i].length === 0)
         failBecause('Unrestricted argument at this position needs a typical argument supplied');
+
+      // We can let the test generator pick the arguments for a particular position
+      if (typicalArguments[i] === ANYVALUE) return;
 
       // typeRestrictions is an array of restrictions for parameter i
       typeRestrictions.forEach(function(expectedType, j) {
-        var typicalValue = validArguments[i][j];
+        var typicalValue = typicalArguments[i][j];
+
+        // Again, trust that the code will generate correct values for a particular restriction
+        if (typicalValue === ANYVALUE) return;
 
         // If a function accepts a specific type of object e.g. RegExp, then that should be the only possible
         // restriction for that position: for example, we shouldn't have a parameter that can be a RegExp or a boolean.
@@ -109,14 +154,17 @@ module.exports = (function() {
         if (typeof(expectedType) !== 'string')
           failBecause('Restriction ' + (j + 1) + ' isn\'t the name of a type: it\'s a ' + typeof(r));
 
-        if (typeof(typicalValue) !== expectedType)
+        if (typeof(typicalValue) !== primitiveTypeOf[expectedType])
           failBecause('Sample argument ' + (j + 1) + ' has type ' + typeof(typicalValue) +
                       ', restriction demands ' + expectedType);
-/*
-        // If the restriction is a typeclass, it should be the only one
-        //if (isTypeClass(r) && typeRestrictions.length > 1)
-         // throw new Error(errorPre + 'A typeclass must be the only restriction for that parameter!');
 
+        // If the restriction is a typeclass, it should be the only one
+        if (isTypeClass(expectedType) && typeRestrictions.length > 1)
+          failBecause('A typeclass must be the only restriction for that parameter!');
+
+        if (!restrictionVerifiers[expectedType](typicalValue))
+          failBecause('Typical value ' + (j + 1) + ' for parameter ' + (i + 1) + ' is not of type ' + expectedType);
+/*
         // Sanity check the validArguments for this parameter. They should be the type I claim is permissable!
         //if (!isMultiTypeClass(r)) {
           var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
@@ -164,25 +212,75 @@ module.exports = (function() {
    *
    */
 
-  var makeBogusFor = function(restrictions) {
+  var makeBogusFor = function(restrictionsForPosition) {
     var bogusPrimitives = [
-      {name: 'number',    value: 2,             /*typeclasses: ['integer', 'positive'] */},
-      {name: 'boolean',   value: true,          /*typeclasses: ['integer', 'positive'] */},
-      {name: 'string',    value: 'x',
-         /* typeclasses: ['integer', 'positive', 'arraylike', 'objectlike', 'objectlikeornull'] */},
-      {name: 'undefined', value: undefined,     /*typeclasses: [] */},
-      {name: 'null',      value: null,          /*typeclasses: ['integer', 'positive', 'objectlikeornull'] */},
-      {name: 'function',  value: function() {}, /*typeclasses: ['function', 'objectlike', 'objectlikeornull'] */},
-      {name: 'object',    value: {foo: 4},      /*typeclasses: ['integer', 'positive', 'objectlike','objectlikeornull'] */}, // XXX Why is object in the integer typeclass? Because of valueOf?
-      {name: 'array',     value: [4, 5, 6],     /*typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'] */}
+      {type: 'number',    value: 2,             typeclasses: [/*'integer', 'positive' */]},
+      {type: 'boolean',   value: true,          typeclasses: [/*'integer', 'positive' */]},
+      {type: 'string',    value: 'x',
+         typeclasses: [/* 'integer', 'positive', 'arraylike', 'objectlike', 'objectlikeornull' */]},
+      {type: 'undefined', value: undefined,     typeclasses: []},
+      {type: 'null',      value: null,          typeclasses: [/*'integer', 'positive', 'objectlikeornull' */]},
+      {type: 'function',  value: function() {}, typeclasses: [/*'function', 'objectlike', 'objectlikeornull' */]},
+      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', 'positive', 'objectlike','objectlikeornull' */]}, // XXX Why is object in the integer typeclass? Because of valueOf?
+      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull' */]}
     ];
 
-    if (restrictions.length === 1 && typeof(restrictions[0]) === 'function')
-      return bogusPrimitives.map(function(v) { return v.value; });
+    var bogusForTypeClass = {
+      natural: [{type: 'negative', value: -1}, {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
+                {type: 'negative infinity', value: Number.NEGATIVE_INFINITY}, {type: 'non-integral', value: 1.5},
+                {type: 'NaN', value: Number.NaN}]
+    };
 
-    return bogusPrimitives.filter(function(v) { return restrictions.indexOf(v.name) === -1; }).map(function(v) {
-      return v.value;
-    });
+    // If the restriction is the constructor of a given type, then all of the above are invalid
+    if (restrictionsForPosition.length === 1 && typeof(restrictionsForPosition[0]) === 'function')
+      return bogusPrimitives.slice();
+
+    var disallowed = function(t) { return restrictionsForPosition.indexOf(t.type ? t.type : t) === -1; };
+    var bogus = bogusPrimitives.filter(function(v) { return disallowed(v) && v.typeclasses.every(disallowed); });
+
+    return bogus.concat(restrictionsForPosition.reduce(function(soFar, restriction) {
+      if (!isTypeClass(restriction)) return soFar;
+      return soFar.concat(bogusForTypeClass[restriction]);
+    }, []));
+  };
+
+
+  /*
+   * Helper functions for building positional arguments that can be supplied to Function.prototype.apply.
+   *
+   */
+
+  var pickValidForRestriction = function(restriction) {
+    var types = {
+      'number': 0,
+      'function': function() {},
+      'natural': 0
+    };
+
+    return {type: restriction, value: types[restriction]};
+  };
+
+
+  var buildAnArgumentsArray = function(typicalArguments, restrictions) {
+    var buildArgumentsForPosition = function(arr, restrictions) {
+      if (arr === ANYVALUE) return restrictions.map(function(r) { return [pickValidForRestriction(r)]; });
+      return arr.map(function(arg, i) { return [{type: restrictions[i], value: arg}]; });
+    };
+
+    // Assumption: typicalArguments and restrictions have the same length
+    if (restrictions.length === 0) return [];
+    if (typicalArguments === ANYVALUE && restrictions.length === 0) return [];
+
+    // Note: typicalArguments is either an array or ANYVALUE
+    var laterPositions = Array.isArray(typicalArguments) ? typicalArguments.slice(1) : ANYVALUE;
+    var remaining = buildAnArgumentsArray(laterPositions, restrictions.slice(1));
+
+    var first = Array.isArray(typicalArguments) ? typicalArguments[0] : ANYVALUE;
+    var firstPositionalArguments = buildArgumentsForPosition(first, restrictions[0]);
+    return firstPositionalArguments.reduce(function(soFar, call) {
+      soFar = soFar.concat(remaining.map(function(arr) { return call.concat(arr); }));
+      return soFar;
+    }, []);
   };
 
 
@@ -191,80 +289,82 @@ module.exports = (function() {
    * generates such tests. As well as the function's name (for producing test descriptions) and the function under
    * test, the following arrays must be supplied:
    *
-   *  - restrictions:    An array of length equal to the function under test's arity. Each element describes the
-   *                     permissible values for a particular argument position. It can take one of the following forms:
-   *                       - The sentinel value NO_RESTRICTIONS exported by this module, indicating that this parameter
-   *                         may take any value
-   *                       - An array of strings representing the valid types for this parameter
-   *                       - A single element which is the constructor function of the only valid object type for this
+   *  - restrictions:      An array of length equal to the function under test's arity. Each element describes the
+   *                       types of permissible values for a particular argument position. It can take one of the
+   *                       following forms:
+   *                         - The sentinel value NO_RESTRICTIONS exported by this module, indicating that this
+   *                           parameter may take any value
+   *                         - An array of strings representing the valid types for this parameter
+   *                         - A single element which is the constructor function of the only valid object type for this
    *                         position.
    *
-   *                     For example,
-   *                       [['string'], ['object', 'array'], [[RegExp]]
-   *                     denotes a function whose first argument must be a string, whose second can be an object or an
-   *                     array and whose last parameter must be a RegExp. Note that 'object' means a real object:
-   *                     include 'null' or 'array' if those types are acceptable.
+   *                       For example,
+   *                         [['string'], ['object', 'array'], [[RegExp]]
+   *                       denotes a function whose first argument must be a string, whose second can be an object or an
+   *                       array and whose last parameter must be a RegExp. Note that 'object' means a real object:
+   *                       include 'null' or 'array' if those types are acceptable.
    *
-   *                     When supplied a constructor function, an instanceof test is made: any value that has a value
-   *                     of the correct type somewhere in its prototype chain will pass.
-   *                     TODO: Clarify what things like object mean, w.r.t arrays, functions etc
+   *                       When supplied a constructor function, an instanceof test is made: any value that has a value
+   *                       of the correct type somewhere in its prototype chain will pass.
+   *                       TODO: Clarify what things like object mean, w.r.t arrays, functions etc
    *
-   *  - validArguments:  An array of length equal to the function under test's arity. Each element should be an array
-   *                     containing acceptable values for the parameter at that position. Where an argument has a
-   *                     restriction, the subarray should have length equal to the number of restrictions, and the
-   *                     values specified should synchronise with the corresponding restrictions array for this
-   *                     argument position. Thus, if you are testing a function whose restrictions array for the first
-   *                     argument contains ['object', 'number'], then the corresponding validArguments subarray must
-   *                     have an object in position 0, and a number in position 1. Any number of arguments may be
-   *                     supplied for argument positions that have no restrictions, but at least one must be provided.
+   *  - typicalArguments:  Either the special sentinel value ANYVALUE, or an array of length equal to the arity of the
+   *                       function being tested.
    *
-   * Throws at test generation time if the given restrictions and valid arguments don't match.
+   *                       If equal to ANYVALUE, the test generator will pick arguments that match the restrictions.
+   *                       However, if the function being tested has certain expectations about the values it will be
+   *                       invoked with, then this array should contain such positional arguments.
+   *
+   *                       Each element of the array corresponds to a particular positional argument. If this positional
+   *                       argument has no particular requirements, then ANYVALUE can be specified here.
+   *
+   *                       Otherwise the element should be a subarray, with length equal to the correspoding subarray in
+   *                       the restrictions array. Each element of the subarray should specify a typical value of type
+   *                       specified by the restrictions array. Again, ANYVALUE can be used within this array to let
+   *                       the test generator pick.
+   *
+   *                       If the member of restrictions for a particular position is NO_RESTRICTIONS, then the subarray
+   *                       can contain any number of typical values, but must contain at least one.
+   *
+   * Throws at test generation time if the given restrictions and typical arguments don't match.
    *
    */
 
-  var checkTypeRestrictions = function(name, fnUnderTest, restrictions, validArguments) {
+  var checkTypeRestrictions = function(name, fnUnderTest, restrictions, typicalArguments) {
     // First, we perform various sanity checks to ensure I have written the spec correctly
-
     var arity = arityOf(fnUnderTest);
+
     if (restrictions.length !== arity)
       throw new Error('Too few restrictions provided to test generation function for ' + name + ': it has arity ' +
                        arity + ' but only ' + restrictions.length + ' restrictions provided.');
 
-    if (validArguments.length !== arity)
+    if (typicalArguments.length !== arity)
       throw new Error('Too few valid arguments provided to test generation function for ' + name + ': it has arity ' +
                        arity + ' but only ' + restrictions.length + ' restrictions provided.');
 
-    validArguments.forEach(function(g, i) {
+    typicalArguments.forEach(function(g, i) {
       if (g.length === 0)
         throw new Error('No valid arguments supplied for parameter ' + (i + 1) + ' of ' + name);
     });
 
-    verifyRestrictions(name, restrictions, validArguments);
+    verifyRestrictions(name, restrictions, typicalArguments);
 
     // Now we've checked that I'm not an idiot, we can generate the tests!
     restrictions.forEach(function(typeRestrictions, i) {
+      // Skip if its impossible for an argument at this position to have an invalid type
       if (typeRestrictions.length === NO_RESTRICTIONS)
         return;
 
-      var buildAnArgumentsArray = function(arr) {
-        if (arr.length === 0) return [];
-        if (arr.length === 1) return arr[0];
-
-        var remaining = buildAnArgumentsArray(arr.slice(1));
-        return arr[0].reduce(function(soFar, x) {
-          soFar = soFar.concat(remaining.map(function(arr) { return [x].concat(arr); }));
-          return soFar;
-        }, []);
-      };
-
-      var validArgumentsLeft = buildAnArgumentsArray(validArguments.slice(0, i));
-      var validArgumentsRight = buildAnArgumentsArray(validArguments.slice(i + 1));
+      var left = Array.isArray(typicalArguments) ? typicalArguments.slice(0, i) : ANYVALUE;
+      var right = Array.isArray(typicalArguments) ? typicalArguments.slice(i + 1) : ANYVALUE;
+      var argumentsLeft = buildAnArgumentsArray(left, restrictions.slice(0, i));
+      var argumentsRight = buildAnArgumentsArray(right, restrictions.slice(i + 1));
       var bogusArguments = makeBogusFor(typeRestrictions);
 
-      var addOne = function(args) {
-        var signature = '(' + args.map(function(a) {
-          return a === null ? 'null' : (Array.isArray(a) ? 'array' : typeof(a));
-        }).join(', ') + ')';
+      var addOne = function(call) {
+        var args = call.map(function(c) { return c.value; });
+        var signature = '(' + call.map(function(c) { return c.type; }).join(', ') + ')';
+
         it('Throws with type signature ' + signature, function() {
           var fn = function() {
             fnUnderTest.apply(null, args);
@@ -274,24 +374,25 @@ module.exports = (function() {
         });
       };
 
+      var getType = function(t) { return t === null ? null : (Array.isArray(t) ? 'array' : typeof(t)); };
+
       // Note: we must forEach over bogusArguments first: one or both of the valid argument arrays might
       // be degenerate
+
       bogusArguments.forEach(function(badArg) {
-        if (validArgumentsLeft.length > 0) {
-          validArgumentsLeft.map(function(arr) { return arr.concat([badArg]); }).forEach(function(left) {
-            if (validArgumentsRight.length > 0) {
-              validArgumentsRight.forEach(function(right) {
-                var args = left.concat(right);
-                args.forEach(addOne);
+        if (argumentsLeft.length > 0) {
+          argumentsLeft.forEach(function(left) {
+            if (argumentsRight.length > 0) {
+              argumentsRight.forEach(function(right) {
+                addOne(left.concat([badArg]).concat(right));
               });
             } else {
-              left.forEach(addOne);
+              addOne(left.concat([badArg]));
             }
           });
-        } else if (validArgumentsRight.length > 0) {
-          validArgumentsRight.forEach(function(right) {
-            var args = [badArg].concat(right);
-              args.forEach(addOne);
+        } else if (argumentsRight.length > 0) {
+          argumentsRight.forEach(function(right) {
+            addOne([badArg].concat(right));
           });
         } else {
           addOne([badArg]);
@@ -340,6 +441,7 @@ module.exports = (function() {
       if ('restrictions' in spec) {
         if (!Array.isArray(spec.restrictions) || !Array.isArray(spec.validArguments))
           throw new Error('One (or both) of the restrictions and validArguments in ' + name + '\'s spec is malformed');
+
         checkTypeRestrictions(name, fnUnderTest, spec.restrictions, spec.validArguments);
       } else if ('validArguments' in spec) {
         throw new Error(name + 'has an unneccesary validArguments property. Please remove it');
@@ -355,9 +457,11 @@ module.exports = (function() {
     checkModule:   checkModule
   };
 
-  // Ensure our tests don't screw up the sentinel value
+
+  // Ensure our tests don't screw up the sentinel values
   Object.defineProperty(toExport, 'NO_RESTRICTIONS', {configurable: false, enumerable: true,
                                                       writable: false, value: NO_RESTRICTIONS});
+  Object.defineProperty(toExport, 'ANYVALUE', {configurable: false, enumerable: true, writable: false, value: ANYVALUE});
 
 
   return toExport;
@@ -400,17 +504,6 @@ module.exports = (function() {
 //        return 'function';
 //
 //      throw new Error('testUtils typechecking: unrecognised non-primitive' + nP);
-//    };
-//
-//
-//    var typeclasses = ['integer', 'positive', 'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'];
-//    var isTypeClass = function(restriction) {
-//      if (typeclasses.indexOf(restriction) !== -1)
-//        return true;
-//      if (isFuncTypeClass(restriction))
-//        return true;
-//
-//      return false;
 //    };
 //
 //
