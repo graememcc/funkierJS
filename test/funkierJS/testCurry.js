@@ -11,14 +11,49 @@
   var testUtils = require('./testingUtilities');
   var checkModule = testUtils.checkModule;
   var checkFunction = testUtils.checkFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//
-//
+
+
   var expectedObjects = [];
   var expectedFunctions = [/*'curry', 'curryWithArity', */'arityOf'];
   checkModule('curry', curryModule, expectedObjects, expectedFunctions);
-//
-//
+
+
+  /*
+   * Helper for generating tests examining the basic qualities that we want a curried function to have: it should
+   * be a function of length 1, and for each possible way of invoking it, it should be extensionally equal to the
+   * original function.
+   *
+   */
+
+  var testCurriedFunction = function(curried, original, typicalArgs, message) {
+    var expected = original.apply(null, typicalArgs);
+
+    it(message + ' is a function', function() {
+      expect(curried).to.be.a('function');
+    });
+
+
+    it(message + ' has length 1', function() {
+      expect(curried.length).to.equal(1);
+    });
+
+
+    it(message + ' called with all available arguments equals original function\'s result', function() {
+      expect(curried.apply(null, typicalArgs)).to.deep.equal(expected);
+    });
+
+
+    // Now to test the possible combinations. We stop recursing when we are down to the last argument
+    for (var i = 0, l = typicalArgs.length - 1; i < l; i++) {
+      var next = curried.apply(null, typicalArgs.slice(0, i + 1));
+      var remainingArgs = typicalArgs.slice(i + 1);
+      var newMessage = message + (message.slice(-('arguments'.length)) === 'arguments' ? ' and ' : '') +
+                       'then partially applied with ' + i + 1 + ' arguments';
+      testCurriedFunction(next, original, remainingArgs, newMessage);
+    }
+  };
+
+
 //    // Many of the tests use curry, id and getRealArity: let's pull them out for convenience
 //    var curry = curryModule.curry;
 //    var getRealArity = curryModule.getRealArity;

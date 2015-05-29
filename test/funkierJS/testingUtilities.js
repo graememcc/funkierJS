@@ -904,114 +904,15 @@ module.exports = (function() {
 //    };
 //
 //
-//    var callWithRemaining = function(curried, curriedArgs, expected, thenArgs) {
-//      var args = getRealArgs(curriedArgs);
-//
-//      var testPrimitive = function() {
-//        var result = curried.apply(null, args);
-//
-//        expect(checkEquality(result, expected)).to.equal(true);
-//      };
-//
-//      var testFunc = function() {
-//        var result = curried.apply(null, args).apply(null, thenArgs);
-//
-//        expect(checkEquality(result, expected)).to.equal(true);
-//      };
-//
-//      return thenArgs === null ? testPrimitive : testFunc;
-//    };
-//
-//
-//    // Helper function for testing stateful functions
-//    var getRealArgs = function(args) {
-//      var result = args.slice();
-//      var last = result[result.length - 1];
-//
-//      // If the last argument is an object with a "reset" property, then assume we are testing a state-changing
-//      // function, and the property contains the function to be called to generate a new object
-//      if (typeof(last) === 'object' && last !== null && 'reset' in last)
-//        result[result.length - 1] = last.reset();
-//
-//      return result;
-//    };
-//
-//
-//    // There are a number of checks we want to perform on curried functions when testing
-//    // the 'curry' function. The same checks apply when testing other library functions that we expect
-//    // to be curried. We generate these tests automatically.
-//    var testCurriedFunction = function(curried, originalArgs, options) {
-//      options = options || {};
-//
-//      // Many of the functions being tested will themselves return functions. This means we generally
-//      // won't be able to test equality of return values. If originalArgs is an array, then we assume
-//      // that the function under test does indeed return a primitive value. Otherwise, we assume it is
-//      // an object containing two arrays: 'firstArgs': the args to supply to the function under test, and
-//      // 'thenArgs': the args to apply to the resulting function. (Yes, we assume that the returned function
-//      // itself returns primitive values)
-//
-//      // I chose to make original optional. There are really two use cases: check this curried function behaves
-//      // like this uncurried function, and check this curried function—which I have verified works when called with
-//      // all args—behaves correctly when partially applied.
-//      // Initially, I thought original would be mandatory, but realised this will often result in having to
-//      // reimplement the function under test.
-//      var original = options.original || curried;
-//      var message = options.message || 'Curried function';
-//
-//      var args = Array.isArray(originalArgs) ? originalArgs : originalArgs.firstArgs;
-//      var thenArgs = Array.isArray(originalArgs) ? null : originalArgs.thenArgs;
-//
-//      var expectedArgs = getRealArgs(args);
-//
-//      var expected = thenArgs === null ? original.apply(null, expectedArgs) : original.apply(null, expectedArgs).apply(null, thenArgs);
-//
-//      var performTests = function(curried, curriedArgs, message) {
-//        // Function?
-//        it(message + ' is a function', checkFunction(curried));
-//
-//        // Correct length?
-//        it(message + ' has length 1', checkLength(curried));
-//
-//        // Called with outstanding arg === original result
-//        // Note: if curried === original then these tests should be redundant, the caller should
-//        // have already tested the function with all arguments supplied
-//        if (curried !== original) {
-//          var length = curriedArgs.length;
-//
-//          var postMessage = length === 1 ? ' final curried function returns correct value' :
-//                                           ' called with all remaining arguments returns correct value';
-//          it(message + postMessage, callWithRemaining(curried, curriedArgs, expected, thenArgs));
-//
-//          if (length === 1)
-//            return;
-//        }
-//
-//        // Perform these tests again with various numbers of arguments applied
-//        for (var i = 0, l = curriedArgs.length - 1; i < l; i++) {
-//          var newCurried = curried.apply(null, curriedArgs.slice(0, i + 1));
-//          var newRemaining = curriedArgs.slice(i + 1);
-//          var newMessage = [message, ' (then partially applied with ', i + 1, ' arguments)'].join('');
-//          performTests(newCurried, newRemaining, newMessage);
-//        }
-//      };
-//
-//      performTests(curried, args, message);
-//    };
-//
-//
 //    module.exports = {
 //      addFunctionIsCurriedTest: addFunctionIsCurriedTest,
 //      checkArrayContent: checkArrayContent,
 //      checkArrayEquality: checkArrayEquality,
 //      checkEquality: checkEquality,
 //      checkObjectEquality: checkObjectEquality,
-//      describeFunction: describeFunction,
-//      describeModule: describeModule,
 //      exportsFunction: exportsFunction,
 //      exportsProperty: exportsProperty,
 //      makeArrayLike: makeArrayLike,
-//      testCurriedFunction: testCurriedFunction,
-//      testTypeRestrictions: testTypeRestrictions
 //    };
 //  };
 //
