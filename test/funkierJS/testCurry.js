@@ -13,7 +13,7 @@
 
 
   var expectedObjects = [];
-  var expectedFunctions = ['bindWithContextAndArity', 'curry', 'curryWithArity', 'arityOf'];
+  var expectedFunctions = ['bind', 'bindWithContextAndArity', 'curry', 'curryWithArity', 'arityOf'];
   checkModule('curry', curryModule, expectedObjects, expectedFunctions);
 
 
@@ -21,6 +21,7 @@
   var arityOf = curryModule.arityOf;
   var curry = curryModule.curry;
   var curryWithArity = curryModule.curryWithArity;
+  var bind = curryModule.bind;
   var bindWithContextAndArity = curryModule.bindWithContextAndArity;
 
 
@@ -166,6 +167,16 @@
       };
 
       expect(f).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with bind', function() {
+      var curried = bind({}, function(x, y) {});
+      var fn = function() {
+        curry(curried);
+      };
+
+      expect(fn).to.throw();
     });
 
 
@@ -401,10 +412,205 @@
     });
 
 
+    it('Functions cannot be recurried if curried with bind', function() {
+      var curried = bind({}, function(x, y, z) {});
+      var fn = function() {
+        curryWithArity(2, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
     it('Functions cannot be recurried if curried with bindWithContextAndArity', function() {
       var curried = bindWithContextAndArity(2, {}, function() {});
       var fn = function() {
         curryWithArity(2, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+  });
+
+
+  var bindSpec = {
+    name: 'bind',
+    restrictions: [['objectlike'], ['function']],
+    validArguments: ANYVALUE
+  };
+
+
+  checkFunction(bindSpec, bind, function(bind) {
+    it('Currying a function of length 0 returns a function of length 0', function() {
+      var f = function() {};
+      var curried = bind({}, f);
+
+      expect(arityOf(curried)).to.equal(0);
+    });
+
+
+    it('Currying a function of length 1 returns a function of length 1', function() {
+      var f = function(x) {};
+      var curried = bind({}, f);
+
+      expect(arityOf(curried)).to.equal(1);
+    });
+
+
+    it('Underlying function called with specified argument count when invoked with superfluous arguments', function() {
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); };
+      var args = [1, 2, 4, 'a'];
+
+      var curried = bind({}, f);
+      curried(args[0], args[1], args[2], args[3]);
+
+      expect(invokedArgs).to.deep.equal(args.slice(0, f.length));
+    });
+
+
+    it('Calling a curried function that expects no arguments does not throw', function() {
+      var f = bind({}, function() {return 42;});
+      var fn = function() {
+        f();
+      };
+
+      expect(f).to.not.throw();
+    });
+
+
+    it('Calling a curried function awaiting further arguments without any arguments throws', function() {
+      var f = bind({}, function(x) { return 42; });
+      var fn = function() {
+        f();
+      };
+
+      expect(f).to.throw();
+    });
+
+
+    var testFuncs = [
+      {f: function(a, b) {return this.foo + a + b;}, args: [2, 3], message: 'Binary function'},
+      {f: function(a) {return this.foo + a;}, args: [2], message: 'Unary function'},
+      {f: function(a, b, c) {return this.foo * a * b * c;}, args: [4, 5, 6], message: 'Ternary function'},
+    ];
+
+
+    testFuncs.forEach(function(testData) {
+      var fn = testData.f;
+      var args = testData.args;
+      var message = testData.message;
+      var obj = {foo: 10};
+      var curried = bind(obj, fn);
+      testCurriedFunction(curried, fn.bind(obj), args, message);
+    });
+
+
+    it('Binds to context', function() {
+      var f = function() { return this; };
+      var obj = {};
+      var arity = 0;
+      var result = bind(obj, f)();
+
+      expect(result).to.equal(obj);
+    });
+
+
+    it('Functions can be recurried when not partially applied if context is the same (1)', function() {
+      var context = null;
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); context = this; };
+      var args = [1, 'x', 4, 'a', null];
+
+      var ctx = {};
+      var intermediate = bind(ctx, f);
+      intermediate.apply(null, args);
+      // Sanity check
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+      expect(context).to.equal(ctx);
+      invokedArgs = [];
+      context = null;
+
+      var curried = bind(ctx, intermediate);
+      curried(args[0])(args[1]);
+
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+      expect(context).to.equal(ctx);
+    });
+
+
+    it('Functions can be recurried when not partially applied if context is the same (2)', function() {
+      var context = null;
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); context = this; };
+      var args = [1, 'x', 4, 'a', null];
+
+      var ctx = {};
+      var intermediate = bindWithContextAndArity(3, ctx, f);
+      intermediate.apply(null, args);
+      // Sanity check
+      expect(invokedArgs).to.deep.equal(args.slice(0, 3));
+      expect(context).to.equal(ctx);
+      invokedArgs = [];
+      context = null;
+
+      var curried = bind(ctx, intermediate);
+      curried(args[0])(args[1], args[2]);
+
+      expect(invokedArgs).to.deep.equal(args.slice(0, 3));
+      expect(context).to.equal(ctx);
+    });
+
+
+    it('Binding a previously bound function with the same execution context returns the same function', function() {
+      var obj = {};
+      var f = bind(obj, function(x) { return 42; });
+      var g = bind(obj, f);
+
+      expect(f).to.equal(g);
+    });
+
+
+    it('Functions cannot be bound to a different context (1)', function() {
+      var ctx = {};
+      var f = function(a, b) { return this; };
+
+      var intermediate = bind(ctx, f);
+      var fn = function() {
+        bind({}, intermediate);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be bound to a different context (2)', function() {
+      var ctx = {};
+      var f = function(a, b) { return this; };
+
+      var intermediate = bindWithContextAndArity(2, ctx, f);
+      var fn = function() {
+        bind({}, intermediate);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions bound to a null context by curry cannot be rebound to a different context', function() {
+      var curried = curry(function(x, y) {});
+      var fn = function() {
+        bind({}, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions bound to a null context by curryWithArity cannot be rebound to a different context', function() {
+      var curried = curryWithArity(3, function(x, y) {});
+      var fn = function() {
+        bind({}, curried);
       };
 
       expect(fn).to.throw();
@@ -523,7 +729,7 @@
     });
 
 
-    it('Functions can be recurried when not partially applied if context is the same(1)', function() {
+    it('Functions can be recurried when not partially applied if context is the same (1)', function() {
       var context = null;
       var invokedArgs = [];
       var f = function(a, b) { invokedArgs = [].slice.call(arguments); context = this; };
@@ -546,11 +752,47 @@
     });
 
 
-    it('Functions cannot be bound to a different context', function() {
+    it('Functions can be recurried when not partially applied if context is the same (2)', function() {
+      var context = null;
+      var invokedArgs = [];
+      var f = function(a, b) { invokedArgs = [].slice.call(arguments); context = this; };
+      var args = [1, 'x', 4, 'a', null];
+
+      var ctx = {};
+      var intermediate = bind(ctx, f);
+      intermediate.apply(null, args);
+      // Sanity check
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+      expect(context).to.equal(ctx);
+      invokedArgs = [];
+      context = null;
+
+      var curried = bindWithContextAndArity(5, ctx, intermediate);
+      curried(args[0])(args[1])(args[2])(args[3])(args[4]);
+
+      expect(invokedArgs).to.deep.equal(args);
+      expect(context).to.equal(ctx);
+    });
+
+
+    it('Functions cannot be bound to a different context (1)', function() {
       var ctx = {};
       var f = function(a, b) { return this; };
 
       var intermediate = bindWithContextAndArity(2, ctx, f);
+      var fn = function() {
+        bindWithContextAndArity(2, {}, intermediate);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be bound to a different context (2)', function() {
+      var ctx = {};
+      var f = function(a, b) { return this; };
+
+      var intermediate = bind(ctx, f);
       var fn = function() {
         bindWithContextAndArity(2, {}, intermediate);
       };
@@ -609,32 +851,6 @@
     });
 
 
-    /*
-     * Although _isCurried is not part of the public API, other tests need to be sure it works correctly
-     *
-     */
-
-    it('Recognises when a function is not curried (1)', function() {
-      var fn = function() {};
-
-      expect(arityOf._isCurried(fn)).to.equal(false);
-    });
-
-
-    it('Recognises when a function is not curried (2)', function() {
-      var fn = function(x) {};
-
-      expect(arityOf._isCurried(fn)).to.equal(false);
-    });
-
-
-    it('Recognises when a function is not curried (3)', function() {
-      var fn = function(x, y) {};
-
-      expect(arityOf._isCurried(fn)).to.equal(false);
-    });
-
-
     it('Works correctly for a curried function (1)', function() {
       var fn = function(x, y) {};
       var curried = curry(fn);
@@ -653,6 +869,14 @@
 
 
     it('Works correctly for a curried function (3)', function() {
+      var fn = function(x, y) {};
+      var curried = bind({}, fn);
+
+      expect(arityOf(curried)).to.equal(fn.length);
+    });
+
+
+    it('Works correctly for a curried function (4)', function() {
       var fn = function(x, y) {};
       var curryTo = 1;
       var curried = bindWithContextAndArity(curryTo, {}, fn);
@@ -682,6 +906,104 @@
       var curried = curry(fn);
 
       expect(arityOf(curried(1, 1))).to.equal(fn.length - 2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (4)', function() {
+      var fn = function(x, y) {};
+      var curried = curryWithArity(3, fn);
+
+      expect(arityOf(curried(1))).to.equal(2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (5)', function() {
+      var fn = function(x, y) {};
+      var curried = curryWithArity(3, fn);
+
+      expect(arityOf(curried(1)(1))).to.equal(1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (6)', function() {
+      var fn = function(x, y) {};
+      var curried = curryWithArity(3, fn);
+
+      expect(arityOf(curried(1, 1))).to.equal(1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (7)', function() {
+      var fn = function(x, y, z) {};
+      var curried = bind({}, fn);
+
+      expect(arityOf(curried(1))).to.equal(fn.length - 1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (8)', function() {
+      var fn = function(x, y, z) {};
+      var curried = bind({}, fn);
+
+      expect(arityOf(curried(1)(1))).to.equal(fn.length - 2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (9)', function() {
+      var fn = function(x, y, z) {};
+      var curried = bind({}, fn);
+
+      expect(arityOf(curried(1, 1))).to.equal(fn.length - 2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (10)', function() {
+      var fn = function(x, y) {};
+      var curried = bindWithContextAndArity(3, {}, fn);
+
+      expect(arityOf(curried(1))).to.equal(2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (11)', function() {
+      var fn = function(x, y) {};
+      var curried = bindWithContextAndArity(3, {}, fn);
+
+      expect(arityOf(curried(1)(1))).to.equal(1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (12)', function() {
+      var fn = function(x, y) {};
+      var curried = bindWithContextAndArity(3, {}, fn);
+
+      expect(arityOf(curried(1, 1))).to.equal(1);
+    });
+
+
+    /*
+     * Although _isCurried is not part of the public API, other tests need to be sure it works correctly
+     *
+     */
+
+    it('Recognises when a function is not curried (1)', function() {
+      var fn = function() {};
+
+      expect(arityOf._isCurried(fn)).to.equal(false);
+    });
+
+
+    it('Recognises when a function is not curried (2)', function() {
+      var fn = function(x) {};
+
+      expect(arityOf._isCurried(fn)).to.equal(false);
+    });
+
+
+    it('Recognises when a function is not curried (3)', function() {
+      var fn = function(x, y) {};
+
+      expect(arityOf._isCurried(fn)).to.equal(false);
     });
 
 
@@ -770,48 +1092,76 @@
 
 
     it('Recognises when a function is curried (13)', function() {
-      var fn = bindWithContextAndArity(1, {}, function() {});
+      var fn = bind({}, function() {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (14)', function() {
-      var fn = bindWithContextAndArity(2, {}, function() {});
+      var fn = bind({}, function(x) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (15)', function() {
-      var fn = bindWithContextAndArity(2, {}, function() {})(1);
+      var fn = bind({}, function(x, y) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (16)', function() {
-      var fn = bindWithContextAndArity(1, {}, function(x) {});
+      var fn = bind({}, function(x, y) {})(1);
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (17)', function() {
-      var fn = bindWithContextAndArity(0, {}, function(x) {});
+      var fn = bindWithContextAndArity(1, {}, function() {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (18)', function() {
-      var fn = bindWithContextAndArity(2, {}, function(x, y) {});
+      var fn = bindWithContextAndArity(2, {}, function() {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (19)', function() {
+      var fn = bindWithContextAndArity(2, {}, function() {})(1);
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (20)', function() {
+      var fn = bindWithContextAndArity(1, {}, function(x) {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (21)', function() {
+      var fn = bindWithContextAndArity(0, {}, function(x) {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (22)', function() {
+      var fn = bindWithContextAndArity(2, {}, function(x, y) {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (23)', function() {
       var fn = bindWithContextAndArity(2, {}, function(x, y) {})(1);
 
       expect(arityOf._isCurried(fn)).to.equal(true);

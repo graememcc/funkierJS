@@ -23,6 +23,61 @@ the amount of arguments not yet supplied will be returned.
 #### Examples ####
     arityOf(function(x) {}); // => 1;
 ***
+### bind ###
+Category: Function
+
+*Synonyms:* `bindWithContext`
+
+**Usage:** `var result = bind(ctx, f);`
+
+Parameters:  
+ctx `objectlike`  
+f `function`
+
+Returns: `function`
+
+Given an object and function, returns a curried function with the same arity as the original, and whose execution
+context is permanently bound to the supplied object. The function will be called when sufficient arguments have
+been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting function, and
+indeed the further resulting function(s). The resulting function and its partial applications will throw if they
+require at least one argument, but are invoked without any. `bind` throws if the first parameter is not an
+an acceptable type for an execution context, or if the last parameter is not a function.
+
+The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
+wrapped function will be invoked.
+
+In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
+makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
+original function. To be able to recurry a curried function to a different arity, the execution context given
+must be the exact object that was previously used to create the function being recurried. It is an error to
+try and recurry a curried function bound to one execution context to another. In particular, functions curried
+with [`curry`](#curry) or [`curryWithArity`](#curryWithArity) cannot be curried with an execution context: they
+have already been bound with an implicit `null` execution context. `bind` will throw in that case.
+
+Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
+curry such functions won't throw, but they will not work as expected.
+
+#### Examples ####
+    var obj = {foo: 42};
+    
+    var f = function(x, y) { return this.foo + x; };
+    
+    var g = bind(obj, f);
+    
+    g(3)(2); // returns 45
+    
+    g(5, 2); // returns 47
+    
+    var obj2 = {foo: 10};
+    var h = bindWithContextAndArity(3, obj2, f);
+    var j = bind(obj2, h); // OK, same context object
+    
+    var err = bind({foo: 1}, g); // throws: execution contexts don't match
+***
+### bindWithContext ###
+See `bind`
+***
 ### bindWithContextAndArity ###
 Category: Function
 
@@ -36,15 +91,12 @@ f `function`
 Returns: `function`
 
 Given an arity, object and function, returns a curried function whose execution context is permanently bound to
-the supplied execution context.
-
-Curries the given function f to the supplied arity, which need not equal the function's length, and permanently
-binds the resulting function to the supplied execution context. The function will be called when that number of
-arguments have been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting
-function, and indeed the further resulting function(s). The resulting function and its partial applications will
-throw if they require at least one argument, but are invoked without any. `bindWithContextAndArity` throws if the
-arity is not a natural number, if the second parameter is not an acceptable type for an execution context, or if
-the last parameter is not a function.
+the supplied execution context, and whose arity equals the arity given. The supplied arity need not equal the
+function's length. The function will be only called when the specified number of arguments have been supplied.
+Superfluous arguments are discarded. It is possible to partially apply the resulting function, and indeed the
+further resulting function(s). The resulting function and its partial applications will throw if they require at
+least one argument, but are invoked without any. `bind` throws if the arity is not a natural number, if the second
+parameter is not an acceptable type for an execution context, or if the last parameter is not a function.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -97,7 +149,7 @@ arguments one at a time, or by passing several arguments at once. The function c
 arguments than the given function's length, but the superfluous arguments will be ignored, and will not be
 passed to the original function. If the curried function or any subsequent partial applications require at least
 one argument, then calling the function with no arguments will throw. `curry` throws if its argument is not a
-function.
+function. It will also throw if the function is known to be bound to a specific execution context.
 
 Currying a function that has already been curried will return the exact same function.
 
@@ -108,8 +160,8 @@ different functions from those passed in.
 If you need a function which accepts an argument count that differs from the function's length property,
 use `curryWithArity`.
 
-Note that you cannot pass in functions that have been bound to a specific execution context using
-[`bindWithContextAndArity`](#bindWithContextAndArity): allowing those would break the invariant that functions
+Note that you cannot pass in functions that have been bound to a specific execution context using [`bind`](#bind),
+or [`bindWithContextAndArity`](#bindWithContextAndArity): allowing those would break the invariant that functions
 curried with `curry` are invoked with a null execution context. Thus an error is thrown in such cases. (However,
 funkierJS cannot tell if a function has been bound with the native `bind` method. Currying such functions might
 lead to unexpected results).
@@ -149,7 +201,8 @@ be called when that number of arguments have been supplied. Superfluous argument
 function will be called with a null execution context. It is possible to partially apply the resulting function,
 and indeed the further resulting function(s). The resulting function and its partial applications will throw if
 they require at least one argument, but are invoked without any. `curryWithArity` throws if the arity is not a
-natural number, or if the second parameter is not a function.
+natural number, or if the second parameter is not a function. It will also throw if the given function is known
+to be bound to a specific execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [arityOf](#arityOf) function can be used to determine how many arguments are required before the
@@ -170,8 +223,8 @@ equivalent to currying the original function. Recurrying a partially applied fun
 expect: the new function will be one that requires the given number of arguments before calling the original
 function with the partially applied arguments and some of the ones supplied to the recurried function.
 
-You cannot however pass in functions that have been bound to a specific execution context using
-[`bindWithContextAndArity`](#bindWithContextAndArity): `curryWithArity` promises to invoke functions with a null
+You cannot however pass in functions that have been bound to a specific execution context using [`bind`](#bind),
+or [`bindWithContextAndArity`](#bindWithContextAndArity): `curryWithArity` promises to invoke functions with a null
 execution context, but those functions have a fixed execution context that cannot be overridden. An error is
 thrown if the function has been bound to an execution context in this way.
 

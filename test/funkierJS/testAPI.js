@@ -50,6 +50,46 @@
     });
 
 
+    describe('bind', function() {
+      it('bind exists', function() {
+        expect(funkier).to.have.a.property('bind');
+      });
+
+
+      it('funkierJS\'s bind is indeed the documented value', function() {
+        var module = require('../../lib/components/curry');
+        expect(funkier.bind).to.equal(module.bind);
+      });
+
+
+      it('bind is a function', function() {
+        expect(funkier.bind).to.be.a('function');
+      });
+
+
+      it('bind has documented arity', function() {
+        expect(funkier.arityOf(funkier.bind)).to.equal(2);
+      });
+
+
+      it('bind is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bind)).to.equal(true);
+      });
+    });
+
+
+    describe('bindWithContext', function() {
+      it('bindWithContext exists', function() {
+        expect(funkier).to.have.a.property('bindWithContext');
+      });
+
+
+      it('bindWithContext is a synonym for bind', function() {
+        expect(funkier.bindWithContext).to.equal(funkier.bind);
+      });
+    });
+
+
     describe('bindWithContextAndArity', function() {
       it('bindWithContextAndArity exists', function() {
         expect(funkier).to.have.a.property('bindWithContextAndArity');
@@ -140,7 +180,8 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'arity', 'arityOf', 'bindWithContextAndArity', 'curry', 'curryWithArity'];
+      documentedNames = ['help', 'arity', 'arityOf', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'curry',
+         'curryWithArity'];
     });
 
 
