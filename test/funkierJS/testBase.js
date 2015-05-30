@@ -8,15 +8,17 @@
   var testUtils = require('./testingUtilities');
   var checkModule = testUtils.checkModule;
   var checkFunction = testUtils.checkFunction;
-
+  var addCurryStyleTests = testUtils.addCurryStyleTests;
 
   describe('base', function() {
 //  var testFixture = function(require, exports) {
 
-//    var curryModule = require('../../curry');
-//    var curry = curryModule.curry;
+    var curryModule = require('../../lib/components/curry');
+    var bind = curryModule.bind;
+    var curry = curryModule.curry;
+    var objectCurry = curryModule.objectCurry;
 //    var curryWithArity = curryModule.curryWithArity;
-//    var getRealArity = curryModule.getRealArity;
+    var arityOf = curryModule.arityOf;
 
 
     var expectedObjects = [];
@@ -25,173 +27,140 @@
     checkModule('base', base, expectedObjects, expectedFunctions);
 
 
-//    // Many of the tests use id: let's pull it out
-//    var id = base.id;
-//
-//
-//    var composeSpec = {
-//      name: 'compose',
-//      arity: 2,
-//      restrictions: [['function: minarity 1'], ['function']],
-//      validArguments: [[function(x) {}], [function() {}]]
-//    };
-//
-//
-//    checkFunction(composeSpec, base.compose, function(compose) {
-//      it('Composes two functions correctly (1)', function() {
-//        var f = function(x) {return x + 2;};
-//        var g = function(x) {return x + 1;};
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)).to.equal(f(g(1)));
-//      });
-//
-//
-//      it('Composes two functions correctly (2)', function() {
-//        var f = function(x) {return x + 3;};
-//        var g = function(x) {return x + 2;};
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)).to.equal(f(g(1)));
-//      });
-//
-//
-//      it('Calls the second function first', function() {
-//        var f = function(x) {return x * 2;};
-//        var g = function(x) {return x + 1;};
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)).to.not.equal(g(f(1)));
-//        expect(composition(1)).to.equal(f(g(1)));
-//      });
-//
-//
-//      it('Returned function has correct arity if the second function has arity 0 (1)', function() {
-//        var f = function(x) {return x + 1;};
-//        var g = function() {return 3;};
-//        var composition = compose(f, g);
-//
-//        expect(composition.length).to.equal(0);
-//      });
-//
-//
-//      it('Returned function has correct arity if the second function has arity 0 (2)', function() {
-//        var f = function(x, y) {return x + y + 1;};
-//        var g = function() {return 3;};
-//        var composition = compose(f, g);
-//
-//        expect(composition.length).to.equal(1);
-//      });
-//
-//
-//      it('Works if the second function has arity 0 (1)', function() {
-//        var f = function(x) {return x + 1;};
-//        var g = function() {return 3;};
-//        var composition = compose(f, g);
-//
-//        expect(composition()).to.equal(f(g()));
-//      });
-//
-//
-//      it('Works if the second function has arity 0 (2)', function() {
-//        var f = function(x, y) {return x + y + 1;};
-//        var g = function() {return 3;};
-//        var composition = compose(f, g);
-//
-//        expect(getRealArity(composition)).to.equal(1);
-//        expect(composition(1)).to.equal(f(g(), 1));
-//      });
-//
-//
-//      it('Curries first function if it has arity > 1', function() {
-//        var f = function(a, b) {return a + b;};
-//        var g = function(x) {return x + 1;};
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)).to.be.a('function');
-//        expect(getRealArity(composition(1))).to.equal(1);
-//      });
-//
-//
-//      it('Partially applies first function correctly if it has arity > 1 (1)', function() {
-//        var f = function(a, b) {return a + b;};
-//        var g = function(x) {return x + 1;};
-//        var expected = f(g(1), 1);
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)(1)).to.equal(expected);
-//      });
-//
-//
-//      it('Partially applies first function correctly if it has arity > 1 (2)', function() {
-//        var f = curry(function(a, b) {return a + b;});
-//        var g = function(x) {return x + 1;};
-//        var expected = f(g(1), 1);
-//        var composition = compose(f, g);
-//
-//        expect(composition(1)(1)).to.equal(expected);
-//      });
-//
-//
-//      it('Applies first function when all arguments supplied and first function has arity > 1 (1)', function() {
-//        var f = function(a, b) {return a + b;};
-//        var g = function(x) {return x + 1;};
-//        var expected = f(g(1), 1);
-//        var composition = compose(f, g);
-//
-//        expect(composition(1, 1)).to.equal(expected);
-//      });
-//
-//
-//      it('Applies first function when all arguments supplied and first function has arity > 1 (2)', function() {
-//        var f = curry(function(a, b) {return a + b;});
-//        var g = function(x) {return x + 1;};
-//        var expected = f(g(1), 1);
-//        var composition = compose(f, g);
-//
-//        expect(composition(1, 1)).to.equal(expected);
-//      });
-//
-//
-//      it('Curries second function if it has arity > 1', function() {
-//        var id = function(x) {return x;};
-//        var g = function(x, y) {return x + 1;};
-//        var composition = compose(id, g);
-//
-//        expect(composition(1)).to.be.a('function');
-//        expect(getRealArity(composition(1))).to.equal(1);
-//      });
-//
-//
-//      it('Partially applies second function correctly if it has arity > 1', function() {
-//        var id = function(x) {return x;};
-//        var g = function(x, y) {return x + 1;};
-//        var composition = compose(id, g);
-//
-//        expect(composition(1)(2)).to.equal(g(1, 2));
-//      });
-//
-//
-//      it('When both functions have arity > 1 and multiple arguments given to composition, only first argument passed to second function', function() {
-//        var f = function(x, y, z) {return [].slice.call(arguments, 1);};
-//        var g = function(x, y) {return x + 1;};
-//        var composition = compose(f, g);
-//
-//        expect(composition(1, 2, 3)).to.deep.equal([2, 3]);
-//        expect(composition(3, 10, 17)).to.deep.equal([10, 17]);
-//      });
-//
-//
-//      // Compose is binary, and should of course be curried
-//      var fn = function(a) {return a + 1;};
-//      var args = {firstArgs: [fn, fn], thenArgs: [1]};
-//
-//      // Also, lets test the composed functions too
-//      var fn2 = function(a, b) {return a + b + 3;};
-//      var fn3 = function(a) {return a * 4;};
-//    });
-//
-//
+    // Many of the tests use id: let's pull it out
+    var id = base.id;
+
+
+    var composeSpec = {
+      name: 'compose',
+      restrictions: [['function: minarity 1'], ['function: minarity 1']],
+      validArguments: [[function(x) {}], [function(x) {}]]
+    };
+
+
+    checkFunction(composeSpec, base.compose, function(compose) {
+      it('Composes two functions correctly (1)', function() {
+        var f = function(x) {return x + 2;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('Composes two functions correctly (2)', function() {
+        var f = function(x) {return x + 3;};
+        var g = function(x) {return x + 2;};
+        var composition = compose(f, g);
+
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('Calls the second function first', function() {
+        var f = function(x) {return x * 2;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+
+        expect(composition(1)).to.not.equal(g(f(1)));
+        expect(composition(1)).to.equal(f(g(1)));
+      });
+
+
+      it('Curries first function if it has arity > 1', function() {
+        var f = function(a, b) {return a + b;};
+        var g = function(x) {return x + 1;};
+        var composition = compose(f, g);
+
+        expect(composition(1)).to.be.a('function');
+        expect(arityOf(composition(1))).to.equal(1);
+      });
+
+
+      it('Partially applies first function correctly if it has arity > 1 (1)', function() {
+        var f = function(a, b) {return a + b;};
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+        var composition = compose(f, g);
+
+        expect(composition(1)(1)).to.equal(expected);
+      });
+
+
+      it('Partially applies first function correctly if it has arity > 1 (2)', function() {
+        var f = curry(function(a, b) {return a + b;});
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+        var composition = compose(f, g);
+
+        expect(composition(1)(1)).to.equal(expected);
+      });
+
+
+      it('Applies first function when all arguments supplied and first function has arity > 1 (1)', function() {
+        var f = function(a, b) {return a + b;};
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+        var composition = compose(f, g);
+
+        expect(composition(1, 1)).to.equal(expected);
+      });
+
+
+      it('Applies first function when all arguments supplied and first function has arity > 1 (2)', function() {
+        var f = curry(function(a, b) {return a + b;});
+        var g = function(x) {return x + 1;};
+        var expected = f(g(1), 1);
+        var composition = compose(f, g);
+
+        expect(composition(1, 1)).to.equal(expected);
+      });
+
+
+      it('Curries second function if it has arity > 1', function() {
+        var id = function(x) {return x;};
+        var g = function(x, y) {return x + 1;};
+        var composition = compose(id, g);
+
+        expect(composition(1)).to.be.a('function');
+        expect(arityOf(composition(1))).to.equal(1);
+      });
+
+
+      it('Partially applies second function correctly if it has arity > 1', function() {
+        var id = function(x) {return x;};
+        var g = function(x, y) {return x + 1;};
+        var composition = compose(id, g);
+
+        expect(composition(1)(2)).to.equal(g(1, 2));
+      });
+
+
+      it('When both functions have arity > 1 and multiple arguments given to composition, only first argument passed to ' +
+         ' second function', function() {
+        var f = function(x, y, z) {return [].slice.call(arguments, 1);};
+        var g = function(x, y) {return x + 1;};
+        var composition = compose(f, g);
+
+        expect(composition(1, 2, 3)).to.deep.equal([2, 3]);
+        expect(composition(3, 10, 17)).to.deep.equal([10, 17]);
+      });
+
+
+      it('When original function is object curried, result passes context to first function', function() {
+        var obj = {};
+        var f = objectCurry(function(x) { return this; });
+        var composition = compose(id, f);
+        obj.composition = composition;
+
+        expect(obj.composition(1)).to.equal(obj);
+      });
+
+
+      addCurryStyleTests(function(f) { return compose(id, f); });
+    });
+
+
 //    var composeOnSpec = {
 //      name: 'composeOn',
 //      arity: 3,

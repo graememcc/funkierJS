@@ -286,6 +286,34 @@
     });
 
 
+    describe('compose', function() {
+      it('compose exists', function() {
+        expect(funkier).to.have.a.property('compose');
+      });
+
+
+      it('funkierJS\'s compose is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.compose).to.equal(module.compose);
+      });
+
+
+      it('compose is a function', function() {
+        expect(funkier.compose).to.be.a('function');
+      });
+
+
+      it('compose has documented arity', function() {
+        expect(funkier.arityOf(funkier.compose)).to.equal(2);
+      });
+
+
+      it('compose is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.compose)).to.equal(true);
+      });
+    });
+
+
     describe('constant', function() {
       it('constant exists', function() {
         expect(funkier).to.have.a.property('constant');
@@ -1589,8 +1617,8 @@
 
     beforeEach(function() {
       documentedNames = ['help', 'add', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext',
-         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'constant', 'curry',
-         'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'getType',
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'constant',
+         'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'getType',
          'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean', 'isNull',
          'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift', 'lessThan', 'lessThanEqual',
          'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals', 'objectCurry',

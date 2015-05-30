@@ -362,6 +362,33 @@ curry such functions won't throw, but they will not work as expected.
     var err = obj1.foo;
     err(1, 2);  // => throws
 ***
+## Functions##
+### compose ###
+**Usage:** `var result = compose(f, g);`
+
+Parameters:  
+f `function`  
+g `function`
+
+Returns: `function`
+
+Composes the two functions, returning a new function that consumes one argument, which is passed to `g`. The result
+of that call is then passed to `f`. That result is then returned. Throws if either parameter is not a function, or
+has arity 0.
+
+The functions will be curried (using the standard [`curry`](#curry) if required. The resulting function will have
+real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
+argument: `f` will recieve a partially applied `g`, and any remaining arguments.
+
+If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
+will also be considered as having been curried that way, with the correct bound context.
+
+#### Examples ####
+    var f1 = function(a) {return a + 1;};
+    var f2 = function(b) {return b * 2;};
+    var f = funkierJS.compose(f1, f2); // => f(x) = 2(x + 1)',
+***
 ## Logical##
 ### and ###
 **Usage:** `var result = and(x, y);`
