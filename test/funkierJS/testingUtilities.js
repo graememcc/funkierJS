@@ -5,7 +5,10 @@ module.exports = (function() {
   var expect = require('chai').expect;
 
 
-  var arityOf = require('../../lib/components/curry').arityOf;
+  var curryModule = require('../../lib/components/curry');
+  var arityOf = curryModule.arityOf;
+  var bind = curryModule.bind;
+  var objectCurry = curryModule.objectCurry;
 
 
   /*
@@ -508,7 +511,45 @@ module.exports = (function() {
   };
 
 
+  /*
+   * Helper function for testing function manipulating other functions. This adds tests that the results are curried
+   * in the same "style" as the manipulated function. We make the following assumptions:
+   *
+   *  - The caller has exercised the usual case of functions being curried with "curry"
+   *  - The function being manipulated must have an arity of at least 1
+   *  - The caller can supply a function which will take the function to be manipulated and return the result
+   *
+   */
+
+  var addCurryStyleTests = function(manipulator) {
+    it('When original function is object curried, result is considered object curried for currying purposes',
+          function() {
+      var f = objectCurry(function(x) { return this; });
+      var manipulated = manipulator(f);
+      var fn = function() {
+        objectCurry(fn);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('When original function is bind curried, result is considered bind curried for currying purposes',
+        function() {
+      var obj = {};
+      var f = bind(obj, function(x) { return this; });
+      var manipulated = manipulator(f);
+      var fn = function() {
+        bind(fn);
+      };
+
+      expect(fn).to.not.throw();
+    });
+  };
+
+
   var toExport = {
+    addCurryStyleTests: addCurryStyleTests,
     checkFunction: checkFunction,
     checkModule:   checkModule
   };
