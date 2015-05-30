@@ -227,17 +227,6 @@ j(9);  // =&gt; 2, &#39;a&#39; logged
 h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
 </code></pre></section>
 </section>
-<section class="functionRef" id="log">
-<h3 class="functionName">log</h3>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = log(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
-be subject to rounding errors.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.log(2, 8); // =&gt; 3;
-</code></pre></section>
-</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
@@ -523,6 +512,17 @@ funkierJS.even(3); // =&gt; false
 <p>A wrapper around the less than or equal (&lt;=) operator.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.lessThanEqual(2, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="log">
+<h3 class="functionName">log</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = log(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
+be subject to rounding errors.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.log(2, 8); // =&gt; 3;
 </code></pre></section>
 </section>
 <section class="functionRef" id="lt">

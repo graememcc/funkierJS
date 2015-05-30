@@ -243,21 +243,6 @@ function `bind` method. Attempting to curry these might lead to surprising resul
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
 ***
-### log ###
-**Usage:** `var result = log(x, y);`
-
-Parameters:  
-x `number`  
-y `number`
-
-Returns: `number`
-
-Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
-be subject to rounding errors.
-
-#### Examples ####
-    funkierJS.log(2, 8); // => 3;
-***
 ### objectCurry ###
 **Usage:** `var result = objectCurry(f);`
 
@@ -628,6 +613,21 @@ A wrapper around the less than or equal (<=) operator.
 
 #### Examples ####
     funkierJS.lessThanEqual(2, 2); // => true;
+***
+### log ###
+**Usage:** `var result = log(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
+be subject to rounding errors.
+
+#### Examples ####
+    funkierJS.log(2, 8); // => 3;
 ***
 ### lt ###
 See `lessThan`

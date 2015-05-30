@@ -708,7 +708,7 @@ A wrapper around the less than or equal (<=) operator.
     funkierJS.lessThanEqual(2, 2); // => true;
 ***
 ### log ###
-Category: Function
+Category: Maths
 
 **Usage:** `var result = log(x, y);`
 
@@ -1784,7 +1784,7 @@ A wrapper around the less than or equal (<=) operator.
     funkierJS.lessThanEqual(2, 2); // => true;
 ***
 ### log ###
-Category: Function
+Category: Maths
 
 **Usage:** `var result = log(x, y);`
 
@@ -2860,7 +2860,7 @@ A wrapper around the less than or equal (<=) operator.
     funkierJS.lessThanEqual(2, 2); // => true;
 ***
 ### log ###
-Category: Function
+Category: Maths
 
 **Usage:** `var result = log(x, y);`
 
@@ -3936,7 +3936,7 @@ A wrapper around the less than or equal (<=) operator.
     funkierJS.lessThanEqual(2, 2); // => true;
 ***
 ### log ###
-Category: Function
+Category: Maths
 
 **Usage:** `var result = log(x, y);`
 
