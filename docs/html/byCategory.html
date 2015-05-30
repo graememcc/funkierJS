@@ -15,6 +15,7 @@
 <li class="categoryListItem"><a href="#Function">Function</a></li>
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
 <li class="categoryListItem"><a href="#Maths">Maths</a></li>
+<li class="categoryListItem"><a href="#Types">Types</a></li>
 </ul>
 </section>
 <section class="categoryRef" id="Function">
@@ -616,6 +617,189 @@ funkierJS.odd(3); // =&gt; true
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.subtract(3, 1); // =&gt; 2;
 </code></pre></section>
+</section>
+<section class="categoryRef" id="Types">
+<h2 class="categoryName">Types</h2>
+<section class="functionRef" id="deepEqual">
+<h3 class="functionName">deepEqual</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">deepEquals</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = deepEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Check two values for deep equality. Deep equality holds if any of the following if the two values are the same
+object, if both values are objects with the same object, the same prototype, the same enumerable properties
+and those properties are themselves deeply equal (non-enumerable properties are not checked), or if both values
+are arrays with the same length, any additional properties installed on the arrays are deeply equal, and the items
+at each index are themselves deeply equal.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="deepEquals">
+<h3 class="functionName">deepEquals</h3>
+<p class="see">See <a class="synonymLink" href="#deepEqual"><code class="synonymCode">deepEqual</code></a></p>
+</section>
+<section class="functionRef" id="equals">
+<h3 class="functionName">equals</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = equals(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the non-strict equality (==) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.equals(1, &#39;1&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="getType">
+<h3 class="functionName">getType</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getType(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
+the object&quot;s type: the result will be one of &quot;number&quot;, &quot;string&quot;, &quot;boolean&quot;, &quot;function&quot;, &quot;undefined&quot;, or &quot;object&quot;.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getType({}); // =&gt; &quot;object&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="hasType">
+<h3 class="functionName">hasType</h3>
+<p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="is">
+<h3 class="functionName">is</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">hasType</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = is(type, value);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">type: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">value: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a string that could be returned by the <code>typeof</code> operator, and a value, returns true if typeof the given
+object equals the given string. Throws if the first argument is not a string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.is(&#39;number&#39;, 1); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isArray">
+<h3 class="functionName">isArray</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isArray(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is an array, false otherwise</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isArray([]); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isBoolean">
+<h3 class="functionName">isBoolean</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isBoolean(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;boolean&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isBoolean(false); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isNull">
+<h3 class="functionName">isNull</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNull(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given object is null, false otherwise</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isNull(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isNumber">
+<h3 class="functionName">isNumber</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNumber(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;number&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isNumber(1); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isObject">
+<h3 class="functionName">isObject</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isObject(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isRealObject">
+<h3 class="functionName">isRealObject</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isRealObject(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the value is a <em>real</em> Javascript object, i.e. an object for which <code>funkierJS.isObject(a) === true</code>
+and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) === false</code>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isRealObject(null); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="isString">
+<h3 class="functionName">isString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isString(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;string&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isString(&#39;a&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isUndefined">
+<h3 class="functionName">isUndefined</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isUndefined(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;undefined&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isUndefined(1); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="notEqual">
+<h3 class="functionName">notEqual</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">notEquals</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the inequality (!=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.notEqual({}, {}); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="notEquals">
+<h3 class="functionName">notEquals</h3>
+<p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
+</section>
+<section class="functionRef" id="strictEquals">
+<h3 class="functionName">strictEquals</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictEquals(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the strict equality (===) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.strictEquals(1, &#39;1&#39;); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="strictInequality">
+<h3 class="functionName">strictInequality</h3>
+<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
+</section>
+<section class="functionRef" id="strictNotEqual">
+<h3 class="functionName">strictNotEqual</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">strictNotEquals</code></li><li class="synonym"><code class="synonymName">strictInequality</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictNotEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the strict inequality (!==) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.strictNotEqual(1, &#39;1&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="strictNotEquals">
+<h3 class="functionName">strictNotEquals</h3>
+<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
 
 </section>

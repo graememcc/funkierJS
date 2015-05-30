@@ -750,3 +750,235 @@ A wrapper around the subtraction operator.
 #### Examples ####
     funkierJS.subtract(3, 1); // => 2;
 ***
+## Types##
+### deepEqual ###
+*Synonyms:* `deepEquals`
+
+**Usage:** `var result = deepEqual(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `boolean`
+
+Check two values for deep equality. Deep equality holds if any of the following if the two values are the same
+object, if both values are objects with the same object, the same prototype, the same enumerable properties
+and those properties are themselves deeply equal (non-enumerable properties are not checked), or if both values
+are arrays with the same length, any additional properties installed on the arrays are deeply equal, and the items
+at each index are themselves deeply equal.
+
+#### Examples ####
+    funkierJS.deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // => true
+***
+### deepEquals ###
+See `deepEqual`
+***
+### equals ###
+**Usage:** `var result = equals(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `boolean`
+
+A wrapper around the non-strict equality (==) operator.
+
+#### Examples ####
+    funkierJS.equals(1, '1'); // => true
+***
+### getType ###
+**Usage:** `var result = getType(a);`
+
+Parameters:  
+a `any`
+
+Returns: `string`
+
+A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
+the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+
+#### Examples ####
+    funkierJS.getType({}); // => "object"
+***
+### hasType ###
+See `is`
+***
+### is ###
+*Synonyms:* `hasType`
+
+**Usage:** `var result = is(type, value);`
+
+Parameters:  
+type `string`  
+value `any`
+
+Returns: `boolean`
+
+Given a string that could be returned by the `typeof` operator, and a value, returns true if typeof the given
+object equals the given string. Throws if the first argument is not a string.
+
+#### Examples ####
+    funkierJS.is('number', 1); // => true
+***
+### isArray ###
+**Usage:** `var result = isArray(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is an array, false otherwise
+
+#### Examples ####
+    funkierJS.isArray([]); // => true
+***
+### isBoolean ###
+**Usage:** `var result = isBoolean(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if typeof the given value equals "boolean", false otherwise.
+
+#### Examples ####
+    funkierJS.isBoolean(false); // => true
+***
+### isNull ###
+**Usage:** `var result = isNull(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given object is null, false otherwise
+
+#### Examples ####
+    funkierJS.isNull(null); // => true
+***
+### isNumber ###
+**Usage:** `var result = isNumber(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if typeof the given value equals "number", false otherwise.
+
+#### Examples ####
+    funkierJS.isNumber(1); // => true
+***
+### isObject ###
+**Usage:** `var result = isObject(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if typeof the given value equals "object", false otherwise.
+
+#### Examples ####
+    funkierJS.isObject(null); // => true
+***
+### isRealObject ###
+**Usage:** `var result = isRealObject(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the value is a *real* Javascript object, i.e. an object for which `funkierJS.isObject(a) === true`
+and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
+
+#### Examples ####
+    funkierJS.isRealObject(null); // => false
+***
+### isString ###
+**Usage:** `var result = isString(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if typeof the given value equals "string", false otherwise.
+
+#### Examples ####
+    funkierJS.isString('a'); // => true
+***
+### isUndefined ###
+**Usage:** `var result = isUndefined(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if typeof the given value equals "undefined", false otherwise.
+
+#### Examples ####
+    funkierJS.isUndefined(1); // => false
+***
+### notEqual ###
+*Synonyms:* `notEquals`
+
+**Usage:** `var result = notEqual(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `boolean`
+
+A wrapper around the inequality (!=) operator.
+
+#### Examples ####
+    funkierJS.notEqual({}, {}); // => true
+***
+### notEquals ###
+See `notEqual`
+***
+### strictEquals ###
+**Usage:** `var result = strictEquals(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `boolean`
+
+A wrapper around the strict equality (===) operator.
+
+#### Examples ####
+    funkierJS.strictEquals(1, '1'); // => false
+***
+### strictInequality ###
+See `strictNotEqual`
+***
+### strictNotEqual ###
+*Synonyms:* `strictNotEquals` | `strictInequality`
+
+**Usage:** `var result = strictNotEqual(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `boolean`
+
+A wrapper around the strict inequality (!==) operator.
+
+#### Examples ####
+    funkierJS.strictNotEqual(1, '1'); // => true
+***
+### strictNotEquals ###
+See `strictNotEqual`
+***

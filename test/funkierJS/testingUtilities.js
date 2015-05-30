@@ -98,7 +98,8 @@ module.exports = (function() {
     'function': 'function',
     'natural':  'number',
     'objectlike': 'object',
-    'strictNatural':  'number'
+    'strictNatural':  'number',
+    'string': 'string'
   };
 
 
@@ -108,7 +109,8 @@ module.exports = (function() {
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
-    'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; }
+    'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; },
+    'string': function(f) { return typeof(f) === 'string'; },
   };
 
 
