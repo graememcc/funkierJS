@@ -251,6 +251,17 @@ j(9);  // =&gt; 2, &#39;a&#39; logged
 h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
 </code></pre></section>
 </section>
+<section class="functionRef" id="flip">
+<h3 class="functionName">flip</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = flip(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
+backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>

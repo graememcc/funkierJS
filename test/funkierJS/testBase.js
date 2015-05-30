@@ -22,7 +22,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = [/* 'composeOn',*/ 'compose', 'constant', 'constant0', 'id' /*,'composeMany', 'flip',
+    var expectedFunctions = [/* 'composeOn',*/ 'compose', 'constant', 'constant0', 'flip', 'id' /*,'composeMany',
                              'sectionLeft', 'sectionRight' */];
     checkModule('base', base, expectedObjects, expectedFunctions);
 
@@ -646,92 +646,92 @@
 //        expect(result(2)(3)).to.deep.equal([1, 2, 3]);
 //      });
 //    });
-//
-//
-//    var flipSpec = {
-//      name: 'flip',
-//      arity: 1,
-//      restrictions: [['function']],
-//      validArguments: [[function(a, b) {}]]
-//    };
-//
-//
-//    checkFunction(flipSpec, base.flip, function(flip) {
-//      it('Returns a curried version of original function when called with function of length 0', function() {
-//        var f = function() {return [].slice.call(arguments);};
-//        var flipped = flip(f);
-//
-//        expect(getRealArity(flipped)).to.equal(0);
-//        expect(flipped()).to.deep.equal([]);
-//        expect(flipped(42)).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns original function when called with curried function of length 0', function() {
-//        var f = curry(function() {return [].slice.call(arguments);});
-//        var flipped = flip(f);
-//
-//        expect(flipped).to.equal(f);
-//      });
-//
-//
-//      it('Returns a curried version of original function when called with function of length 1', function() {
-//        var f = function(x) {return [].slice.call(arguments);};
-//        var flipped = flip(f);
-//
-//        expect(getRealArity(flipped)).to.equal(1);
-//        expect(flipped(42)).to.deep.equal(f(42));
-//        expect(flipped(42, 'x')).to.deep.equal([42]);
-//      });
-//
-//
-//      it('Returns original function when called with curried function of length 1', function() {
-//        var f = curry(function(x) {return [].slice.call(arguments);});
-//        var flipped = flip(f);
-//
-//        expect(flipped).to.equal(f);
-//      });
-//
-//
-//      var addThrowsArityGT2Test = function(message, f) {
-//        it('Throws if called with a function of arity > 2 ' + message, function() {
-//          var fn = function() {
-//            var flipped = flip(f);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addThrowsArityGT2Test('(normal function)', function(x, y, z) {return 42;});
-//      addThrowsArityGT2Test('(curried function)', curry(function(x, y, z) {return 42;}));
-//
-//
-//      var addReturnsCurriedTest = function(message, f) {
-//        it('Returns a curried function ' + message, function() {
-//          var flipped = flip(f);
-//
-//          expect(flipped.length).to.equal(1);
-//          expect(getRealArity(flipped)).to.equal(2);
-//        });
-//      };
-//
-//
-//      addReturnsCurriedTest('(normal function)', function(x, y) {});
-//      addReturnsCurriedTest('(curried function)', curry(function(x, y) {}));
-//
-//
-//      it('Works correctly', function() {
-//        var f = function(x, y) {return [].slice.call(arguments);};
-//        var flipped = flip(f);
-//
-//        expect(flipped(1, 2)).to.deep.equal(f(2, 1));
-//        expect(flipped('a', 'b')).to.deep.equal(f('b', 'a'));
-//      });
-//
-//
-//    });
+
+
+  var flipSpec = {
+    name: 'flip',
+    restrictions: [['function']],
+    validArguments: [[function(a, b) {}]]
+  };
+
+
+  checkFunction(flipSpec, base.flip, function(flip) {
+    it('Returns a curried version of original function when called with function of length 0', function() {
+      var f = function() {return [].slice.call(arguments);};
+      var flipped = flip(f);
+
+      expect(arityOf(flipped)).to.equal(0);
+      expect(flipped()).to.deep.equal([]);
+      expect(flipped(42)).to.deep.equal([]);
+    });
+
+
+    it('Returns original function when called with curried function of length 0', function() {
+      var f = curry(function() {return [].slice.call(arguments);});
+      var flipped = flip(f);
+
+      expect(flipped).to.equal(f);
+    });
+
+
+    it('Returns a curried version of original function when called with function of length 1', function() {
+      var f = function(x) {return [].slice.call(arguments);};
+      var flipped = flip(f);
+
+      expect(arityOf(flipped)).to.equal(1);
+      expect(flipped(42)).to.deep.equal(f(42));
+      expect(flipped(42, 'x')).to.deep.equal([42]);
+    });
+
+
+    it('Returns original function when called with curried function of length 1', function() {
+      var f = curry(function(x) {return [].slice.call(arguments);});
+      var flipped = flip(f);
+
+      expect(flipped).to.equal(f);
+    });
+
+
+    var addThrowsArityGT2Test = function(message, f) {
+      it('Throws if called with a function of arity > 2 ' + message, function() {
+        var fn = function() {
+          var flipped = flip(f);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    };
+
+
+    addThrowsArityGT2Test('(normal function)', function(x, y, z) {return 42;});
+    addThrowsArityGT2Test('(curried function)', curry(function(x, y, z) {return 42;}));
+
+
+    var addReturnsCurriedTest = function(message, f) {
+      it('Returns a curried function ' + message, function() {
+        var flipped = flip(f);
+
+        expect(flipped.length).to.equal(1);
+        expect(arityOf(flipped)).to.equal(2);
+      });
+    };
+
+
+    addReturnsCurriedTest('(normal function)', function(x, y) {});
+    addReturnsCurriedTest('(curried function)', curry(function(x, y) {}));
+
+
+    it('Works correctly', function() {
+      var f = function(x, y) {return [].slice.call(arguments);};
+      var flipped = flip(f);
+
+      expect(flipped(1, 2)).to.deep.equal(f(2, 1));
+      expect(flipped('a', 'b')).to.deep.equal(f('b', 'a'));
+    });
+
+
+    addCurryStyleTests(function(f) { return flip(f); });
+  });
 //
 //
 //    var sectionLeftSpec = {

@@ -273,6 +273,20 @@ function `bind` method. Attempting to curry these might lead to surprising resul
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
 ***
+### flip ###
+**Usage:** `var result = flip(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.
+
+#### Examples ####
+    var backwards = funkierJS.flip(funkierJS.subtract);
+    backwards(2, 3); // => 1
+***
 ### objectCurry ###
 **Usage:** `var result = objectCurry(f);`
 

@@ -606,6 +606,34 @@
     });
 
 
+    describe('flip', function() {
+      it('flip exists', function() {
+        expect(funkier).to.have.a.property('flip');
+      });
+
+
+      it('funkierJS\'s flip is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.flip).to.equal(module.flip);
+      });
+
+
+      it('flip is a function', function() {
+        expect(funkier.flip).to.be.a('function');
+      });
+
+
+      it('flip has documented arity', function() {
+        expect(funkier.arityOf(funkier.flip)).to.equal(1);
+      });
+
+
+      it('flip is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.flip)).to.equal(true);
+      });
+    });
+
+
     describe('getType', function() {
       it('getType exists', function() {
         expect(funkier).to.have.a.property('getType');
@@ -1647,11 +1675,11 @@
       documentedNames = ['help', 'add', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext',
          'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'constant',
          'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp',
-         'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean',
-         'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift', 'lessThan',
-         'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor'];
+         'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray',
+         'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift',
+         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals',
+         'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'pow', 'rem', 'rightShift', 'rightShiftZero',
+         'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor'];
     });
 
 
