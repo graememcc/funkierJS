@@ -81,7 +81,7 @@ module.exports = (function() {
   Object.freeze(ANYVALUE);
 
 
-  var typeclasses = [/*'integer',*/ 'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var typeclasses = ['function: minarity 1',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
       return true;
@@ -96,6 +96,7 @@ module.exports = (function() {
 
   var primitiveTypeOf = {
     'function': 'function',
+    'function: minarity 1': 'function',
     'natural':  'number',
     'objectlike': 'object',
     'strictNatural':  'number',
@@ -105,7 +106,7 @@ module.exports = (function() {
 
   var restrictionVerifiers = {
     'function': function(f) { return typeof(f) === 'function'; },
-
+    'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length === 1; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
@@ -239,6 +240,7 @@ module.exports = (function() {
 
 
     var bogusForTypeClass = {
+      'function: minarity 1': [{type: 'function with arity 0', value: function() {}}],
       natural: naturalCommon,
       objectlike: [],
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
@@ -261,6 +263,10 @@ module.exports = (function() {
 
     return bogus.concat(restrictionsForPosition.reduce(function(soFar, restriction) {
       if (!isTypeClass(restriction)) return soFar;
+
+      if (bogusForTypeClass[restriction] === undefined)
+        throw new Error('No bogus arguments defined for typeclass ' + restriction + ': please fix makeBogusFor');
+
       return soFar.concat(bogusForTypeClass[restriction]);
     }, []));
   };
@@ -275,6 +281,7 @@ module.exports = (function() {
     var types = {
       'number': 0,
       'function': function() {},
+      'function: minarity1': function(x) {},
       'natural': 0
     };
 
@@ -384,7 +391,11 @@ module.exports = (function() {
 
     var addOne = function(call) {
       var args = call.map(function(c) { return c.value; });
-      var signature = '(' + call.map(function(c) { return c.type; }).join(', ') + ')';
+      var signature = '(' + call.map(function(c) {
+        if (c.type === undefined) throw new Error('No type for bogus arg: ' + c.value + ': please fix makeBogusFor!');
+        return c.type;
+      }).join(', ') + ')';
+
 
       it('Throws with type signature ' + signature, function() {
         var fn = function() {
