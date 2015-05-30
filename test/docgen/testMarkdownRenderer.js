@@ -75,7 +75,7 @@
     it('Renderer produces correct output when category encountered with category filename and no isCategory flag', function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html'});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#foo">Foo</a></p>\n';
+      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -85,7 +85,7 @@
       function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html', isCategory: false});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#foo">Foo</a></p>\n';
+      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -95,7 +95,7 @@
       function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html', isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#foo">Foo</a></p>\n';
+      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -105,7 +105,7 @@
       function() {
       var renderer = makeMarkdownRenderer([], {isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#foo">Foo</a></p>\n';
+      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -115,7 +115,7 @@
       function() {
       var renderer = makeMarkdownRenderer([], {isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#foo">Foo</a></p>\n';
+      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });

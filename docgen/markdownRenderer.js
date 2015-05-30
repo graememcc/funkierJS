@@ -29,14 +29,14 @@ module.exports = (function() {
     var catName = text.slice('Category: '.length).trim();
 
     if (options.isCategory)
-      return '<p class="category">Category: <a class="categoryLink" href="#' + catName.toLowerCase() + '">' +
+      return '<p class="category">Category: <a class="categoryLink" href="#' + catName + '">' +
              catName + '</a></p>\n';
 
     if (options.categoryFile === undefined)
       throw new Error('Cannot link to category: no category file specified!');
 
     return '<p class="category">Category: <a class="categoryLink" href="' + options.categoryFile + '#' +
-           catName.toLowerCase() + '">' + catName + '</a></p>\n';
+           catName + '">' + catName + '</a></p>\n';
   };
 
 

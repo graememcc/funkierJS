@@ -11,7 +11,7 @@
 
 <section class="functionRef" id="and">
 <h3 class="functionName">and</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = and(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -26,7 +26,7 @@
 </section>
 <section class="functionRef" id="arityOf">
 <h3 class="functionName">arityOf</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">arity</code></li></ul></div>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arityOf(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
@@ -41,7 +41,7 @@ the amount of arguments not yet supplied will be returned.</p>
 </section>
 <section class="functionRef" id="bind">
 <h3 class="functionName">bind</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">bindWithContext</code></li></ul></div>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bind(ctx, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
@@ -88,7 +88,7 @@ var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t m
 </section>
 <section class="functionRef" id="bindWithContextAndArity">
 <h3 class="functionName">bindWithContextAndArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bindWithContextAndArity(n, ctx, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -136,7 +136,7 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 </section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -182,7 +182,7 @@ funkierJS.curry(g) === g;  // =&gt; true
 </section>
 <section class="functionRef" id="curryWithArity">
 <h3 class="functionName">curryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -234,7 +234,7 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 </section>
 <section class="functionRef" id="not">
 <h3 class="functionName">not</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = not(b);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -245,7 +245,7 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 </section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -289,7 +289,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="objectCurryWithArity">
 <h3 class="functionName">objectCurryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -336,7 +336,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="or">
 <h3 class="functionName">or</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = or(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -347,7 +347,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xor(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -358,7 +358,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="and">
 <h3 class="functionName">and</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = and(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -373,7 +373,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="arityOf">
 <h3 class="functionName">arityOf</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">arity</code></li></ul></div>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arityOf(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
@@ -388,7 +388,7 @@ the amount of arguments not yet supplied will be returned.</p>
 </section>
 <section class="functionRef" id="bind">
 <h3 class="functionName">bind</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">bindWithContext</code></li></ul></div>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bind(ctx, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
@@ -435,7 +435,7 @@ var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t m
 </section>
 <section class="functionRef" id="bindWithContextAndArity">
 <h3 class="functionName">bindWithContextAndArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bindWithContextAndArity(n, ctx, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -483,7 +483,7 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 </section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -529,7 +529,7 @@ funkierJS.curry(g) === g;  // =&gt; true
 </section>
 <section class="functionRef" id="curryWithArity">
 <h3 class="functionName">curryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -581,7 +581,7 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 </section>
 <section class="functionRef" id="not">
 <h3 class="functionName">not</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = not(b);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -592,7 +592,7 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 </section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -636,7 +636,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="objectCurryWithArity">
 <h3 class="functionName">objectCurryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
@@ -683,7 +683,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="or">
 <h3 class="functionName">or</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = or(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
@@ -694,7 +694,7 @@ err(1, 2);  // =&gt; throws
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#logical">Logical</a></p>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xor(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>

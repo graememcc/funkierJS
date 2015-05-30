@@ -194,7 +194,7 @@ module.exports = (function() {
     var fileContents = [];
 
     categories.forEach(function(cat) {
-      var fns = collatedObjects.byName();
+      var fns = collatedObjects.byCategory(cat);
 
       fileContents.push('## ' + cat + '##');
       fns.forEach(function(fn) {
@@ -242,7 +242,7 @@ module.exports = (function() {
       pre.push('<h2 class="categoryListHeader">Categories</h2>\n');
       pre.push('<ul class="categoryList">\n');
       pre = pre.concat(categories.map(function(cat) {
-        return '<li class="categoryListItem"><a href="#' + cat.toLowerCase() + '">' + cat + '</a></li>\n';
+        return '<li class="categoryListItem"><a href="#' + cat + '">' + cat + '</a></li>\n';
       }));
       pre.push('</ul>\n');
       pre.push('</section>\n');
