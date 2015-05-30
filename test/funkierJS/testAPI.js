@@ -286,6 +286,34 @@
     });
 
 
+    describe('constant', function() {
+      it('constant exists', function() {
+        expect(funkier).to.have.a.property('constant');
+      });
+
+
+      it('funkierJS\'s constant is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.constant).to.equal(module.constant);
+      });
+
+
+      it('constant is a function', function() {
+        expect(funkier.constant).to.be.a('function');
+      });
+
+
+      it('constant has documented arity', function() {
+        expect(funkier.arityOf(funkier.constant)).to.equal(2);
+      });
+
+
+      it('constant is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.constant)).to.equal(true);
+      });
+    });
+
+
     describe('curry', function() {
       it('curry exists', function() {
         expect(funkier).to.have.a.property('curry');
@@ -638,6 +666,34 @@
 
       it('hasType is a synonym for is', function() {
         expect(funkier.hasType).to.equal(funkier.is);
+      });
+    });
+
+
+    describe('id', function() {
+      it('id exists', function() {
+        expect(funkier).to.have.a.property('id');
+      });
+
+
+      it('funkierJS\'s id is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.id).to.equal(module.id);
+      });
+
+
+      it('id is a function', function() {
+        expect(funkier.id).to.be.a('function');
+      });
+
+
+      it('id has documented arity', function() {
+        expect(funkier.arityOf(funkier.id)).to.equal(1);
+      });
+
+
+      it('id is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.id)).to.equal(true);
       });
     });
 
@@ -1533,13 +1589,13 @@
 
     beforeEach(function() {
       documentedNames = ['help', 'add', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext',
-         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'curry', 'curryWithArity',
-         'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'getType', 'greaterThan',
-         'greaterThanEqual', 'gt', 'gte', 'hasType', 'is', 'isArray', 'isBoolean', 'isNull', 'isNumber', 'isObject',
-         'isRealObject', 'isString', 'isUndefined', 'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte',
-         'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals', 'objectCurry', 'objectCurryWithArity', 'odd', 'or',
-         'pow', 'rem', 'rightShift', 'rightShiftZero', 'strictEquals', 'strictInequality', 'strictNotEqual',
-         'strictNotEquals', 'subtract', 'xor'];
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'constant', 'curry',
+         'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'getType',
+         'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean', 'isNull',
+         'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift', 'lessThan', 'lessThanEqual',
+         'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals', 'objectCurry',
+         'objectCurryWithArity', 'odd', 'or', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor'];
     });
 
 

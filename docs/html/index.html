@@ -189,6 +189,19 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 <pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
 </code></pre></section>
 </section>
+<section class="functionRef" id="constant">
+<h3 class="functionName">constant</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant(42);
+f(10); // =&gt; 42
+</code></pre></section>
+</section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -411,6 +424,17 @@ the object&quot;s type: the result will be one of &quot;number&quot;, &quot;stri
 <section class="functionRef" id="hasType">
 <h3 class="functionName">hasType</h3>
 <p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="id">
+<h3 class="functionName">id</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the supplied value. Superfluous values are ignored.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
+</code></pre></section>
 </section>
 <section class="functionRef" id="is">
 <h3 class="functionName">is</h3>
@@ -1013,6 +1037,19 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 <pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
 </code></pre></section>
 </section>
+<section class="functionRef" id="constant">
+<h3 class="functionName">constant</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant(42);
+f(10); // =&gt; 42
+</code></pre></section>
+</section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -1235,6 +1272,17 @@ the object&quot;s type: the result will be one of &quot;number&quot;, &quot;stri
 <section class="functionRef" id="hasType">
 <h3 class="functionName">hasType</h3>
 <p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="id">
+<h3 class="functionName">id</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the supplied value. Superfluous values are ignored.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
+</code></pre></section>
 </section>
 <section class="functionRef" id="is">
 <h3 class="functionName">is</h3>
@@ -1837,6 +1885,19 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 <pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
 </code></pre></section>
 </section>
+<section class="functionRef" id="constant">
+<h3 class="functionName">constant</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant(42);
+f(10); // =&gt; 42
+</code></pre></section>
+</section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -2059,6 +2120,17 @@ the object&quot;s type: the result will be one of &quot;number&quot;, &quot;stri
 <section class="functionRef" id="hasType">
 <h3 class="functionName">hasType</h3>
 <p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="id">
+<h3 class="functionName">id</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the supplied value. Superfluous values are ignored.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
+</code></pre></section>
 </section>
 <section class="functionRef" id="is">
 <h3 class="functionName">is</h3>
@@ -2661,6 +2733,19 @@ var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind 
 <pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
 </code></pre></section>
 </section>
+<section class="functionRef" id="constant">
+<h3 class="functionName">constant</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant(42);
+f(10); // =&gt; 42
+</code></pre></section>
+</section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -2883,6 +2968,17 @@ the object&quot;s type: the result will be one of &quot;number&quot;, &quot;stri
 <section class="functionRef" id="hasType">
 <h3 class="functionName">hasType</h3>
 <p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="id">
+<h3 class="functionName">id</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the supplied value. Superfluous values are ignored.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
+</code></pre></section>
 </section>
 <section class="functionRef" id="is">
 <h3 class="functionName">is</h3>

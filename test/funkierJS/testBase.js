@@ -1,32 +1,30 @@
-//(function() { "use strict";
-//
-//
+(function() {
+  "use strict";
+
+
+  var expect = require('chai').expect;
+  var base = require('../../lib/components/base');
+
+  var testUtils = require('./testingUtilities');
+  var checkModule = testUtils.checkModule;
+  var checkFunction = testUtils.checkFunction;
+
+
+  describe('base', function() {
 //  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
+
 //    var curryModule = require('../../curry');
 //    var curry = curryModule.curry;
 //    var curryWithArity = curryModule.curryWithArity;
 //    var getRealArity = curryModule.getRealArity;
-//
-//    var base = require('../../base');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['compose', 'composeOn', 'id', 'constant', 'constant0', 'composeMany', 'flip',
-//                             'sectionLeft', 'sectionRight', 'equals', 'strictEquals', 'notEqual', 'strictNotEqual',
-//                             'is', 'isNumber', 'isString', 'isBoolean', 'isUndefined', 'isObject', 'isArray', 'isNull',
-//                             'isRealObject', 'getType', 'deepEqual'];
-//    describeModule('base', base, expectedObjects, expectedFunctions);
-//
-//
+
+
+    var expectedObjects = [];
+    var expectedFunctions = [/*'compose', 'composeOn',*/ 'id', 'constant', /*'constant0', 'composeMany', 'flip',
+                             'sectionLeft', 'sectionRight' */];
+    checkModule('base', base, expectedObjects, expectedFunctions);
+
+
 //    // Many of the tests use id: let's pull it out
 //    var id = base.id;
 //
@@ -39,7 +37,7 @@
 //    };
 //
 //
-//    describeFunction(composeSpec, base.compose, function(compose) {
+//    checkFunction(composeSpec, base.compose, function(compose) {
 //      it('Composes two functions correctly (1)', function() {
 //        var f = function(x) {return x + 2;};
 //        var g = function(x) {return x + 1;};
@@ -187,12 +185,10 @@
 //      // Compose is binary, and should of course be curried
 //      var fn = function(a) {return a + 1;};
 //      var args = {firstArgs: [fn, fn], thenArgs: [1]};
-//      testCurriedFunction(compose, args);
 //
 //      // Also, lets test the composed functions too
 //      var fn2 = function(a, b) {return a + b + 3;};
 //      var fn3 = function(a) {return a * 4;};
-//      testCurriedFunction(compose(fn2, fn3), [1, 2], {message: 'Composed Function'});
 //    });
 //
 //
@@ -204,7 +200,7 @@
 //    };
 //
 //
-//    describeFunction(composeOnSpec, base.composeOn, function(composeOn) {
+//    checkFunction(composeOnSpec, base.composeOn, function(composeOn) {
 //      it('Composes two functions correctly (1)', function() {
 //        var f = function(x) {return x + 2;};
 //        var g = function(x) {return x + 1;};
@@ -341,140 +337,131 @@
 //      var fn1 = function(a) {return a(1);};
 //      var fn2 = function(a, b, c) {return a + b + c;};
 //      var args = {firstArgs: [2, fn1, fn2], thenArgs: [3, 4]};
-//      testCurriedFunction(composeOn, args);
 //
 //      // Also, lets test the composed functions too
 //      var fn3 = function(a, b) {return a + b + 3;};
 //      var fn4 = function(a) {return a * 4;};
-//      testCurriedFunction(composeOn(1, fn3, fn4), [3, 4], {message: 'Composed Function'});
 //    });
-//
-//
-//    var idSpec = {
-//      name: 'id',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(idSpec, base.id, function(id) {
-//      var tests = [
-//        {name: 'null', value: null},
-//        {name: 'undefined', value: undefined},
-//        {name: 'number', value: 42},
-//        {name: 'string', value: 'functional'},
-//        {name: 'boolean', value: 'true'},
-//        {name: 'array', value: [1, 2, 3]},
-//        {name: 'object', value: {foo: 1, bar: 'a'}},
-//        {name: 'function', value: function(a, b) {}}
-//      ];
-//
-//      tests.forEach(function(test) {
-//        var name = test.name;
-//        var value = test.value;
-//
-//        it('Works correctly for value of type ' + name, function() {
-//          expect(id(value)).to.equal(value);
-//        });
-//
-//        it('Ignores superfluous arguments for value of type ' + name, function() {
-//          expect(id(value, 'x')).to.equal(value);
-//        });
-//      });
-//    });
-//
-//
-//    var constantSpec = {
-//      name: 'constant',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(constantSpec, base.constant, function(constant) {
-//      var tests = [
-//        {name: 'null', value: null},
-//        {name: 'undefined', value: undefined},
-//        {name: 'number', value: 42},
-//        {name: 'string', value: 'functional'},
-//        {name: 'boolean', value: 'true'},
-//        {name: 'array', value: [1, 2, 3]},
-//        {name: 'object', value: {foo: 1, bar: 'a'}},
-//        {name: 'function', value: function(a, b) {}}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        var name = test.name;
-//        var value = test.value;
-//
-//        it('Works correctly for value of type ' + name, function() {
-//          tests.forEach(function(test) {
-//            expect(constant(value, test.value)).to.equal(value);
-//          });
-//        });
-//
-//        it('Ignores superfluous arguments for value of type ' + name, function() {
-//          var fn = constant(value);
-//          expect(fn(value, 'x')).to.equal(value);
-//        });
-//
-//        it('Returns value immediately when called with two arguments, with first of type ' + name, function() {
-//          expect(constant(value, 'x')).to.equal(value);
-//        });
-//
-//        tests.forEach(function(test) {
-//          testCurriedFunction(constant, [value, test.value],
-//                              {message: 'constant of type ' + name + ' called with type ' + test.name});
-//        });
-//      });
-//    });
-//
-//
-//    var constant0Spec = {
-//      name: 'constant0',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(constant0Spec, base.constant0, function(constant0) {
-//      var tests = [
-//        {name: 'null', value: null},
-//        {name: 'undefined', value: undefined},
-//        {name: 'number', value: 42},
-//        {name: 'string', value: 'functional'},
-//        {name: 'boolean', value: 'true'},
-//        {name: 'array', value: [1, 2, 3]},
-//        {name: 'object', value: {foo: 1, bar: 'a'}},
-//        {name: 'function', value: function(a, b) {}}
-//      ];
-//
-//      it('Returns a function of arity 0', function() {
-//        tests.forEach(function(test) {
-//          expect(getRealArity(constant0(test.value))).to.equal(0);
-//        });
-//      });
-//
-//
-//      tests.forEach(function(test) {
-//        var name = test.name;
-//        var value = test.value;
-//
-//        it('Works correctly for value of type ' + name, function() {
-//          var fn = constant0(value);
-//
-//          tests.forEach(function(test) {
-//            expect(fn()).to.equal(value);
-//          });
-//        });
-//
-//        it('Ignores superfluous arguments for value of type ' + name, function() {
-//          var fn = constant0(value);
-//          expect(fn('x')).to.equal(value);
-//        });
-//      });
-//    });
-//
-//
-//
+
+
+    var idSpec = {
+      name: 'id',
+    };
+
+
+    checkFunction(idSpec, base.id, function(id) {
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+
+        it('Works correctly for value of type ' + name, function() {
+          expect(id(value)).to.equal(value);
+        });
+
+        it('Ignores superfluous arguments for value of type ' + name, function() {
+          expect(id(value, 'x')).to.equal(value);
+        });
+      });
+    });
+
+
+    var constantSpec = {
+      name: 'constant',
+    };
+
+
+    checkFunction(constantSpec, base.constant, function(constant) {
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+
+        it('Works correctly for value of type ' + name, function() {
+          tests.forEach(function(test) {
+            expect(constant(value, test.value)).to.equal(value);
+          });
+        });
+
+        it('Ignores superfluous arguments for value of type ' + name, function() {
+          var fn = constant(value);
+          expect(fn(value, 'x')).to.equal(value);
+        });
+
+        it('Returns value immediately when called with two arguments, with first of type ' + name, function() {
+          expect(constant(value, 'x')).to.equal(value);
+        });
+      });
+    });
+
+
+/*
+    var constant0Spec = {
+      name: 'constant0',
+    };
+
+
+    checkFunction(constant0Spec, base.constant0, function(constant0) {
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'string', value: 'functional'},
+        {name: 'boolean', value: 'true'},
+        {name: 'array', value: [1, 2, 3]},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+        {name: 'function', value: function(a, b) {}}
+      ];
+
+      it('Returns a function of arity 0', function() {
+        tests.forEach(function(test) {
+          expect(arityOf(constant0(test.value))).to.equal(0);
+        });
+      });
+
+
+      tests.forEach(function(test) {
+        var name = test.name;
+        var value = test.value;
+
+        it('Works correctly for value of type ' + name, function() {
+          var fn = constant0(value);
+
+          tests.forEach(function(test) {
+            expect(fn()).to.equal(value);
+          });
+        });
+
+        it('Ignores superfluous arguments for value of type ' + name, function() {
+          var fn = constant0(value);
+          expect(fn('x')).to.equal(value);
+        });
+      });
+    });
+*/
+
+
 //    var composeManySpec = {
 //      name: 'composeMany',
 //      arity: 1,
@@ -483,7 +470,7 @@
 //    };
 //
 //
-//    describeFunction(composeManySpec, base.composeMany, function(composeMany) {
+//    checkFunction(composeManySpec, base.composeMany, function(composeMany) {
 //      it('Throws if called with empty array', function() {
 //          var fn = function() {
 //            var composition = composeMany([]);
@@ -702,7 +689,7 @@
 //    };
 //
 //
-//    describeFunction(flipSpec, base.flip, function(flip) {
+//    checkFunction(flipSpec, base.flip, function(flip) {
 //      it('Returns a curried version of original function when called with function of length 0', function() {
 //        var f = function() {return [].slice.call(arguments);};
 //        var flipped = flip(f);
@@ -777,7 +764,6 @@
 //      });
 //
 //
-//      testCurriedFunction(flip(function(a, b) {return a - b;}), [1, 2]);
 //    });
 //
 //
@@ -789,7 +775,7 @@
 //    };
 //
 //
-//    describeFunction(sectionLeftSpec, base.sectionLeft, function(sectionLeft) {
+//    checkFunction(sectionLeftSpec, base.sectionLeft, function(sectionLeft) {
 //      it('Calls f with x (1)', function() {
 //        var f = function(x, y) {f.args = [x];};
 //        f.args = null;
@@ -848,7 +834,6 @@
 //
 //
 //      var fn = function(x, y) {return x + y;};
-//      testCurriedFunction(sectionLeft, {firstArgs: [fn, 42], thenArgs: [1]});
 //    });
 //
 //
@@ -860,7 +845,7 @@
 //    };
 //
 //
-//    describeFunction(sectionRightSpec, base.sectionRight, function(sectionRight) {
+//    checkFunction(sectionRightSpec, base.sectionRight, function(sectionRight) {
 //      var addPartiallyAppliedRightTest = function(message, f, val1, val2) {
 //        it('Partially applies to the right (1)', function() {
 //          var sectioned = sectionRight(f, val1);
@@ -889,7 +874,6 @@
 //
 //
 //      var fn = function(x, y) {return x + y;};
-//      testCurriedFunction(sectionRight, {firstArgs: [fn, 42], thenArgs: [10]});
 //    });
 //
 //
@@ -924,7 +908,7 @@
 //      };
 //
 //
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+//      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
 //        equalityTests.forEach(function(test) {
 //          var val = test.value;
 //          var type = val !== null ? typeof(val) : 'null';
@@ -946,7 +930,6 @@
 //               makeEqualityTest(fnUnderTest, isNot, val, nVal));
 //          });
 //
-//          testCurriedFunction(fnUnderTest, [val, val]);
 //        });
 //      });
 //    };
@@ -964,7 +947,7 @@
 //    };
 //
 //
-//    describeFunction(deepEqualSpec, base.deepEqual, function(deepEqual) {
+//    checkFunction(deepEqualSpec, base.deepEqual, function(deepEqual) {
 //      var addWorksCorrectlyTest = function(message, a, b, expected) {
 //        it('Works correctly for ' + message, function() {
 //          expect(deepEqual(a, b)).to.equal(expected);
@@ -1162,7 +1145,6 @@
 //      });
 //
 //
-//      testCurriedFunction(deepEqual, [{fizz: 'funkier'}, {fizz: 'funkier'}]);
 //    });
 //
 //
@@ -1186,7 +1168,7 @@
 //    };
 //
 //
-//    describeFunction(isSpec, base.is, function(is) {
+//    checkFunction(isSpec, base.is, function(is) {
 //      var primitiveIsTests = isTestData.filter(function(o) {return o.primitive;});
 //
 //
@@ -1209,7 +1191,6 @@
 //      });
 //
 //
-//      testCurriedFunction(is, ['object', {}]);
 //    });
 //
 //
@@ -1230,14 +1211,13 @@
 //      };
 //
 //
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
+//      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
 //        isTestData.forEach(function(test) {
 //          var name = test.name;
 //          addSpecialisedIsCheck(name, fnUnderTest, test, accepts);
 //        });
 //
 //
-//        testCurriedFunction(fnUnderTest, [1]);
 //      });
 //    };
 //
@@ -1258,7 +1238,7 @@
 //    };
 //
 //
-//    describeFunction(getTypeSpec, base.getType, function(getType) {
+//    checkFunction(getTypeSpec, base.getType, function(getType) {
 //      var typeTests = [
 //        {name: 'number', val: 1},
 //        {name: 'boolean', val: true},
@@ -1278,15 +1258,5 @@
 //        });
 //      });
 //    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+  });
+})();

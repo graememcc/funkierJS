@@ -231,6 +231,24 @@ A wrapper around the bitwise xor (^) operator.
 #### Examples ####
     funkierJS.bitwiseAnd(7, 3); // => 4;
 ***
+### constant ###
+Category: Function
+
+**Usage:** `var result = constant(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `any`
+
+Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.
+
+#### Examples ####
+    var f = funkierJS.constant(42);
+    f(10); // => 42
+***
 ### curry ###
 Category: Function
 
@@ -514,6 +532,21 @@ See `greaterThanEqual`
 ***
 ### hasType ###
 See `is`
+***
+### id ###
+Category: Types
+
+**Usage:** `var result = id(a);`
+
+Parameters:  
+a `any`
+
+Returns: `any`
+
+Returns the supplied value. Superfluous values are ignored.
+
+#### Examples ####
+    funkierJS.id([1, 2]); // => [1, 2]
 ***
 ### is ###
 Category: Types
@@ -1307,6 +1340,24 @@ A wrapper around the bitwise xor (^) operator.
 #### Examples ####
     funkierJS.bitwiseAnd(7, 3); // => 4;
 ***
+### constant ###
+Category: Function
+
+**Usage:** `var result = constant(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `any`
+
+Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.
+
+#### Examples ####
+    var f = funkierJS.constant(42);
+    f(10); // => 42
+***
 ### curry ###
 Category: Function
 
@@ -1590,6 +1641,21 @@ See `greaterThanEqual`
 ***
 ### hasType ###
 See `is`
+***
+### id ###
+Category: Types
+
+**Usage:** `var result = id(a);`
+
+Parameters:  
+a `any`
+
+Returns: `any`
+
+Returns the supplied value. Superfluous values are ignored.
+
+#### Examples ####
+    funkierJS.id([1, 2]); // => [1, 2]
 ***
 ### is ###
 Category: Types
@@ -2383,6 +2449,24 @@ A wrapper around the bitwise xor (^) operator.
 #### Examples ####
     funkierJS.bitwiseAnd(7, 3); // => 4;
 ***
+### constant ###
+Category: Function
+
+**Usage:** `var result = constant(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `any`
+
+Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.
+
+#### Examples ####
+    var f = funkierJS.constant(42);
+    f(10); // => 42
+***
 ### curry ###
 Category: Function
 
@@ -2666,6 +2750,21 @@ See `greaterThanEqual`
 ***
 ### hasType ###
 See `is`
+***
+### id ###
+Category: Types
+
+**Usage:** `var result = id(a);`
+
+Parameters:  
+a `any`
+
+Returns: `any`
+
+Returns the supplied value. Superfluous values are ignored.
+
+#### Examples ####
+    funkierJS.id([1, 2]); // => [1, 2]
 ***
 ### is ###
 Category: Types
@@ -3459,6 +3558,24 @@ A wrapper around the bitwise xor (^) operator.
 #### Examples ####
     funkierJS.bitwiseAnd(7, 3); // => 4;
 ***
+### constant ###
+Category: Function
+
+**Usage:** `var result = constant(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `any`
+
+Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.
+
+#### Examples ####
+    var f = funkierJS.constant(42);
+    f(10); // => 42
+***
 ### curry ###
 Category: Function
 
@@ -3742,6 +3859,21 @@ See `greaterThanEqual`
 ***
 ### hasType ###
 See `is`
+***
+### id ###
+Category: Types
+
+**Usage:** `var result = id(a);`
+
+Parameters:  
+a `any`
+
+Returns: `any`
+
+Returns the supplied value. Superfluous values are ignored.
+
+#### Examples ####
+    funkierJS.id([1, 2]); // => [1, 2]
 ***
 ### is ###
 Category: Types

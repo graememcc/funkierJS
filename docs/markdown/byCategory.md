@@ -131,6 +131,22 @@ curry such functions won't throw, but they will not work as expected.
     
     var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 ***
+### constant ###
+**Usage:** `var result = constant(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `any`
+
+Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.
+
+#### Examples ####
+    var f = funkierJS.constant(42);
+    f(10); // => 42
+***
 ### curry ###
 **Usage:** `var result = curry(f);`
 
@@ -804,6 +820,19 @@ the object"s type: the result will be one of "number", "string", "boolean", "fun
 ***
 ### hasType ###
 See `is`
+***
+### id ###
+**Usage:** `var result = id(a);`
+
+Parameters:  
+a `any`
+
+Returns: `any`
+
+Returns the supplied value. Superfluous values are ignored.
+
+#### Examples ####
+    funkierJS.id([1, 2]); // => [1, 2]
 ***
 ### is ###
 *Synonyms:* `hasType`
