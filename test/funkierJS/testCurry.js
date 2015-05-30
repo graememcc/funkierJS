@@ -754,60 +754,6 @@
 
         expect(fn).to.throw();
       });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' throws if called with non-null context', function() {
-          var curried = curry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if called with null context', function() {
-          var curried = curry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](null, 1, 2);
-            else
-              curried[fn](null, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if partially applied and called with non-null context', function() {
-          var curried = curry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn]({}, 2);
-            else
-              curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if partially applied and called with null context', function() {
-          var curried = curry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn](null, 2);
-            else
-              curried(1)[fn](null, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-      });
     });
 
 
@@ -1098,60 +1044,6 @@
 
         expect(fn).to.throw();
       });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' throws if called with non-null context', function() {
-          var curried = curryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if called with null context', function() {
-          var curried = curryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](null, 1, 2);
-            else
-              curried[fn](null, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if partially applied and called with non-null context', function() {
-          var curried = curryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn]({}, 2);
-            else
-              curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if partially applied and called with null context', function() {
-          var curried = curryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn](null, 2);
-            else
-              curried(1)[fn](null, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-      });
     });
 
 
@@ -1386,62 +1278,6 @@
         };
 
         expect(fn).to.throw();
-      });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' throws if called with different context', function() {
-          var curried = bind({}, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if called with same context', function() {
-          var obj = {};
-          var curried = bind(obj, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](obj, 1, 2);
-            else
-              curried[fn](obj, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if partially applied and called with different context', function() {
-          var curried = bind({}, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn]({}, 2);
-            else
-              curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if partially applied and called with same context', function() {
-          var obj = {};
-          var curried = bind(obj, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn](obj, 2);
-            else
-              curried(1)[fn](obj, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
       });
     });
 
@@ -1695,62 +1531,6 @@
         };
 
         expect(fn).to.throw();
-      });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' throws if called with different context', function() {
-          var curried = bindWithContextAndArity(2, {}, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if called with same context', function() {
-          var obj = {};
-          var curried = bindWithContextAndArity(2, obj, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](obj, 1, 2);
-            else
-              curried[fn](obj, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if partially applied and called with different context', function() {
-          var curried = bindWithContextAndArity(2, {}, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn]({}, 2);
-            else
-              curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if partially applied and called with same context', function() {
-          var obj = {};
-          var curried = bindWithContextAndArity(2, obj, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried(1)[fn](obj, 2);
-            else
-              curried(1)[fn](obj, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
       });
     });
 
@@ -2051,77 +1831,6 @@
         };
 
         expect(fn).to.throw();
-      });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' does not throw if no context yet acquired and called with context', function() {
-          var curried = objectCurry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if called with undefined context', function() {
-          var obj = {};
-          var curried = objectCurry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](undefined, 1, 2);
-            else
-              curried[fn](undefined, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if context acquired and called with undefined context', function() {
-          var obj = {};
-          obj.curried = objectCurry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn](undefined, 2);
-            else
-              obj.curried(1)[fn](undefined, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if context acquired and called with other context', function() {
-          var obj = {};
-          obj.curried = objectCurry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn]({}, 2);
-            else
-              obj.curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if context acquired and called with right context', function() {
-          var obj = {};
-          obj.curried = objectCurry(function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn](obj, 2);
-            else
-              obj.curried(1)[fn](obj, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
       });
     });
 
@@ -2513,77 +2222,6 @@
         };
 
         expect(fn).to.throw();
-      });
-
-
-      ['apply', 'bind', 'call'].forEach(function(fn) {
-        it('Native function ' + fn + ' does not throw if no context yet acquired and called with context', function() {
-          var curried = objectCurryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn]({}, 1, 2);
-            else
-              curried[fn]({}, [1, 2]);
-          };
-
-          expect(f).to.not.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if called with undefined context', function() {
-          var obj = {};
-          var curried = objectCurryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              curried[fn](undefined, 1, 2);
-            else
-              curried[fn](undefined, [1, 2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if context acquired and called with undefined context', function() {
-          var obj = {};
-          obj.curried = objectCurryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn](undefined, 2);
-            else
-              obj.curried(1)[fn](undefined, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' throws if context acquired and called with other context', function() {
-          var obj = {};
-          obj.curried = objectCurryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn]({}, 2);
-            else
-              obj.curried(1)[fn]({}, [2]);
-          };
-
-          expect(f).to.throw();
-        });
-
-
-        it('Native function ' + fn + ' does not throw if context acquired and called with right context', function() {
-          var obj = {};
-          obj.curried = objectCurryWithArity(2, function(x, y) { return x + y; });
-          var f = function() {
-            if (fn !== 'apply')
-              obj.curried(1)[fn](obj, 2);
-            else
-              obj.curried(1)[fn](obj, [2]);
-          };
-
-          expect(f).to.not.throw();
-        });
       });
     });
   });
