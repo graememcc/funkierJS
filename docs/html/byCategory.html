@@ -144,6 +144,17 @@ and which always returns the first value.</p>
 f(10); // =&gt; 42
 </code></pre></section>
 </section>
+<section class="functionRef" id="constant0">
+<h3 class="functionName">constant0</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant0(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Returns a function of arity zero that when called always returns the supplied value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant0(42);
+f(); // =&gt; 42
+</code></pre></section>
+</section>
 <section class="functionRef" id="curry">
 <h3 class="functionName">curry</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>

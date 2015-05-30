@@ -147,6 +147,20 @@ and which always returns the first value.
     var f = funkierJS.constant(42);
     f(10); // => 42
 ***
+### constant0 ###
+**Usage:** `var result = constant0(a);`
+
+Parameters:  
+a `any`
+
+Returns: `function`
+
+Returns a function of arity zero that when called always returns the supplied value.
+
+#### Examples ####
+    var f = funkierJS.constant0(42);
+    f(); // => 42
+***
 ### curry ###
 **Usage:** `var result = curry(f);`
 

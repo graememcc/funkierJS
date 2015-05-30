@@ -22,7 +22,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = [/*'compose', 'composeOn',*/ 'id', 'constant', /*'constant0', 'composeMany', 'flip',
+    var expectedFunctions = [/*'compose', 'composeOn',*/ 'id', 'constant', 'constant0', /*'composeMany', 'flip',
                              'sectionLeft', 'sectionRight' */];
     checkModule('base', base, expectedObjects, expectedFunctions);
 
@@ -385,7 +385,6 @@
     });
 
 
-/*
     var constant0Spec = {
       name: 'constant0',
     };
@@ -428,7 +427,6 @@
         });
       });
     });
-*/
 
 
 //    var composeManySpec = {
