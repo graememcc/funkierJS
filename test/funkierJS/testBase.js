@@ -22,7 +22,7 @@
 
 
     var expectedObjects = [];
-    var expectedFunctions = [/*'compose', 'composeOn',*/ 'id', 'constant', 'constant0', /*'composeMany', 'flip',
+    var expectedFunctions = [/* 'composeOn',*/ 'compose', 'constant', 'constant0', 'id' /*,'composeMany', 'flip',
                              'sectionLeft', 'sectionRight' */];
     checkModule('base', base, expectedObjects, expectedFunctions);
 
