@@ -84,7 +84,7 @@ module.exports = (function() {
   Object.freeze(ANYVALUE);
 
 
-  var typeclasses = ['function: minarity 1',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var typeclasses = ['function: minarity 1', 'function: minarity 2',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
       return true;
@@ -100,6 +100,7 @@ module.exports = (function() {
   var primitiveTypeOf = {
     'function': 'function',
     'function: minarity 1': 'function',
+    'function: minarity 2': 'function',
     'natural':  'number',
     'objectlike': 'object',
     'strictNatural':  'number',
@@ -110,6 +111,7 @@ module.exports = (function() {
   var restrictionVerifiers = {
     'function': function(f) { return typeof(f) === 'function'; },
     'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length === 1; },
+    'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length === 2; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
@@ -244,6 +246,8 @@ module.exports = (function() {
 
     var bogusForTypeClass = {
       'function: minarity 1': [{type: 'function with arity 0', value: function() {}}],
+      'function: minarity 2': [{type: 'function with arity 0', value: function() {}},
+                               {type: 'function with arity 1', value: function(x) {}}],
       natural: naturalCommon,
       objectlike: [],
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
@@ -524,7 +528,7 @@ module.exports = (function() {
   var addCurryStyleTests = function(manipulator) {
     it('When original function is object curried, result is considered object curried for currying purposes',
           function() {
-      var f = objectCurry(function(x) { return this; });
+      var f = objectCurry(function(x, y) { return this; });
       var manipulated = manipulator(f);
       var fn = function() {
         objectCurry(fn);
@@ -537,7 +541,7 @@ module.exports = (function() {
     it('When original function is bind curried, result is considered bind curried for currying purposes',
         function() {
       var obj = {};
-      var f = bind(obj, function(x) { return this; });
+      var f = bind(obj, function(x, y) { return this; });
       var manipulated = manipulator(f);
       var fn = function() {
         bind(fn);
