@@ -32,7 +32,7 @@ function&#39;s length property. For a function that has been curried, the arity 
 reported (the function&#39;s length property will always be 0 or 1 in this case). For a partially applied function,
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>arityOf(function(x) {}); // =&gt; 1;
+<pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -64,17 +64,17 @@ curry such functions won&#39;t throw, but they will not work as expected.</p>
 
 var f = function(x, y) { return this.foo + x; };
 
-var g = bind(obj, f);
+var g = funkierJS.bind(obj, f);
 
 g(3)(2); // returns 45
 
 g(5, 2); // returns 47
 
 var obj2 = {foo: 10};
-var h = bindWithContextAndArity(3, obj2, f);
-var j = bind(obj2, h); // OK, same context object
+var h = funkierJS.bindWithContextAndArity(3, obj2, f);
+var j = funkierJS.bind(obj2, h); // OK, same context object
 
-var err = bind({foo: 1}, g); // throws: execution contexts don&#39;t match
+var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t match
 </code></pre></section>
 </section>
 <section class="functionRef" id="bindWithContext">
@@ -91,8 +91,9 @@ the supplied execution context, and whose arity equals the arity given. The supp
 function&#39;s length. The function will be only called when the specified number of arguments have been supplied.
 Superfluous arguments are discarded. It is possible to partially apply the resulting function, and indeed the
 further resulting function(s). The resulting function and its partial applications will throw if they require at
-least one argument, but are invoked without any. <code>bind</code> throws if the arity is not a natural number, if the second
-parameter is not an acceptable type for an execution context, or if the last parameter is not a function.</p>
+least one argument, but are invoked without any. <code>bindWithContextAndArity</code> throws if the arity is not a natural
+number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
+not a function.</p>
 <p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
 wrapped function will be invoked.</p>
@@ -113,16 +114,16 @@ curry such functions won&#39;t throw, but they will not work as expected.</p>
 
 var f = function(x, y) { return this.foo + x; };
 
-var g = bindWithContextAndArity(1, obj, f);
+var g = funkierJS.bindWithContextAndArity(1, obj, f);
 
 g(3); // returns 45
 
-var h = bindWithContextAndArity(3, obj, g); // OK, same context object
+var h = funkierJS.bindWithContextAndArity(3, obj, g); // OK, same context object
 h(2)(3, 4); // returns 44
 
-var err = bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don&#39;t match
+var err = funkierJS.bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don&#39;t match
 
-var ok = bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
+var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 </code></pre></section>
 </section>
 <section class="functionRef" id="curry">
@@ -151,7 +152,7 @@ lead to unexpected results).</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(x, y, z) { console.log(x, y, z); }
 
-var g = curry(f);
+var g = funkierJS.curry(f);
 
 g(4);  // =&gt; a function awaiting two arguments
 
@@ -165,7 +166,7 @@ g(&#39;x&#39;)(&#39;y&#39;, &#39;z&#39;); // =&gt; &#39;x&#39;, &#39;y&#39; &#39
 
 g(&#39;d&#39;, &#39;e&#39;, &#39;f&#39;); // =&gt; &#39;d&#39;, &#39;e&#39; &#39;f&#39; logged
 
-curry(g) === g;  // =&gt; true
+funkierJS.curry(g) === g;  // =&gt; true
 </code></pre></section>
 </section>
 <section class="functionRef" id="curryWithArity">
@@ -205,17 +206,62 @@ function <code>bind</code> method. Attempting to curry these might lead to surpr
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(x, y) { console.log(x, y); }
 
-var g = curryWithArity(1, f);
+var g = funkierJS.curryWithArity(1, f);
 
 g(7);  // =&gt; 1, undefined logged
 
-var h = curryWithArity(3, f);
+var h = funkierJS.curryWithArity(3, f);
 
 var j = h(2, &#39;a&#39;);
 
 j(9);  // =&gt; 2, &#39;a&#39; logged
 
 h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
+</code></pre></section>
+</section>
+<section class="functionRef" id="objectCurryWithArity">
+<h3 class="functionName">objectCurryWithArity</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given an arity and function, returns a curried function which calls the underlying with the execution context
+context active when the first arguments are supplied. This means that if partially applying the function, the
+resulting functions will have their execution context permanently bound. This method of binding is designed for
+currying functions that exist on an object&#39;s prototype. The function will be only called when the specified number
+of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
+applications will throw if they require at least one argument, but are invoked without any. <code>objectCurryWithArity</code>
+throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
+will throw if invoked with an undefined execution context.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function.</p>
+<p>If one has a function that has been returned from <code>objectCurryWithArity</code>, one can recurry it to a different arity
+if required. However, one cannot recurry any partial applications derived from it, as the execution context has
+now been bound. <code>objectCurryWithArity</code> cannot curry functions returned from <a href="#curry"><code>curry</code></a>,
+<a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>,
+and nor can those functions curry functions returned from <code>objectCurryWithArity</code>, or their subsequent partial
+applications. <code>objectCurryWithArity</code> will throw when provided with such a function.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var proto = {foo: function(x, y, z) { return x + y + this.bar; }};
+proto.foo = funkierJS.objectCurryWithArity(2, proto.foo);
+
+var obj1 = Object.create(proto);
+obj1.bar = 10;
+
+var g = obj1.foo(10);
+g(22); // =&gt; 42
+
+var obj2 = Object.create(proto);
+obj2.bar = 100;
+obj2.foo(10)(10); // =&gt; 120
+g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
+
+var err = obj1.foo;
+err(1, 2);  // =&gt; throws
 </code></pre></section>
 </section>
 

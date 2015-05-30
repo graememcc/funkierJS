@@ -20,7 +20,7 @@ reported (the function's length property will always be 0 or 1 in this case). Fo
 the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
-    arityOf(function(x) {}); // => 1;
+    funkierJS.arityOf(function(x) {}); // => 1;
 ***
 ### bind ###
 *Synonyms:* `bindWithContext`
@@ -60,17 +60,17 @@ curry such functions won't throw, but they will not work as expected.
     
     var f = function(x, y) { return this.foo + x; };
     
-    var g = bind(obj, f);
+    var g = funkierJS.bind(obj, f);
     
     g(3)(2); // returns 45
     
     g(5, 2); // returns 47
     
     var obj2 = {foo: 10};
-    var h = bindWithContextAndArity(3, obj2, f);
-    var j = bind(obj2, h); // OK, same context object
+    var h = funkierJS.bindWithContextAndArity(3, obj2, f);
+    var j = funkierJS.bind(obj2, h); // OK, same context object
     
-    var err = bind({foo: 1}, g); // throws: execution contexts don't match
+    var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don't match
 ***
 ### bindWithContext ###
 See `bind`
@@ -90,8 +90,9 @@ the supplied execution context, and whose arity equals the arity given. The supp
 function's length. The function will be only called when the specified number of arguments have been supplied.
 Superfluous arguments are discarded. It is possible to partially apply the resulting function, and indeed the
 further resulting function(s). The resulting function and its partial applications will throw if they require at
-least one argument, but are invoked without any. `bind` throws if the arity is not a natural number, if the second
-parameter is not an acceptable type for an execution context, or if the last parameter is not a function.
+least one argument, but are invoked without any. `bindWithContextAndArity` throws if the arity is not a natural
+number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
+not a function.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -117,16 +118,16 @@ curry such functions won't throw, but they will not work as expected.
     
     var f = function(x, y) { return this.foo + x; };
     
-    var g = bindWithContextAndArity(1, obj, f);
+    var g = funkierJS.bindWithContextAndArity(1, obj, f);
     
     g(3); // returns 45
     
-    var h = bindWithContextAndArity(3, obj, g); // OK, same context object
+    var h = funkierJS.bindWithContextAndArity(3, obj, g); // OK, same context object
     h(2)(3, 4); // returns 44
     
-    var err = bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don't match
+    var err = funkierJS.bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don't match
     
-    var ok = bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
+    var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 ***
 ### curry ###
 **Usage:** `var result = curry(f);`
@@ -162,7 +163,7 @@ lead to unexpected results).
 #### Examples ####
     var f = function(x, y, z) { console.log(x, y, z); }
     
-    var g = curry(f);
+    var g = funkierJS.curry(f);
     
     g(4);  // => a function awaiting two arguments
     
@@ -176,7 +177,7 @@ lead to unexpected results).
     
     g('d', 'e', 'f'); // => 'd', 'e' 'f' logged
     
-    curry(g) === g;  // => true
+    funkierJS.curry(g) === g;  // => true
 ***
 ### curryWithArity ###
 **Usage:** `var result = curryWithArity(n, f);`
@@ -225,15 +226,68 @@ function `bind` method. Attempting to curry these might lead to surprising resul
 #### Examples ####
     var f = function(x, y) { console.log(x, y); }
     
-    var g = curryWithArity(1, f);
+    var g = funkierJS.curryWithArity(1, f);
     
     g(7);  // => 1, undefined logged
     
-    var h = curryWithArity(3, f);
+    var h = funkierJS.curryWithArity(3, f);
     
     var j = h(2, 'a');
     
     j(9);  // => 2, 'a' logged
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
+***
+### objectCurryWithArity ###
+**Usage:** `var result = objectCurryWithArity(n, f);`
+
+Parameters:  
+n `strictNatural`  
+f `function`
+
+Returns: `function`
+
+Given an arity and function, returns a curried function which calls the underlying with the execution context
+context active when the first arguments are supplied. This means that if partially applying the function, the
+resulting functions will have their execution context permanently bound. This method of binding is designed for
+currying functions that exist on an object's prototype. The function will be only called when the specified number
+of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
+applications will throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
+throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
+will throw if invoked with an undefined execution context.
+
+The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
+wrapped function will be invoked.
+
+As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function.
+
+If one has a function that has been returned from `objectCurryWithArity`, one can recurry it to a different arity
+if required. However, one cannot recurry any partial applications derived from it, as the execution context has
+now been bound. `objectCurryWithArity` cannot curry functions returned from [`curry`](#curry),
+[`curryWithArity`](#curryWithArity), [`bind`](#bind) or [`bindWithContextAndArity`](#bindWithContextAndArity),
+and nor can those functions curry functions returned from `objectCurryWithArity`, or their subsequent partial
+applications. `objectCurryWithArity` will throw when provided with such a function.
+
+Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
+curry such functions won't throw, but they will not work as expected.
+
+#### Examples ####
+    var proto = {foo: function(x, y, z) { return x + y + this.bar; }};
+    proto.foo = funkierJS.objectCurryWithArity(2, proto.foo);
+    
+    var obj1 = Object.create(proto);
+    obj1.bar = 10;
+    
+    var g = obj1.foo(10);
+    g(22); // => 42
+    
+    var obj2 = Object.create(proto);
+    obj2.bar = 100;
+    obj2.foo(10)(10); // => 120
+    g(1); // => 21, the application using obj2 didn't affect the execution context of g
+    
+    var err = obj1.foo;
+    err(1, 2);  // => throws
 ***
