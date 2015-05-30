@@ -1,96 +1,92 @@
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
+(function() {
+  "use strict";
+
+
+  var expect = require('chai').expect;
 //
 //    var curryModule = require('../../curry');
 //
 //    var base = require('../../base');
-//    var logical = require('../../logical');
+  var logical = require('../../lib/components/logical');
 //
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
+  // Import utility functions
+  var testUtils = require('./testingUtilities');
+  var checkModule = testUtils.checkModule;
+  var checkFunction = testUtils.checkFunction;
 //    var testCurriedFunction = testUtils.testCurriedFunction;
 //
 //
-//    var expectedObjects = [];
-//    var expectedFunctions = ['not', 'and', 'or', 'xor',
-//                             'notPred', 'andPred', 'orPred', 'xorPred'];
-//    describeModule('logical', logical, expectedObjects, expectedFunctions);
-//
-//
-//    var notSpec = {
-//      name: 'not',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(notSpec, logical.not, function(not) {
-//      it('Works as expected (1)', function() {
-//        expect(not(true)).to.equal(false);
-//      });
-//
-//
-//      it('Works as expected (2)', function() {
-//        expect(not(false)).to.equal(true);
-//      });
-//    });
-//
-//
-//    // Utility function for test generation
-//    var makeBinaryBooleanTest = function(fn, val1, val2, expected) {
-//      return function() {
-//        expect(fn(val1, val2)).to.equal(expected);
-//      };
-//    };
-//
-//
-//    // All the boolean operator tests have the same template
-//    var makeBinaryBooleanTestFixture = function(desc, fnUnderTest, truthTable) {
-//      var spec = {
-//        name: desc,
-//        arity: 2
-//      };
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        truthTable.forEach(function(test, i) {
-//          var indexString = ' (' + (i + 1) + ')';
-//          it('Works as expected' + indexString,
-//              makeBinaryBooleanTest(fnUnderTest, test.val1, test.val2, test.expected));
-//
-//          testCurriedFunction(fnUnderTest, [test.val1, test.val2], {message: desc + ' ' + indexString});
-//        });
-//      });
-//    };
-//
-//
-//    var makeTruthTable = function(ff, ft, tf, tt) {
-//      return [
-//        {val1: false, val2: false, expected: ff},
-//        {val1: false, val2: true, expected: ft},
-//        {val1: true, val2: false, expected: tf},
-//        {val1: true, val2: true, expected: tt}
-//      ];
-//    };
-//
-//
-//    var andTruthTable = makeTruthTable(false, false, false, true);
-//    makeBinaryBooleanTestFixture('and', logical.and, andTruthTable);
-//
-//
-//    var orTruthTable = makeTruthTable(false, true, true, true);
-//    makeBinaryBooleanTestFixture('or', logical.or, orTruthTable);
-//
-//
-//    var xorTruthTable = makeTruthTable(false, true, true, false);
-//    makeBinaryBooleanTestFixture('xor', logical.xor, xorTruthTable);
-//
-//
+  describe('Logical', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['not', 'and', 'or', 'xor',
+                             /* 'notPred', 'andPred', 'orPred', 'xorPred' */];
+    checkModule('logical', logical, expectedObjects, expectedFunctions);
+
+
+    var notSpec = {
+      name: 'not',
+    };
+
+
+    checkFunction(notSpec, logical.not, function(not) {
+      it('Works as expected (1)', function() {
+        expect(not(true)).to.equal(false);
+      });
+
+
+      it('Works as expected (2)', function() {
+        expect(not(false)).to.equal(true);
+      });
+    });
+
+
+    // Utility function for test generation
+    var makeBinaryBooleanTest = function(fn, val1, val2, expected) {
+      return function() {
+        expect(fn(val1, val2)).to.equal(expected);
+      };
+    };
+
+
+    // All the boolean operator tests have the same template
+    var makeBinaryBooleanTestFixture = function(desc, fnUnderTest, truthTable) {
+      var spec = {
+        name: desc,
+      };
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        truthTable.forEach(function(test, i) {
+          var indexString = ' (' + (i + 1) + ')';
+          it('Works as expected' + indexString,
+              makeBinaryBooleanTest(fnUnderTest, test.val1, test.val2, test.expected));
+        });
+      });
+    };
+
+
+    var makeTruthTable = function(ff, ft, tf, tt) {
+      return [
+        {val1: false, val2: false, expected: ff},
+        {val1: false, val2: true, expected: ft},
+        {val1: true, val2: false, expected: tf},
+        {val1: true, val2: true, expected: tt}
+      ];
+    };
+
+
+    var andTruthTable = makeTruthTable(false, false, false, true);
+    makeBinaryBooleanTestFixture('and', logical.and, andTruthTable);
+
+
+    var orTruthTable = makeTruthTable(false, true, true, true);
+    makeBinaryBooleanTestFixture('or', logical.or, orTruthTable);
+
+
+    var xorTruthTable = makeTruthTable(false, true, true, false);
+    makeBinaryBooleanTestFixture('xor', logical.xor, xorTruthTable);
+  });
+
+
 //    // The following predicate tests require the following definitions
 //    var curry = curryModule.curry;
 //    var constant = base.constant;
@@ -214,4 +210,4 @@
 //  } else {
 //    testFixture(require, exports, module);
 //  }
-//})();
+})();

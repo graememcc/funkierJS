@@ -10,6 +10,34 @@
 
 
   describe('Documented values', function() {
+    describe('and', function() {
+      it('and exists', function() {
+        expect(funkier).to.have.a.property('and');
+      });
+
+
+      it('funkierJS\'s and is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.and).to.equal(module.and);
+      });
+
+
+      it('and is a function', function() {
+        expect(funkier.and).to.be.a('function');
+      });
+
+
+      it('and has documented arity', function() {
+        expect(funkier.arityOf(funkier.and)).to.equal(2);
+      });
+
+
+      it('and is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.and)).to.equal(true);
+      });
+    });
+
+
     describe('arity', function() {
       it('arity exists', function() {
         expect(funkier).to.have.a.property('arity');
@@ -174,6 +202,34 @@
     });
 
 
+    describe('not', function() {
+      it('not exists', function() {
+        expect(funkier).to.have.a.property('not');
+      });
+
+
+      it('funkierJS\'s not is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.not).to.equal(module.not);
+      });
+
+
+      it('not is a function', function() {
+        expect(funkier.not).to.be.a('function');
+      });
+
+
+      it('not has documented arity', function() {
+        expect(funkier.arityOf(funkier.not)).to.equal(1);
+      });
+
+
+      it('not is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.not)).to.equal(true);
+      });
+    });
+
+
     describe('objectCurry', function() {
       it('objectCurry exists', function() {
         expect(funkier).to.have.a.property('objectCurry');
@@ -228,6 +284,62 @@
         expect(funkier.arityOf._isCurried(funkier.objectCurryWithArity)).to.equal(true);
       });
     });
+
+
+    describe('or', function() {
+      it('or exists', function() {
+        expect(funkier).to.have.a.property('or');
+      });
+
+
+      it('funkierJS\'s or is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.or).to.equal(module.or);
+      });
+
+
+      it('or is a function', function() {
+        expect(funkier.or).to.be.a('function');
+      });
+
+
+      it('or has documented arity', function() {
+        expect(funkier.arityOf(funkier.or)).to.equal(2);
+      });
+
+
+      it('or is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.or)).to.equal(true);
+      });
+    });
+
+
+    describe('xor', function() {
+      it('xor exists', function() {
+        expect(funkier).to.have.a.property('xor');
+      });
+
+
+      it('funkierJS\'s xor is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.xor).to.equal(module.xor);
+      });
+
+
+      it('xor is a function', function() {
+        expect(funkier.xor).to.be.a('function');
+      });
+
+
+      it('xor has documented arity', function() {
+        expect(funkier.arityOf(funkier.xor)).to.equal(2);
+      });
+
+
+      it('xor is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.xor)).to.equal(true);
+      });
+    });
   });
 
 
@@ -236,8 +348,8 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'arity', 'arityOf', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'curry',
-         'curryWithArity', 'objectCurry', 'objectCurryWithArity'];
+      documentedNames = ['help', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext', 'bindWithContextAndArity',
+         'curry', 'curryWithArity', 'not', 'objectCurry', 'objectCurryWithArity', 'or', 'xor'];
     });
 
 
