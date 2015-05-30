@@ -47,13 +47,13 @@ The returned function will have a length of 1, unless an arity of 0 was requeste
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
 wrapped function will be invoked.
 
-In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
-makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
-original function. To be able to recurry a curried function to a different arity, the execution context given
-must be the exact object that was previously used to create the function being recurried. It is an error to
-try and recurry a curried function bound to one execution context to another. In particular, functions curried
+`bind` will accept functions that have been previously been curried to the same execution context, as that being
+provided, but will effectively be an identity function in such cases. However, attempting to curry a function
+known to be bound to a different execution context is an error. In particular, functions curried
 with [`curry`](#curry) or [`curryWithArity`](#curryWithArity) cannot be curried with an execution context: they
-have already been bound with an implicit `null` execution context. `bind` will throw in that case.
+have already been bound with an implicit `null` execution context. Equally, functions curried with
+[`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
+to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -91,11 +91,11 @@ f `function`
 Returns: `function`
 
 Given an arity, object and function, returns a curried function whose execution context is permanently bound to
-the supplied execution context, and whose arity equals the arity given. The supplied arity need not equal the
-function's length. The function will be only called when the specified number of arguments have been supplied.
-Superfluous arguments are discarded. It is possible to partially apply the resulting function, and indeed the
-further resulting function(s). The resulting function and its partial applications will throw if they require at
-least one argument, but are invoked without any. `bindWithContextAndArity` throws if the arity is not a natural
+the supplied object, and whose arity equals the arity given. The supplied arity need not equal the function's
+length. The function will be only called when the specified number of arguments have been supplied. Superfluous
+arguments are discarded. It is possible to partially apply the resulting function, and indeed the further
+resulting function(s). The resulting function and its partial applications will throw if they require at least
+one argument, but are invoked without any. `bindWithContextAndArity` throws if the arity is not a natural
 number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
 not a function.
 
@@ -112,8 +112,10 @@ original function. To be able to recurry a curried function to a different arity
 must be the exact object that was previously used to create the function being recurried. It is an error to
 try and recurry a curried function bound to one execution context to another. In particular, functions curried
 with [`curry`](#curry) or [`curryWithArity`](#curryWithArity) cannot be curried with an execution context: they
-have already been bound with an implicit `null` execution context. `bindWithContextAndArity` will throw in that
-case.
+have already been bound with an implicit `null` execution context. Likewise, functions that have been curried
+using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
+using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
+`bindWithContextAndArity` will throw in that such cases.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -152,7 +154,8 @@ passed to the original function. If the curried function or any subsequent parti
 one argument, then calling the function with no arguments will throw. `curry` throws if its argument is not a
 function. It will also throw if the function is known to be bound to a specific execution context.
 
-Currying a function that has already been curried will return the exact same function.
+Currying a function that has already been curried will return the exact same function, unless the function was
+curried with a different mechanism - see below.
 
 The returned function will have a length of 1, unless the original function will have length 0, in which case
 the result also has length 0. Note that when currying functions of length 0 and 1 that the results will be
@@ -163,9 +166,10 @@ use `curryWithArity`.
 
 Note that you cannot pass in functions that have been bound to a specific execution context using [`bind`](#bind),
 or [`bindWithContextAndArity`](#bindWithContextAndArity): allowing those would break the invariant that functions
-curried with `curry` are invoked with a null execution context. Thus an error is thrown in such cases. (However,
-funkierJS cannot tell if a function has been bound with the native `bind` method. Currying such functions might
-lead to unexpected results).
+curried with `curry` are invoked with a null execution context. Similarly, functions curried with
+[`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be recurried through
+`curryWithArity`. Thus an error is thrown in such cases. (However, funkierJS cannot tell if a function has been
+bound with the native `bind` method. Currying such functions might lead to unexpected results).
 
 #### Examples ####
     var f = function(x, y, z) { console.log(x, y, z); }
@@ -226,8 +230,9 @@ function with the partially applied arguments and some of the ones supplied to t
 
 You cannot however pass in functions that have been bound to a specific execution context using [`bind`](#bind),
 or [`bindWithContextAndArity`](#bindWithContextAndArity): `curryWithArity` promises to invoke functions with a null
-execution context, but those functions have a fixed execution context that cannot be overridden. An error is
-thrown if the function has been bound to an execution context in this way.
+execution context, but those functions have a fixed execution context that cannot be overridden. For similar
+reasons, functions curried with [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity)
+cannot be curried. An error is thrown if the function has been bound to an execution context in this way.
 
 Note however that funkierJS has no visibility into the execution contexts of functions bound using the native
 function `bind` method. Attempting to curry these might lead to surprising results, and should be avoided.
@@ -247,6 +252,57 @@ function `bind` method. Attempting to curry these might lead to surprising resul
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
 ***
+### objectCurry ###
+Category: Function
+
+**Usage:** `var result = objectCurry(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Given a function, returns a curried function which calls the underlying with the execution context active when the
+first arguments are supplied. This means that when partially applying the function, the resulting functions will
+have their execution context permanently bound. This method of binding is designed for currying functions that
+exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
+Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
+function. The resulting function will throw if invoked with an undefined execution context.
+
+The returned function will have a length of 1, unless a function of arity of 0 was supplied, in which case this
+will be the length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required
+before the wrapped function will be invoked.
+
+One can pass in a function created by `objectCurry` or [`objectCurryWithArity`](#objectCurryWithArity) providing
+it has not been partially applied. This will effectively be an identity operation. However, passing in a partially
+applied function derived from an earlier currying call is an error, as the execution context has now been bound.
+Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryWithArity), [`bind`](#bind) and
+[`bindWithContextAndArity`](#bindWithContextAndArity) cannot be curried with this function, and will throw an
+error, just as those functions curry functions and their partial applications returned from `objectCurry`.
+`objectCurry` will throw when provided with an invalid function.
+
+Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
+curry such functions won't throw, but they will not work as expected.
+
+#### Examples ####
+    var proto = {foo: function(x, y) { return x + y + this.bar; }};
+    proto.foo = funkierJS.objectCurry(proto.foo);
+    
+    var obj1 = Object.create(proto);
+    obj1.bar = 10;
+    
+    var g = obj1.foo(10);
+    g(22); // => 42
+    
+    var obj2 = Object.create(proto);
+    obj2.bar = 100;
+    obj2.foo(10)(10); // => 120
+    g(1); // => 21, the application using obj2 didn't affect the execution context of g
+    
+    var err = obj1.foo;
+    err(1, 2);  // => throws
+***
 ### objectCurryWithArity ###
 Category: Function
 
@@ -259,11 +315,11 @@ f `function`
 Returns: `function`
 
 Given an arity and function, returns a curried function which calls the underlying with the execution context
-context active when the first arguments are supplied. This means that if partially applying the function, the
+active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
 of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications will throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
+applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
 throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
 will throw if invoked with an undefined execution context.
 
@@ -274,12 +330,13 @@ wrapped function will be invoked.
 As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
 function behaves in a useful manner will of course depend on the function.
 
-If one has a function that has been returned from `objectCurryWithArity`, one can recurry it to a different arity
-if required. However, one cannot recurry any partial applications derived from it, as the execution context has
-now been bound. `objectCurryWithArity` cannot curry functions returned from [`curry`](#curry),
-[`curryWithArity`](#curryWithArity), [`bind`](#bind) or [`bindWithContextAndArity`](#bindWithContextAndArity),
-and nor can those functions curry functions returned from `objectCurryWithArity`, or their subsequent partial
-applications. `objectCurryWithArity` will throw when provided with such a function.
+If one has a function that has been returned from [`objectCurry`](#objectCurry) or `objectCurryWithArity`, one can
+recurry it to a different arity if required. However, one cannot recurry any partial applications derived from it,
+as the execution context has now been bound. `objectCurryWithArity` also cannot curry functions returned from
+[`curry`](#curry), [`curryWithArity`](#curryWithArity), [`bind`](#bind) or
+[`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
+`objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
+with such a function.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.

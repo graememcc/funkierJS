@@ -13,7 +13,7 @@
 
 
   var expectedObjects = [];
-  var expectedFunctions = ['arityOf', 'bind', 'bindWithContextAndArity', 'curry', 'curryWithArity',
+  var expectedFunctions = ['arityOf', 'bind', 'bindWithContextAndArity', 'curry', 'curryWithArity', 'objectCurry',
                            'objectCurryWithArity'];
   checkModule('curry', curryModule, expectedObjects, expectedFunctions);
 
@@ -24,6 +24,7 @@
   var curryWithArity = curryModule.curryWithArity;
   var bind = curryModule.bind;
   var bindWithContextAndArity = curryModule.bindWithContextAndArity;
+  var objectCurry = curryModule.objectCurry;
   var objectCurryWithArity = curryModule.objectCurryWithArity;
 
 
@@ -128,6 +129,16 @@
 
 
     it('Works correctly for a curried function (5)', function() {
+      var proto = {};
+      var obj = Object.create(proto);
+      var fn = function(x, y) {};
+      proto.curried = objectCurry(fn);
+
+      expect(arityOf(proto.curried)).to.equal(fn.length);
+    });
+
+
+    it('Works correctly for a curried function (6)', function() {
       var proto = {};
       var obj = Object.create(proto);
       var fn = function(x, y) {};
@@ -237,6 +248,36 @@
     it('Reports arguments outstanding for partially applied function (13)', function() {
       var proto = {};
       var obj = Object.create(proto);
+      var fn = function(x, y, z) {};
+      proto.curried = objectCurry(fn);
+
+      expect(arityOf(obj.curried(1))).to.equal(2);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (14)', function() {
+      var proto = {};
+      var obj = Object.create(proto);
+      var fn = function(x, y, z) {};
+      proto.curried = objectCurry(fn);
+
+      expect(arityOf(obj.curried(1)(1))).to.equal(1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (16)', function() {
+      var proto = {};
+      var obj = Object.create(proto);
+      var fn = function(x, y, z) {};
+      proto.curried = objectCurry(fn);
+
+      expect(arityOf(obj.curried(1, 1))).to.equal(1);
+    });
+
+
+    it('Reports arguments outstanding for partially applied function (17)', function() {
+      var proto = {};
+      var obj = Object.create(proto);
       var fn = function(x, y) {};
       proto.curried = objectCurryWithArity(3, fn);
 
@@ -244,7 +285,7 @@
     });
 
 
-    it('Reports arguments outstanding for partially applied function (14)', function() {
+    it('Reports arguments outstanding for partially applied function (18)', function() {
       var proto = {};
       var obj = Object.create(proto);
       var fn = function(x, y) {};
@@ -254,7 +295,7 @@
     });
 
 
-    it('Reports arguments outstanding for partially applied function (15)', function() {
+    it('Reports arguments outstanding for partially applied function (19)', function() {
       var proto = {};
       var obj = Object.create(proto);
       var fn = function(x, y) {};
@@ -452,20 +493,45 @@
 
 
     it('Recognises when a function is curried (24)', function() {
-      var fn = objectCurryWithArity(1, function() {});
+      var fn = objectCurry(function() {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (25)', function() {
-      var fn = objectCurryWithArity(2, function() {});
+      var fn = objectCurry(function(x) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
     it('Recognises when a function is curried (26)', function() {
+      var proto = {};
+      var obj = Object.create(proto);
+      var fn = function(x, y) {};
+      proto.curried = objectCurry(fn);
+      var f = obj.curried(1);
+
+      expect(arityOf._isCurried(f)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (27)', function() {
+      var fn = objectCurryWithArity(1, function() {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (28)', function() {
+      var fn = objectCurryWithArity(2, function() {});
+
+      expect(arityOf._isCurried(fn)).to.equal(true);
+    });
+
+
+    it('Recognises when a function is curried (29)', function() {
       var proto = {};
       var obj = Object.create(proto);
       var fn = function() {};
@@ -476,28 +542,28 @@
     });
 
 
-    it('Recognises when a function is curried (27)', function() {
+    it('Recognises when a function is curried (30)', function() {
       var fn = objectCurryWithArity(1, function(x) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
-    it('Recognises when a function is curried (28)', function() {
+    it('Recognises when a function is curried (31)', function() {
       var fn = objectCurryWithArity(0, function(x) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
-    it('Recognises when a function is curried (29)', function() {
+    it('Recognises when a function is curried (32)', function() {
       var fn = objectCurryWithArity(2, function(x, y) {});
 
       expect(arityOf._isCurried(fn)).to.equal(true);
     });
 
 
-    it('Recognises when a function is curried (30)', function() {
+    it('Recognises when a function is curried (33)', function() {
       var proto = {};
       var obj = Object.create(proto);
       var fn = function(x, y) {};
@@ -640,6 +706,27 @@
       var curried = bindWithContextAndArity(2, {}, function() {});
       var fn = function() {
         curry(curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (1)', function() {
+      var curried = objectCurry(function() {});
+      var fn = function() {
+        curry(curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (2)', function() {
+      var curried = objectCurry(function(x, y) {});
+      var obj = {foo: curried};
+      var fn = function() {
+        curry(obj.foo(1));
       };
 
       expect(fn).to.throw();
@@ -915,6 +1002,27 @@
     });
 
 
+    it('Functions cannot be recurried if curried with objectCurry (1)', function() {
+      var curried = objectCurry(function() {});
+      var fn = function() {
+        curryWithArity(2, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (2)', function() {
+      var curried = objectCurry(function(x, y) {});
+      var obj = {foo: curried};
+      var fn = function() {
+        curryWithArity(2, obj.foo(1));
+      };
+
+      expect(fn).to.throw();
+    });
+
+
     it('Functions cannot be recurried if curried with objectCurryWithArity (1)', function() {
       var curried = objectCurryWithArity(2, function() {});
       var fn = function() {
@@ -1122,6 +1230,27 @@
       var curried = curryWithArity(3, function(x, y) {});
       var fn = function() {
         bind({}, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (1)', function() {
+      var curried = objectCurry(function() {});
+      var fn = function() {
+        bind({}, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (2)', function() {
+      var curried = objectCurry(function(x, y) {});
+      var obj = {foo: curried};
+      var fn = function() {
+        bind({}, obj.foo(1));
       };
 
       expect(fn).to.throw();
@@ -1360,6 +1489,27 @@
     });
 
 
+    it('Functions cannot be recurried if curried with objectCurry (1)', function() {
+      var curried = objectCurry(function() {});
+      var fn = function() {
+        bindWithContextAndArity({}, 2, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with objectCurry (2)', function() {
+      var curried = objectCurry(function(x, y) {});
+      var obj = {foo: curried};
+      var fn = function() {
+        bindWithContextAndArity({}, 3, obj.foo(1));
+      };
+
+      expect(fn).to.throw();
+    });
+
+
     it('Functions cannot be recurried if curried with objectCurryWithArity (1)', function() {
       var curried = objectCurryWithArity(2, function() {});
       var fn = function() {
@@ -1375,6 +1525,306 @@
       var obj = {foo: curried};
       var fn = function() {
         bindWithContextAndArity({}, 4, obj.foo(1));
+      };
+
+      expect(fn).to.throw();
+    });
+  });
+
+
+  var objectCurrySpec = {
+    name: 'objectCurry',
+    restrictions: [['function']],
+    validArguments: ANYVALUE
+  };
+
+
+  checkFunction(objectCurrySpec, objectCurry, function(objectCurry) {
+    it('Currying a function of length 0 returns a function of length 0', function() {
+      var f = function() {};
+      var curried = objectCurry(f);
+
+      expect(arityOf(curried)).to.equal(0);
+    });
+
+
+    it('Currying a function of length 1 returns a function of length 1', function() {
+      var f = function(x) {};
+      var curried = objectCurry(f);
+
+      expect(arityOf(curried)).to.equal(1);
+    });
+
+
+    it('Works as expected when currying a function of arity 0', function() {
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function() { called = true; });
+      obj.f();
+
+      expect(called).to.equal(true);
+    });
+
+
+    it('Works as expected when currying a function of arity 1 (1)', function() {
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x) { called = true; });
+      obj.f(1);
+
+      expect(called).to.equal(true);
+    });
+
+
+    it('Works as expected when currying a function of arity 1 (2)', function() {
+      var called = false;
+      var param = null;
+      var obj = {};
+      obj.f = objectCurry(function(x) { param = x; called = true; });
+      obj.f(1);
+
+      expect(called).to.equal(true);
+      expect(param).to.equal(1);
+    });
+
+
+    it('Works as expected when currying a function of arity 2 (1)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(1, 2);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([1, 2]);
+    });
+
+
+    it('Works as expected when currying a function of arity 2 (2)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(1);
+      expect(called).to.equal(false);
+      obj.f(1)(2);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([1, 2]);
+    });
+
+
+    it('Works as expected when currying a function of arity 3 (1)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y, z) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(1, 2, 3);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([1, 2, 3]);
+    });
+
+
+    it('Works as expected when currying a function of arity 3 (2)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y, z) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(1);
+      expect(called).to.equal(false);
+      obj.f(1)(2);
+      expect(called).to.equal(false);
+      obj.f(1)(2)(3);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([1, 2, 3]);
+    });
+
+
+    it('Works as expected when currying a function of arity 3 (3)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y, z) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(4)(5, 6);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([4, 5, 6]);
+    });
+
+
+    it('Works as expected when currying a function of arity 3 (4)', function() {
+      var invokedArgs = [];
+      var called = false;
+      var obj = {};
+      obj.f = objectCurry(function(x, y, z) { invokedArgs = [].slice.call(arguments); called = true; });
+      obj.f(4, 5)(6);
+
+      expect(called).to.equal(true);
+      expect(invokedArgs).to.deep.equal([4, 5, 6]);
+    });
+
+
+    it('Underlying function called with specified argument count when invoked with superfluous arguments', function() {
+      var invokedArgs = [];
+      var obj = {};
+      obj.f = objectCurry(function(x, y) { invokedArgs = [].slice.call(arguments); });
+      var args = [1, 2, 4, 'a'];
+      obj.f(args[0], args[1], args[2], args[3]);
+
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+    });
+
+
+    it('Calling with curried function and function\'s arity returns original (1)', function() {
+      var f = objectCurry(function(a, b) {});
+
+      expect(objectCurry(f)).to.equal(f);
+    });
+
+
+    it('Calling with curried function and function\'s arity returns original (2)', function() {
+      var f = objectCurryWithArity(1, function(a, b) {});
+
+      expect(objectCurry(f)).to.equal(f);
+    });
+
+
+    it('Calling with curried function and function\'s arity returns original (3)', function() {
+      var f = objectCurry(function() {});
+
+      expect(objectCurry(f)).to.equal(f);
+    });
+
+
+    it('Curried function bound to first invocation\'s execution context (1)', function() {
+      var obj = {};
+      var invoked = null;
+      obj.f = objectCurry(function(x, y) { invoked = this; });
+      obj.f(1, 2);
+
+      expect(invoked).to.equal(obj);
+    });
+
+
+    it('Curried function bound to first invocation\'s execution context (2)', function() {
+      var obj = {};
+      var invoked = null;
+      obj.f = objectCurry(function(x, y) { invoked = this; });
+      obj.f(1)(2);
+
+      expect(invoked).to.equal(obj);
+    });
+
+
+    it('Curried function bound to first invocation\'s execution context (3)', function() {
+      var obj = {};
+      var obj2 = {};
+      var invoked = null;
+      obj.f = objectCurry(function(x, y) { invoked = this; });
+      obj2.f = obj.f;
+      obj2.f(1)(2);
+
+      expect(invoked).to.equal(obj2);
+    });
+
+
+    it('Curried function bound to first invocation\'s execution context (4)', function() {
+      var obj = {};
+      var invoked = null;
+      obj.f = objectCurry(function() { invoked = this; });
+      obj.f();
+
+      expect(invoked).to.equal(obj);
+    });
+
+
+    it('Execution context isn\'t permanently bound to initial function', function() {
+      var obj = {};
+      var obj2 = {};
+      var invoked = null;
+      obj.f = objectCurry(function(x, y) { invoked = this; });
+      obj.f(1, 2);
+      obj2.f = obj.f;
+      var fn = function() {
+        obj2.f(1)(2);
+      };
+
+      expect(fn).to.not.throw();
+      expect(invoked).to.equal(obj2);
+    });
+
+
+    it('Throws if called with no execution context', function() {
+      var f = objectCurry(function(x, y) {});
+      var fn = function() {
+        f();
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Calling a curried function awaiting further arguments without any arguments throws', function() {
+      var f = objectCurry(function(x) {return 42;});
+      var fn = function() {
+        f();
+      };
+
+      expect(f).to.throw();
+    });
+
+
+    it('Functions cannot be recurried when not partially applied (1)', function() {
+      var invoked = null;
+      var invokedArgs = [];
+      var obj = {};
+      obj.f = objectCurry(function(x, y) { invoked = this; invokedArgs = [].slice.call(arguments); });
+
+      var g = obj.f(1);
+      var fn = function() {
+        objectCurry(g);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with curry', function() {
+      var curried = curry(function() {});
+      var fn = function() {
+        objectCurryWithArity(3, curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with curryWithArity', function() {
+      var curried = curryWithArity(2, function() {});
+      var fn = function() {
+        objectCurry(curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with bind', function() {
+      var curried = bind({}, function(x, y, z) {});
+      var fn = function() {
+        objectCurry(curried);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried if curried with bindWithContextAndArity', function() {
+      var curried = bindWithContextAndArity(2, {}, function() {});
+      var fn = function() {
+        objectCurry(curried);
       };
 
       expect(fn).to.throw();
@@ -1650,20 +2100,6 @@
     });
 
 
-    it('Calling with curried function and function\'s arity returns original (1)', function() {
-      var f = objectCurryWithArity(2, function(a, b) {});
-
-      expect(objectCurryWithArity(2, f)).to.equal(f);
-    });
-
-
-    it('Calling with curried function and function\'s arity returns original (2)', function() {
-      var f = objectCurryWithArity(1, function(a, b) {});
-
-      expect(objectCurryWithArity(1, f)).to.equal(f);
-    });
-
-
     it('Calling a curried function awaiting further arguments without any arguments throws', function() {
       var f = objectCurryWithArity(1, function() {return 42;});
       var fn = function() {
@@ -1674,7 +2110,7 @@
     });
 
 
-    it('Functions can be recurried when not partially applied', function() {
+    it('Functions can be recurried when not partially applied (1)', function() {
       var invoked = null;
       var invokedArgs = [];
       var obj = {};
@@ -1695,11 +2131,47 @@
     });
 
 
-    it('Functions cannot be recurried when not partially applied', function() {
+    it('Functions can be recurried when not partially applied (2)', function() {
       var invoked = null;
       var invokedArgs = [];
       var obj = {};
-      obj.f = objectCurryWithArity(2, function(x, y) { invoked = this; invokedArgs = [].slice.call(arguments); });
+      obj.f = objectCurry(function(x, y) { invoked = this; invokedArgs = [].slice.call(arguments); });
+      var args = [1, 'x', 4, 'a', null];
+
+      // Sanity check
+      obj.f.apply(obj, args);
+      expect(invokedArgs).to.deep.equal(args.slice(0, 2));
+      expect(invoked).to.equal(obj);
+
+      var obj2 = {};
+      obj2.f = objectCurryWithArity(args.length, obj.f);
+      obj2.f(args[0], args[1], args[2], args[3], args[4]);
+
+      expect(invokedArgs).to.deep.equal(args);
+      expect(invoked).to.equal(obj2);
+    });
+
+
+    it('Functions cannot be recurried when partially applied (1)', function() {
+      var invoked = null;
+      var invokedArgs = [];
+      var obj = {};
+      obj.f = objectCurryWithArity(1, function(x, y) { invoked = this; invokedArgs = [].slice.call(arguments); });
+
+      var g = obj.f(1);
+      var fn = function() {
+        objectCurryWithArity(3, g);
+      };
+
+      expect(fn).to.throw();
+    });
+
+
+    it('Functions cannot be recurried when partially applied (2)', function() {
+      var invoked = null;
+      var invokedArgs = [];
+      var obj = {};
+      obj.f = objectCurry(function(x, y) { invoked = this; invokedArgs = [].slice.call(arguments); });
 
       var g = obj.f(1);
       var fn = function() {

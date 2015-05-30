@@ -44,13 +44,13 @@ an acceptable type for an execution context, or if the last parameter is not a f
 <p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
 wrapped function will be invoked.</p>
-<p>In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
-makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
-original function. To be able to recurry a curried function to a different arity, the execution context given
-must be the exact object that was previously used to create the function being recurried. It is an error to
-try and recurry a curried function bound to one execution context to another. In particular, functions curried
+<p><code>bind</code> will accept functions that have been previously been curried to the same execution context, as that being
+provided, but will effectively be an identity function in such cases. However, attempting to curry a function
+known to be bound to a different execution context is an error. In particular, functions curried
 with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
-have already been bound with an implicit <code>null</code> execution context. <code>bind</code> will throw in that case.</p>
+have already been bound with an implicit <code>null</code> execution context. Equally, functions curried with
+<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be passed to <code>bind</code>, due
+to the different way in which they acquire an execution context. <code>bind</code> will throw in such cases.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -82,11 +82,11 @@ var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t m
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given an arity, object and function, returns a curried function whose execution context is permanently bound to
-the supplied execution context, and whose arity equals the arity given. The supplied arity need not equal the
-function&#39;s length. The function will be only called when the specified number of arguments have been supplied.
-Superfluous arguments are discarded. It is possible to partially apply the resulting function, and indeed the
-further resulting function(s). The resulting function and its partial applications will throw if they require at
-least one argument, but are invoked without any. <code>bindWithContextAndArity</code> throws if the arity is not a natural
+the supplied object, and whose arity equals the arity given. The supplied arity need not equal the function&#39;s
+length. The function will be only called when the specified number of arguments have been supplied. Superfluous
+arguments are discarded. It is possible to partially apply the resulting function, and indeed the further
+resulting function(s). The resulting function and its partial applications will throw if they require at least
+one argument, but are invoked without any. <code>bindWithContextAndArity</code> throws if the arity is not a natural
 number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
 not a function.</p>
 <p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
@@ -100,8 +100,10 @@ original function. To be able to recurry a curried function to a different arity
 must be the exact object that was previously used to create the function being recurried. It is an error to
 try and recurry a curried function bound to one execution context to another. In particular, functions curried
 with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
-have already been bound with an implicit <code>null</code> execution context. <code>bindWithContextAndArity</code> will throw in that
-case.</p>
+have already been bound with an implicit <code>null</code> execution context. Likewise, functions that have been curried
+using either <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be curried
+using <code>bindWithContextAndArity</code>, due to the different mechanism they use to acquire an execution context.
+<code>bindWithContextAndArity</code> will throw in that such cases.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -134,7 +136,8 @@ arguments than the given function&#39;s length, but the superfluous arguments wi
 passed to the original function. If the curried function or any subsequent partial applications require at least
 one argument, then calling the function with no arguments will throw. <code>curry</code> throws if its argument is not a
 function. It will also throw if the function is known to be bound to a specific execution context.</p>
-<p>Currying a function that has already been curried will return the exact same function.</p>
+<p>Currying a function that has already been curried will return the exact same function, unless the function was
+curried with a different mechanism - see below.</p>
 <p>The returned function will have a length of 1, unless the original function will have length 0, in which case
 the result also has length 0. Note that when currying functions of length 0 and 1 that the results will be
 different functions from those passed in.</p>
@@ -142,9 +145,10 @@ different functions from those passed in.</p>
 use <code>curryWithArity</code>.</p>
 <p>Note that you cannot pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
 or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: allowing those would break the invariant that functions
-curried with <code>curry</code> are invoked with a null execution context. Thus an error is thrown in such cases. (However,
-funkierJS cannot tell if a function has been bound with the native <code>bind</code> method. Currying such functions might
-lead to unexpected results).</p>
+curried with <code>curry</code> are invoked with a null execution context. Similarly, functions curried with
+<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be recurried through
+<code>curryWithArity</code>. Thus an error is thrown in such cases. (However, funkierJS cannot tell if a function has been
+bound with the native <code>bind</code> method. Currying such functions might lead to unexpected results).</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(x, y, z) { console.log(x, y, z); }
 
@@ -196,8 +200,9 @@ expect: the new function will be one that requires the given number of arguments
 function with the partially applied arguments and some of the ones supplied to the recurried function.</p>
 <p>You cannot however pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
 or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: <code>curryWithArity</code> promises to invoke functions with a null
-execution context, but those functions have a fixed execution context that cannot be overridden. An error is
-thrown if the function has been bound to an execution context in this way.</p>
+execution context, but those functions have a fixed execution context that cannot be overridden. For similar
+reasons, functions curried with <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a>
+cannot be curried. An error is thrown if the function has been bound to an execution context in this way.</p>
 <p>Note however that funkierJS has no visibility into the execution contexts of functions bound using the native
 function <code>bind</code> method. Attempting to curry these might lead to surprising results, and should be avoided.</p>
 <section class="examples"><h4>Examples</h4>
@@ -216,6 +221,50 @@ j(9);  // =&gt; 2, &#39;a&#39; logged
 h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
 </code></pre></section>
 </section>
+<section class="functionRef" id="objectCurry">
+<h3 class="functionName">objectCurry</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given a function, returns a curried function which calls the underlying with the execution context active when the
+first arguments are supplied. This means that when partially applying the function, the resulting functions will
+have their execution context permanently bound. This method of binding is designed for currying functions that
+exist on an object&#39;s prototype. The function will be only called when sufficient arguments have been supplied.
+Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+require at least one argument, but are invoked without any. <code>objectCurry</code> throws if its parameter is not a
+function. The resulting function will throw if invoked with an undefined execution context.</p>
+<p>The returned function will have a length of 1, unless a function of arity of 0 was supplied, in which case this
+will be the length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required
+before the wrapped function will be invoked.</p>
+<p>One can pass in a function created by <code>objectCurry</code> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> providing
+it has not been partially applied. This will effectively be an identity operation. However, passing in a partially
+applied function derived from an earlier currying call is an error, as the execution context has now been bound.
+Similarly, functions returned from <a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> and
+<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a> cannot be curried with this function, and will throw an
+error, just as those functions curry functions and their partial applications returned from <code>objectCurry</code>.
+<code>objectCurry</code> will throw when provided with an invalid function.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var proto = {foo: function(x, y) { return x + y + this.bar; }};
+proto.foo = funkierJS.objectCurry(proto.foo);
+
+var obj1 = Object.create(proto);
+obj1.bar = 10;
+
+var g = obj1.foo(10);
+g(22); // =&gt; 42
+
+var obj2 = Object.create(proto);
+obj2.bar = 100;
+obj2.foo(10)(10); // =&gt; 120
+g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
+
+var err = obj1.foo;
+err(1, 2);  // =&gt; throws
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurryWithArity">
 <h3 class="functionName">objectCurryWithArity</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#function">Function</a></p>
@@ -223,11 +272,11 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given an arity and function, returns a curried function which calls the underlying with the execution context
-context active when the first arguments are supplied. This means that if partially applying the function, the
+active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object&#39;s prototype. The function will be only called when the specified number
 of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications will throw if they require at least one argument, but are invoked without any. <code>objectCurryWithArity</code>
+applications throw if they require at least one argument, but are invoked without any. <code>objectCurryWithArity</code>
 throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
 will throw if invoked with an undefined execution context.</p>
 <p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
@@ -235,12 +284,13 @@ length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to 
 wrapped function will be invoked.</p>
 <p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
 function behaves in a useful manner will of course depend on the function.</p>
-<p>If one has a function that has been returned from <code>objectCurryWithArity</code>, one can recurry it to a different arity
-if required. However, one cannot recurry any partial applications derived from it, as the execution context has
-now been bound. <code>objectCurryWithArity</code> cannot curry functions returned from <a href="#curry"><code>curry</code></a>,
-<a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>,
-and nor can those functions curry functions returned from <code>objectCurryWithArity</code>, or their subsequent partial
-applications. <code>objectCurryWithArity</code> will throw when provided with such a function.</p>
+<p>If one has a function that has been returned from <a href="#objectCurry"><code>objectCurry</code></a> or <code>objectCurryWithArity</code>, one can
+recurry it to a different arity if required. However, one cannot recurry any partial applications derived from it,
+as the execution context has now been bound. <code>objectCurryWithArity</code> also cannot curry functions returned from
+<a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> or
+<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>, and nor can those functions curry functions returned from
+<code>objectCurryWithArity</code>, or their subsequent partial applications. <code>objectCurryWithArity</code> will throw when provided
+with such a function.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
