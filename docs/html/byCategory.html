@@ -14,6 +14,7 @@
 <ul class="categoryList">
 <li class="categoryListItem"><a href="#Function">Function</a></li>
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
+<li class="categoryListItem"><a href="#Maths">Maths</a></li>
 </ul>
 </section>
 <section class="categoryRef" id="Function">
@@ -225,6 +226,17 @@ j(9);  // =&gt; 2, &#39;a&#39; logged
 h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
 </code></pre></section>
 </section>
+<section class="functionRef" id="log">
+<h3 class="functionName">log</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = log(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
+be subject to rounding errors.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.log(2, 8); // =&gt; 3;
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
@@ -354,6 +366,255 @@ err(1, 2);  // =&gt; throws
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="categoryRef" id="Maths">
+<h2 class="categoryName">Maths</h2>
+<section class="functionRef" id="add">
+<h3 class="functionName">add</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = add(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the addition operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.add(1, 1); // =&gt; 2
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseAnd">
+<h3 class="functionName">bitwiseAnd</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseAnd(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise and (&amp;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseAnd(7, 21); // =&gt; 5;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseNot">
+<h3 class="functionName">bitwiseNot</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseNot(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise not (~) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseNot(5); // =&gt; -6;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseOr">
+<h3 class="functionName">bitwiseOr</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseOr(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise or (&amp;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseOr(7, 8); // =&gt; 15;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseXor">
+<h3 class="functionName">bitwiseXor</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseXor(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise xor (^) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="div">
+<h3 class="functionName">div</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = div(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the quotient on dividing x by y.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.div(5, 2); // =&gt; 2
+</code></pre></section>
+</section>
+<section class="functionRef" id="divide">
+<h3 class="functionName">divide</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = divide(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the division operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+</code></pre></section>
+</section>
+<section class="functionRef" id="even">
+<h3 class="functionName">even</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = even(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a number, returns true if it is divisible by 2, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.even(2); // =&gt; true
+funkierJS.even(3); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="exp">
+<h3 class="functionName">exp</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">pow</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = exp(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.pow.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.exp(2, 3); // =&gt; 8
+</code></pre></section>
+</section>
+<section class="functionRef" id="greaterThan">
+<h3 class="functionName">greaterThan</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gt</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThan(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than or equal (&lt;=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.greaterThan(5, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="greaterThanEqual">
+<h3 class="functionName">greaterThanEqual</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gte</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThanEqual(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the greater than or equal (=&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.greaterThanEqual(2, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="gt">
+<h3 class="functionName">gt</h3>
+<p class="see">See <a class="synonymLink" href="#greaterThan"><code class="synonymCode">greaterThan</code></a></p>
+</section>
+<section class="functionRef" id="gte">
+<h3 class="functionName">gte</h3>
+<p class="see">See <a class="synonymLink" href="#greaterThanEqual"><code class="synonymCode">greaterThanEqual</code></a></p>
+</section>
+<section class="functionRef" id="leftShift">
+<h3 class="functionName">leftShift</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = leftShift(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the left shift (&lt;&lt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.leftShift(1, 2); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lessThan">
+<h3 class="functionName">lessThan</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lt</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThan(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than (&lt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.lessThan(5, 2); // =&gt; false;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lessThanEqual">
+<h3 class="functionName">lessThanEqual</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lte</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThanEqual(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than or equal (&lt;=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.lessThanEqual(2, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lt">
+<h3 class="functionName">lt</h3>
+<p class="see">See <a class="synonymLink" href="#lessThan"><code class="synonymCode">lessThan</code></a></p>
+</section>
+<section class="functionRef" id="lte">
+<h3 class="functionName">lte</h3>
+<p class="see">See <a class="synonymLink" href="#lessThanEqual"><code class="synonymCode">lessThanEqual</code></a></p>
+</section>
+<section class="functionRef" id="max">
+<h3 class="functionName">max</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = max(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.max. Takes exactly two arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.min(5, 2); // =&gt; 5;
+</code></pre></section>
+</section>
+<section class="functionRef" id="min">
+<h3 class="functionName">min</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = min(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.min. Takes exactly two arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.min(5, 2); // =&gt; 2;
+</code></pre></section>
+</section>
+<section class="functionRef" id="multiply">
+<h3 class="functionName">multiply</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = multiply(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the multiplication operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.multiply(2, 2); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="odd">
+<h3 class="functionName">odd</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = odd(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a number, returns true if it is not divisible by 2, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.odd(2); // =&gt; false
+funkierJS.odd(3); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="pow">
+<h3 class="functionName">pow</h3>
+<p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
+</section>
+<section class="functionRef" id="rem">
+<h3 class="functionName">rem</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rem(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the remainder (%) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rem(5, 2); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="rightShift">
+<h3 class="functionName">rightShift</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShift(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the right shift (&gt;&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rightShift(-4, 2); // =&gt; -1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="rightShiftZero">
+<h3 class="functionName">rightShiftZero</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShiftZero(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the left shift (&gt;&gt;&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
+</code></pre></section>
+</section>
+<section class="functionRef" id="subtract">
+<h3 class="functionName">subtract</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = subtract(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the subtraction operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.subtract(3, 1); // =&gt; 2;
 </code></pre></section>
 </section>
 

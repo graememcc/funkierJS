@@ -10,6 +10,34 @@
 
 
   describe('Documented values', function() {
+    describe('add', function() {
+      it('add exists', function() {
+        expect(funkier).to.have.a.property('add');
+      });
+
+
+      it('funkierJS\'s add is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.add).to.equal(module.add);
+      });
+
+
+      it('add is a function', function() {
+        expect(funkier.add).to.be.a('function');
+      });
+
+
+      it('add has documented arity', function() {
+        expect(funkier.arityOf(funkier.add)).to.equal(2);
+      });
+
+
+      it('add is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.add)).to.equal(true);
+      });
+    });
+
+
     describe('and', function() {
       it('and exists', function() {
         expect(funkier).to.have.a.property('and');
@@ -146,6 +174,118 @@
     });
 
 
+    describe('bitwiseAnd', function() {
+      it('bitwiseAnd exists', function() {
+        expect(funkier).to.have.a.property('bitwiseAnd');
+      });
+
+
+      it('funkierJS\'s bitwiseAnd is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.bitwiseAnd).to.equal(module.bitwiseAnd);
+      });
+
+
+      it('bitwiseAnd is a function', function() {
+        expect(funkier.bitwiseAnd).to.be.a('function');
+      });
+
+
+      it('bitwiseAnd has documented arity', function() {
+        expect(funkier.arityOf(funkier.bitwiseAnd)).to.equal(2);
+      });
+
+
+      it('bitwiseAnd is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bitwiseAnd)).to.equal(true);
+      });
+    });
+
+
+    describe('bitwiseNot', function() {
+      it('bitwiseNot exists', function() {
+        expect(funkier).to.have.a.property('bitwiseNot');
+      });
+
+
+      it('funkierJS\'s bitwiseNot is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.bitwiseNot).to.equal(module.bitwiseNot);
+      });
+
+
+      it('bitwiseNot is a function', function() {
+        expect(funkier.bitwiseNot).to.be.a('function');
+      });
+
+
+      it('bitwiseNot has documented arity', function() {
+        expect(funkier.arityOf(funkier.bitwiseNot)).to.equal(1);
+      });
+
+
+      it('bitwiseNot is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bitwiseNot)).to.equal(true);
+      });
+    });
+
+
+    describe('bitwiseOr', function() {
+      it('bitwiseOr exists', function() {
+        expect(funkier).to.have.a.property('bitwiseOr');
+      });
+
+
+      it('funkierJS\'s bitwiseOr is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.bitwiseOr).to.equal(module.bitwiseOr);
+      });
+
+
+      it('bitwiseOr is a function', function() {
+        expect(funkier.bitwiseOr).to.be.a('function');
+      });
+
+
+      it('bitwiseOr has documented arity', function() {
+        expect(funkier.arityOf(funkier.bitwiseOr)).to.equal(2);
+      });
+
+
+      it('bitwiseOr is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bitwiseOr)).to.equal(true);
+      });
+    });
+
+
+    describe('bitwiseXor', function() {
+      it('bitwiseXor exists', function() {
+        expect(funkier).to.have.a.property('bitwiseXor');
+      });
+
+
+      it('funkierJS\'s bitwiseXor is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.bitwiseXor).to.equal(module.bitwiseXor);
+      });
+
+
+      it('bitwiseXor is a function', function() {
+        expect(funkier.bitwiseXor).to.be.a('function');
+      });
+
+
+      it('bitwiseXor has documented arity', function() {
+        expect(funkier.arityOf(funkier.bitwiseXor)).to.equal(2);
+      });
+
+
+      it('bitwiseXor is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.bitwiseXor)).to.equal(true);
+      });
+    });
+
+
     describe('curry', function() {
       it('curry exists', function() {
         expect(funkier).to.have.a.property('curry');
@@ -198,6 +338,418 @@
 
       it('curryWithArity is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.curryWithArity)).to.equal(true);
+      });
+    });
+
+
+    describe('div', function() {
+      it('div exists', function() {
+        expect(funkier).to.have.a.property('div');
+      });
+
+
+      it('funkierJS\'s div is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.div).to.equal(module.div);
+      });
+
+
+      it('div is a function', function() {
+        expect(funkier.div).to.be.a('function');
+      });
+
+
+      it('div has documented arity', function() {
+        expect(funkier.arityOf(funkier.div)).to.equal(2);
+      });
+
+
+      it('div is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.div)).to.equal(true);
+      });
+    });
+
+
+    describe('divide', function() {
+      it('divide exists', function() {
+        expect(funkier).to.have.a.property('divide');
+      });
+
+
+      it('funkierJS\'s divide is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.divide).to.equal(module.divide);
+      });
+
+
+      it('divide is a function', function() {
+        expect(funkier.divide).to.be.a('function');
+      });
+
+
+      it('divide has documented arity', function() {
+        expect(funkier.arityOf(funkier.divide)).to.equal(2);
+      });
+
+
+      it('divide is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.divide)).to.equal(true);
+      });
+    });
+
+
+    describe('even', function() {
+      it('even exists', function() {
+        expect(funkier).to.have.a.property('even');
+      });
+
+
+      it('funkierJS\'s even is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.even).to.equal(module.even);
+      });
+
+
+      it('even is a function', function() {
+        expect(funkier.even).to.be.a('function');
+      });
+
+
+      it('even has documented arity', function() {
+        expect(funkier.arityOf(funkier.even)).to.equal(1);
+      });
+
+
+      it('even is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.even)).to.equal(true);
+      });
+    });
+
+
+    describe('exp', function() {
+      it('exp exists', function() {
+        expect(funkier).to.have.a.property('exp');
+      });
+
+
+      it('funkierJS\'s exp is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.exp).to.equal(module.exp);
+      });
+
+
+      it('exp is a function', function() {
+        expect(funkier.exp).to.be.a('function');
+      });
+
+
+      it('exp has documented arity', function() {
+        expect(funkier.arityOf(funkier.exp)).to.equal(2);
+      });
+
+
+      it('exp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.exp)).to.equal(true);
+      });
+    });
+
+
+    describe('greaterThan', function() {
+      it('greaterThan exists', function() {
+        expect(funkier).to.have.a.property('greaterThan');
+      });
+
+
+      it('funkierJS\'s greaterThan is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.greaterThan).to.equal(module.greaterThan);
+      });
+
+
+      it('greaterThan is a function', function() {
+        expect(funkier.greaterThan).to.be.a('function');
+      });
+
+
+      it('greaterThan has documented arity', function() {
+        expect(funkier.arityOf(funkier.greaterThan)).to.equal(2);
+      });
+
+
+      it('greaterThan is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.greaterThan)).to.equal(true);
+      });
+    });
+
+
+    describe('greaterThanEqual', function() {
+      it('greaterThanEqual exists', function() {
+        expect(funkier).to.have.a.property('greaterThanEqual');
+      });
+
+
+      it('funkierJS\'s greaterThanEqual is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.greaterThanEqual).to.equal(module.greaterThanEqual);
+      });
+
+
+      it('greaterThanEqual is a function', function() {
+        expect(funkier.greaterThanEqual).to.be.a('function');
+      });
+
+
+      it('greaterThanEqual has documented arity', function() {
+        expect(funkier.arityOf(funkier.greaterThanEqual)).to.equal(2);
+      });
+
+
+      it('greaterThanEqual is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.greaterThanEqual)).to.equal(true);
+      });
+    });
+
+
+    describe('gt', function() {
+      it('gt exists', function() {
+        expect(funkier).to.have.a.property('gt');
+      });
+
+
+      it('gt is a synonym for greaterThan', function() {
+        expect(funkier.gt).to.equal(funkier.greaterThan);
+      });
+    });
+
+
+    describe('gte', function() {
+      it('gte exists', function() {
+        expect(funkier).to.have.a.property('gte');
+      });
+
+
+      it('gte is a synonym for greaterThanEqual', function() {
+        expect(funkier.gte).to.equal(funkier.greaterThanEqual);
+      });
+    });
+
+
+    describe('leftShift', function() {
+      it('leftShift exists', function() {
+        expect(funkier).to.have.a.property('leftShift');
+      });
+
+
+      it('funkierJS\'s leftShift is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.leftShift).to.equal(module.leftShift);
+      });
+
+
+      it('leftShift is a function', function() {
+        expect(funkier.leftShift).to.be.a('function');
+      });
+
+
+      it('leftShift has documented arity', function() {
+        expect(funkier.arityOf(funkier.leftShift)).to.equal(2);
+      });
+
+
+      it('leftShift is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.leftShift)).to.equal(true);
+      });
+    });
+
+
+    describe('lessThan', function() {
+      it('lessThan exists', function() {
+        expect(funkier).to.have.a.property('lessThan');
+      });
+
+
+      it('funkierJS\'s lessThan is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.lessThan).to.equal(module.lessThan);
+      });
+
+
+      it('lessThan is a function', function() {
+        expect(funkier.lessThan).to.be.a('function');
+      });
+
+
+      it('lessThan has documented arity', function() {
+        expect(funkier.arityOf(funkier.lessThan)).to.equal(2);
+      });
+
+
+      it('lessThan is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.lessThan)).to.equal(true);
+      });
+    });
+
+
+    describe('lessThanEqual', function() {
+      it('lessThanEqual exists', function() {
+        expect(funkier).to.have.a.property('lessThanEqual');
+      });
+
+
+      it('funkierJS\'s lessThanEqual is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.lessThanEqual).to.equal(module.lessThanEqual);
+      });
+
+
+      it('lessThanEqual is a function', function() {
+        expect(funkier.lessThanEqual).to.be.a('function');
+      });
+
+
+      it('lessThanEqual has documented arity', function() {
+        expect(funkier.arityOf(funkier.lessThanEqual)).to.equal(2);
+      });
+
+
+      it('lessThanEqual is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.lessThanEqual)).to.equal(true);
+      });
+    });
+
+
+    describe('log', function() {
+      it('log exists', function() {
+        expect(funkier).to.have.a.property('log');
+      });
+
+
+      it('funkierJS\'s log is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.log).to.equal(module.log);
+      });
+
+
+      it('log is a function', function() {
+        expect(funkier.log).to.be.a('function');
+      });
+
+
+      it('log has documented arity', function() {
+        expect(funkier.arityOf(funkier.log)).to.equal(2);
+      });
+
+
+      it('log is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.log)).to.equal(true);
+      });
+    });
+
+
+    describe('lt', function() {
+      it('lt exists', function() {
+        expect(funkier).to.have.a.property('lt');
+      });
+
+
+      it('lt is a synonym for lessThan', function() {
+        expect(funkier.lt).to.equal(funkier.lessThan);
+      });
+    });
+
+
+    describe('lte', function() {
+      it('lte exists', function() {
+        expect(funkier).to.have.a.property('lte');
+      });
+
+
+      it('lte is a synonym for lessThanEqual', function() {
+        expect(funkier.lte).to.equal(funkier.lessThanEqual);
+      });
+    });
+
+
+    describe('max', function() {
+      it('max exists', function() {
+        expect(funkier).to.have.a.property('max');
+      });
+
+
+      it('funkierJS\'s max is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.max).to.equal(module.max);
+      });
+
+
+      it('max is a function', function() {
+        expect(funkier.max).to.be.a('function');
+      });
+
+
+      it('max has documented arity', function() {
+        expect(funkier.arityOf(funkier.max)).to.equal(2);
+      });
+
+
+      it('max is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.max)).to.equal(true);
+      });
+    });
+
+
+    describe('min', function() {
+      it('min exists', function() {
+        expect(funkier).to.have.a.property('min');
+      });
+
+
+      it('funkierJS\'s min is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.min).to.equal(module.min);
+      });
+
+
+      it('min is a function', function() {
+        expect(funkier.min).to.be.a('function');
+      });
+
+
+      it('min has documented arity', function() {
+        expect(funkier.arityOf(funkier.min)).to.equal(2);
+      });
+
+
+      it('min is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.min)).to.equal(true);
+      });
+    });
+
+
+    describe('multiply', function() {
+      it('multiply exists', function() {
+        expect(funkier).to.have.a.property('multiply');
+      });
+
+
+      it('funkierJS\'s multiply is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.multiply).to.equal(module.multiply);
+      });
+
+
+      it('multiply is a function', function() {
+        expect(funkier.multiply).to.be.a('function');
+      });
+
+
+      it('multiply has documented arity', function() {
+        expect(funkier.arityOf(funkier.multiply)).to.equal(2);
+      });
+
+
+      it('multiply is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.multiply)).to.equal(true);
       });
     });
 
@@ -286,6 +838,34 @@
     });
 
 
+    describe('odd', function() {
+      it('odd exists', function() {
+        expect(funkier).to.have.a.property('odd');
+      });
+
+
+      it('funkierJS\'s odd is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.odd).to.equal(module.odd);
+      });
+
+
+      it('odd is a function', function() {
+        expect(funkier.odd).to.be.a('function');
+      });
+
+
+      it('odd has documented arity', function() {
+        expect(funkier.arityOf(funkier.odd)).to.equal(1);
+      });
+
+
+      it('odd is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.odd)).to.equal(true);
+      });
+    });
+
+
     describe('or', function() {
       it('or exists', function() {
         expect(funkier).to.have.a.property('or');
@@ -310,6 +890,130 @@
 
       it('or is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.or)).to.equal(true);
+      });
+    });
+
+
+    describe('pow', function() {
+      it('pow exists', function() {
+        expect(funkier).to.have.a.property('pow');
+      });
+
+
+      it('pow is a synonym for exp', function() {
+        expect(funkier.pow).to.equal(funkier.exp);
+      });
+    });
+
+
+    describe('rem', function() {
+      it('rem exists', function() {
+        expect(funkier).to.have.a.property('rem');
+      });
+
+
+      it('funkierJS\'s rem is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.rem).to.equal(module.rem);
+      });
+
+
+      it('rem is a function', function() {
+        expect(funkier.rem).to.be.a('function');
+      });
+
+
+      it('rem has documented arity', function() {
+        expect(funkier.arityOf(funkier.rem)).to.equal(2);
+      });
+
+
+      it('rem is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.rem)).to.equal(true);
+      });
+    });
+
+
+    describe('rightShift', function() {
+      it('rightShift exists', function() {
+        expect(funkier).to.have.a.property('rightShift');
+      });
+
+
+      it('funkierJS\'s rightShift is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.rightShift).to.equal(module.rightShift);
+      });
+
+
+      it('rightShift is a function', function() {
+        expect(funkier.rightShift).to.be.a('function');
+      });
+
+
+      it('rightShift has documented arity', function() {
+        expect(funkier.arityOf(funkier.rightShift)).to.equal(2);
+      });
+
+
+      it('rightShift is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.rightShift)).to.equal(true);
+      });
+    });
+
+
+    describe('rightShiftZero', function() {
+      it('rightShiftZero exists', function() {
+        expect(funkier).to.have.a.property('rightShiftZero');
+      });
+
+
+      it('funkierJS\'s rightShiftZero is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.rightShiftZero).to.equal(module.rightShiftZero);
+      });
+
+
+      it('rightShiftZero is a function', function() {
+        expect(funkier.rightShiftZero).to.be.a('function');
+      });
+
+
+      it('rightShiftZero has documented arity', function() {
+        expect(funkier.arityOf(funkier.rightShiftZero)).to.equal(2);
+      });
+
+
+      it('rightShiftZero is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.rightShiftZero)).to.equal(true);
+      });
+    });
+
+
+    describe('subtract', function() {
+      it('subtract exists', function() {
+        expect(funkier).to.have.a.property('subtract');
+      });
+
+
+      it('funkierJS\'s subtract is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.subtract).to.equal(module.subtract);
+      });
+
+
+      it('subtract is a function', function() {
+        expect(funkier.subtract).to.be.a('function');
+      });
+
+
+      it('subtract has documented arity', function() {
+        expect(funkier.arityOf(funkier.subtract)).to.equal(2);
+      });
+
+
+      it('subtract is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.subtract)).to.equal(true);
       });
     });
 
@@ -348,8 +1052,11 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext', 'bindWithContextAndArity',
-         'curry', 'curryWithArity', 'not', 'objectCurry', 'objectCurryWithArity', 'or', 'xor'];
+      documentedNames = ['help', 'add', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext',
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'curry', 'curryWithArity',
+         'div', 'divide', 'even', 'exp', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'leftShift', 'lessThan',
+         'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'objectCurry', 'objectCurryWithArity',
+         'odd', 'or', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'subtract', 'xor'];
     });
 
 

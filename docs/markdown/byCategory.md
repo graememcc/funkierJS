@@ -243,6 +243,21 @@ function `bind` method. Attempting to curry these might lead to surprising resul
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
 ***
+### log ###
+**Usage:** `var result = log(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
+be subject to rounding errors.
+
+#### Examples ####
+    funkierJS.log(2, 8); // => 3;
+***
 ### objectCurry ###
 **Usage:** `var result = objectCurry(f);`
 
@@ -401,4 +416,337 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+## Maths##
+### add ###
+**Usage:** `var result = add(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the addition operator.
+
+#### Examples ####
+    funkierJS.add(1, 1); // => 2
+***
+### bitwiseAnd ###
+**Usage:** `var result = bitwiseAnd(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the bitwise and (&) operator.
+
+#### Examples ####
+    funkierJS.bitwiseAnd(7, 21); // => 5;
+***
+### bitwiseNot ###
+**Usage:** `var result = bitwiseNot(x);`
+
+Parameters:  
+x `number`
+
+Returns: `number`
+
+A wrapper around the bitwise not (~) operator.
+
+#### Examples ####
+    funkierJS.bitwiseNot(5); // => -6;
+***
+### bitwiseOr ###
+**Usage:** `var result = bitwiseOr(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the bitwise or (&) operator.
+
+#### Examples ####
+    funkierJS.bitwiseOr(7, 8); // => 15;
+***
+### bitwiseXor ###
+**Usage:** `var result = bitwiseXor(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the bitwise xor (^) operator.
+
+#### Examples ####
+    funkierJS.bitwiseAnd(7, 3); // => 4;
+***
+### div ###
+**Usage:** `var result = div(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+Returns the quotient on dividing x by y.
+
+#### Examples ####
+    funkierJS.div(5, 2); // => 2
+***
+### divide ###
+**Usage:** `var result = divide(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the division operator.
+
+#### Examples ####
+    funkierJS.arityOf(4, 2); // => 2;
+***
+### even ###
+**Usage:** `var result = even(x);`
+
+Parameters:  
+x `number`
+
+Returns: `boolean`
+
+Given a number, returns true if it is divisible by 2, and false otherwise.
+
+#### Examples ####
+    funkierJS.even(2); // => true
+    funkierJS.even(3); // => false
+***
+### exp ###
+*Synonyms:* `pow`
+
+**Usage:** `var result = exp(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A curried wrapper around Math.pow.
+
+#### Examples ####
+    funkierJS.exp(2, 3); // => 8
+***
+### greaterThan ###
+*Synonyms:* `gt`
+
+**Usage:** `var result = greaterThan(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `boolean`
+
+A wrapper around the less than or equal (<=) operator.
+
+#### Examples ####
+    funkierJS.greaterThan(5, 2); // => true;
+***
+### greaterThanEqual ###
+*Synonyms:* `gte`
+
+**Usage:** `var result = greaterThanEqual(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `boolean`
+
+A wrapper around the greater than or equal (=>) operator.
+
+#### Examples ####
+    funkierJS.greaterThanEqual(2, 2); // => true;
+***
+### gt ###
+See `greaterThan`
+***
+### gte ###
+See `greaterThanEqual`
+***
+### leftShift ###
+**Usage:** `var result = leftShift(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the left shift (<<) operator.
+
+#### Examples ####
+    funkierJS.leftShift(1, 2); // => 4;
+***
+### lessThan ###
+*Synonyms:* `lt`
+
+**Usage:** `var result = lessThan(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `boolean`
+
+A wrapper around the less than (<) operator.
+
+#### Examples ####
+    funkierJS.lessThan(5, 2); // => false;
+***
+### lessThanEqual ###
+*Synonyms:* `lte`
+
+**Usage:** `var result = lessThanEqual(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `boolean`
+
+A wrapper around the less than or equal (<=) operator.
+
+#### Examples ####
+    funkierJS.lessThanEqual(2, 2); // => true;
+***
+### lt ###
+See `lessThan`
+***
+### lte ###
+See `lessThanEqual`
+***
+### max ###
+**Usage:** `var result = max(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A curried wrapper around Math.max. Takes exactly two arguments.
+
+#### Examples ####
+    funkierJS.min(5, 2); // => 5;
+***
+### min ###
+**Usage:** `var result = min(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A curried wrapper around Math.min. Takes exactly two arguments.
+
+#### Examples ####
+    funkierJS.min(5, 2); // => 2;
+***
+### multiply ###
+**Usage:** `var result = multiply(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the multiplication operator.
+
+#### Examples ####
+    funkierJS.multiply(2, 2); // => 4;
+***
+### odd ###
+**Usage:** `var result = odd(x);`
+
+Parameters:  
+x `number`
+
+Returns: `boolean`
+
+Given a number, returns true if it is not divisible by 2, and false otherwise.
+
+#### Examples ####
+    funkierJS.odd(2); // => false
+    funkierJS.odd(3); // => true
+***
+### pow ###
+See `exp`
+***
+### rem ###
+**Usage:** `var result = rem(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the remainder (%) operator.
+
+#### Examples ####
+    funkierJS.rem(5, 2); // => 1;
+***
+### rightShift ###
+**Usage:** `var result = rightShift(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the right shift (>>) operator.
+
+#### Examples ####
+    funkierJS.rightShift(-4, 2); // => -1;
+***
+### rightShiftZero ###
+**Usage:** `var result = rightShiftZero(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the left shift (>>>) operator.
+
+#### Examples ####
+    funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### subtract ###
+**Usage:** `var result = subtract(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `number`
+
+A wrapper around the subtraction operator.
+
+#### Examples ####
+    funkierJS.subtract(3, 1); // => 2;
 ***
