@@ -649,8 +649,8 @@
 
     var flipSpec = {
       name: 'flip',
-      restrictions: [['function']],
-      validArguments: [[function(a, b) {}]]
+      restrictions: [['function: maxarity 2']],
+      validArguments: ANYVALUE
     };
 
 

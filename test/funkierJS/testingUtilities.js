@@ -105,6 +105,7 @@ module.exports = (function() {
     'function: arity 2': 'function',
     'function: minarity 1': 'function',
     'function: minarity 2': 'function',
+    'function: maxarity 2': 'function',
     'natural':  'number',
     'objectlike': 'object',
     'positive':  'number',
@@ -119,6 +120,7 @@ module.exports = (function() {
     'function: arity 2': function(f) { return typeof(f) === 'function' && f.length === 2; },
     'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length >= 1; },
     'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length >= 2; },
+    'function: maxarity 2': function(f) { return typeof(f) === 'function' && f.length <= 2; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
@@ -203,7 +205,7 @@ module.exports = (function() {
          typeclasses: [/* 'integer', */ 'natural', 'positive', /* 'arraylike',*/ 'objectlike'/*, 'objectlikeornull' */]},
       {type: 'undefined', value: undefined,     typeclasses: []},
       {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
-      {type: 'function',  value: function() {}, typeclasses: [/*'function',*/ 'objectlike', /*'objectlikeornull' */]},
+      {type: 'function',  value: function() {}, typeclasses: ['function: maxarity 2', 'objectlike', /*'objectlikeornull' */]},
       {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'positive', 'objectlike'/*,'objectlikeornull' */]},
       {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike', 'positive' /*, 'strictarraylike',  'objectlikeornull' */]}
     ];
@@ -228,6 +230,8 @@ module.exports = (function() {
       'function: minarity 1': [{type: 'function with arity 0', value: function() {}}],
       'function: minarity 2': [{type: 'function with arity 0', value: function() {}},
                                {type: 'function with arity 1', value: function(x) {}}],
+      'function: maxarity 2': [{type: 'function with arity 3', value: function(x, y, z) {}},
+                               {type: 'function with arity 4', value: function(w, x, y, z) {}}],
       natural: naturalCommon,
       objectlike: [],
       positive: naturalCommon.concat([{type: 'zero', value: 0}]),
