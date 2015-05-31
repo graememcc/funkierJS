@@ -131,6 +131,36 @@ curry such functions won't throw, but they will not work as expected.
     
     var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 ***
+### composeOn ###
+**Usage:** `var result = composeOn(argCount, f, g);`
+
+Parameters:  
+argCount `positive`  
+f `function`  
+g `function`
+
+Returns: `function`
+
+Composes the two functions, returning a new function that consumes the specified number of arguments, which are
+then passed to `g`. The result of that call is then passed to `f`. That result is then returned. Throws if the
+first parameter is not an integer greater than zero, if either parameter is not a function, or if either parameter
+has arity 0.
+
+The functions will be curried (using the standard [`curry`](#curry) if required. The resulting function will have
+real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
+argument: `f` will recieve a partially applied `g`, and any remaining arguments.
+
+If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
+will also be considered as having been curried that way, with the correct bound context.
+
+This function is intended to afford an approximation of writing functions in a point-free style.
+
+#### Examples ####
+    var f1 = function(a) {return a(2);};
+    var f2 = function(c, d, e) {return c * d * e;};
+    var f = funkierJS.composeOn(f1, f2); // => f(x, y) = 2(x * y);
+***
 ### constant ###
 **Usage:** `var result = constant(a, b);`
 

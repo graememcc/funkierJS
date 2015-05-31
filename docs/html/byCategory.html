@@ -132,6 +132,28 @@ var err = funkierJS.bindWithContextAndArity(2, {foo: 1}, g); // throws: executio
 var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 </code></pre></section>
 </section>
+<section class="functionRef" id="composeOn">
+<h3 class="functionName">composeOn</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeOn(argCount, f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">argCount: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">positive</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Composes the two functions, returning a new function that consumes the specified number of arguments, which are
+then passed to <code>g</code>. The result of that call is then passed to <code>f</code>. That result is then returned. Throws if the
+first parameter is not an integer greater than zero, if either parameter is not a function, or if either parameter
+has arity 0.</p>
+<p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
+real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
+argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
+<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
+will also be considered as having been curried that way, with the correct bound context.</p>
+<p>This function is intended to afford an approximation of writing functions in a point-free style.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f1 = function(a) {return a(2);};
+var f2 = function(c, d, e) {return c * d * e;};
+var f = funkierJS.composeOn(f1, f2); // =&gt; f(x, y) = 2(x * y);
+</code></pre></section>
+</section>
 <section class="functionRef" id="constant">
 <h3 class="functionName">constant</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>

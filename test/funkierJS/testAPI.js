@@ -342,6 +342,34 @@
     });
 
 
+    describe('composeOn', function() {
+      it('composeOn exists', function() {
+        expect(funkier).to.have.a.property('composeOn');
+      });
+
+
+      it('funkierJS\'s composeOn is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.composeOn).to.equal(module.composeOn);
+      });
+
+
+      it('composeOn is a function', function() {
+        expect(funkier.composeOn).to.be.a('function');
+      });
+
+
+      it('composeOn has documented arity', function() {
+        expect(funkier.arityOf(funkier.composeOn)).to.equal(3);
+      });
+
+
+      it('composeOn is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.composeOn)).to.equal(true);
+      });
+    });
+
+
     describe('constant', function() {
       it('constant exists', function() {
         expect(funkier).to.have.a.property('constant');
@@ -1785,14 +1813,14 @@
 
     beforeEach(function() {
       documentedNames = ['help', 'add', 'and', 'andPred', 'arity', 'arityOf', 'bind', 'bindWithContext',
-         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'constant',
-         'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp',
-         'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray',
-         'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift',
-         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals',
-         'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow', 'rem', 'rightShift',
-         'rightShiftZero', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor',
-         'xorPred'];
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'composeOn',
+         'constant', 'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals',
+         'even', 'exp', 'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is',
+         'isArray', 'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined',
+         'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual',
+         'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow', 'rem',
+         'rightShift', 'rightShiftZero', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
+         'subtract', 'xor', 'xorPred'];
     });
 
 
