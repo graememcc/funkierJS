@@ -5,21 +5,23 @@
   var expect = require('chai').expect;
   var base = require('../../lib/components/base');
 
+
   var testUtils = require('./testingUtilities');
   var checkModule = testUtils.checkModule;
   var checkFunction = testUtils.checkFunction;
   var addCurryStyleTests = testUtils.addCurryStyleTests;
   var addDoubleCurryStyleTests = testUtils.addDoubleCurryStyleTests;
 
+
+  var curryModule = require('../../lib/components/curry');
+  var curry = curryModule.curry;
+  var objectCurry = curryModule.objectCurry;
+  var arityOf = curryModule.arityOf;
+
+
   describe('base', function() {
 //  var testFixture = function(require, exports) {
-
-    var curryModule = require('../../lib/components/curry');
-    var bind = curryModule.bind;
-    var curry = curryModule.curry;
-    var objectCurry = curryModule.objectCurry;
 //    var curryWithArity = curryModule.curryWithArity;
-    var arityOf = curryModule.arityOf;
 
 
     var expectedObjects = [];
