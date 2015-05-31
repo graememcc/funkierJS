@@ -9,7 +9,7 @@
 
   describe('internalUtilities', function() {
     checkModule('internalUtilities', internalUtilities, {
-                expectedFunctions: ['checkIntegral', 'checkPositiveIntegral', 'isArrayLike']});
+                expectedFunctions: ['checkIntegral', 'checkPositiveIntegral', 'isArrayLike', 'valueStringifier']});
 
 
     /*
@@ -219,6 +219,39 @@
         expect(isArrayLike('a', true)).to.equal(false);
       });
     });
+
+
+    describe('valueStringifier', function() {
+      var valueStringifier = internalUtilities.valueStringifier;
+
+
+      var f = function() {};
+      var o = {};
+      var tests = [
+        {name: 'number', value: 1, result: '1'},
+        {name: 'boolean', value: true, result: 'true'},
+        {name: 'string', value: 'a', result: '\'a\''},
+        {name: 'function', value: f, result: f.toString()},
+        {name: 'object', value: o, result: '{' + o.toString() + '}'},
+        {name: 'object with toString', value: {toString: function() {return '***';}},
+                                       result: '{***}'},
+        {name: 'array', value: [1, 2], result: '[1, 2]'},
+        {name: 'undefined', value: undefined, result: 'undefined'},
+        {name: 'null', value: null, result: 'null'}
+      ];
+
+
+      tests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var s = valueStringifier(t.value);
+          var expected = t.result;
+
+          expect(s).to.equal(expected);
+        });
+      });
+    });
   });
 })();
 //(function() {
@@ -246,42 +279,6 @@
 //      var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
 //                               'checkIntegral', 'checkPositiveIntegral', 'checkObjectLike', 'defineValue', 'help'];
 //      describeModule('utils', utils, expectedObjects, expectedFunctions);
-//
-//
-//      var vsSpec = {
-//        name: 'valueStringifier',
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(vsSpec, utils.valueStringifier, function(valueStringifier) {
-//        var f = function() {};
-//        var o = {};
-//        var tests = [
-//          {name: 'number', value: 1, result: '1'},
-//          {name: 'boolean', value: true, result: 'true'},
-//          {name: 'string', value: 'a', result: '\'a\''},
-//          {name: 'function', value: f, result: f.toString()},
-//          {name: 'object', value: o, result: '{' + o.toString() + '}'},
-//          {name: 'object with toString', value: {toString: function() {return '***';}},
-//                                         result: '{***}'},
-//          {name: 'array', value: [1, 2], result: '[1, 2]'},
-//          {name: 'undefined', value: undefined, result: 'undefined'},
-//          {name: 'null', value: null, result: 'null'}
-//        ];
-//
-//
-//        tests.forEach(function(t) {
-//          var name = t.name;
-//
-//          it('Behaves correctly for ' + name, function() {
-//            var s = valueStringifier(t.value);
-//            var expected = t.result;
-//
-//            expect(s).to.equal(expected);
-//          });
-//        });
-//      });
 //
 //
 //      var objectLikeTests = [
