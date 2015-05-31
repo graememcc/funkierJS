@@ -167,7 +167,10 @@ module.exports = (function() {
 
       addIsFunctionTest(documentedValue.name, buffer);
       addHasCorrectArityTest(documentedValue, buffer);
-      addIsCurriedTest(documentedValue.name, buffer);
+
+      // Don't require constructors to be curried
+      if (!(/^[A-Z]/.test(documentedValue.name)))
+        addIsCurriedTest(documentedValue.name, buffer);
 
       pushPostscript();
     });

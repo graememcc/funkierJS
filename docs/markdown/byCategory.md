@@ -1,5 +1,115 @@
 # funkierJS API: By Category #
 
+## DataTYpes##
+### getJustValue ###
+**Usage:** `var result = getJustValue(j);`
+
+Parameters:  
+j `Just`
+
+Returns: `any`
+
+Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
+Just.
+
+#### Examples ####
+    funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+## DataTypes##
+### Just ###
+**Usage:** `var result = Just(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+constructor is new-agnostic.
+
+#### Examples ####
+    var result = funkierJS.Just(42);
+***
+### Maybe ###
+**Usage:** `Maybe();`
+
+The Maybe type encapsulates the idea of sentinel values returned by functions to represent an error or unusual
+conditions. Authors can return an instance of the Just constructor when a function executes successfully, and the
+Nothing object when an error occurs, or the computation is otherwise unsuccessful.
+
+Maybe is the 'base class' of [`Just`](#Just) and [`Nothing`](#Nothing). It is provided only for the instanceof
+operator.
+
+It is an error to call Maybe.
+***
+### Nothing ###
+A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### isJust ###
+**Usage:** `var result = isJust(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Just object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isJust(funkierJS.Just(42)); // => true
+***
+### isMaybe ###
+**Usage:** `var result = isMaybe(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Maybe object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
+***
+### isNothing ###
+**Usage:** `var result = isNothing(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is the Nothing object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isNothing(funkierJS.Nothing); // => true
+***
+### makeMaybeReturner ###
+**Usage:** `var result = makeMaybeReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
+the function is wrapped in a Just and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error(\'Bad value\');
+      return x;
+    };
+    
+    var f = funkierJS.makeMaybeReturner(g);
+    f(11); // returns Just(11)
+    f(5); // returns Nothing
+***
 ## Function##
 ### arity ###
 See `arityOf`
