@@ -66,6 +66,34 @@
     });
 
 
+    describe('andPred', function() {
+      it('andPred exists', function() {
+        expect(funkier).to.have.a.property('andPred');
+      });
+
+
+      it('funkierJS\'s andPred is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.andPred).to.equal(module.andPred);
+      });
+
+
+      it('andPred is a function', function() {
+        expect(funkier.andPred).to.be.a('function');
+      });
+
+
+      it('andPred has documented arity', function() {
+        expect(funkier.arityOf(funkier.andPred)).to.equal(2);
+      });
+
+
+      it('andPred is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.andPred)).to.equal(true);
+      });
+    });
+
+
     describe('arity', function() {
       it('arity exists', function() {
         expect(funkier).to.have.a.property('arity');
@@ -1322,6 +1350,34 @@
     });
 
 
+    describe('notPred', function() {
+      it('notPred exists', function() {
+        expect(funkier).to.have.a.property('notPred');
+      });
+
+
+      it('funkierJS\'s notPred is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.notPred).to.equal(module.notPred);
+      });
+
+
+      it('notPred is a function', function() {
+        expect(funkier.notPred).to.be.a('function');
+      });
+
+
+      it('notPred has documented arity', function() {
+        expect(funkier.arityOf(funkier.notPred)).to.equal(1);
+      });
+
+
+      it('notPred is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.notPred)).to.equal(true);
+      });
+    });
+
+
     describe('objectCurry', function() {
       it('objectCurry exists', function() {
         expect(funkier).to.have.a.property('objectCurry');
@@ -1430,6 +1486,34 @@
 
       it('or is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.or)).to.equal(true);
+      });
+    });
+
+
+    describe('orPred', function() {
+      it('orPred exists', function() {
+        expect(funkier).to.have.a.property('orPred');
+      });
+
+
+      it('funkierJS\'s orPred is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.orPred).to.equal(module.orPred);
+      });
+
+
+      it('orPred is a function', function() {
+        expect(funkier.orPred).to.be.a('function');
+      });
+
+
+      it('orPred has documented arity', function() {
+        expect(funkier.arityOf(funkier.orPred)).to.equal(2);
+      });
+
+
+      it('orPred is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.orPred)).to.equal(true);
       });
     });
 
@@ -1664,6 +1748,34 @@
         expect(funkier.arityOf._isCurried(funkier.xor)).to.equal(true);
       });
     });
+
+
+    describe('xorPred', function() {
+      it('xorPred exists', function() {
+        expect(funkier).to.have.a.property('xorPred');
+      });
+
+
+      it('funkierJS\'s xorPred is indeed the documented value', function() {
+        var module = require('../../lib/components/logical');
+        expect(funkier.xorPred).to.equal(module.xorPred);
+      });
+
+
+      it('xorPred is a function', function() {
+        expect(funkier.xorPred).to.be.a('function');
+      });
+
+
+      it('xorPred has documented arity', function() {
+        expect(funkier.arityOf(funkier.xorPred)).to.equal(2);
+      });
+
+
+      it('xorPred is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.xorPred)).to.equal(true);
+      });
+    });
   });
 
 
@@ -1672,14 +1784,15 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'add', 'and', 'arity', 'arityOf', 'bind', 'bindWithContext',
+      documentedNames = ['help', 'add', 'and', 'andPred', 'arity', 'arityOf', 'bind', 'bindWithContext',
          'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'constant',
          'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp',
          'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray',
          'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift',
          'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals',
-         'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'pow', 'rem', 'rightShift', 'rightShiftZero',
-         'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor'];
+         'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow', 'rem', 'rightShift',
+         'rightShiftZero', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor',
+         'xorPred'];
     });
 
 

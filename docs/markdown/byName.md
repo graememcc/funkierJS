@@ -32,6 +32,34 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 #### Examples ####
     funkierJS.and(true, true); // => true
 ***
+### andPred ###
+Category: Logical
+
+**Usage:** `var result = andPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => false',
+***
 ### arity ###
 See `arityOf`
 ***
@@ -907,6 +935,30 @@ A wrapper around the inequality (!=) operator.
 ### notEquals ###
 See `notEqual`
 ***
+### notPred ###
+Category: Logical
+
+**Usage:** `var result = notPred(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.
+
+If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var f = funkierJS.notPred(c);',
+    f("foo"); // => false',
+***
 ### objectCurry ###
 Category: Function
 
@@ -1046,6 +1098,34 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 #### Examples ####
     funkierJS.or(true, false); // => true
 ***
+### orPred ###
+Category: Logical
+
+**Usage:** `var result = orPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => true',
+***
 ### pow ###
 See `exp`
 ***
@@ -1168,6 +1248,34 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+### xorPred ###
+Category: Logical
+
+**Usage:** `var result = xorPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(true);',
+    var f = funkierJS.xorPred(c, d);',
+    f("foo"); // false',
 ***
 ### add ###
 Category: Maths
@@ -1201,6 +1309,34 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 #### Examples ####
     funkierJS.and(true, true); // => true
 ***
+### andPred ###
+Category: Logical
+
+**Usage:** `var result = andPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => false',
+***
 ### arity ###
 See `arityOf`
 ***
@@ -2076,6 +2212,30 @@ A wrapper around the inequality (!=) operator.
 ### notEquals ###
 See `notEqual`
 ***
+### notPred ###
+Category: Logical
+
+**Usage:** `var result = notPred(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.
+
+If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var f = funkierJS.notPred(c);',
+    f("foo"); // => false',
+***
 ### objectCurry ###
 Category: Function
 
@@ -2215,6 +2375,34 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 #### Examples ####
     funkierJS.or(true, false); // => true
 ***
+### orPred ###
+Category: Logical
+
+**Usage:** `var result = orPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => true',
+***
 ### pow ###
 See `exp`
 ***
@@ -2337,6 +2525,34 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+### xorPred ###
+Category: Logical
+
+**Usage:** `var result = xorPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(true);',
+    var f = funkierJS.xorPred(c, d);',
+    f("foo"); // false',
 ***
 ### add ###
 Category: Maths
@@ -2370,6 +2586,34 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 #### Examples ####
     funkierJS.and(true, true); // => true
 ***
+### andPred ###
+Category: Logical
+
+**Usage:** `var result = andPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => false',
+***
 ### arity ###
 See `arityOf`
 ***
@@ -3245,6 +3489,30 @@ A wrapper around the inequality (!=) operator.
 ### notEquals ###
 See `notEqual`
 ***
+### notPred ###
+Category: Logical
+
+**Usage:** `var result = notPred(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.
+
+If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var f = funkierJS.notPred(c);',
+    f("foo"); // => false',
+***
 ### objectCurry ###
 Category: Function
 
@@ -3384,6 +3652,34 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 #### Examples ####
     funkierJS.or(true, false); // => true
 ***
+### orPred ###
+Category: Logical
+
+**Usage:** `var result = orPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => true',
+***
 ### pow ###
 See `exp`
 ***
@@ -3506,6 +3802,34 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+### xorPred ###
+Category: Logical
+
+**Usage:** `var result = xorPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(true);',
+    var f = funkierJS.xorPred(c, d);',
+    f("foo"); // false',
 ***
 ### add ###
 Category: Maths
@@ -3539,6 +3863,34 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 #### Examples ####
     funkierJS.and(true, true); // => true
 ***
+### andPred ###
+Category: Logical
+
+**Usage:** `var result = andPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => false',
+***
 ### arity ###
 See `arityOf`
 ***
@@ -4414,6 +4766,30 @@ A wrapper around the inequality (!=) operator.
 ### notEquals ###
 See `notEqual`
 ***
+### notPred ###
+Category: Logical
+
+**Usage:** `var result = notPred(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.
+
+If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var f = funkierJS.notPred(c);',
+    f("foo"); // => false',
+***
 ### objectCurry ###
 Category: Function
 
@@ -4553,6 +4929,34 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 #### Examples ####
     funkierJS.or(true, false); // => true
 ***
+### orPred ###
+Category: Logical
+
+**Usage:** `var result = orPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => true',
+***
 ### pow ###
 See `exp`
 ***
@@ -4675,6 +5079,34 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+### xorPred ###
+Category: Logical
+
+**Usage:** `var result = xorPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(true);',
+    var f = funkierJS.xorPred(c, d);',
+    f("foo"); // false',
 ***
 ### add ###
 Category: Maths
@@ -4708,6 +5140,34 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 #### Examples ####
     funkierJS.and(true, true); // => true
 ***
+### andPred ###
+Category: Logical
+
+**Usage:** `var result = andPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => false',
+***
 ### arity ###
 See `arityOf`
 ***
@@ -5583,6 +6043,30 @@ A wrapper around the inequality (!=) operator.
 ### notEquals ###
 See `notEqual`
 ***
+### notPred ###
+Category: Logical
+
+**Usage:** `var result = notPred(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.
+
+If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var f = funkierJS.notPred(c);',
+    f("foo"); // => false',
+***
 ### objectCurry ###
 Category: Function
 
@@ -5722,6 +6206,34 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 #### Examples ####
     funkierJS.or(true, false); // => true
 ***
+### orPred ###
+Category: Logical
+
+**Usage:** `var result = orPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(false);',
+    var f = funkierJS.andPred(c, d);',
+    f("foo"); // => true',
+***
 ### pow ###
 See `exp`
 ***
@@ -5844,4 +6356,32 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 
 #### Examples ####
     funkierJS.xor(true, true); // => false
+***
+### xorPred ###
+Category: Logical
+
+**Usage:** `var result = xorPred(f1, f2);`
+
+Parameters:  
+f1 `function`  
+f2 `function`
+
+Returns: `function`
+
+Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.
+
+Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
+in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+
+#### Examples ####
+    var c = funkierJS.constant(true);',
+    var d = funkierJS.constant(true);',
+    var f = funkierJS.xorPred(c, d);',
+    f("foo"); // false',
 ***

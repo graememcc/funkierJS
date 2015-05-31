@@ -31,6 +31,28 @@
 <pre><code>funkierJS.and(true, true); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -698,6 +720,25 @@ be subject to rounding errors.</p>
 <h3 class="functionName">notEquals</h3>
 <p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
 </section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -812,6 +853,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.or(true, false); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="pow">
 <h3 class="functionName">pow</h3>
 <p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
@@ -900,6 +963,28 @@ funkierJS.odd(3); // =&gt; true
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="add">
@@ -924,6 +1009,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.and(true, true); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -1591,6 +1698,25 @@ be subject to rounding errors.</p>
 <h3 class="functionName">notEquals</h3>
 <p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
 </section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -1705,6 +1831,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.or(true, false); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="pow">
 <h3 class="functionName">pow</h3>
 <p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
@@ -1793,6 +1941,28 @@ funkierJS.odd(3); // =&gt; true
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="add">
@@ -1817,6 +1987,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.and(true, true); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -2484,6 +2676,25 @@ be subject to rounding errors.</p>
 <h3 class="functionName">notEquals</h3>
 <p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
 </section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -2598,6 +2809,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.or(true, false); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="pow">
 <h3 class="functionName">pow</h3>
 <p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
@@ -2686,6 +2919,28 @@ funkierJS.odd(3); // =&gt; true
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="add">
@@ -2710,6 +2965,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.and(true, true); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -3377,6 +3654,25 @@ be subject to rounding errors.</p>
 <h3 class="functionName">notEquals</h3>
 <p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
 </section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -3491,6 +3787,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.or(true, false); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="pow">
 <h3 class="functionName">pow</h3>
 <p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
@@ -3579,6 +3897,28 @@ funkierJS.odd(3); // =&gt; true
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="add">
@@ -3603,6 +3943,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.and(true, true); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -4270,6 +4632,25 @@ be subject to rounding errors.</p>
 <h3 class="functionName">notEquals</h3>
 <p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
 </section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="objectCurry">
 <h3 class="functionName">objectCurry</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -4384,6 +4765,28 @@ funkierJS.odd(3); // =&gt; true
 <pre><code>funkierJS.or(true, false); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="pow">
 <h3 class="functionName">pow</h3>
 <p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
@@ -4472,6 +4875,28 @@ funkierJS.odd(3); // =&gt; true
 <p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
 </code></pre></section>
 </section>
 
