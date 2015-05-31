@@ -241,6 +241,32 @@ curry such functions won't throw, but they will not work as expected.
     
     var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
 ***
+### compose ###
+**Usage:** `var result = compose(f, g);`
+
+Parameters:  
+f `function`  
+g `function`
+
+Returns: `function`
+
+Composes the two functions, returning a new function that consumes one argument, which is passed to `g`. The result
+of that call is then passed to `f`. That result is then returned. Throws if either parameter is not a function, or
+has arity 0.
+
+The functions will be curried (using the standard [`curry`](#curry) if required. The resulting function will have
+real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
+argument: `f` will recieve a partially applied `g`, and any remaining arguments.
+
+If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
+will also be considered as having been curried that way, with the correct bound context.
+
+#### Examples ####
+    var f1 = function(a) {return a + 1;};
+    var f2 = function(b) {return b * 2;};
+    var f = funkierJS.compose(f1, f2); // => f(x) = 2(x + 1)',
+***
 ### composeOn ###
 **Usage:** `var result = composeOn(argCount, f, g);`
 
@@ -562,33 +588,6 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
-***
-## Functions##
-### compose ###
-**Usage:** `var result = compose(f, g);`
-
-Parameters:  
-f `function`  
-g `function`
-
-Returns: `function`
-
-Composes the two functions, returning a new function that consumes one argument, which is passed to `g`. The result
-of that call is then passed to `f`. That result is then returned. Throws if either parameter is not a function, or
-has arity 0.
-
-The functions will be curried (using the standard [`curry`](#curry) if required. The resulting function will have
-real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
-argument: `f` will recieve a partially applied `g`, and any remaining arguments.
-
-If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
-
-#### Examples ####
-    var f1 = function(a) {return a + 1;};
-    var f2 = function(b) {return b * 2;};
-    var f = funkierJS.compose(f1, f2); // => f(x) = 2(x + 1)',
 ***
 ## Logical##
 ### and ###
