@@ -805,6 +805,23 @@ funkierJS.odd(3); // =&gt; true
 </section>
 <section class="categoryRef" id="Types">
 <h2 class="categoryName">Types</h2>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
+</code></pre></section>
+</section>
 <section class="functionRef" id="deepEqual">
 <h3 class="functionName">deepEqual</h3>
 <div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">deepEquals</code></li></ul></div>

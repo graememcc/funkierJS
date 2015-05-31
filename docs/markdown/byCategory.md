@@ -985,6 +985,27 @@ A wrapper around the subtraction operator.
     funkierJS.subtract(3, 1); // => 2;
 ***
 ## Types##
+### composeMany ###
+**Usage:** `var result = composeMany(fns);`
+
+Parameters:  
+fns `array`
+
+Returns: `function`
+
+Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.
+
+The result of calling composeMany([f1, f2, f3](x) is equal to f1(f2(f3(x))).
+
+#### Examples ####
+    var square = function(x) {return x * x;};
+    var double = function(x) {return 2 * x;};
+    var plusOne = funkierJS.plus(1);
+    var f = funkierJS.composeMany([square, double, plusOne]);
+    f(2); // => 36
+***
 ### deepEqual ###
 *Synonyms:* `deepEquals`
 

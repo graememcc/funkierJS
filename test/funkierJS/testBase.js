@@ -22,11 +22,8 @@
 
 
   describe('base', function() {
-//    var curryWithArity = curryModule.curryWithArity;
-
-
     var expectedObjects = [];
-    var expectedFunctions = ['compose', 'composeOn', 'constant', 'constant0', 'flip', 'id', /*'composeMany', */
+    var expectedFunctions = ['compose', 'composeMany', 'composeOn', 'constant', 'constant0', 'flip', 'id',
                              'sectionLeft', 'sectionRight'];
     checkModule('base', base, expectedObjects, expectedFunctions);
 
@@ -428,223 +425,209 @@
     });
 
 
-//    var composeManySpec = {
-//      name: 'composeMany',
-//      arity: 1,
-//      restrictions: [['strictarraylike']],
-//      validArguments: [[[function(a) {}, function() {}], testUtils.makeArrayLike(function(a) {}, function() {})]]
-//    };
-//
-//
-//    checkFunction(composeManySpec, base.composeMany, function(composeMany) {
-//      it('Throws if called with empty array', function() {
-//          var fn = function() {
-//            var composition = composeMany([]);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//      });
-//
-//
-//      var makeZeroArityTest = function(i) {
-//        return function() {
-//          var args = [id, id, id, id];
-//          args[i] = function() {return 3;};
-//
-//          var fn = function() {
-//            var composition = composeMany(args);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        };
-//      };
-//
-//
-//      for (var i = 0; i < 3; i++)
-//        it('Throws if function other than last has zero arity ' + (i + 1),
-//           makeZeroArityTest(i));
-//
-//
-//      it('Returns curried original function if supplied one function of arity 0', function() {
-//        var f = function() {return [].slice.call(arguments);};
-//        var g = composeMany([f]);
-//
-//        expect(g.length).to.equal(0);
-//        expect(g()).to.deep.equal(f());
-//        expect(g(42)).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns original function if supplied curried function of arity 0', function() {
-//        var f = curry(function() {return [].slice.call(arguments);});
-//        var g = composeMany([f]);
-//
-//        expect(g).to.equal(f);
-//      });
-//
-//
-//      it('Returns curried original function if supplied one function of arity 1', function() {
-//        var f = function(x) {return [].slice.call(arguments);};
-//        var g = composeMany([f]);
-//
-//        expect(g.length).to.equal(1);
-//        expect(getRealArity(g)).to.equal(1);
-//        expect(g(42)).to.deep.equal(f(42));
-//        expect(g(42, 'x')).to.deep.equal([42]);
-//      });
-//
-//
-//      it('Returns original function if supplied curried function of arity 1', function() {
-//        var f = curry(function(x) {return [].slice.call(arguments);});
-//        var g = composeMany([f]);
-//
-//        expect(g).to.equal(f);
-//      });
-//
-//
-//      it('Returns curried original function if supplied one function of arity > 1', function() {
-//        var f = function(x, y) {return x + y;};
-//        var g = composeMany([f]);
-//
-//        expect(g.length).to.equal(1);
-//        expect(getRealArity(g)).to.equal(2);
-//        expect(g(1)(2)).to.equal(f(1, 2));
-//        expect(g(1, 2)).to.equal(f(1, 2));
-//      });
-//
-//
-//      it('Returns original function if supplied one curried function of real arity > 1', function() {
-//        var f = curry(function(x, y) {return x + y;});
-//        var g = composeMany([f]);
-//
-//        expect(g).to.equal(f);
-//      });
-//
-//
-//      it('Acts like compose when called with two functions (1)', function() {
-//        var compose = base.compose;
-//        var f = function(x) {return x + 1;};
-//        var g = function(x) {return x * 2;};
-//        var composeM = composeMany([f, g]);
-//        var composed = compose(f, g);
-//
-//        expect(composeM.length).to.equal(composed.length);
-//        expect(getRealArity(composeM)).to.equal(getRealArity(composed));
-//        expect(composeM(1)).to.equal(composed(1));
-//      });
-//
-//
-//      it('Acts like compose when called with two functions (2)', function() {
-//        var compose = base.compose;
-//        var f = function(x, y) {return x + y + 1;};
-//        var g = function(x) {return x * 2;};
-//        var composeM = composeMany([f, g]);
-//        var composed = compose(f, g);
-//
-//        expect(composeM.length).to.equal(composed.length);
-//        expect(getRealArity(composeM)).to.equal(getRealArity(composed));
-//        expect(composeM(1)(2)).to.equal(composed(1)(2));
-//        expect(composeM(1, 2)).to.equal(composed(1, 2));
-//      });
-//
-//
-//      it('Works correctly (1)', function() {
-//        var composed = composeMany([id, id, id]);
-//
-//        expect(composed.length).to.equal(1);
-//        expect(composed(1)).to.equal(id(id(id(1))));
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var args = [
-//          function(x) {return x + 3;},
-//          function(x) {return x + 2;},
-//          function(x) {return x + 1;}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(composed.length).to.equal(1);
-//        expect(composed(1)).to.equal(args[0](args[1](args[2](1))));
-//      });
-//
-//
-//      it('Composes in right direction (1)', function() {
-//        var args = [
-//          function(x) {return x + 'three';},
-//          function(x) {return x + 'two';},
-//          function() {return 'one';}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(composed()).to.equal('onetwothree');
-//      });
-//
-//
-//      it('Composes in right direction (2)', function() {
-//        var args = [
-//          function(x) {return x.concat([3]);},
-//          function(x) {return x.concat([2]);},
-//          function(x) {return [x].concat([1]);}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(composed(0)).to.deep.equal([0, 1, 2, 3]);
-//      });
-//
-//
-//      it('Returns function with correct arity (1)', function() {
-//        var args = [
-//          function(x) {return x + 1;},
-//          id,
-//          function() {return 3;}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(getRealArity(composed)).to.equal(0);
-//      });
-//
-//
-//      it('Returns function with correct arity (2)', function() {
-//        var args = [
-//          function(x, y, z) {return x + 1;},
-//          id,
-//          function() {return 3;}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(composed.length).to.equal(1);
-//        expect(getRealArity(composed)).to.equal(2);
-//      });
-//
-//
-//      it('Only one argument fed to first composed function: remaining fed to last (1)', function() {
-//        var args = [
-//          function(x, y, z) {return [].slice.call(arguments, 1);},
-//          id,
-//          function(x) {return x;}
-//        ];
-//        var composed = composeMany(args);
-//
-//        expect(composed(1, 2, 3)).to.deep.equal([2, 3]);
-//      });
-//
-//
-//      it('Only one argument fed to first composed function: remaining fed to last (2)', function() {
-//        var args = [
-//          id,
-//          function(x, y, z) {return [].slice.call(arguments);},
-//          id
-//        ];
-//
-//        var composed = composeMany(args);
-//        var result = composed(1, 2, 3);
-//
-//        expect(result).to.be.a('function');
-//        expect(result(2)).to.be.a('function');
-//        expect(result(2)(3)).to.deep.equal([1, 2, 3]);
-//      });
-//    });
+    var composeManySpec = {
+      name: 'composeMany',
+      arity: 1,
+      restrictions: [['strictArrayLike']],
+      validArguments: [[[function(a) {}, function() {}], testUtils.makeArrayLike(function(a) {}, function() {})]]
+    };
+
+
+    checkFunction(composeManySpec, base.composeMany, function(composeMany) {
+      it('Throws if called with empty array', function() {
+        var fn = function() {
+          var composition = composeMany([]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      var makeZeroArityTest = function(i) {
+        return function() {
+          var args = [id, id, id, id];
+          args[i] = function() {return 3;};
+
+          var fn = function() {
+            var composition = composeMany(args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        };
+      };
+
+
+      for (var i = 0; i < 4; i++)
+        it('Throws if any function has zero arity ' + (i + 1),
+           makeZeroArityTest(i));
+
+
+      it('Returns curried original function if supplied one function of arity 1', function() {
+        var f = function(x) { return [].slice.call(arguments); };
+        var g = composeMany([f]);
+
+        expect(g.length).to.equal(1);
+        expect(arityOf(g)).to.equal(1);
+        expect(g).to.not.equal(f);
+        expect(g(42)).to.deep.equal(f(42));
+        expect(g(42, 'x')).to.deep.equal([42]);
+      });
+
+
+      it('Returns original function if supplied curried function of arity 1', function() {
+        var f = curry(function(x) {});
+        var g = composeMany([f]);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Returns curried original function if supplied one function of arity > 1', function() {
+        var f = function(x, y) {return x + y;};
+        var g = composeMany([f]);
+
+        expect(g.length).to.equal(1);
+        expect(arityOf(g)).to.equal(2);
+        expect(g(1)(2)).to.equal(f(1, 2));
+        expect(g(1, 2)).to.equal(f(1, 2));
+      });
+
+
+      it('Returns original function if supplied one curried function of real arity > 1', function() {
+        var f = curry(function(x, y) {return x + y;});
+        var g = composeMany([f]);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Acts like compose when called with two functions (1)', function() {
+        var compose = base.compose;
+        var f = function(x) {return x + 1;};
+        var g = function(x) {return x * 2;};
+        var composeM = composeMany([f, g]);
+        var composed = compose(f, g);
+
+        expect(composeM.length).to.equal(composed.length);
+        expect(arityOf(composeM)).to.equal(arityOf(composed));
+        expect(composeM(1)).to.equal(composed(1));
+      });
+
+
+      it('Acts like compose when called with two functions (2)', function() {
+        var compose = base.compose;
+        var f = function(x, y) {return x + y + 1;};
+        var g = function(x) {return x * 2;};
+        var composeM = composeMany([f, g]);
+        var composed = compose(f, g);
+
+        expect(composeM.length).to.equal(composed.length);
+        expect(arityOf(composeM)).to.equal(arityOf(composed));
+        expect(composeM(1)(2)).to.equal(composed(1)(2));
+        expect(composeM(1, 2)).to.equal(composed(1, 2));
+      });
+
+
+      it('Works correctly (1)', function() {
+        var composed = composeMany([id, id, id]);
+
+        expect(composed.length).to.equal(1);
+        expect(composed(1)).to.equal(id(id(id(1))));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var args = [
+          function(x) {return x + 3;},
+          function(x) {return x + 2;},
+          function(x) {return x + 1;}
+        ];
+        var composed = composeMany(args);
+
+        expect(composed.length).to.equal(1);
+        expect(composed(1)).to.equal(args[0](args[1](args[2](1))));
+      });
+
+
+      it('Composes in right direction (1)', function() {
+        var args = [
+          function(x) {return x + 'three';},
+          function(x) {return x + 'two';},
+          function(x) {return 'one';}
+        ];
+        var composed = composeMany(args);
+
+        expect(composed('a')).to.equal('onetwothree');
+      });
+
+
+      it('Composes in right direction (2)', function() {
+        var args = [
+          function(x) {return x.concat([3]);},
+          function(x) {return x.concat([2]);},
+          function(x) {return [x].concat([1]);}
+        ];
+        var composed = composeMany(args);
+
+        expect(composed(0)).to.deep.equal([0, 1, 2, 3]);
+      });
+
+
+      it('Returns function with correct arity (1)', function() {
+        var args = [
+          function(x) {return x + 1;},
+          id,
+          function(x) {return 3;}
+        ];
+        var composed = composeMany(args);
+
+        expect(arityOf(composed)).to.equal(1);
+      });
+
+
+      it('Returns function with correct arity (1)', function() {
+        var args = [
+          function(x, y, z) {return x + 1;},
+          id,
+          function(x) {return 3;}
+        ];
+        var composed = composeMany(args);
+
+        expect(composed.length).to.equal(1);
+        expect(arityOf(composed)).to.equal(3);
+      });
+
+
+      it('Only one argument fed to first composed function: remaining fed to last (1)', function() {
+        var args = [
+          function(x, y, z) {return [].slice.call(arguments, 1);},
+          id,
+          function(x) {return x;}
+        ];
+        var composed = composeMany(args);
+
+        expect(composed(1, 2, 3)).to.deep.equal([2, 3]);
+      });
+
+
+      it('Only one argument fed to first composed function: remaining fed to last (2)', function() {
+        var args = [
+          id,
+          function(x, y, z) {return [].slice.call(arguments);},
+          id
+        ];
+
+        var composed = composeMany(args);
+        var result = composed(1, 2, 3);
+
+        expect(result).to.be.a('function');
+        expect(result(2)).to.be.a('function');
+        expect(result(2)(3)).to.deep.equal([1, 2, 3]);
+      });
+
+
+      addDoubleCurryStyleTests(function(f, g) { return composeMany([f, g]); });
+    });
 
 
     var flipSpec = {

@@ -342,6 +342,34 @@
     });
 
 
+    describe('composeMany', function() {
+      it('composeMany exists', function() {
+        expect(funkier).to.have.a.property('composeMany');
+      });
+
+
+      it('funkierJS\'s composeMany is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.composeMany).to.equal(module.composeMany);
+      });
+
+
+      it('composeMany is a function', function() {
+        expect(funkier.composeMany).to.be.a('function');
+      });
+
+
+      it('composeMany has documented arity', function() {
+        expect(funkier.arityOf(funkier.composeMany)).to.equal(1);
+      });
+
+
+      it('composeMany is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.composeMany)).to.equal(true);
+      });
+    });
+
+
     describe('composeOn', function() {
       it('composeOn exists', function() {
         expect(funkier).to.have.a.property('composeOn');
@@ -1869,10 +1897,10 @@
 
     beforeEach(function() {
       documentedNames = ['help', 'add', 'and', 'andPred', 'arity', 'arityOf', 'bind', 'bindWithContext',
-         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'composeOn',
-         'constant', 'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'equals',
-         'even', 'exp', 'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is',
-         'isArray', 'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined',
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'composeMany',
+         'composeOn', 'constant', 'constant0', 'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide',
+         'equals', 'even', 'exp', 'flip', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id',
+         'is', 'isArray', 'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined',
          'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual',
          'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow', 'rem',
          'rightShift', 'rightShiftZero', 'sectionLeft', 'sectionRight', 'strictEquals', 'strictInequality',

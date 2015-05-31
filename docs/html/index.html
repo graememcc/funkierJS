@@ -232,1032 +232,22 @@ var f2 = function(b) {return b * 2;};
 var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
 </code></pre></section>
 </section>
-<section class="functionRef" id="composeOn">
-<h3 class="functionName">composeOn</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeOn(argCount, f, g);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">argCount: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">positive</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Composes the two functions, returning a new function that consumes the specified number of arguments, which are
-then passed to <code>g</code>. The result of that call is then passed to <code>f</code>. That result is then returned. Throws if the
-first parameter is not an integer greater than zero, if either parameter is not a function, or if either parameter
-has arity 0.</p>
-<p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
-real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
-argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
-<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
-will also be considered as having been curried that way, with the correct bound context.</p>
-<p>This function is intended to afford an approximation of writing functions in a point-free style.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f1 = function(a) {return a(2);};
-var f2 = function(c, d, e) {return c * d * e;};
-var f = funkierJS.composeOn(f1, f2); // =&gt; f(x, y) = 2(x * y);
-</code></pre></section>
-</section>
-<section class="functionRef" id="constant">
-<h3 class="functionName">constant</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
-and which always returns the first value.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f = funkierJS.constant(42);
-f(10); // =&gt; 42
-</code></pre></section>
-</section>
-<section class="functionRef" id="constant0">
-<h3 class="functionName">constant0</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant0(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Returns a function of arity zero that when called always returns the supplied value.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f = funkierJS.constant0(42);
-f(); // =&gt; 42
-</code></pre></section>
-</section>
-<section class="functionRef" id="curry">
-<h3 class="functionName">curry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Curries the given function f, returning a function which accepts the same number of arguments as the original
-function&#39;s length property, but which may be partially applied. The function can be partially applied by passing
-arguments one at a time, or by passing several arguments at once. The function can also be called with more
-arguments than the given function&#39;s length, but the superfluous arguments will be ignored, and will not be
-passed to the original function. If the curried function or any subsequent partial applications require at least
-one argument, then calling the function with no arguments will throw. <code>curry</code> throws if its argument is not a
-function. It will also throw if the function is known to be bound to a specific execution context.</p>
-<p>Currying a function that has already been curried will return the exact same function, unless the function was
-curried with a different mechanism - see below.</p>
-<p>The returned function will have a length of 1, unless the original function will have length 0, in which case
-the result also has length 0. Note that when currying functions of length 0 and 1 that the results will be
-different functions from those passed in.</p>
-<p>If you need a function which accepts an argument count that differs from the function&#39;s length property,
-use <code>curryWithArity</code>.</p>
-<p>Note that you cannot pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
-or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: allowing those would break the invariant that functions
-curried with <code>curry</code> are invoked with a null execution context. Similarly, functions curried with
-<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be recurried through
-<code>curryWithArity</code>. Thus an error is thrown in such cases. (However, funkierJS cannot tell if a function has been
-bound with the native <code>bind</code> method. Currying such functions might lead to unexpected results).</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f = function(x, y, z) { console.log(x, y, z); }
-
-var g = funkierJS.curry(f);
-
-g(4);  // =&gt; a function awaiting two arguments
-
-g(4)(2); // =&gt; a function awaiting one argument
-
-g(4)(2)(&#39;z&#39;); // =&gt; 4, 2, &#39;z&#39; logged
-
-g(&#39;a&#39;, &#39;b&#39;)(&#39;c&#39;); // =&gt; &#39;a&#39;, &#39;b&#39; &#39;c&#39; logged
-
-g(&#39;x&#39;)(&#39;y&#39;, &#39;z&#39;); // =&gt; &#39;x&#39;, &#39;y&#39; &#39;z&#39; logged
-
-g(&#39;d&#39;, &#39;e&#39;, &#39;f&#39;); // =&gt; &#39;d&#39;, &#39;e&#39; &#39;f&#39; logged
-
-funkierJS.curry(g) === g;  // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="curryWithArity">
-<h3 class="functionName">curryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Curries the given function f to the supplied arity, which need not equal the function&#39;s length. The function will
-be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original
-function will be called with a null execution context. It is possible to partially apply the resulting function,
-and indeed the further resulting function(s). The resulting function and its partial applications will throw if
-they require at least one argument, but are invoked without any. <code>curryWithArity</code> throws if the arity is not a
-natural number, or if the second parameter is not a function. It will also throw if the given function is known
-to be bound to a specific execution context.</p>
-<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
-length. The <a href="#arityOf">arityOf</a> function can be used to determine how many arguments are required before the
-wrapped function will be invoked.</p>
-<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
-function behaves in a useful manner will of course depend on the function. One use case of <code>curryWithArity</code> is
-to create unique functions from functions that accept optional arguments. For example, one common error involves
-mapping over an array with <code>parseInt</code>, which has an optional <em>radix</em> parameter. <code>Array.prototype.map</code> invokes
-the mapping function with additional metadata such as the position of the current element; when these factors
-collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
-<code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
-<p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
-however generally it only makes sense to recurry a function that has not been partially applied: this will be
-equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
-expect: the new function will be one that requires the given number of arguments before calling the original
-function with the partially applied arguments and some of the ones supplied to the recurried function.</p>
-<p>You cannot however pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
-or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: <code>curryWithArity</code> promises to invoke functions with a null
-execution context, but those functions have a fixed execution context that cannot be overridden. For similar
-reasons, functions curried with <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a>
-cannot be curried. An error is thrown if the function has been bound to an execution context in this way.</p>
-<p>Note however that funkierJS has no visibility into the execution contexts of functions bound using the native
-function <code>bind</code> method. Attempting to curry these might lead to surprising results, and should be avoided.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f = function(x, y) { console.log(x, y); }
-
-var g = funkierJS.curryWithArity(1, f);
-
-g(7);  // =&gt; 1, undefined logged
-
-var h = funkierJS.curryWithArity(3, f);
-
-var j = h(2, &#39;a&#39;);
-
-j(9);  // =&gt; 2, &#39;a&#39; logged
-
-h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
-</code></pre></section>
-</section>
-<section class="functionRef" id="deepEqual">
-<h3 class="functionName">deepEqual</h3>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">deepEquals</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = deepEqual(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Check two values for deep equality. Deep equality holds if any of the following if the two values are the same
-object, if both values are objects with the same object, the same prototype, the same enumerable properties
-and those properties are themselves deeply equal (non-enumerable properties are not checked), or if both values
-are arrays with the same length, any additional properties installed on the arrays are deeply equal, and the items
-at each index are themselves deeply equal.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="deepEquals">
-<h3 class="functionName">deepEquals</h3>
-<p class="see">See <a class="synonymLink" href="#deepEqual"><code class="synonymCode">deepEqual</code></a></p>
-</section>
-<section class="functionRef" id="div">
-<h3 class="functionName">div</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = div(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>Returns the quotient on dividing x by y.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.div(5, 2); // =&gt; 2
-</code></pre></section>
-</section>
-<section class="functionRef" id="divide">
-<h3 class="functionName">divide</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = divide(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the division operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
-</code></pre></section>
-</section>
-<section class="functionRef" id="equals">
-<h3 class="functionName">equals</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = equals(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the non-strict equality (==) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.equals(1, &#39;1&#39;); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="even">
-<h3 class="functionName">even</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = even(x);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Given a number, returns true if it is divisible by 2, and false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.even(2); // =&gt; true
-funkierJS.even(3); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="exp">
-<h3 class="functionName">exp</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">pow</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = exp(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A curried wrapper around Math.pow.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.exp(2, 3); // =&gt; 8
-</code></pre></section>
-</section>
-<section class="functionRef" id="flip">
-<h3 class="functionName">flip</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = flip(f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.</p>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
-backwards(2, 3); // =&gt; 1
-</code></pre></section>
-</section>
-<section class="functionRef" id="getType">
-<h3 class="functionName">getType</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getType(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object&quot;s type: the result will be one of &quot;number&quot;, &quot;string&quot;, &quot;boolean&quot;, &quot;function&quot;, &quot;undefined&quot;, or &quot;object&quot;.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.getType({}); // =&gt; &quot;object&quot;
-</code></pre></section>
-</section>
-<section class="functionRef" id="greaterThan">
-<h3 class="functionName">greaterThan</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gt</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThan(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the less than or equal (&lt;=) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.greaterThan(5, 2); // =&gt; true;
-</code></pre></section>
-</section>
-<section class="functionRef" id="greaterThanEqual">
-<h3 class="functionName">greaterThanEqual</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gte</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThanEqual(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the greater than or equal (=&gt;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.greaterThanEqual(2, 2); // =&gt; true;
-</code></pre></section>
-</section>
-<section class="functionRef" id="gt">
-<h3 class="functionName">gt</h3>
-<p class="see">See <a class="synonymLink" href="#greaterThan"><code class="synonymCode">greaterThan</code></a></p>
-</section>
-<section class="functionRef" id="gte">
-<h3 class="functionName">gte</h3>
-<p class="see">See <a class="synonymLink" href="#greaterThanEqual"><code class="synonymCode">greaterThanEqual</code></a></p>
-</section>
-<section class="functionRef" id="hasType">
-<h3 class="functionName">hasType</h3>
-<p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
-</section>
-<section class="functionRef" id="id">
-<h3 class="functionName">id</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Returns the supplied value. Superfluous values are ignored.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
-</code></pre></section>
-</section>
-<section class="functionRef" id="is">
-<h3 class="functionName">is</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">hasType</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = is(type, value);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">type: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">value: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Given a string that could be returned by the <code>typeof</code> operator, and a value, returns true if typeof the given
-object equals the given string. Throws if the first argument is not a string.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.is(&#39;number&#39;, 1); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isArray">
-<h3 class="functionName">isArray</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isArray(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given value is an array, false otherwise</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isArray([]); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isBoolean">
-<h3 class="functionName">isBoolean</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isBoolean(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;boolean&quot;, false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isBoolean(false); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isNull">
-<h3 class="functionName">isNull</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNull(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given object is null, false otherwise</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isNull(null); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isNumber">
-<h3 class="functionName">isNumber</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNumber(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;number&quot;, false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isNumber(1); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isObject">
-<h3 class="functionName">isObject</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isObject(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isObject(null); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isRealObject">
-<h3 class="functionName">isRealObject</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isRealObject(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the value is a <em>real</em> Javascript object, i.e. an object for which <code>funkierJS.isObject(a) === true</code>
-and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) === false</code>.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isRealObject(null); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="isString">
-<h3 class="functionName">isString</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isString(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;string&quot;, false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isString(&#39;a&#39;); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="isUndefined">
-<h3 class="functionName">isUndefined</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isUndefined(a);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;undefined&quot;, false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.isUndefined(1); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="leftShift">
-<h3 class="functionName">leftShift</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = leftShift(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the left shift (&lt;&lt;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.leftShift(1, 2); // =&gt; 4;
-</code></pre></section>
-</section>
-<section class="functionRef" id="lessThan">
-<h3 class="functionName">lessThan</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lt</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThan(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the less than (&lt;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.lessThan(5, 2); // =&gt; false;
-</code></pre></section>
-</section>
-<section class="functionRef" id="lessThanEqual">
-<h3 class="functionName">lessThanEqual</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lte</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThanEqual(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the less than or equal (&lt;=) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.lessThanEqual(2, 2); // =&gt; true;
-</code></pre></section>
-</section>
-<section class="functionRef" id="log">
-<h3 class="functionName">log</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = log(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
-be subject to rounding errors.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.log(2, 8); // =&gt; 3;
-</code></pre></section>
-</section>
-<section class="functionRef" id="lt">
-<h3 class="functionName">lt</h3>
-<p class="see">See <a class="synonymLink" href="#lessThan"><code class="synonymCode">lessThan</code></a></p>
-</section>
-<section class="functionRef" id="lte">
-<h3 class="functionName">lte</h3>
-<p class="see">See <a class="synonymLink" href="#lessThanEqual"><code class="synonymCode">lessThanEqual</code></a></p>
-</section>
-<section class="functionRef" id="max">
-<h3 class="functionName">max</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = max(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A curried wrapper around Math.max. Takes exactly two arguments.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.min(5, 2); // =&gt; 5;
-</code></pre></section>
-</section>
-<section class="functionRef" id="min">
-<h3 class="functionName">min</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = min(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A curried wrapper around Math.min. Takes exactly two arguments.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.min(5, 2); // =&gt; 2;
-</code></pre></section>
-</section>
-<section class="functionRef" id="multiply">
-<h3 class="functionName">multiply</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = multiply(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the multiplication operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.multiply(2, 2); // =&gt; 4;
-</code></pre></section>
-</section>
-<section class="functionRef" id="not">
-<h3 class="functionName">not</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = not(b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the logical not (!) operator. Returns the logical negation of the given argument.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.not(true); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="notEqual">
-<h3 class="functionName">notEqual</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">notEquals</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notEqual(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the inequality (!=) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.notEqual({}, {}); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="notEquals">
-<h3 class="functionName">notEquals</h3>
-<p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
-</section>
-<section class="functionRef" id="notPred">
-<h3 class="functionName">notPred</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
-function with the given argument, and return the negated result. Throws if f is not a function, or has an
-arity other than 1.</p>
-<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
-style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
-then the resulting function will be too, and where necessary will supply the execution context to the wrapped
-function.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var f = funkierJS.notPred(c);&#39;,
-f(&quot;foo&quot;); // =&gt; false&#39;,
-</code></pre></section>
-</section>
-<section class="functionRef" id="objectCurry">
-<h3 class="functionName">objectCurry</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Given a function, returns a curried function which calls the underlying with the execution context active when the
-first arguments are supplied. This means that when partially applying the function, the resulting functions will
-have their execution context permanently bound. This method of binding is designed for currying functions that
-exist on an object&#39;s prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
-require at least one argument, but are invoked without any. <code>objectCurry</code> throws if its parameter is not a
-function. The resulting function will throw if invoked with an undefined execution context.</p>
-<p>The returned function will have a length of 1, unless a function of arity of 0 was supplied, in which case this
-will be the length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required
-before the wrapped function will be invoked.</p>
-<p>One can pass in a function created by <code>objectCurry</code> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> providing
-it has not been partially applied. This will effectively be an identity operation. However, passing in a partially
-applied function derived from an earlier currying call is an error, as the execution context has now been bound.
-Similarly, functions returned from <a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> and
-<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a> cannot be curried with this function, and will throw an
-error, just as those functions curry functions and their partial applications returned from <code>objectCurry</code>.
-<code>objectCurry</code> will throw when provided with an invalid function.</p>
-<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
-curry such functions won&#39;t throw, but they will not work as expected.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var proto = {foo: function(x, y) { return x + y + this.bar; }};
-proto.foo = funkierJS.objectCurry(proto.foo);
-
-var obj1 = Object.create(proto);
-obj1.bar = 10;
-
-var g = obj1.foo(10);
-g(22); // =&gt; 42
-
-var obj2 = Object.create(proto);
-obj2.bar = 100;
-obj2.foo(10)(10); // =&gt; 120
-g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
-
-var err = obj1.foo;
-err(1, 2);  // =&gt; throws
-</code></pre></section>
-</section>
-<section class="functionRef" id="objectCurryWithArity">
-<h3 class="functionName">objectCurryWithArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Given an arity and function, returns a curried function which calls the underlying with the execution context
-active when the first arguments are supplied. This means that when partially applying the function, the
-resulting functions will have their execution context permanently bound. This method of binding is designed for
-currying functions that exist on an object&#39;s prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. <code>objectCurryWithArity</code>
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.</p>
-<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
-length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
-wrapped function will be invoked.</p>
-<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
-function behaves in a useful manner will of course depend on the function.</p>
-<p>If one has a function that has been returned from <a href="#objectCurry"><code>objectCurry</code></a> or <code>objectCurryWithArity</code>, one can
-recurry it to a different arity if required. However, one cannot recurry any partial applications derived from it,
-as the execution context has now been bound. <code>objectCurryWithArity</code> also cannot curry functions returned from
-<a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> or
-<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>, and nor can those functions curry functions returned from
-<code>objectCurryWithArity</code>, or their subsequent partial applications. <code>objectCurryWithArity</code> will throw when provided
-with such a function.</p>
-<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
-curry such functions won&#39;t throw, but they will not work as expected.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var proto = {foo: function(x, y, z) { return x + y + this.bar; }};
-proto.foo = funkierJS.objectCurryWithArity(2, proto.foo);
-
-var obj1 = Object.create(proto);
-obj1.bar = 10;
-
-var g = obj1.foo(10);
-g(22); // =&gt; 42
-
-var obj2 = Object.create(proto);
-obj2.bar = 100;
-obj2.foo(10)(10); // =&gt; 120
-g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
-
-var err = obj1.foo;
-err(1, 2);  // =&gt; throws
-</code></pre></section>
-</section>
-<section class="functionRef" id="odd">
-<h3 class="functionName">odd</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = odd(x);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Given a number, returns true if it is not divisible by 2, and false otherwise.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.odd(2); // =&gt; false
-funkierJS.odd(3); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="or">
-<h3 class="functionName">or</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = or(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the logical or (||) operator. Returns the logical or of the given arguments</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.or(true, false); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="orPred">
-<h3 class="functionName">orPred</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
-functions with the given argument, and logically or their results, returning that value. Throws if either
-argument is not a function of arity 1.</p>
-<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
-curried, and supply the correct execution context to the supplied functions. If neither was curried in that
-manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
-f(&quot;foo&quot;); // =&gt; true&#39;,
-</code></pre></section>
-</section>
-<section class="functionRef" id="pow">
-<h3 class="functionName">pow</h3>
-<p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
-</section>
-<section class="functionRef" id="rem">
-<h3 class="functionName">rem</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rem(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the remainder (%) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.rem(5, 2); // =&gt; 1;
-</code></pre></section>
-</section>
-<section class="functionRef" id="rightShift">
-<h3 class="functionName">rightShift</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShift(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the right shift (&gt;&gt;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.rightShift(-4, 2); // =&gt; -1;
-</code></pre></section>
-</section>
-<section class="functionRef" id="rightShiftZero">
-<h3 class="functionName">rightShiftZero</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShiftZero(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the left shift (&gt;&gt;&gt;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
-</code></pre></section>
-</section>
-<section class="functionRef" id="sectionLeft">
-<h3 class="functionName">sectionLeft</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionLeft(f, x);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Partially applies the binary function f with the given argument x, with x being supplied as the first argument
-to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f = function(x, y) {return x * y;};&#39;,
-var g = funkierJS.sectionLeft(f, 2);
-g(3); // =&gt; 6 (i.e. 2 * 3)&#39;,
-</code></pre></section>
-</section>
-<section class="functionRef" id="sectionRight">
-<h3 class="functionName">sectionRight</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionRight(f, x);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Partially applies the binary function f with the given argument x, with x being supplied as the second argument
-to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
-fn(2); // =&gt; -1
-</code></pre></section>
-</section>
-<section class="functionRef" id="strictEquals">
-<h3 class="functionName">strictEquals</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictEquals(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the strict equality (===) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.strictEquals(1, &#39;1&#39;); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="strictInequality">
-<h3 class="functionName">strictInequality</h3>
-<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
-</section>
-<section class="functionRef" id="strictNotEqual">
-<h3 class="functionName">strictNotEqual</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">strictNotEquals</code></li><li class="synonym"><code class="synonymName">strictInequality</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictNotEqual(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the strict inequality (!==) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.strictNotEqual(1, &#39;1&#39;); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="strictNotEquals">
-<h3 class="functionName">strictNotEquals</h3>
-<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
-</section>
-<section class="functionRef" id="subtract">
-<h3 class="functionName">subtract</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = subtract(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the subtraction operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.subtract(3, 1); // =&gt; 2;
-</code></pre></section>
-</section>
-<section class="functionRef" id="xor">
-<h3 class="functionName">xor</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xor(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.xor(true, true); // =&gt; false
-</code></pre></section>
-</section>
-<section class="functionRef" id="xorPred">
-<h3 class="functionName">xorPred</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
-functions with the given argument, and logically xor their results, returning that value. Throws if either
-argument is not a function of arity 1.</p>
-<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
-curried, and supply the correct execution context to the supplied functions. If neither was curried in that
-manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(true);&#39;,
-var f = funkierJS.xorPred(c, d);&#39;,
-f(&quot;foo&quot;); // false&#39;,
-</code></pre></section>
-</section>
-<section class="functionRef" id="add">
-<h3 class="functionName">add</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = add(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the addition operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.add(1, 1); // =&gt; 2
-</code></pre></section>
-</section>
-<section class="functionRef" id="and">
-<h3 class="functionName">and</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = and(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A wrapper around the logical and (&amp;&amp;) operator. Returns the logical and of the given arguments</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.and(true, true); // =&gt; true
-</code></pre></section>
-</section>
-<section class="functionRef" id="andPred">
-<h3 class="functionName">andPred</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
-functions with the given argument, and logically and their results, returning that value. Throws if either
-argument is not a function of arity 1.</p>
-<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
-curried, and supply the correct execution context to the supplied functions. If neither was curried in that
-manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
-f(&quot;foo&quot;); // =&gt; false&#39;,
-</code></pre></section>
-</section>
-<section class="functionRef" id="arity">
-<h3 class="functionName">arity</h3>
-<p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
-</section>
-<section class="functionRef" id="arityOf">
-<h3 class="functionName">arityOf</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">arity</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arityOf(f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>Reports the real arity of a function. If the function has not been curried by funkier.js, this simply returns the
-function&#39;s length property. For a function that has been curried, the arity of the original function will be
-reported (the function&#39;s length property will always be 0 or 1 in this case). For a partially applied function,
-the amount of arguments not yet supplied will be returned.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
-</code></pre></section>
-</section>
-<section class="functionRef" id="bind">
-<h3 class="functionName">bind</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">bindWithContext</code></li></ul></div>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bind(ctx, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Given an object and function, returns a curried function with the same arity as the original, and whose execution
-context is permanently bound to the supplied object. The function will be called when sufficient arguments have
-been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting function, and
-indeed the further resulting function(s). The resulting function and its partial applications will throw if they
-require at least one argument, but are invoked without any. <code>bind</code> throws if the first parameter is not an
-an acceptable type for an execution context, or if the last parameter is not a function.</p>
-<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
-length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
-wrapped function will be invoked.</p>
-<p><code>bind</code> will accept functions that have been previously been curried to the same execution context, as that being
-provided, but will effectively be an identity function in such cases. However, attempting to curry a function
-known to be bound to a different execution context is an error. In particular, functions curried
-with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
-have already been bound with an implicit <code>null</code> execution context. Equally, functions curried with
-<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be passed to <code>bind</code>, due
-to the different way in which they acquire an execution context. <code>bind</code> will throw in such cases.</p>
-<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
-curry such functions won&#39;t throw, but they will not work as expected.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var obj = {foo: 42};
-
-var f = function(x, y) { return this.foo + x; };
-
-var g = funkierJS.bind(obj, f);
-
-g(3)(2); // returns 45
-
-g(5, 2); // returns 47
-
-var obj2 = {foo: 10};
-var h = funkierJS.bindWithContextAndArity(3, obj2, f);
-var j = funkierJS.bind(obj2, h); // OK, same context object
-
-var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t match
-</code></pre></section>
-</section>
-<section class="functionRef" id="bindWithContext">
-<h3 class="functionName">bindWithContext</h3>
-<p class="see">See <a class="synonymLink" href="#bind"><code class="synonymCode">bind</code></a></p>
-</section>
-<section class="functionRef" id="bindWithContextAndArity">
-<h3 class="functionName">bindWithContextAndArity</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bindWithContextAndArity(n, ctx, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Given an arity, object and function, returns a curried function whose execution context is permanently bound to
-the supplied object, and whose arity equals the arity given. The supplied arity need not equal the function&#39;s
-length. The function will be only called when the specified number of arguments have been supplied. Superfluous
-arguments are discarded. It is possible to partially apply the resulting function, and indeed the further
-resulting function(s). The resulting function and its partial applications will throw if they require at least
-one argument, but are invoked without any. <code>bindWithContextAndArity</code> throws if the arity is not a natural
-number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
-not a function.</p>
-<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
-length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
-wrapped function will be invoked.</p>
-<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
-function behaves in a useful manner will of course depend on the function.</p>
-<p>In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
-makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
-original function. To be able to recurry a curried function to a different arity, the execution context given
-must be the exact object that was previously used to create the function being recurried. It is an error to
-try and recurry a curried function bound to one execution context to another. In particular, functions curried
-with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
-have already been bound with an implicit <code>null</code> execution context. Likewise, functions that have been curried
-using either <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be curried
-using <code>bindWithContextAndArity</code>, due to the different mechanism they use to acquire an execution context.
-<code>bindWithContextAndArity</code> will throw in that such cases.</p>
-<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
-curry such functions won&#39;t throw, but they will not work as expected.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var obj = {foo: 42};
-
-var f = function(x, y) { return this.foo + x; };
-
-var g = funkierJS.bindWithContextAndArity(1, obj, f);
-
-g(3); // returns 45
-
-var h = funkierJS.bindWithContextAndArity(3, obj, g); // OK, same context object
-h(2)(3, 4); // returns 44
-
-var err = funkierJS.bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don&#39;t match
-
-var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
-</code></pre></section>
-</section>
-<section class="functionRef" id="bitwiseAnd">
-<h3 class="functionName">bitwiseAnd</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseAnd(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the bitwise and (&amp;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.bitwiseAnd(7, 21); // =&gt; 5;
-</code></pre></section>
-</section>
-<section class="functionRef" id="bitwiseNot">
-<h3 class="functionName">bitwiseNot</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseNot(x);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the bitwise not (~) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.bitwiseNot(5); // =&gt; -6;
-</code></pre></section>
-</section>
-<section class="functionRef" id="bitwiseOr">
-<h3 class="functionName">bitwiseOr</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseOr(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the bitwise or (&amp;) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.bitwiseOr(7, 8); // =&gt; 15;
-</code></pre></section>
-</section>
-<section class="functionRef" id="bitwiseXor">
-<h3 class="functionName">bitwiseXor</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseXor(x, y);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around the bitwise xor (^) operator.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
-</code></pre></section>
-</section>
-<section class="functionRef" id="compose">
-<h3 class="functionName">compose</h3>
-<p class="category">Category: <a class="categoryLink" href="byCategory.html#Functions">Functions</a></p>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = compose(f, g);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Composes the two functions, returning a new function that consumes one argument, which is passed to <code>g</code>. The result
-of that call is then passed to <code>f</code>. That result is then returned. Throws if either parameter is not a function, or
-has arity 0.</p>
-<p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
-real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
-argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
-<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
-will also be considered as having been curried that way, with the correct bound context.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>var f1 = function(a) {return a + 1;};
-var f2 = function(b) {return b * 2;};
-var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
 </code></pre></section>
 </section>
 <section class="functionRef" id="composeOn">
@@ -2288,6 +1278,24 @@ var f2 = function(b) {return b * 2;};
 var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
+</code></pre></section>
+</section>
 <section class="functionRef" id="composeOn">
 <h3 class="functionName">composeOn</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -3316,6 +2324,24 @@ var f2 = function(b) {return b * 2;};
 var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
+</code></pre></section>
+</section>
 <section class="functionRef" id="composeOn">
 <h3 class="functionName">composeOn</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -4342,6 +3368,1070 @@ will also be considered as having been curried that way, with the correct bound 
 <pre><code>var f1 = function(a) {return a + 1;};
 var f2 = function(b) {return b * 2;};
 var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
+</code></pre></section>
+</section>
+<section class="functionRef" id="composeOn">
+<h3 class="functionName">composeOn</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeOn(argCount, f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">argCount: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">positive</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Composes the two functions, returning a new function that consumes the specified number of arguments, which are
+then passed to <code>g</code>. The result of that call is then passed to <code>f</code>. That result is then returned. Throws if the
+first parameter is not an integer greater than zero, if either parameter is not a function, or if either parameter
+has arity 0.</p>
+<p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
+real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
+argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
+<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
+will also be considered as having been curried that way, with the correct bound context.</p>
+<p>This function is intended to afford an approximation of writing functions in a point-free style.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f1 = function(a) {return a(2);};
+var f2 = function(c, d, e) {return c * d * e;};
+var f = funkierJS.composeOn(f1, f2); // =&gt; f(x, y) = 2(x * y);
+</code></pre></section>
+</section>
+<section class="functionRef" id="constant">
+<h3 class="functionName">constant</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Intended to be partially applied, first taking a value, returning a function that takes another parameter
+and which always returns the first value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant(42);
+f(10); // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="constant0">
+<h3 class="functionName">constant0</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = constant0(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Returns a function of arity zero that when called always returns the supplied value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.constant0(42);
+f(); // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="curry">
+<h3 class="functionName">curry</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curry(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Curries the given function f, returning a function which accepts the same number of arguments as the original
+function&#39;s length property, but which may be partially applied. The function can be partially applied by passing
+arguments one at a time, or by passing several arguments at once. The function can also be called with more
+arguments than the given function&#39;s length, but the superfluous arguments will be ignored, and will not be
+passed to the original function. If the curried function or any subsequent partial applications require at least
+one argument, then calling the function with no arguments will throw. <code>curry</code> throws if its argument is not a
+function. It will also throw if the function is known to be bound to a specific execution context.</p>
+<p>Currying a function that has already been curried will return the exact same function, unless the function was
+curried with a different mechanism - see below.</p>
+<p>The returned function will have a length of 1, unless the original function will have length 0, in which case
+the result also has length 0. Note that when currying functions of length 0 and 1 that the results will be
+different functions from those passed in.</p>
+<p>If you need a function which accepts an argument count that differs from the function&#39;s length property,
+use <code>curryWithArity</code>.</p>
+<p>Note that you cannot pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
+or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: allowing those would break the invariant that functions
+curried with <code>curry</code> are invoked with a null execution context. Similarly, functions curried with
+<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be recurried through
+<code>curryWithArity</code>. Thus an error is thrown in such cases. (However, funkierJS cannot tell if a function has been
+bound with the native <code>bind</code> method. Currying such functions might lead to unexpected results).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y, z) { console.log(x, y, z); }
+
+var g = funkierJS.curry(f);
+
+g(4);  // =&gt; a function awaiting two arguments
+
+g(4)(2); // =&gt; a function awaiting one argument
+
+g(4)(2)(&#39;z&#39;); // =&gt; 4, 2, &#39;z&#39; logged
+
+g(&#39;a&#39;, &#39;b&#39;)(&#39;c&#39;); // =&gt; &#39;a&#39;, &#39;b&#39; &#39;c&#39; logged
+
+g(&#39;x&#39;)(&#39;y&#39;, &#39;z&#39;); // =&gt; &#39;x&#39;, &#39;y&#39; &#39;z&#39; logged
+
+g(&#39;d&#39;, &#39;e&#39;, &#39;f&#39;); // =&gt; &#39;d&#39;, &#39;e&#39; &#39;f&#39; logged
+
+funkierJS.curry(g) === g;  // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="curryWithArity">
+<h3 class="functionName">curryWithArity</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryWithArity(n, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Curries the given function f to the supplied arity, which need not equal the function&#39;s length. The function will
+be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original
+function will be called with a null execution context. It is possible to partially apply the resulting function,
+and indeed the further resulting function(s). The resulting function and its partial applications will throw if
+they require at least one argument, but are invoked without any. <code>curryWithArity</code> throws if the arity is not a
+natural number, or if the second parameter is not a function. It will also throw if the given function is known
+to be bound to a specific execution context.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf">arityOf</a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function. One use case of <code>curryWithArity</code> is
+to create unique functions from functions that accept optional arguments. For example, one common error involves
+mapping over an array with <code>parseInt</code>, which has an optional <em>radix</em> parameter. <code>Array.prototype.map</code> invokes
+the mapping function with additional metadata such as the position of the current element; when these factors
+collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
+<code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
+one argument.</p>
+<p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
+however generally it only makes sense to recurry a function that has not been partially applied: this will be
+equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
+expect: the new function will be one that requires the given number of arguments before calling the original
+function with the partially applied arguments and some of the ones supplied to the recurried function.</p>
+<p>You cannot however pass in functions that have been bound to a specific execution context using <a href="#bind"><code>bind</code></a>,
+or <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>: <code>curryWithArity</code> promises to invoke functions with a null
+execution context, but those functions have a fixed execution context that cannot be overridden. For similar
+reasons, functions curried with <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a>
+cannot be curried. An error is thrown if the function has been bound to an execution context in this way.</p>
+<p>Note however that funkierJS has no visibility into the execution contexts of functions bound using the native
+function <code>bind</code> method. Attempting to curry these might lead to surprising results, and should be avoided.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y) { console.log(x, y); }
+
+var g = funkierJS.curryWithArity(1, f);
+
+g(7);  // =&gt; 1, undefined logged
+
+var h = funkierJS.curryWithArity(3, f);
+
+var j = h(2, &#39;a&#39;);
+
+j(9);  // =&gt; 2, &#39;a&#39; logged
+
+h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;buzz&#39; logged
+</code></pre></section>
+</section>
+<section class="functionRef" id="deepEqual">
+<h3 class="functionName">deepEqual</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">deepEquals</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = deepEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Check two values for deep equality. Deep equality holds if any of the following if the two values are the same
+object, if both values are objects with the same object, the same prototype, the same enumerable properties
+and those properties are themselves deeply equal (non-enumerable properties are not checked), or if both values
+are arrays with the same length, any additional properties installed on the arrays are deeply equal, and the items
+at each index are themselves deeply equal.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.deepEqual({foo: 1, bar: [2, 3]}, {bar: [2, 3], foo: 1}); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="deepEquals">
+<h3 class="functionName">deepEquals</h3>
+<p class="see">See <a class="synonymLink" href="#deepEqual"><code class="synonymCode">deepEqual</code></a></p>
+</section>
+<section class="functionRef" id="div">
+<h3 class="functionName">div</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = div(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the quotient on dividing x by y.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.div(5, 2); // =&gt; 2
+</code></pre></section>
+</section>
+<section class="functionRef" id="divide">
+<h3 class="functionName">divide</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = divide(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the division operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+</code></pre></section>
+</section>
+<section class="functionRef" id="equals">
+<h3 class="functionName">equals</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = equals(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the non-strict equality (==) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.equals(1, &#39;1&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="even">
+<h3 class="functionName">even</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = even(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a number, returns true if it is divisible by 2, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.even(2); // =&gt; true
+funkierJS.even(3); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="exp">
+<h3 class="functionName">exp</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">pow</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = exp(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.pow.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.exp(2, 3); // =&gt; 8
+</code></pre></section>
+</section>
+<section class="functionRef" id="flip">
+<h3 class="functionName">flip</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = flip(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
+backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="getType">
+<h3 class="functionName">getType</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getType(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
+the object&quot;s type: the result will be one of &quot;number&quot;, &quot;string&quot;, &quot;boolean&quot;, &quot;function&quot;, &quot;undefined&quot;, or &quot;object&quot;.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getType({}); // =&gt; &quot;object&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="greaterThan">
+<h3 class="functionName">greaterThan</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gt</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThan(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than or equal (&lt;=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.greaterThan(5, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="greaterThanEqual">
+<h3 class="functionName">greaterThanEqual</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">gte</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = greaterThanEqual(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the greater than or equal (=&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.greaterThanEqual(2, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="gt">
+<h3 class="functionName">gt</h3>
+<p class="see">See <a class="synonymLink" href="#greaterThan"><code class="synonymCode">greaterThan</code></a></p>
+</section>
+<section class="functionRef" id="gte">
+<h3 class="functionName">gte</h3>
+<p class="see">See <a class="synonymLink" href="#greaterThanEqual"><code class="synonymCode">greaterThanEqual</code></a></p>
+</section>
+<section class="functionRef" id="hasType">
+<h3 class="functionName">hasType</h3>
+<p class="see">See <a class="synonymLink" href="#is"><code class="synonymCode">is</code></a></p>
+</section>
+<section class="functionRef" id="id">
+<h3 class="functionName">id</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = id(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the supplied value. Superfluous values are ignored.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.id([1, 2]); // =&gt; [1, 2]
+</code></pre></section>
+</section>
+<section class="functionRef" id="is">
+<h3 class="functionName">is</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">hasType</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = is(type, value);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">type: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">value: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a string that could be returned by the <code>typeof</code> operator, and a value, returns true if typeof the given
+object equals the given string. Throws if the first argument is not a string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.is(&#39;number&#39;, 1); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isArray">
+<h3 class="functionName">isArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isArray(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is an array, false otherwise</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isArray([]); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isBoolean">
+<h3 class="functionName">isBoolean</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isBoolean(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;boolean&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isBoolean(false); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isNull">
+<h3 class="functionName">isNull</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNull(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given object is null, false otherwise</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isNull(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isNumber">
+<h3 class="functionName">isNumber</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNumber(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;number&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isNumber(1); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isObject">
+<h3 class="functionName">isObject</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isObject(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isRealObject">
+<h3 class="functionName">isRealObject</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isRealObject(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the value is a <em>real</em> Javascript object, i.e. an object for which <code>funkierJS.isObject(a) === true</code>
+and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) === false</code>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isRealObject(null); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="isString">
+<h3 class="functionName">isString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isString(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;string&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isString(&#39;a&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isUndefined">
+<h3 class="functionName">isUndefined</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isUndefined(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if typeof the given value equals &quot;undefined&quot;, false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isUndefined(1); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="leftShift">
+<h3 class="functionName">leftShift</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = leftShift(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the left shift (&lt;&lt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.leftShift(1, 2); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lessThan">
+<h3 class="functionName">lessThan</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lt</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThan(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than (&lt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.lessThan(5, 2); // =&gt; false;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lessThanEqual">
+<h3 class="functionName">lessThanEqual</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">lte</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = lessThanEqual(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the less than or equal (&lt;=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.lessThanEqual(2, 2); // =&gt; true;
+</code></pre></section>
+</section>
+<section class="functionRef" id="log">
+<h3 class="functionName">log</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = log(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may
+be subject to rounding errors.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.log(2, 8); // =&gt; 3;
+</code></pre></section>
+</section>
+<section class="functionRef" id="lt">
+<h3 class="functionName">lt</h3>
+<p class="see">See <a class="synonymLink" href="#lessThan"><code class="synonymCode">lessThan</code></a></p>
+</section>
+<section class="functionRef" id="lte">
+<h3 class="functionName">lte</h3>
+<p class="see">See <a class="synonymLink" href="#lessThanEqual"><code class="synonymCode">lessThanEqual</code></a></p>
+</section>
+<section class="functionRef" id="max">
+<h3 class="functionName">max</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = max(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.max. Takes exactly two arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.min(5, 2); // =&gt; 5;
+</code></pre></section>
+</section>
+<section class="functionRef" id="min">
+<h3 class="functionName">min</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = min(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around Math.min. Takes exactly two arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.min(5, 2); // =&gt; 2;
+</code></pre></section>
+</section>
+<section class="functionRef" id="multiply">
+<h3 class="functionName">multiply</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = multiply(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the multiplication operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.multiply(2, 2); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="not">
+<h3 class="functionName">not</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = not(b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the logical not (!) operator. Returns the logical negation of the given argument.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.not(true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="notEqual">
+<h3 class="functionName">notEqual</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">notEquals</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the inequality (!=) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.notEqual({}, {}); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="notEquals">
+<h3 class="functionName">notEquals</h3>
+<p class="see">See <a class="synonymLink" href="#notEqual"><code class="synonymCode">notEqual</code></a></p>
+</section>
+<section class="functionRef" id="notPred">
+<h3 class="functionName">notPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = notPred(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a unary predicate function, and returns a new unary function that, when called, will call the original
+function with the given argument, and return the negated result. Throws if f is not a function, or has an
+arity other than 1.</p>
+<p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
+style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+then the resulting function will be too, and where necessary will supply the execution context to the wrapped
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var f = funkierJS.notPred(c);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="objectCurry">
+<h3 class="functionName">objectCurry</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurry(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given a function, returns a curried function which calls the underlying with the execution context active when the
+first arguments are supplied. This means that when partially applying the function, the resulting functions will
+have their execution context permanently bound. This method of binding is designed for currying functions that
+exist on an object&#39;s prototype. The function will be only called when sufficient arguments have been supplied.
+Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+require at least one argument, but are invoked without any. <code>objectCurry</code> throws if its parameter is not a
+function. The resulting function will throw if invoked with an undefined execution context.</p>
+<p>The returned function will have a length of 1, unless a function of arity of 0 was supplied, in which case this
+will be the length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required
+before the wrapped function will be invoked.</p>
+<p>One can pass in a function created by <code>objectCurry</code> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> providing
+it has not been partially applied. This will effectively be an identity operation. However, passing in a partially
+applied function derived from an earlier currying call is an error, as the execution context has now been bound.
+Similarly, functions returned from <a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> and
+<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a> cannot be curried with this function, and will throw an
+error, just as those functions curry functions and their partial applications returned from <code>objectCurry</code>.
+<code>objectCurry</code> will throw when provided with an invalid function.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var proto = {foo: function(x, y) { return x + y + this.bar; }};
+proto.foo = funkierJS.objectCurry(proto.foo);
+
+var obj1 = Object.create(proto);
+obj1.bar = 10;
+
+var g = obj1.foo(10);
+g(22); // =&gt; 42
+
+var obj2 = Object.create(proto);
+obj2.bar = 100;
+obj2.foo(10)(10); // =&gt; 120
+g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
+
+var err = obj1.foo;
+err(1, 2);  // =&gt; throws
+</code></pre></section>
+</section>
+<section class="functionRef" id="objectCurryWithArity">
+<h3 class="functionName">objectCurryWithArity</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given an arity and function, returns a curried function which calls the underlying with the execution context
+active when the first arguments are supplied. This means that when partially applying the function, the
+resulting functions will have their execution context permanently bound. This method of binding is designed for
+currying functions that exist on an object&#39;s prototype. The function will be only called when the specified number
+of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
+applications throw if they require at least one argument, but are invoked without any. <code>objectCurryWithArity</code>
+throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
+will throw if invoked with an undefined execution context.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function.</p>
+<p>If one has a function that has been returned from <a href="#objectCurry"><code>objectCurry</code></a> or <code>objectCurryWithArity</code>, one can
+recurry it to a different arity if required. However, one cannot recurry any partial applications derived from it,
+as the execution context has now been bound. <code>objectCurryWithArity</code> also cannot curry functions returned from
+<a href="#curry"><code>curry</code></a>, <a href="#curryWithArity"><code>curryWithArity</code></a>, <a href="#bind"><code>bind</code></a> or
+<a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>, and nor can those functions curry functions returned from
+<code>objectCurryWithArity</code>, or their subsequent partial applications. <code>objectCurryWithArity</code> will throw when provided
+with such a function.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var proto = {foo: function(x, y, z) { return x + y + this.bar; }};
+proto.foo = funkierJS.objectCurryWithArity(2, proto.foo);
+
+var obj1 = Object.create(proto);
+obj1.bar = 10;
+
+var g = obj1.foo(10);
+g(22); // =&gt; 42
+
+var obj2 = Object.create(proto);
+obj2.bar = 100;
+obj2.foo(10)(10); // =&gt; 120
+g(1); // =&gt; 21, the application using obj2 didn&#39;t affect the execution context of g
+
+var err = obj1.foo;
+err(1, 2);  // =&gt; throws
+</code></pre></section>
+</section>
+<section class="functionRef" id="odd">
+<h3 class="functionName">odd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = odd(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Given a number, returns true if it is not divisible by 2, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.odd(2); // =&gt; false
+funkierJS.odd(3); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="or">
+<h3 class="functionName">or</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = or(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the logical or (||) operator. Returns the logical or of the given arguments</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.or(true, false); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="orPred">
+<h3 class="functionName">orPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = orPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically or their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; true&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="pow">
+<h3 class="functionName">pow</h3>
+<p class="see">See <a class="synonymLink" href="#exp"><code class="synonymCode">exp</code></a></p>
+</section>
+<section class="functionRef" id="rem">
+<h3 class="functionName">rem</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rem(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the remainder (%) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rem(5, 2); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="rightShift">
+<h3 class="functionName">rightShift</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShift(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the right shift (&gt;&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rightShift(-4, 2); // =&gt; -1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="rightShiftZero">
+<h3 class="functionName">rightShiftZero</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rightShiftZero(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the left shift (&gt;&gt;&gt;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
+</code></pre></section>
+</section>
+<section class="functionRef" id="sectionLeft">
+<h3 class="functionName">sectionLeft</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionLeft(f, x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Partially applies the binary function f with the given argument x, with x being supplied as the first argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y) {return x * y;};&#39;,
+var g = funkierJS.sectionLeft(f, 2);
+g(3); // =&gt; 6 (i.e. 2 * 3)&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="sectionRight">
+<h3 class="functionName">sectionRight</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionRight(f, x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Partially applies the binary function f with the given argument x, with x being supplied as the second argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
+fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="strictEquals">
+<h3 class="functionName">strictEquals</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictEquals(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the strict equality (===) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.strictEquals(1, &#39;1&#39;); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="strictInequality">
+<h3 class="functionName">strictInequality</h3>
+<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
+</section>
+<section class="functionRef" id="strictNotEqual">
+<h3 class="functionName">strictNotEqual</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">strictNotEquals</code></li><li class="synonym"><code class="synonymName">strictInequality</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = strictNotEqual(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the strict inequality (!==) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.strictNotEqual(1, &#39;1&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="strictNotEquals">
+<h3 class="functionName">strictNotEquals</h3>
+<p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
+</section>
+<section class="functionRef" id="subtract">
+<h3 class="functionName">subtract</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = subtract(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the subtraction operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.subtract(3, 1); // =&gt; 2;
+</code></pre></section>
+</section>
+<section class="functionRef" id="xor">
+<h3 class="functionName">xor</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xor(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the logical xor operator. Returns the logical xor of the given arguments</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.xor(true, true); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="xorPred">
+<h3 class="functionName">xorPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = xorPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically xor their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(true);&#39;,
+var f = funkierJS.xorPred(c, d);&#39;,
+f(&quot;foo&quot;); // false&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="add">
+<h3 class="functionName">add</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = add(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the addition operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.add(1, 1); // =&gt; 2
+</code></pre></section>
+</section>
+<section class="functionRef" id="and">
+<h3 class="functionName">and</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = and(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">boolean</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A wrapper around the logical and (&amp;&amp;) operator. Returns the logical and of the given arguments</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.and(true, true); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="andPred">
+<h3 class="functionName">andPred</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Logical">Logical</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = andPred(f1, f2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two unary predicate functions, and returns a new unary function that, when called, will call the original
+functions with the given argument, and logically and their results, returning that value. Throws if either
+argument is not a function of arity 1.</p>
+<p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
+produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+curried, and supply the correct execution context to the supplied functions. If neither was curried in that
+manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
+also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
+in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var c = funkierJS.constant(true);&#39;,
+var d = funkierJS.constant(false);&#39;,
+var f = funkierJS.andPred(c, d);&#39;,
+f(&quot;foo&quot;); // =&gt; false&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="arity">
+<h3 class="functionName">arity</h3>
+<p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
+</section>
+<section class="functionRef" id="arityOf">
+<h3 class="functionName">arityOf</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">arity</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = arityOf(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Reports the real arity of a function. If the function has not been curried by funkier.js, this simply returns the
+function&#39;s length property. For a function that has been curried, the arity of the original function will be
+reported (the function&#39;s length property will always be 0 or 1 in this case). For a partially applied function,
+the amount of arguments not yet supplied will be returned.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bind">
+<h3 class="functionName">bind</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">bindWithContext</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bind(ctx, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given an object and function, returns a curried function with the same arity as the original, and whose execution
+context is permanently bound to the supplied object. The function will be called when sufficient arguments have
+been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting function, and
+indeed the further resulting function(s). The resulting function and its partial applications will throw if they
+require at least one argument, but are invoked without any. <code>bind</code> throws if the first parameter is not an
+an acceptable type for an execution context, or if the last parameter is not a function.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p><code>bind</code> will accept functions that have been previously been curried to the same execution context, as that being
+provided, but will effectively be an identity function in such cases. However, attempting to curry a function
+known to be bound to a different execution context is an error. In particular, functions curried
+with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
+have already been bound with an implicit <code>null</code> execution context. Equally, functions curried with
+<a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be passed to <code>bind</code>, due
+to the different way in which they acquire an execution context. <code>bind</code> will throw in such cases.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var obj = {foo: 42};
+
+var f = function(x, y) { return this.foo + x; };
+
+var g = funkierJS.bind(obj, f);
+
+g(3)(2); // returns 45
+
+g(5, 2); // returns 47
+
+var obj2 = {foo: 10};
+var h = funkierJS.bindWithContextAndArity(3, obj2, f);
+var j = funkierJS.bind(obj2, h); // OK, same context object
+
+var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t match
+</code></pre></section>
+</section>
+<section class="functionRef" id="bindWithContext">
+<h3 class="functionName">bindWithContext</h3>
+<p class="see">See <a class="synonymLink" href="#bind"><code class="synonymCode">bind</code></a></p>
+</section>
+<section class="functionRef" id="bindWithContextAndArity">
+<h3 class="functionName">bindWithContextAndArity</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bindWithContextAndArity(n, ctx, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param">ctx: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given an arity, object and function, returns a curried function whose execution context is permanently bound to
+the supplied object, and whose arity equals the arity given. The supplied arity need not equal the function&#39;s
+length. The function will be only called when the specified number of arguments have been supplied. Superfluous
+arguments are discarded. It is possible to partially apply the resulting function, and indeed the further
+resulting function(s). The resulting function and its partial applications will throw if they require at least
+one argument, but are invoked without any. <code>bindWithContextAndArity</code> throws if the arity is not a natural
+number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is
+not a function.</p>
+<p>The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
+length. The <a href="#arityOf"><code>arityOf</code></a> function can be used to determine how many arguments are required before the
+wrapped function will be invoked.</p>
+<p>As noted above, you are permitted to curry a function to a smaller arity than its length. Whether the resulting
+function behaves in a useful manner will of course depend on the function.</p>
+<p>In some limited circumstances, it is possible to recurry previously curried functions, however generally it only
+makes sense to recurry a function that has not been partially applied: this will be equivalent to currying the
+original function. To be able to recurry a curried function to a different arity, the execution context given
+must be the exact object that was previously used to create the function being recurried. It is an error to
+try and recurry a curried function bound to one execution context to another. In particular, functions curried
+with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>curryWithArity</code></a> cannot be curried with an execution context: they
+have already been bound with an implicit <code>null</code> execution context. Likewise, functions that have been curried
+using either <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be curried
+using <code>bindWithContextAndArity</code>, due to the different mechanism they use to acquire an execution context.
+<code>bindWithContextAndArity</code> will throw in that such cases.</p>
+<p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
+curry such functions won&#39;t throw, but they will not work as expected.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var obj = {foo: 42};
+
+var f = function(x, y) { return this.foo + x; };
+
+var g = funkierJS.bindWithContextAndArity(1, obj, f);
+
+g(3); // returns 45
+
+var h = funkierJS.bindWithContextAndArity(3, obj, g); // OK, same context object
+h(2)(3, 4); // returns 44
+
+var err = funkierJS.bindWithContextAndArity(2, {foo: 1}, g); // throws: execution contexts don&#39;t match
+
+var ok = funkierJS.bindWithContextAndArity(2, {foo: 1}, f); // still ok to bind the original function though
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseAnd">
+<h3 class="functionName">bitwiseAnd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseAnd(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise and (&amp;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseAnd(7, 21); // =&gt; 5;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseNot">
+<h3 class="functionName">bitwiseNot</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseNot(x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise not (~) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseNot(5); // =&gt; -6;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseOr">
+<h3 class="functionName">bitwiseOr</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseOr(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise or (&amp;) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseOr(7, 8); // =&gt; 15;
+</code></pre></section>
+</section>
+<section class="functionRef" id="bitwiseXor">
+<h3 class="functionName">bitwiseXor</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = bitwiseXor(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around the bitwise xor (^) operator.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.bitwiseAnd(7, 3); // =&gt; 4;
+</code></pre></section>
+</section>
+<section class="functionRef" id="compose">
+<h3 class="functionName">compose</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Functions">Functions</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = compose(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Composes the two functions, returning a new function that consumes one argument, which is passed to <code>g</code>. The result
+of that call is then passed to <code>f</code>. That result is then returned. Throws if either parameter is not a function, or
+has arity 0.</p>
+<p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
+real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
+argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
+<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
+will also be considered as having been curried that way, with the correct bound context.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f1 = function(a) {return a + 1;};
+var f2 = function(b) {return b * 2;};
+var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="composeMany">
+<h3 class="functionName">composeMany</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Types">Types</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = composeMany(fns);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">fns: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
+Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
+zero, or if the value supplied is not an array.</p>
+<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var square = function(x) {return x * x;};
+var double = function(x) {return 2 * x;};
+var plusOne = funkierJS.plus(1);
+var f = funkierJS.composeMany([square, double, plusOne]);
+f(2); // =&gt; 36
 </code></pre></section>
 </section>
 <section class="functionRef" id="composeOn">
