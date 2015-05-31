@@ -7,176 +7,218 @@
   var checkModule = require('./testingUtilities').checkModule;
 
 
-  checkModule('internalUtilities', internalUtilities, {
-              expectedFunctions: ['checkIntegral', 'checkPositiveIntegral']});
+  describe('internalUtilities', function() {
+    checkModule('internalUtilities', internalUtilities, {
+                expectedFunctions: ['checkIntegral', 'checkPositiveIntegral', 'isArrayLike']});
 
 
-  /*
-   * The tests for checkPositiveIntegral and checkIntegral have broadly the same shape: they must both either return
-   * the given argument, or throw an exception. This function automatically installs those tests with the correct
-   * expectations based on the function under tests. This test generation function will exercise the function under
-   * test in both its strict (accepts only numbers) and relaxed (accepts values that coerce to numbers) forms.
-   *
-   */
+    /*
+     * The tests for checkPositiveIntegral and checkIntegral have broadly the same shape: they must both either return
+     * the given argument, or throw an exception. This function automatically installs those tests with the correct
+     * expectations based on the function under tests. This test generation function will exercise the function under
+     * test in both its strict (accepts only numbers) and relaxed (accepts values that coerce to numbers) forms.
+     *
+     */
 
-  var addNumericTests = function(fnUnderTest, options) {
-    options = options || {};
-    var acceptOnlyPositive = options.positiveOnly;
+    var addNumericTests = function(fnUnderTest, options) {
+      options = options || {};
+      var acceptOnlyPositive = options.positiveOnly;
 
-    var addSingleTest = function(type, value, shouldAcceptValue, functionOptions) {
-      functionOptions = functionOptions || {};
+      var addSingleTest = function(type, value, shouldAcceptValue, functionOptions) {
+        functionOptions = functionOptions || {};
 
-      // Confirm that the function under test either returns the given value or throws a type error
-      it('Behaves correctly for ' + type, function() {
-        var result = null;
-        var fn = function() {
-          result = fnUnderTest(value, functionOptions);
-        };
+        // Confirm that the function under test either returns the given value or throws a type error
+        it('Behaves correctly for ' + type, function() {
+          var result = null;
+          var fn = function() {
+            result = fnUnderTest(value, functionOptions);
+          };
 
-        if (shouldAcceptValue) {
-          expect(fn).to.not.throw(TypeError);
-          // Coerce the value for comparison when necessary
-          expect(result).to.equal(value - 0);
-        } else {
-          expect(fn).to.throw(TypeError);
-        }
+          if (shouldAcceptValue) {
+            expect(fn).to.not.throw(TypeError);
+            // Coerce the value for comparison when necessary
+            expect(result).to.equal(value - 0);
+          } else {
+            expect(fn).to.throw(TypeError);
+          }
+        });
+
+        if (shouldAcceptValue)
+          return;
+
+        // Confirm that the exception thrown is a TypeError
+        it('Returns correct exception for ' + type, function() {
+          var message = 'This was an error';
+          // Be mindful of the existing options: keep them in the prototype chain
+          var opts = Object.create(functionOptions);
+          opts.errorMessage = message;
+          var fn = function() {
+            fnUnderTest(value, opts);
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+      var checkAcceptsValue = function(type, value, options) {
+        addSingleTest(type, value, true, options);
+      };
+
+      var checkRejectsValue = function(type, value, options) {
+        addSingleTest(type, value, false, options);
+      };
+
+      var notNumericTests = [
+        {type: 'string', value: 'a'},
+        {type: 'function', value: function() {}},
+        {type: 'object', value: {}},
+        {type: 'array', value: [1, 2]},
+        {type: 'undefined', value: undefined}
+      ];
+
+      var nonIntegralTests = [
+        {type: 'NaN', value: NaN},
+        {type: 'negative infinity', value: Number.NEGATIVE_INFINITY},
+        {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
+        {type: 'negative float', value: -1.1},
+        {type: 'float', value: 2.2},
+        {type: 'string containing float', value: '0.1'},
+        {type: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}},
+        {type: 'object evaluating to float via string', value: {valueOf: function() {return '1.1';}}}
+      ];
+
+      var positiveIntegralTests = [
+        {type: 'integer', value: 2},
+        {type: 'integer expressed as a float', value: 3.0},
+        {type: 'negative zero', value: -0.0}
+      ];
+
+      var coerciblePositiveTests = [
+        {type: 'null', value: null}, // null coerces to 0
+        {type: 'true', value: true}, // booleans should coerce to numbers
+        {type: 'false', value: false},
+        {type: 'string containing positive integer', value: '1'},
+        {type: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}},
+        {type: 'object evaluating to positive integer via string', value: {valueOf: function() {return '2';}}},
+        {type: 'object evaluating to positive integer via boolean', value: {valueOf: function() {return true;}}},
+        {type: 'object evaluating to positive integer via null', value: {valueOf: function() {return null;}}}
+      ];
+
+      var negativeIntegralTests = [
+        {type: 'negative integer', value: -5}
+      ];
+
+      var coercibleNegativeTests = [
+        {type: 'string containing negative integer', value: '-1'},
+        {type: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}},
+        {type: 'object evaluating to negative integer via string', value: {valueOf: function() {return '-2';}}}
+      ];
+
+
+      // Neither function should accept values that are not numbers
+      notNumericTests.forEach(function(t) {
+        checkRejectsValue(t.type, t.value);
       });
 
-      if (shouldAcceptValue)
-        return;
 
-      // Confirm that the exception thrown is a TypeError
-      it('Returns correct exception for ' + type, function() {
-        var message = 'This was an error';
-        // Be mindful of the existing options: keep them in the prototype chain
-        var opts = Object.create(functionOptions);
-        opts.errorMessage = message;
-        var fn = function() {
-          fnUnderTest(value, opts);
-        };
+      // Neither function should accept values that are not integral numbers
+      nonIntegralTests.forEach(function(t) {
+        checkRejectsValue(t.type, t.value);
+      });
 
-        expect(fn).to.throw(message);
+
+      // Both functions should accept positive integers
+      positiveIntegralTests.forEach(function(t) {
+        checkAcceptsValue(t.type, t.value);
+      });
+
+
+      // Both functions should accept values coercible to positive integers when called in relaxed mode
+      coerciblePositiveTests.forEach(function(t) {
+        checkAcceptsValue(t.type, t.value);
+      });
+
+
+      // Both functions should reject values coercible to positive integers when called in strict mode
+      coerciblePositiveTests.forEach(function(t) {
+        checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
+      });
+
+
+      // Only checkIntegral should accept negative values
+      negativeIntegralTests.forEach(function(t) {
+        var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
+        testAdder(t.type, t.value);
+      });
+
+
+      // checkIntegral should accept objects coercible to negative values
+      coercibleNegativeTests.forEach(function(t) {
+        var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
+        testAdder(t.type, t.value);
+      });
+
+
+      // All functions should reject objects coercible to negative values in strict mode
+      coercibleNegativeTests.forEach(function(t) {
+        checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
       });
     };
 
-    var checkAcceptsValue = function(type, value, options) {
-      addSingleTest(type, value, true, options);
-    };
 
-    var checkRejectsValue = function(type, value, options) {
-      addSingleTest(type, value, false, options);
-    };
+    describe('checkIntegral', function() {
+      var checkIntegral = internalUtilities.checkIntegral;
 
-    var notNumericTests = [
-      {type: 'string', value: 'a'},
-      {type: 'function', value: function() {}},
-      {type: 'object', value: {}},
-      {type: 'array', value: [1, 2]},
-      {type: 'undefined', value: undefined}
-    ];
+      addNumericTests(checkIntegral);
+    });
 
-    var nonIntegralTests = [
-      {type: 'NaN', value: NaN},
-      {type: 'negative infinity', value: Number.NEGATIVE_INFINITY},
-      {type: 'positive infinity', value: Number.POSITIVE_INFINITY},
-      {type: 'negative float', value: -1.1},
-      {type: 'float', value: 2.2},
-      {type: 'string containing float', value: '0.1'},
-      {type: 'object evaluating to float', value: {valueOf: function() {return 1.1;}}},
-      {type: 'object evaluating to float via string', value: {valueOf: function() {return '1.1';}}}
-    ];
 
-    var positiveIntegralTests = [
-      {type: 'integer', value: 2},
-      {type: 'integer expressed as a float', value: 3.0},
-      {type: 'negative zero', value: -0.0}
-    ];
+    describe('checkPositiveIntegral', function() {
+      var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
 
-    var coerciblePositiveTests = [
-      {type: 'null', value: null}, // null coerces to 0
-      {type: 'true', value: true}, // booleans should coerce to numbers
-      {type: 'false', value: false},
-      {type: 'string containing positive integer', value: '1'},
-      {type: 'object evaluating to positive integer', value: {valueOf: function() {return 2;}}},
-      {type: 'object evaluating to positive integer via string', value: {valueOf: function() {return '2';}}},
-      {type: 'object evaluating to positive integer via boolean', value: {valueOf: function() {return true;}}},
-      {type: 'object evaluating to positive integer via null', value: {valueOf: function() {return null;}}}
-    ];
 
-    var negativeIntegralTests = [
-      {type: 'negative integer', value: -5}
-    ];
+      addNumericTests(checkPositiveIntegral, {positiveOnly: true});
+    });
 
-    var coercibleNegativeTests = [
-      {type: 'string containing negative integer', value: '-1'},
-      {type: 'object evaluating to negative integer', value: {valueOf: function() {return -3;}}},
-      {type: 'object evaluating to negative integer via string', value: {valueOf: function() {return '-2';}}}
+
+    var arrayLikeTests = [
+      {name: 'number', value: 1, result: false},
+      {name: 'boolean', value: true, result: false},
+      {name: 'string', value: 'a', result: true},
+      {name: 'function', value: function() {}, result: false},
+      {name: 'object', value: {}, result: false},
+      {name: 'array', value: [1, 2], result: true},
+      {name: 'undefined', value: undefined, result: false},
+      {name: 'null', value: null, result: false},
+      {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
     ];
 
 
-    // Neither function should accept values that are not numbers
-    notNumericTests.forEach(function(t) {
-      checkRejectsValue(t.type, t.value);
+    describe('isArrayLike', function() {
+      var isArrayLike = internalUtilities.isArrayLike;
+
+
+      arrayLikeTests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var b = isArrayLike(t.value);
+          var expected = t.result;
+
+          expect(b).to.equal(expected);
+        });
+      });
+
+
+      it('Behaves correctly with string when noStrings parameter explicitly false', function() {
+        expect(isArrayLike('a', false)).to.equal(true);
+      });
+
+
+      it('Behaves correctly with string when noStrings parameter explicitly true', function() {
+        expect(isArrayLike('a', true)).to.equal(false);
+      });
     });
-
-
-    // Neither function should accept values that are not integral numbers
-    nonIntegralTests.forEach(function(t) {
-      checkRejectsValue(t.type, t.value);
-    });
-
-
-    // Both functions should accept positive integers
-    positiveIntegralTests.forEach(function(t) {
-      checkAcceptsValue(t.type, t.value);
-    });
-
-
-    // Both functions should accept values coercible to positive integers when called in relaxed mode
-    coerciblePositiveTests.forEach(function(t) {
-      checkAcceptsValue(t.type, t.value);
-    });
-
-
-    // Both functions should reject values coercible to positive integers when called in strict mode
-    coerciblePositiveTests.forEach(function(t) {
-      checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
-    });
-
-
-    // Only checkIntegral should accept negative values
-    negativeIntegralTests.forEach(function(t) {
-      var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
-      testAdder(t.type, t.value);
-    });
-
-
-    // checkIntegral should accept objects coercible to negative values
-    coercibleNegativeTests.forEach(function(t) {
-      var testAdder = acceptOnlyPositive ? checkRejectsValue : checkAcceptsValue;
-      testAdder(t.type, t.value);
-    });
-
-
-    // All functions should reject objects coercible to negative values in strict mode
-    coercibleNegativeTests.forEach(function(t) {
-      checkRejectsValue(t.type + ' (strict mode)', t.value, {strict: true});
-    });
-  };
-
-
-  describe('checkIntegral', function() {
-    var checkIntegral = internalUtilities.checkIntegral;
-
-    addNumericTests(checkIntegral);
-  });
-
-
-  describe('checkPositiveIntegral', function() {
-    var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
-
-
-    addNumericTests(checkPositiveIntegral, {positiveOnly: true});
   });
 })();
 //(function() {
@@ -238,158 +280,6 @@
 //
 //            expect(s).to.equal(expected);
 //          });
-//        });
-//      });
-//
-//
-//      var arrayLikeTests = [
-//        {name: 'number', value: 1, result: false},
-//        {name: 'boolean', value: true, result: false},
-//        {name: 'string', value: 'a', result: true},
-//        {name: 'function', value: function() {}, result: false},
-//        {name: 'object', value: {}, result: false},
-//        {name: 'array', value: [1, 2], result: true},
-//        {name: 'undefined', value: undefined, result: false},
-//        {name: 'null', value: null, result: false},
-//        {name: 'arrayLike', value: {'0': 'a', '1': 'b', 'length': 2}, result: true}
-//      ];
-//
-//
-//      // We deliberately use describe rather than our own describeFunction here
-//      // due to the optional parameter.
-//      describe('isArrayLike', function() {
-//        var isArrayLike = utils.isArrayLike;
-//
-//
-//        arrayLikeTests.forEach(function(t) {
-//          var name = t.name;
-//
-//          it('Behaves correctly for ' + name, function() {
-//            var b = isArrayLike(t.value);
-//            var expected = t.result;
-//
-//            expect(b).to.equal(expected);
-//          });
-//        });
-//
-//
-//        it('Behaves correctly with string when noStrings parameter explicitly false', function() {
-//          expect(isArrayLike('a', false)).to.equal(true);
-//        });
-//
-//
-//        it('Behaves correctly with string when noStrings parameter explicitly true', function() {
-//          expect(isArrayLike('a', true)).to.equal(false);
-//        });
-//      });
-//
-//
-//
-//      // We deliberately use describe rather than our own describeFunction here
-//      // due to the optional parameter.
-//      describe('checkArrayLike', function() {
-//        var checkArrayLike = utils.checkArrayLike;
-//
-//
-//        var shouldFail = arrayLikeTests.filter(function(test) {return test.result === false;});
-//        var shouldPass = arrayLikeTests.filter(function(test) {return test.result === true;});
-//
-//        shouldFail.forEach(function(test) {
-//          var name = test.name;
-//
-//
-//          it('Behaves correctly for ' + name, function() {
-//            var fn = function() {
-//              checkArrayLike(test.value);
-//            };
-//
-//            expect(fn).to.throw(TypeError);
-//          });
-//
-//
-//          it('Returns correct exception for ' + name, function() {
-//            var message = 'This was an error';
-//            var fn = function() {
-//              checkArrayLike(test.value, {message: message});
-//            };
-//
-//            expect(fn).to.throw(message);
-//          });
-//        });
-//
-//
-//        shouldPass.forEach(function(test) {
-//          var name = test.name;
-//
-//
-//          it('Doesn\'t throw for ' + name, function() {
-//            var fn = function() {
-//              checkArrayLike(test.value);
-//            };
-//
-//            expect(fn).to.not.throw(TypeError);
-//          });
-//
-//
-//          it('Behaves correctly when dontSlice in options ' + name, function() {
-//            var v = checkArrayLike(test.value, {dontSlice: true});
-//
-//            expect(v).to.equal(test.value);
-//          });
-//
-//
-//          it('Behaves correctly when dontSlice explicitly false in options ' + name, function() {
-//            var v = checkArrayLike(test.value, {dontSlice: false});
-//
-//            if (name === 'string') {
-//              expect(v).to.equal(test.value);
-//            } else {
-//              expect(v).to.not.equal(test.value);
-//              // Need to manually check deep equality due to arraylikes being transformed to arrays
-//              for (var i = 0, l = test.value.length; i < l; i++)
-//                expect(v[i]).to.equal(test.value[i]);
-//            }
-//          });
-//
-//
-//          it('Behaves correctly when dontSlice not in options ' + name, function() {
-//            var v = checkArrayLike(test.value);
-//
-//            if (name === 'string') {
-//              expect(v).to.equal(test.value);
-//            } else {
-//              expect(v).to.not.equal(test.value);
-//              // Need to manually check deep equality due to arraylikes being transformed to arrays
-//              for (var i = 0, l = test.value.length; i < l; i++)
-//                expect(v[i]).to.equal(test.value[i]);
-//            }
-//          });
-//        });
-//
-//
-//        it('Doesn\'t accept strings when relevant parameter passed in (1)', function() {
-//          var fn = function() {
-//            checkArrayLike('abc', {noStrings: true});
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Doesn\'t accept strings when relevant parameter passed in (2)', function() {
-//          var message = 'Noooo, no strings here!';
-//          var fn = function() {
-//            checkArrayLike('abc', {noStrings: true, message: message});
-//          };
-//
-//          expect(fn).to.throw(message);
-//        });
-//
-//
-//        it('Accepts strings when relevant parameter explicitly passed in', function() {
-//          var s = checkArrayLike('abc', {noStrings: false});
-//
-//          expect(s).to.equal('abc');
 //        });
 //      });
 //
