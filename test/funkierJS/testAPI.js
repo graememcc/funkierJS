@@ -1642,6 +1642,62 @@
     });
 
 
+    describe('sectionLeft', function() {
+      it('sectionLeft exists', function() {
+        expect(funkier).to.have.a.property('sectionLeft');
+      });
+
+
+      it('funkierJS\'s sectionLeft is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.sectionLeft).to.equal(module.sectionLeft);
+      });
+
+
+      it('sectionLeft is a function', function() {
+        expect(funkier.sectionLeft).to.be.a('function');
+      });
+
+
+      it('sectionLeft has documented arity', function() {
+        expect(funkier.arityOf(funkier.sectionLeft)).to.equal(2);
+      });
+
+
+      it('sectionLeft is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.sectionLeft)).to.equal(true);
+      });
+    });
+
+
+    describe('sectionRight', function() {
+      it('sectionRight exists', function() {
+        expect(funkier).to.have.a.property('sectionRight');
+      });
+
+
+      it('funkierJS\'s sectionRight is indeed the documented value', function() {
+        var module = require('../../lib/components/base');
+        expect(funkier.sectionRight).to.equal(module.sectionRight);
+      });
+
+
+      it('sectionRight is a function', function() {
+        expect(funkier.sectionRight).to.be.a('function');
+      });
+
+
+      it('sectionRight has documented arity', function() {
+        expect(funkier.arityOf(funkier.sectionRight)).to.equal(2);
+      });
+
+
+      it('sectionRight is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.sectionRight)).to.equal(true);
+      });
+    });
+
+
     describe('strictEquals', function() {
       it('strictEquals exists', function() {
         expect(funkier).to.have.a.property('strictEquals');
@@ -1819,8 +1875,8 @@
          'isArray', 'isBoolean', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined',
          'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'max', 'min', 'multiply', 'not', 'notEqual',
          'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow', 'rem',
-         'rightShift', 'rightShiftZero', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
-         'subtract', 'xor', 'xorPred'];
+         'rightShift', 'rightShiftZero', 'sectionLeft', 'sectionRight', 'strictEquals', 'strictInequality',
+         'strictNotEqual', 'strictNotEquals', 'subtract', 'xor', 'xorPred'];
     });
 
 

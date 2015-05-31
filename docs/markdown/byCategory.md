@@ -420,6 +420,39 @@ curry such functions won't throw, but they will not work as expected.
     var err = obj1.foo;
     err(1, 2);  // => throws
 ***
+### sectionLeft ###
+**Usage:** `var result = sectionLeft(f, x);`
+
+Parameters:  
+f `function`  
+x `any`
+
+Returns: `function`
+
+Partially applies the binary function f with the given argument x, with x being supplied as the first argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.
+
+#### Examples ####
+    var f = function(x, y) {return x * y;};',
+    var g = funkierJS.sectionLeft(f, 2);
+    g(3); // => 6 (i.e. 2 * 3)',
+***
+### sectionRight ###
+**Usage:** `var result = sectionRight(f, x);`
+
+Parameters:  
+f `function`  
+x `any`
+
+Returns: `function`
+
+Partially applies the binary function f with the given argument x, with x being supplied as the second argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.
+
+#### Examples ####
+    var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
+    fn(2); // => -1
+***
 ## Functions##
 ### compose ###
 **Usage:** `var result = compose(f, g);`

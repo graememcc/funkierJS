@@ -373,6 +373,31 @@ var err = obj1.foo;
 err(1, 2);  // =&gt; throws
 </code></pre></section>
 </section>
+<section class="functionRef" id="sectionLeft">
+<h3 class="functionName">sectionLeft</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionLeft(f, x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Partially applies the binary function f with the given argument x, with x being supplied as the first argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(x, y) {return x * y;};&#39;,
+var g = funkierJS.sectionLeft(f, 2);
+g(3); // =&gt; 6 (i.e. 2 * 3)&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="sectionRight">
+<h3 class="functionName">sectionRight</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionRight(f, x);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Partially applies the binary function f with the given argument x, with x being supplied as the second argument
+to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
+fn(2); // =&gt; -1
+</code></pre></section>
+</section>
 <section class="categoryRef" id="Functions">
 <h2 class="categoryName">Functions</h2>
 <section class="functionRef" id="compose">
