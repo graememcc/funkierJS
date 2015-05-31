@@ -102,6 +102,7 @@ module.exports = (function() {
   var primitiveTypeOf = {
     'function': 'function',
     'function: arity 1': 'function',
+    'function: arity 2': 'function',
     'function: minarity 1': 'function',
     'function: minarity 2': 'function',
     'natural':  'number',
@@ -115,6 +116,7 @@ module.exports = (function() {
   var restrictionVerifiers = {
     'function': function(f) { return typeof(f) === 'function'; },
     'function: arity 1': function(f) { return typeof(f) === 'function' && f.length === 1; },
+    'function: arity 2': function(f) { return typeof(f) === 'function' && f.length === 2; },
     'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length >= 1; },
     'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length >= 2; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
@@ -220,6 +222,9 @@ module.exports = (function() {
     var bogusForTypeClass = {
       'function: arity 1':    [{type: 'function with arity 0', value: function() {}},
                                {type: 'function with arity 2', value: function(x, y) {}}],
+      'function: arity 2':    [{type: 'function with arity 0', value: function() {}},
+                               {type: 'function with arity 1', value: function(x) {}},
+                               {type: 'function with arity 3', value: function(x, y, z) {}}],
       'function: minarity 1': [{type: 'function with arity 0', value: function() {}}],
       'function: minarity 2': [{type: 'function with arity 0', value: function() {}},
                                {type: 'function with arity 1', value: function(x) {}}],
