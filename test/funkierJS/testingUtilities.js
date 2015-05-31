@@ -88,14 +88,12 @@ module.exports = (function() {
   Object.freeze(ANYVALUE);
 
 
-  var typeclasses = ['function: arity 1', 'function: minarity 1', 'function: minarity 2',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var typeclasses = [/*arraylike', 'integer', */ 'function: arity 1', 'function: minarity 1', 'function: minarity 2',
+                     'natural', /*'objectlike', 'objectlikeornull', */'positive', /*'strictarraylike,*/ 'strictNatural'];
+
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
       return true;
-    /*
-    if (isFuncTypeClass(restriction))
-      return true;
-    */
 
     return false;
   };
@@ -108,6 +106,7 @@ module.exports = (function() {
     'function: minarity 2': 'function',
     'natural':  'number',
     'objectlike': 'object',
+    'positive':  'number',
     'strictNatural':  'number',
     'string': 'string'
   };
@@ -121,6 +120,7 @@ module.exports = (function() {
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
+    'positive': function(n) { return (n - 0) > 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; },
     'string': function(f) { return typeof(f) === 'string'; },
   };
@@ -177,39 +177,6 @@ module.exports = (function() {
 
         if (!restrictionVerifiers[expectedType](typicalValue))
           failBecause('Typical value ' + (j + 1) + ' for parameter ' + (i + 1) + ' is not of type ' + expectedType);
-/*
-        // Sanity check the validArguments for this parameter. They should be the type I claim is permissable!
-        //if (!isMultiTypeClass(r)) {
-          var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
-          if (typeof(validArguments[i][j]) !== t)
-            throw new Error(errorPre + 'valid argument ' + (j + 1) + ' has type ' + typeof(validArguments[i][j]) +
-                            ', value ' + validArguments[i][j] + ', restriction demands type ' + t);
-          return;
-        }
-//
-        // We now know the restriction is a multi typeclass. For 'arraylike' and 'strictarraylike', we require that
-        // validArguments contains a value for each permissible member of the typeclass. For 'objectlike' we require
-        // only one example.
-//
-        if (r === 'objectlike' || r === 'objectlikeornull') {
-          var withNull = r === 'objectlikeornull';
-          if (!isObjectLike(validArguments[i][j], withNull))
-            throw new Error(errorPre + 'validArguments ' + (j + 1) + ' (' + validArguments[i][j] + ') is not objectlike');
-//
-          return;
-        }
-//
-        var validArgsType = validArguments[i].map(function(x) {return Array.isArray(x) ? 'array' : typeof(x);});
-        var correctLength = r === 'arraylike' ? 3 : 2;
-//
-        if (validArguments[i].length !== correctLength)
-          throw new Error(errorPre + 'Not enough examples of ' + r + ' - expected ' + correctLength + ' found ' +
-                          validArguments[i].length);
-//
-        if (validArgsType.indexOf('array') === -1 || validArgsType.indexOf('object') === -1 ||
-            (correctLength === 3 && validArgsType.indexOf('string') === -1))
-          throw new Error(errorPre + 'Valid argument for ' + r + ' have wrong type');
-*/
       });
     });
 
@@ -228,15 +195,15 @@ module.exports = (function() {
     // Note that the typeclasses indicate what typeclass an instance of the type *could* be a value of after coercsion,
     // not necessarily the typeclass of the value given
     var bogusPrimitives = [
-      {type: 'number',    value: 2,             typeclasses: [/*'integer',*/ 'natural', 'strictNatural']},
-      {type: 'boolean',   value: true,          typeclasses: [/*'integer',*/ 'natural']},
+      {type: 'number',    value: 2,             typeclasses: [/*'integer',*/ 'natural', 'positive', 'strictNatural']},
+      {type: 'boolean',   value: true,          typeclasses: [/*'integer',*/ 'natural', 'positive']},
       {type: 'string',    value: 'x',
-         typeclasses: [/* 'integer', */ 'natural', /* 'arraylike', */'objectlike', /*'objectlikeornull' */]},
+         typeclasses: [/* 'integer', */ 'natural', 'positive', /* 'arraylike',*/ 'objectlike'/*, 'objectlikeornull' */]},
       {type: 'undefined', value: undefined,     typeclasses: []},
       {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
       {type: 'function',  value: function() {}, typeclasses: [/*'function',*/ 'objectlike', /*'objectlikeornull' */]},
-      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'objectlike',/*'objectlikeornull' */]},
-      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike' /*, 'strictarraylike',  'objectlikeornull' */]}
+      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'positive', 'objectlike'/*,'objectlikeornull' */]},
+      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike', 'positive' /*, 'strictarraylike',  'objectlikeornull' */]}
     ];
 
     var naturalCommon = [
@@ -258,6 +225,7 @@ module.exports = (function() {
                                {type: 'function with arity 1', value: function(x) {}}],
       natural: naturalCommon,
       objectlike: [],
+      positive: naturalCommon.concat([{type: 'zero', value: 0}]),
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
                                             value: {valueOf: function() { return null; }}},
                                            {type: 'object coercing to boolean',
@@ -457,36 +425,6 @@ module.exports = (function() {
           addOne([badArg]);
         }
       });
-
-/*
-      // We want the message to be 'the parameter' if there's only one
-      var posString = restrictions.length > 1 ? positions[i] + ' ' : '';
-
-      var good = constructGoodArgsFor(validArguments, i);
-      var l = good.length;
-
-
-      bogusArgs.forEach(function(bogus) {
-        good.forEach(function(goodDescriptor, j) {
-          var args = goodDescriptor.before.concat([bogus.value]).concat(goodDescriptor.after);
-
-          // We handle stateful functions as follows: if the last argument is an object with a
-          // 'reset' property, then assume this is a function to be called to generate the argument
-          var idx = args.length - 1;
-          if (typeof(args[idx]) === 'object' && args[idx] !== null && 'reset' in args[idx])
-            args[idx] = args[idx].reset();
-
-          var message = good.length === 1 ? '' : ' (' + (j + 1) + ')';
-          it('Throws when the ' + posString + 'parameter is ' + bogus.article + bogus.name + message, function() {
-            var fn = function() {
-              fnUnderTest.apply(null, args);
-            };
-
-            expect(fn).to.throw(TypeError);
-          });
-        });
-      });
-*/
     });
   };
 
@@ -928,463 +866,3 @@ module.exports = (function() {
 
   return toExport;
 })();
-//(function() {
-//  "use strict";
-//
-//
-//  // Exports useful functions for testing
-//  var testUtils = function(require, exports, module) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var curryModule = require('../curry');
-//    var getRealArity = curryModule.getRealArity;
-//    var curry = curryModule.curry;
-//
-//    var utils = require('../utils');
-//    var isObjectLike = utils.isObjectLike;
-//
-//
-//    var isFuncTypeClass = function(tc) {
-//      return /^function:\s+/.test(tc);
-//    };
-//
-//
-//    var prims = ['number', 'boolean', 'undefined', 'object', 'string', 'function'];
-//    var isPrimitiveType = function(t) {
-//      return prims.indexOf(t) !== -1;
-//    };
-//
-//
-//    // Maps typeclass names to the values that will be returned by typeof for an instance of the typeclass.
-//    // This allows testTypeRestrictions to verify that I've specified valid validArguments values
-//    var nonPrimDict = {'null': 'object', 'array': 'object', 'integer': 'number', 'positive': 'number'};
-//    var nonPrimToPrim = function(nP) {
-//      if (nP in nonPrimDict)
-//        return nonPrimDict[nP];
-//      if (isFuncTypeClass(nP))
-//        return 'function';
-//
-//      throw new Error('testUtils typechecking: unrecognised non-primitive' + nP);
-//    };
-//
-//
-//    // Returns true when argument is the name of a typeclass that can map to actual values of more than one type
-//    var isMultiTypeClass = function(restriction) {
-//      return ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'].indexOf(restriction) !== -1;
-//    };
-//
-//
-//    // Take an array of arrays—args—where each subarray is a list of acceptable values
-//    // for the parameter at that position. Returns a new array of arrays where each subarray
-//    // is an acceptable parameter list for the function.
-//    var makeGoodArgs = function(args) {
-//      var result = [];
-//
-//      if (args.length === 0)
-//        return result;
-//
-//      var remaining = makeGoodArgs(args.slice(1));
-//      args[0].forEach(function(arg) {
-//        if (remaining.length > 0) {
-//          remaining.forEach(function(rest) {
-//            result.push([arg].concat(rest));
-//          });
-//        } else {
-//          result.push([arg]);
-//        }
-//      });
-//
-//      return result;
-//    };
-//
-//
-//    var makeGoodArgDescriptor = function(b, a) {return {before: b, after: a};};
-//
-//    // Takes an array of arrays—args—where each subarray is a list of acceptable values
-//    // for the parameter at that position, and the parameter position where we are going to
-//    // substitute bad data. Returns an array of arg descriptor objects, with before and after
-//    // properties: these are the arguments that slot in either side of the bad data.
-//    var constructGoodArgsFor = function(goodArgs, paramIndex) {
-//      var beforeArgs = makeGoodArgs(goodArgs.slice(0, paramIndex));
-//      var afterArgs = makeGoodArgs(goodArgs.slice(paramIndex + 1));
-//
-//      var result = [];
-//      if (beforeArgs.length > 0) {
-//        beforeArgs.forEach(function(b) {
-//          if (afterArgs.length > 0) {
-//            afterArgs.forEach(function(a) {
-//              result.push(makeGoodArgDescriptor(b, a));
-//            });
-//          } else {
-//            result.push(makeGoodArgDescriptor(b, []));
-//          }
-//        });
-//      } else {
-//        if (afterArgs.length > 0) {
-//          afterArgs.forEach(function(a) {
-//            result.push(makeGoodArgDescriptor([], a));
-//          });
-//        } else {
-//          result.push(makeGoodArgDescriptor([], []));
-//        }
-//      }
-//
-//      return result;
-//    };
-//
-//
-//    // Generates an array of possible bogus values. We want a fresh array
-//    // every time, in case the function modifies values in some way.
-//    var makeBogusFor = function(resSpec) {
-//      var primBogus = [
-//        {name: 'number', article: 'a ', value: 2, typeclasses: ['integer', 'positive']},
-//        {name: 'boolean', article: 'a ', value: true, typeclasses: ['integer', 'positive']},
-//        {name: 'string', article: 'a ', value: 'c',
-//         typeclasses: ['integer', 'positive', 'arraylike', 'objectlike', 'objectlikeornull']},
-//        {name: 'undefined', article: '', value: undefined, typeclasses: []},
-//        {name: 'null', article: '', value: null, typeclasses: ['integer', 'positive', 'objectlikeornull']},
-//        {name: 'function', article: 'a ', value: function() {},
-//         typeclasses: ['function', 'objectlike', 'objectlikeornull']},
-//        {name: 'object', article: 'an ', value: {foo: 4},
-//         typeclasses: ['integer', 'positive', 'objectlike','objectlikeornull']},
-//        {name: 'array', article: 'an ', value: [4, 5, 6],
-//         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']}
-//      ];
-//
-//      // If the restriction is a constructor function, then all of the above will be bogus
-//      if (resSpec.length === 1 && typeof(resSpec[0]) === 'function')
-//        return primBogus;
-//
-//      primBogus = primBogus.filter(function(val) {return resSpec.indexOf(val.name) === -1;});
-//
-//      // Add arraylike test if objects aren't allowed (need to do this seperately as they are of course objects
-//      if (resSpec.indexOf('object') === -1)
-//        primBogus.push({name: 'arraylike', article: 'an ', value: {'0': 1, '1': 2, 'length': 2},
-//         typeclasses: ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull']});
-//
-//      // If the restriction is not a typeclass, then we're done. This assumes we already checked
-//      // that typeclasses restrictions only appear in arrays of length 1
-//      if (resSpec.length > 1 || !isTypeClass(resSpec[0]))
-//        return primBogus;
-//
-//      resSpec = resSpec[0];
-//
-//      // Filter on the members of the typeclass
-//      var toFilter = isFuncTypeClass(resSpec) ? 'function' : resSpec;
-//      primBogus = primBogus.filter(function(val) {return val.typeclasses.indexOf(toFilter) === -1;});
-//
-//      var badObjectMaker = function(val) {
-//        return {valueOf: function() {return val;}};
-//      };
-//
-//      // Add typeclass specific bogus arguments
-//
-//      if (resSpec === 'integer' || resSpec === 'positive') {
-//        primBogus.push({name: 'positive float', article: 'a ', value: 1.1});
-//        primBogus.push({name: 'negative float', article: 'a ', value: -1.1});
-//        primBogus.push({name: 'positive infinity', article: '', value: Number.POSITIVE_INFINITY});
-//        primBogus.push({name: 'negative infinity', article: '', value: Number.NEGATIVE_INFINITY});
-//        primBogus.push({name: 'NaN', article: '', value: NaN});
-//        primBogus.push({name: 'string that coerces to NaN', article: 'a ', value: 'abc'});
-//        primBogus.push({name: 'string that coerces to float', article: 'a ', value: '1.1'});
-//        primBogus.push({name: 'string that coerces to negative float', article: 'a ', value: '-1.1'});
-//        primBogus.push({name: 'object that coerces to float', article: 'an ', value: badObjectMaker(1.1)});
-//        primBogus.push({name: 'object that coerces to negative float', article: 'an ', value: badObjectMaker(-1.1)});
-//        primBogus.push({name: 'object that coerces to infinity', article: 'an ',
-//                        value: badObjectMaker(Number.POSITIVE_INFINITY)});
-//        primBogus.push({name: 'object that coerces to negative infinity', article: 'an ',
-//                        value: badObjectMaker(Number.NEGATIVE_INFINITY)});
-//        primBogus.push({name: 'object that coerces to NaN', article: 'an ', value: badObjectMaker(NaN)});
-//      }
-//
-//      if (resSpec === 'positive') {
-//        primBogus.push({name: 'negative integer', article: 'a ', value: -1});
-//        primBogus.push({name: 'string that coerces to a negative integer', article: 'a ', value: '-2'});
-//        primBogus.push({name: 'object that coerces to a negative integer', article: 'a ', value: badObjectMaker(-3)});
-//      }
-//
-//
-//      var bogusFuncs = [
-//        function() {},
-//        function(x) {},
-//        function(x, y) {},
-//        function(x, y, z) {},
-//        function(w, x, y, z) {}
-//      ];
-//
-//
-//      var arityResults = /function:\s+arity\s+(\d+)/.exec(resSpec);
-//      var i, l;
-//
-//      if (arityResults && arityResults.length > 0) {
-//        var arity = arityResults[1] - 0;
-//        for (i = 0, l = bogusFuncs.length; i < l; i++) {
-//          if (i !== arity) {
-//            primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
-//            primBogus.push({name: 'curried function of arity ' + i, article: 'a ', value: curry(bogusFuncs[i])});
-//          }
-//        }
-//      } else {
-//        var minArityResults = /function:\s+minarity\s+(\d+)/.exec(resSpec);
-//        if (minArityResults && minArityResults.length > 0) {
-//          var minArity = minArityResults[1] - 0;
-//          for (i = 0; i < minArity; i++) {
-//            primBogus.push({name: 'function of arity ' + i, article: 'a ', value: bogusFuncs[i]});
-//            primBogus.push({name: 'curried function of arity ' + i, article: 'a ', value: curry(bogusFuncs[i])});
-//          }
-//        }
-//      }
-//
-//
-//      return primBogus;
-//    };
-//
-//
-//    // If I've written a function taking 10 parameters, then something has gone terribly wrong!
-//    var positions = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth'];
-//
-//
-//    // Before testTypeRestrictions generates the type tests, it is prudent to ensure I have written the spec correctly.
-//    // Specifically, we need to ensure that if the "restrictions" field says that, for example, parameter 0 can be a
-//    // number or a boolean, then the "validArguments" for that parameter should contain a number and a boolean (at the
-//    // same indices as their respective restrictions).
-//    //
-//    // The task is complicated somewhat by the function typeclasses for functions of specific arity, and the "multi"
-//    // typeclasses: arraylike etc, which map to more than one type.
-//    //
-//    // The function below performs this verification.
-//
-//    var verifyRestrictions = function(name, restrictions, validArguments) {
-//      restrictions.forEach(function(resSpec, i) {
-//        var errorPre = name + ' spec incorrect for parameter ' + (i + 1) + ': ';
-//
-//        // resSpec is an array of restrictions for parameter i
-//        resSpec.forEach(function(r, j) {
-//          // If a function accepts a specific type of object e.g. RegExp, then that should be the only possible
-//          // restriction for that position: for example, we shouldn't have a parameter that can be a RegExp or a boolean.
-//          if (typeof(r) === 'function') {
-//            if (resSpec.length > 1)
-//              throw new Error(errorPre + 'A constructor must be the only restriction for that parameter!');
-//
-//            if (!(validArguments[i][j] instanceof r))
-//              throw new Error(errorPre + 'The example argument is not an instance of the given constructor');
-//
-//            return;
-//          }
-//
-//          if (typeof(r) !== 'string')
-//            throw new Error(errorPre + 'Restriction ' + (j + 1) + ' has type ' + typeof(r));
-//
-//          // If the restriction is a typeclass, it should be the only one
-//          if (isTypeClass(r) && resSpec.length > 1)
-//            throw new Error(errorPre + 'A typeclass must be the only restriction for that parameter!');
-//
-//          // Sanity check the validArguments for this parameter. They should be the type I claim is permissable!
-//          if (!isMultiTypeClass(r)) {
-//            var t = isPrimitiveType(r) ? r : nonPrimToPrim(r);
-//            if (typeof(validArguments[i][j]) !== t)
-//              throw new Error(errorPre + 'valid argument ' + (j + 1) + ' has type ' + typeof(validArguments[i][j]) +
-//                              ', value ' + validArguments[i][j] + ', restriction demands type ' + t);
-//            return;
-//          }
-//
-//          // We now know the restriction is a multi typeclass. For 'arraylike' and 'strictarraylike', we require that
-//          // validArguments contains a value for each permissible member of the typeclass. For 'objectlike' we require
-//          // only one example.
-//
-//          if (r === 'objectlike' || r === 'objectlikeornull') {
-//            var withNull = r === 'objectlikeornull';
-//            if (!isObjectLike(validArguments[i][j], withNull))
-//              throw new Error(errorPre + 'validArguments ' + (j + 1) + ' (' + validArguments[i][j] + ') is not objectlike');
-//
-//            return;
-//          }
-//
-//          var validArgsType = validArguments[i].map(function(x) {return Array.isArray(x) ? 'array' : typeof(x);});
-//          var correctLength = r === 'arraylike' ? 3 : 2;
-//
-//          if (validArguments[i].length !== correctLength)
-//            throw new Error(errorPre + 'Not enough examples of ' + r + ' - expected ' + correctLength + ' found ' +
-//                            validArguments[i].length);
-//
-//          if (validArgsType.indexOf('array') === -1 || validArgsType.indexOf('object') === -1 ||
-//              (correctLength === 3 && validArgsType.indexOf('string') === -1))
-//            throw new Error(errorPre + 'Valid argument for ' + r + ' have wrong type');
-//        });
-//      });
-//    };
-
-//
-//    var makeArrayLike = function() {
-//      var args = [].slice.call(arguments);
-//
-//      var result = {};
-//      if (args.length === 1 && typeof(args[0]) === 'object' && ('length' in args[0])) {
-//        // We've been passed an arraylike: copy it
-//        for (var k in args[0])
-//          result[k] = args[0][k];
-//
-//        return result;
-//      }
-//
-//      args.forEach(function(arg, i) {
-//        result[i] = arg;
-//      });
-//
-//      result.length = args.length;
-//
-//      // We provide every, indexOf and slice for testing convenience
-//      result.every = function() {
-//        return [].every.apply(this, arguments);
-//      };
-//
-//      result.slice = function() {
-//        return makeArrayLike(this);
-//      };
-//
-//
-//      result.indexOf = function(val, from) {
-//        from = from || 0;
-//
-//        for (var i = from, l = this.length; i < l; i++)
-//          if (this[i] === val)
-//            return i;
-//
-//        return -1;
-//      };
-//
-//
-//      return result;
-//    };
-//
-//
-//    var addFunctionIsCurriedTest = function(fnUnderTest) {
-//      it('Is curried', function() {
-//        expect(fnUnderTest.length).to.equal(1);
-//        expect(getRealArity(fnUnderTest)).to.not.equal(1);
-//      });
-//    };
-
-//    // Deeply check two objects for equality (ignoring functions)
-//    var checkObjectEquality = function(obj1, obj2) {
-//      var obj1Keys = Object.getOwnPropertyNames(obj1);
-//      var obj2Keys = Object.getOwnPropertyNames(obj2);
-//
-//      if (obj1Keys.length !== obj2Keys.length)
-//        return false;
-//
-//      return obj1Keys.every(function(k, i) {
-//        return checkEquality(obj1[k], obj2[k], true);
-//      });
-//    };
-//
-//
-//    // Deeply check two arrays for equality (ignoring functions)
-//    var checkArrayEquality = function(arr1, arr2) {
-//      if (arr1.length !== arr2.length)
-//        return false;
-//
-//      return arr1.every(function(val, i) {
-//        return checkEquality(val, arr2[i], true);
-//      });
-//    };
-//
-//
-//    // Check two arrays for identity of contents, ignoring order
-//    var checkArrayContent = function(arr1, arr2, sortFn) {
-//      if (!Array.isArray(arr1) || !Array.isArray(arr2) || arr1.length !== arr2.length)
-//        return false;
-//
-//      var sortArgs = [];
-//      if (typeof(sortFn) === 'function')
-//        sortArgs.push(sortFn);
-//
-//      var a1 = arr1.slice();
-//      var a2 = arr2.slice();
-//
-//      a1.sort.apply(a1, sortArgs);
-//      a2.sort.apply(a2, sortArgs);
-//      return a1.every(function(val, i) {
-//        return val === a2[i];
-//      });
-//    };
-//
-//
-//    // Deeply check two values for equality. If acceptFunctions is true,
-//    // then two functions will blindly be assumed to be equal.
-//    var checkEquality = function(obj1, obj2, acceptFunctions) {
-//      acceptFunctions = acceptFunctions || false;
-//
-//      if (typeof(obj1) !== typeof(obj2))
-//        return false;
-//
-//      // Short-circuit if we can (needed for the 'constant' tests)
-//      if (obj1 === obj2)
-//        return true;
-//
-//      var objType = typeof(obj1);
-//
-//      // If the initial result is a function, then we've written
-//      // the test incorrectly
-//      if (objType === 'function' && !acceptFunctions)
-//        throw new Error('Test error: trying to compare functions!');
-//
-//      if (objType === 'object') {
-//        if (Array.isArray(obj1)) {
-//          if (!Array.isArray(obj2))
-//            return false;
-//
-//          return checkArrayEquality(obj1, obj2);
-//        } else if (obj1 === null || obj2 === null) {
-//          return obj1 === obj2;
-//        } else {
-//          return checkObjectEquality(obj1, obj2);
-//        }
-//      } else if (objType === 'function') {
-//        // We can't check functions, so just wing it
-//        return true;
-//      } else {
-//        // We already know obj1 !== obj2
-//        return false;
-//      }
-//    };
-//
-//
-//    // Three helper functions for the test generation code below
-//    var checkFunction = function(curried) {
-//      return function() {
-//        expect(curried).to.be.a('function');
-//      };
-//    };
-//
-//
-//    var checkLength = function(curried) {
-//      return function() {
-//        expect(curried.length).to.equal(1);
-//      };
-//    };
-//
-//
-//    module.exports = {
-//      addFunctionIsCurriedTest: addFunctionIsCurriedTest,
-//      checkArrayContent: checkArrayContent,
-//      checkArrayEquality: checkArrayEquality,
-//      checkEquality: checkEquality,
-//      checkObjectEquality: checkObjectEquality,
-//      exportsFunction: exportsFunction,
-//      exportsProperty: exportsProperty,
-//      makeArrayLike: makeArrayLike,
-//    };
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testUtils(require, exports, module);
-//    });
-//  } else {
-//    testUtils(require, exports, module);
-//  }
-//})();
