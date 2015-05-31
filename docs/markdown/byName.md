@@ -35,6 +35,32 @@ Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+Category: DataTypes
+
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
 ### add ###
 Category: Maths
 
@@ -119,6 +145,23 @@ the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
     funkierJS.arityOf(function(x) {}); // => 1;
+***
+### asArray ###
+Category: DataTypes
+
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
 ***
 ### bind ###
 Category: Function
@@ -636,6 +679,9 @@ A curried wrapper around Math.pow.
 #### Examples ####
     funkierJS.exp(2, 3); // => 8
 ***
+### first ###
+See `fst`
+***
 ### flip ###
 Category: Function
 
@@ -651,6 +697,25 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fst ###
+Category: DataTypes
+
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
 ***
 ### getJustValue ###
 Category: DataTypes
@@ -882,6 +947,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
+***
+### isPair ###
+Category: DataTypes
+
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
 ***
 ### isRealObject ###
 Category: Types
@@ -1361,6 +1441,9 @@ A wrapper around the left shift (>>>) operator.
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
 ***
+### second ###
+See `snd`
+***
 ### sectionLeft ###
 Category: Function
 
@@ -1397,6 +1480,25 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
+***
+### snd ###
+Category: DataTypes
+
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ### strictEquals ###
 Category: Types
@@ -1533,6 +1635,32 @@ Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+Category: DataTypes
+
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
 ### add ###
 Category: Maths
 
@@ -1617,6 +1745,23 @@ the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
     funkierJS.arityOf(function(x) {}); // => 1;
+***
+### asArray ###
+Category: DataTypes
+
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
 ***
 ### bind ###
 Category: Function
@@ -2134,6 +2279,9 @@ A curried wrapper around Math.pow.
 #### Examples ####
     funkierJS.exp(2, 3); // => 8
 ***
+### first ###
+See `fst`
+***
 ### flip ###
 Category: Function
 
@@ -2149,6 +2297,25 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fst ###
+Category: DataTypes
+
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
 ***
 ### getJustValue ###
 Category: DataTypes
@@ -2380,6 +2547,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
+***
+### isPair ###
+Category: DataTypes
+
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
 ***
 ### isRealObject ###
 Category: Types
@@ -2859,6 +3041,9 @@ A wrapper around the left shift (>>>) operator.
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
 ***
+### second ###
+See `snd`
+***
 ### sectionLeft ###
 Category: Function
 
@@ -2895,6 +3080,25 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
+***
+### snd ###
+Category: DataTypes
+
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ### strictEquals ###
 Category: Types
@@ -3031,6 +3235,32 @@ Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+Category: DataTypes
+
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
 ### add ###
 Category: Maths
 
@@ -3115,6 +3345,23 @@ the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
     funkierJS.arityOf(function(x) {}); // => 1;
+***
+### asArray ###
+Category: DataTypes
+
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
 ***
 ### bind ###
 Category: Function
@@ -3632,6 +3879,9 @@ A curried wrapper around Math.pow.
 #### Examples ####
     funkierJS.exp(2, 3); // => 8
 ***
+### first ###
+See `fst`
+***
 ### flip ###
 Category: Function
 
@@ -3647,6 +3897,25 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fst ###
+Category: DataTypes
+
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
 ***
 ### getJustValue ###
 Category: DataTypes
@@ -3878,6 +4147,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
+***
+### isPair ###
+Category: DataTypes
+
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
 ***
 ### isRealObject ###
 Category: Types
@@ -4357,6 +4641,9 @@ A wrapper around the left shift (>>>) operator.
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
 ***
+### second ###
+See `snd`
+***
 ### sectionLeft ###
 Category: Function
 
@@ -4393,6 +4680,25 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
+***
+### snd ###
+Category: DataTypes
+
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ### strictEquals ###
 Category: Types
@@ -4529,6 +4835,32 @@ Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+Category: DataTypes
+
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
 ### add ###
 Category: Maths
 
@@ -4613,6 +4945,23 @@ the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
     funkierJS.arityOf(function(x) {}); // => 1;
+***
+### asArray ###
+Category: DataTypes
+
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
 ***
 ### bind ###
 Category: Function
@@ -5130,6 +5479,9 @@ A curried wrapper around Math.pow.
 #### Examples ####
     funkierJS.exp(2, 3); // => 8
 ***
+### first ###
+See `fst`
+***
 ### flip ###
 Category: Function
 
@@ -5145,6 +5497,25 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fst ###
+Category: DataTypes
+
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
 ***
 ### getJustValue ###
 Category: DataTypes
@@ -5376,6 +5747,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
+***
+### isPair ###
+Category: DataTypes
+
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
 ***
 ### isRealObject ###
 Category: Types
@@ -5855,6 +6241,9 @@ A wrapper around the left shift (>>>) operator.
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
 ***
+### second ###
+See `snd`
+***
 ### sectionLeft ###
 Category: Function
 
@@ -5891,6 +6280,25 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
+***
+### snd ###
+Category: DataTypes
+
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ### strictEquals ###
 Category: Types
@@ -6027,6 +6435,32 @@ Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+Category: DataTypes
+
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
 ### add ###
 Category: Maths
 
@@ -6111,6 +6545,23 @@ the amount of arguments not yet supplied will be returned.
 
 #### Examples ####
     funkierJS.arityOf(function(x) {}); // => 1;
+***
+### asArray ###
+Category: DataTypes
+
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
 ***
 ### bind ###
 Category: Function
@@ -6628,6 +7079,9 @@ A curried wrapper around Math.pow.
 #### Examples ####
     funkierJS.exp(2, 3); // => 8
 ***
+### first ###
+See `fst`
+***
 ### flip ###
 Category: Function
 
@@ -6643,6 +7097,25 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fst ###
+Category: DataTypes
+
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
 ***
 ### getJustValue ###
 Category: DataTypes
@@ -6874,6 +7347,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
+***
+### isPair ###
+Category: DataTypes
+
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
 ***
 ### isRealObject ###
 Category: Types
@@ -7353,6 +7841,9 @@ A wrapper around the left shift (>>>) operator.
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
 ***
+### second ###
+See `snd`
+***
 ### sectionLeft ###
 Category: Function
 
@@ -7389,6 +7880,25 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 #### Examples ####
     var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
     fn(2); // => -1
+***
+### snd ###
+Category: DataTypes
+
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ### strictEquals ###
 Category: Types

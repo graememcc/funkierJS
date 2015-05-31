@@ -78,6 +78,31 @@
     });
 
 
+    describe('Pair', function() {
+      it('Pair exists', function() {
+        expect(funkier).to.have.a.property('Pair');
+      });
+
+
+      it('funkierJS\'s Pair is indeed the documented value', function() {
+        var module = require('../../lib/components/pair');
+        expect(funkier.Pair).to.equal(module.Pair);
+      });
+
+
+      it('Pair is a function', function() {
+        expect(funkier.Pair).to.be.a('function');
+      });
+
+
+      it('Pair has documented arity', function() {
+        expect(funkier.arityOf(funkier.Pair)).to.equal(2);
+      });
+
+
+    });
+
+
     describe('add', function() {
       it('add exists', function() {
         expect(funkier).to.have.a.property('add');
@@ -198,6 +223,34 @@
 
       it('arityOf is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.arityOf)).to.equal(true);
+      });
+    });
+
+
+    describe('asArray', function() {
+      it('asArray exists', function() {
+        expect(funkier).to.have.a.property('asArray');
+      });
+
+
+      it('funkierJS\'s asArray is indeed the documented value', function() {
+        var module = require('../../lib/components/pair');
+        expect(funkier.asArray).to.equal(module.asArray);
+      });
+
+
+      it('asArray is a function', function() {
+        expect(funkier.asArray).to.be.a('function');
+      });
+
+
+      it('asArray has documented arity', function() {
+        expect(funkier.arityOf(funkier.asArray)).to.equal(1);
+      });
+
+
+      it('asArray is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.asArray)).to.equal(true);
       });
     });
 
@@ -758,6 +811,18 @@
     });
 
 
+    describe('first', function() {
+      it('first exists', function() {
+        expect(funkier).to.have.a.property('first');
+      });
+
+
+      it('first is a synonym for fst', function() {
+        expect(funkier.first).to.equal(funkier.fst);
+      });
+    });
+
+
     describe('flip', function() {
       it('flip exists', function() {
         expect(funkier).to.have.a.property('flip');
@@ -782,6 +847,34 @@
 
       it('flip is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.flip)).to.equal(true);
+      });
+    });
+
+
+    describe('fst', function() {
+      it('fst exists', function() {
+        expect(funkier).to.have.a.property('fst');
+      });
+
+
+      it('funkierJS\'s fst is indeed the documented value', function() {
+        var module = require('../../lib/components/pair');
+        expect(funkier.fst).to.equal(module.fst);
+      });
+
+
+      it('fst is a function', function() {
+        expect(funkier.fst).to.be.a('function');
+      });
+
+
+      it('fst has documented arity', function() {
+        expect(funkier.arityOf(funkier.fst)).to.equal(1);
+      });
+
+
+      it('fst is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.fst)).to.equal(true);
       });
     });
 
@@ -1210,6 +1303,34 @@
 
       it('isObject is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.isObject)).to.equal(true);
+      });
+    });
+
+
+    describe('isPair', function() {
+      it('isPair exists', function() {
+        expect(funkier).to.have.a.property('isPair');
+      });
+
+
+      it('funkierJS\'s isPair is indeed the documented value', function() {
+        var module = require('../../lib/components/pair');
+        expect(funkier.isPair).to.equal(module.isPair);
+      });
+
+
+      it('isPair is a function', function() {
+        expect(funkier.isPair).to.be.a('function');
+      });
+
+
+      it('isPair has documented arity', function() {
+        expect(funkier.arityOf(funkier.isPair)).to.equal(1);
+      });
+
+
+      it('isPair is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.isPair)).to.equal(true);
       });
     });
 
@@ -1890,6 +2011,18 @@
     });
 
 
+    describe('second', function() {
+      it('second exists', function() {
+        expect(funkier).to.have.a.property('second');
+      });
+
+
+      it('second is a synonym for snd', function() {
+        expect(funkier.second).to.equal(funkier.snd);
+      });
+    });
+
+
     describe('sectionLeft', function() {
       it('sectionLeft exists', function() {
         expect(funkier).to.have.a.property('sectionLeft');
@@ -1942,6 +2075,34 @@
 
       it('sectionRight is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.sectionRight)).to.equal(true);
+      });
+    });
+
+
+    describe('snd', function() {
+      it('snd exists', function() {
+        expect(funkier).to.have.a.property('snd');
+      });
+
+
+      it('funkierJS\'s snd is indeed the documented value', function() {
+        var module = require('../../lib/components/pair');
+        expect(funkier.snd).to.equal(module.snd);
+      });
+
+
+      it('snd is a function', function() {
+        expect(funkier.snd).to.be.a('function');
+      });
+
+
+      it('snd has documented arity', function() {
+        expect(funkier.arityOf(funkier.snd)).to.equal(1);
+      });
+
+
+      it('snd is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.snd)).to.equal(true);
       });
     });
 
@@ -2116,16 +2277,16 @@
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'Just', 'Maybe', 'Nothing', 'add', 'and', 'andPred', 'arity', 'arityOf', 'bind',
-         'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor',
-         'compose', 'composeMany', 'composeOn', 'constant', 'constant0', 'curry', 'curryWithArity', 'deepEqual',
-         'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'flip', 'getJustValue', 'getType', 'greaterThan',
-         'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean', 'isJust', 'isMaybe',
-         'isNothing', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift',
-         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'max', 'min', 'multiply', 'not',
-         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus',
-         'pow', 'rem', 'rightShift', 'rightShiftZero', 'sectionLeft', 'sectionRight', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor', 'xorPred'];
+      documentedNames = ['help', 'Just', 'Maybe', 'Nothing', 'Pair', 'add', 'and', 'andPred', 'arity', 'arityOf',
+         'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr',
+         'bitwiseXor', 'compose', 'composeMany', 'composeOn', 'constant', 'constant0', 'curry', 'curryWithArity',
+         'deepEqual', 'deepEquals', 'div', 'divide', 'equals', 'even', 'exp', 'first', 'flip', 'fst', 'getJustValue',
+         'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean',
+         'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isPair', 'isRealObject', 'isString',
+         'isUndefined', 'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'max',
+         'min', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd',
+         'or', 'orPred', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'second', 'sectionLeft', 'sectionRight',
+         'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor', 'xorPred'];
     });
 
 

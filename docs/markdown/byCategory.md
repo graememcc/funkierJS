@@ -30,6 +30,65 @@ It is an error to call Maybe.
 ### Nothing ###
 A Nothing is a type of Maybe representing an unsuccessful computation.
 ***
+### Pair ###
+**Usage:** `var result = Pair(a, b);`
+
+Parameters:  
+a `any`  
+b `any`
+
+Returns: `Pair`
+
+A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.
+
+The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.
+
+Throws a TypeError if called with zero arguments.
+
+#### Examples ####
+    var p1 = new funkierJS.Pair(2, 3);
+    var p2 = funkierJS.Pair(2)(3);
+    var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### asArray ###
+**Usage:** `var result = asArray(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `array`
+
+Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.
+
+#### Examples ####
+    funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
+***
+### first ###
+See `fst`
+***
+### fst ###
+*Synonyms:* `first`
+
+**Usage:** `var result = fst(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.fst(p); // => 2',
+***
 ### getJustValue ###
 **Usage:** `var result = getJustValue(j);`
 
@@ -83,6 +142,19 @@ Returns true if the given value is the Nothing object, and false otherwise.
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
 ***
+### isPair ###
+**Usage:** `var result = isPair(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true if the given value is a Pair, and false otherwise.
+
+#### Examples ####
+    funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
+***
 ### makeMaybeReturner ###
 **Usage:** `var result = makeMaybeReturner(f);`
 
@@ -108,6 +180,26 @@ curried.
     var f = funkierJS.makeMaybeReturner(g);
     f(11); // returns Just(11)
     f(5); // returns Nothing
+***
+### second ###
+See `snd`
+***
+### snd ###
+*Synonyms:* `second`
+
+**Usage:** `var result = snd(p);`
+
+Parameters:  
+p `Pair`
+
+Returns: `any`
+
+Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.
+
+#### Examples ####
+    var p = new funkierJS.Pair(2, 3);
+    funkierJS.cnd(p); // => 3',
 ***
 ## Function##
 ### arity ###

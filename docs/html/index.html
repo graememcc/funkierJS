@@ -37,6 +37,25 @@ operator.</p>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
 </section>
+<section class="functionRef" id="Pair">
+<h3 class="functionName">Pair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Pair(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.</p>
+<p>The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.</p>
+<p>Throws a TypeError if called with zero arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p1 = new funkierJS.Pair(2, 3);
+var p2 = funkierJS.Pair(2)(3);
+var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+</code></pre></section>
+</section>
 <section class="functionRef" id="add">
 <h3 class="functionName">add</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -99,6 +118,19 @@ reported (the function&#39;s length property will always be 0 or 1 in this case)
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="asArray">
+<h3 class="functionName">asArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -502,6 +534,10 @@ funkierJS.even(3); // =&gt; false
 <pre><code>funkierJS.exp(2, 3); // =&gt; 8
 </code></pre></section>
 </section>
+<section class="functionRef" id="first">
+<h3 class="functionName">first</h3>
+<p class="see">See <a class="synonymLink" href="#fst"><code class="synonymCode">fst</code></a></p>
+</section>
 <section class="functionRef" id="flip">
 <h3 class="functionName">flip</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -512,6 +548,20 @@ funkierJS.even(3); // =&gt; false
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fst">
+<h3 class="functionName">fst</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="getJustValue">
@@ -684,6 +734,17 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPair">
+<h3 class="functionName">isPair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
 </section>
 <section class="functionRef" id="isRealObject">
@@ -1054,6 +1115,10 @@ f(&quot;foo&quot;); // =&gt; true&#39;,
 <pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
 </code></pre></section>
 </section>
+<section class="functionRef" id="second">
+<h3 class="functionName">second</h3>
+<p class="see">See <a class="synonymLink" href="#snd"><code class="synonymCode">snd</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -1079,6 +1144,20 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="snd">
+<h3 class="functionName">snd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="strictEquals">
@@ -1184,6 +1263,25 @@ operator.</p>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
 </section>
+<section class="functionRef" id="Pair">
+<h3 class="functionName">Pair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Pair(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.</p>
+<p>The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.</p>
+<p>Throws a TypeError if called with zero arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p1 = new funkierJS.Pair(2, 3);
+var p2 = funkierJS.Pair(2)(3);
+var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+</code></pre></section>
+</section>
 <section class="functionRef" id="add">
 <h3 class="functionName">add</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -1246,6 +1344,19 @@ reported (the function&#39;s length property will always be 0 or 1 in this case)
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="asArray">
+<h3 class="functionName">asArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -1649,6 +1760,10 @@ funkierJS.even(3); // =&gt; false
 <pre><code>funkierJS.exp(2, 3); // =&gt; 8
 </code></pre></section>
 </section>
+<section class="functionRef" id="first">
+<h3 class="functionName">first</h3>
+<p class="see">See <a class="synonymLink" href="#fst"><code class="synonymCode">fst</code></a></p>
+</section>
 <section class="functionRef" id="flip">
 <h3 class="functionName">flip</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -1659,6 +1774,20 @@ funkierJS.even(3); // =&gt; false
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fst">
+<h3 class="functionName">fst</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="getJustValue">
@@ -1831,6 +1960,17 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPair">
+<h3 class="functionName">isPair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
 </section>
 <section class="functionRef" id="isRealObject">
@@ -2201,6 +2341,10 @@ f(&quot;foo&quot;); // =&gt; true&#39;,
 <pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
 </code></pre></section>
 </section>
+<section class="functionRef" id="second">
+<h3 class="functionName">second</h3>
+<p class="see">See <a class="synonymLink" href="#snd"><code class="synonymCode">snd</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -2226,6 +2370,20 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="snd">
+<h3 class="functionName">snd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="strictEquals">
@@ -2331,6 +2489,25 @@ operator.</p>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
 </section>
+<section class="functionRef" id="Pair">
+<h3 class="functionName">Pair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Pair(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.</p>
+<p>The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.</p>
+<p>Throws a TypeError if called with zero arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p1 = new funkierJS.Pair(2, 3);
+var p2 = funkierJS.Pair(2)(3);
+var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+</code></pre></section>
+</section>
 <section class="functionRef" id="add">
 <h3 class="functionName">add</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -2393,6 +2570,19 @@ reported (the function&#39;s length property will always be 0 or 1 in this case)
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="asArray">
+<h3 class="functionName">asArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -2796,6 +2986,10 @@ funkierJS.even(3); // =&gt; false
 <pre><code>funkierJS.exp(2, 3); // =&gt; 8
 </code></pre></section>
 </section>
+<section class="functionRef" id="first">
+<h3 class="functionName">first</h3>
+<p class="see">See <a class="synonymLink" href="#fst"><code class="synonymCode">fst</code></a></p>
+</section>
 <section class="functionRef" id="flip">
 <h3 class="functionName">flip</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -2806,6 +3000,20 @@ funkierJS.even(3); // =&gt; false
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fst">
+<h3 class="functionName">fst</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="getJustValue">
@@ -2978,6 +3186,17 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPair">
+<h3 class="functionName">isPair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
 </section>
 <section class="functionRef" id="isRealObject">
@@ -3348,6 +3567,10 @@ f(&quot;foo&quot;); // =&gt; true&#39;,
 <pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
 </code></pre></section>
 </section>
+<section class="functionRef" id="second">
+<h3 class="functionName">second</h3>
+<p class="see">See <a class="synonymLink" href="#snd"><code class="synonymCode">snd</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -3373,6 +3596,20 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="snd">
+<h3 class="functionName">snd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="strictEquals">
@@ -3478,6 +3715,25 @@ operator.</p>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
 </section>
+<section class="functionRef" id="Pair">
+<h3 class="functionName">Pair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Pair(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.</p>
+<p>The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.</p>
+<p>Throws a TypeError if called with zero arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p1 = new funkierJS.Pair(2, 3);
+var p2 = funkierJS.Pair(2)(3);
+var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+</code></pre></section>
+</section>
 <section class="functionRef" id="add">
 <h3 class="functionName">add</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -3540,6 +3796,19 @@ reported (the function&#39;s length property will always be 0 or 1 in this case)
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="asArray">
+<h3 class="functionName">asArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -3943,6 +4212,10 @@ funkierJS.even(3); // =&gt; false
 <pre><code>funkierJS.exp(2, 3); // =&gt; 8
 </code></pre></section>
 </section>
+<section class="functionRef" id="first">
+<h3 class="functionName">first</h3>
+<p class="see">See <a class="synonymLink" href="#fst"><code class="synonymCode">fst</code></a></p>
+</section>
 <section class="functionRef" id="flip">
 <h3 class="functionName">flip</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -3953,6 +4226,20 @@ funkierJS.even(3); // =&gt; false
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fst">
+<h3 class="functionName">fst</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="getJustValue">
@@ -4125,6 +4412,17 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPair">
+<h3 class="functionName">isPair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
 </section>
 <section class="functionRef" id="isRealObject">
@@ -4495,6 +4793,10 @@ f(&quot;foo&quot;); // =&gt; true&#39;,
 <pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
 </code></pre></section>
 </section>
+<section class="functionRef" id="second">
+<h3 class="functionName">second</h3>
+<p class="see">See <a class="synonymLink" href="#snd"><code class="synonymCode">snd</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -4520,6 +4822,20 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="snd">
+<h3 class="functionName">snd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="strictEquals">
@@ -4625,6 +4941,25 @@ operator.</p>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
 </section>
+<section class="functionRef" id="Pair">
+<h3 class="functionName">Pair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Pair(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
+respectively. The constructor is new-agnostic.</p>
+<p>The constructor is curried: when called with one argument, a function will be returned that expects a second
+argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
+outside of the usual mechanisms.</p>
+<p>Throws a TypeError if called with zero arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p1 = new funkierJS.Pair(2, 3);
+var p2 = funkierJS.Pair(2)(3);
+var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+</code></pre></section>
+</section>
 <section class="functionRef" id="add">
 <h3 class="functionName">add</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -4687,6 +5022,19 @@ reported (the function&#39;s length property will always be 0 or 1 in this case)
 the amount of arguments not yet supplied will be returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.arityOf(function(x) {}); // =&gt; 1;
+</code></pre></section>
+</section>
+<section class="functionRef" id="asArray">
+<h3 class="functionName">asArray</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
+the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
+not a pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="bind">
@@ -5090,6 +5438,10 @@ funkierJS.even(3); // =&gt; false
 <pre><code>funkierJS.exp(2, 3); // =&gt; 8
 </code></pre></section>
 </section>
+<section class="functionRef" id="first">
+<h3 class="functionName">first</h3>
+<p class="see">See <a class="synonymLink" href="#fst"><code class="synonymCode">fst</code></a></p>
+</section>
 <section class="functionRef" id="flip">
 <h3 class="functionName">flip</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -5100,6 +5452,20 @@ funkierJS.even(3); // =&gt; false
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fst">
+<h3 class="functionName">fst</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="getJustValue">
@@ -5272,6 +5638,17 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPair">
+<h3 class="functionName">isPair</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
 </section>
 <section class="functionRef" id="isRealObject">
@@ -5642,6 +6019,10 @@ f(&quot;foo&quot;); // =&gt; true&#39;,
 <pre><code>funkierJS.rightShiftZero(-4, 2); // =&gt; 1073741823;
 </code></pre></section>
 </section>
+<section class="functionRef" id="second">
+<h3 class="functionName">second</h3>
+<p class="see">See <a class="synonymLink" href="#snd"><code class="synonymCode">snd</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
@@ -5667,6 +6048,20 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="snd">
+<h3 class="functionName">snd</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#DataTypes">DataTypes</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
+called with a non-pair value.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = new funkierJS.Pair(2, 3);
+funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="strictEquals">
