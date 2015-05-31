@@ -747,6 +747,8 @@ in case you need to give the resulting function to one of the `withArity` functi
 ***
 ## Maths##
 ### add ###
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -1033,6 +1035,9 @@ Given a number, returns true if it is not divisible by 2, and false otherwise.
 #### Examples ####
     funkierJS.odd(2); // => false
     funkierJS.odd(3); // => true
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`

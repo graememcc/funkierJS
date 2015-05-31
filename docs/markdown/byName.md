@@ -38,6 +38,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -1304,6 +1306,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`
@@ -1531,6 +1536,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -2797,6 +2804,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`
@@ -3024,6 +3034,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -4290,6 +4302,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`
@@ -4517,6 +4532,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -5783,6 +5800,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`
@@ -6010,6 +6030,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -7276,6 +7298,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`
@@ -7503,6 +7528,8 @@ A Nothing is a type of Maybe representing an unsuccessful computation.
 ### add ###
 Category: Maths
 
+*Synonyms:* `plus`
+
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
@@ -8769,6 +8796,9 @@ in case you need to give the resulting function to one of the `withArity` functi
     var d = funkierJS.constant(false);',
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
+***
+### plus ###
+See `add`
 ***
 ### pow ###
 See `exp`

@@ -1782,6 +1782,18 @@
     });
 
 
+    describe('plus', function() {
+      it('plus exists', function() {
+        expect(funkier).to.have.a.property('plus');
+      });
+
+
+      it('plus is a synonym for add', function() {
+        expect(funkier.plus).to.equal(funkier.add);
+      });
+    });
+
+
     describe('pow', function() {
       it('pow exists', function() {
         expect(funkier).to.have.a.property('pow');
@@ -2111,9 +2123,9 @@
          'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean', 'isJust', 'isMaybe',
          'isNothing', 'isNull', 'isNumber', 'isObject', 'isRealObject', 'isString', 'isUndefined', 'leftShift',
          'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'max', 'min', 'multiply', 'not',
-         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'pow',
-         'rem', 'rightShift', 'rightShiftZero', 'sectionLeft', 'sectionRight', 'strictEquals', 'strictInequality',
-         'strictNotEqual', 'strictNotEquals', 'subtract', 'xor', 'xorPred'];
+         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus',
+         'pow', 'rem', 'rightShift', 'rightShiftZero', 'sectionLeft', 'sectionRight', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'xor', 'xorPred'];
     });
 
 
