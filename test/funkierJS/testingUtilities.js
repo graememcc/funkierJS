@@ -89,7 +89,7 @@ module.exports = (function() {
 
 
   var typeclasses = [/*arraylike', 'integer', */ 'function: arity 1', 'function: minarity 1', 'function: minarity 2',
-                     'natural', /*'objectlike', 'objectlikeornull', */'positive', /*'strictarraylike,*/ 'strictNatural'];
+                     'natural', /*'objectlike', 'objectlikeornull', */'positive', 'strictArrayLike', 'strictNatural'];
 
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
@@ -97,6 +97,54 @@ module.exports = (function() {
 
     return false;
   };
+
+
+  /*
+   * Certain typeclasses demand more than one example of their ilk. We call these multiTypeClasses. They are as
+   * follows:
+   *   strictArrayLike: values can be arrays, or array-like objects with length and equivalent numeric parmeters
+   *                    but not strings
+   *
+   */
+
+  var isMultiTypeClass = function(restriction) {
+    return restriction === 'strictArrayLike';
+//    return ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'].indexOf(restriction) !== -1;
+  };
+
+
+  var verifyMultiTypeClassRestriction = function(typeClass, values, failBecause) {
+    var expectedTypesForClass = {
+      'strictArrayLike': ['array', 'object']
+    };
+
+    var typesFound = values.map(function(v) {
+      var verifier = restrictionVerifiers[typeClass];
+      if (verifier === undefined)
+        failBecause('No verifier for typeclass ' + typeClass);
+
+      if (!verifier(v))
+        failBecause('type is incorrect found ' + typeof(v) + ' but restriction demands ' + typeClass);
+
+      return Array.isArray(v) ? 'array' : (v === null ? 'null' : typeof(v));
+    });
+
+    var typesRequired = expectedTypesForClass[typeClass];
+    if (typesRequired === undefined)
+      failBecause('Typeclass ' + typeClass + ' is incorrectly defined. Please fix verifyMultiTypeClassRestriction');
+
+    if (typesFound.length !== typesFound.length)
+      failBecause('Mismatch in terms of number of examples provided for ' + typeClass + ' typeclass. Expected ' +
+                  typesRequired.length + ' but found ' + typesFound.length);
+
+    typesFound.sort();
+    typesRequired.sort();
+    typesFound.forEach(function(t, i) {
+      if (t !== typesRequired[i])
+        failBecause('Unexpected type ' + t + ' found');
+    });
+  };
+
 
 
   var primitiveTypeOf = {
@@ -125,6 +173,8 @@ module.exports = (function() {
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
     'positive': function(n) { return (n - 0) > 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
+    'strictArrayLike': function(a) { return typeof(a) !== 'string' &&
+                                     (Array.isArray(a) || (('0' in a) && ('length' in a))); },
     'strictNatural': function(n) { return typeof(n) === 'number' && n >= 0 && n !== Number.POSITIVE_INFINITY; },
     'string': function(f) { return typeof(f) === 'string'; },
   };
@@ -171,17 +221,24 @@ module.exports = (function() {
         if (typeof(expectedType) !== 'string')
           failBecause('Restriction ' + (j + 1) + ' isn\'t the name of a type: it\'s a ' + typeof(r));
 
-        if (typeof(typicalValue) !== primitiveTypeOf[expectedType])
-          failBecause('Sample argument ' + (j + 1) + ' has type ' + typeof(typicalValue) +
-                      ', restriction demands ' + expectedType);
-
         // If the restriction is a typeclass, it should be the only one
         if (isTypeClass(expectedType) && typeRestrictions.length > 1)
           failBecause('A typeclass must be the only restriction for that parameter!');
 
+        if (isMultiTypeClass(expectedType))
+          return;
+
+        if (typeof(typicalValue) !== primitiveTypeOf[expectedType])
+          failBecause('Sample argument ' + (j + 1) + ' has type ' + typeof(typicalValue) +
+                      ', restriction demands ' + expectedType);
+
         if (!restrictionVerifiers[expectedType](typicalValue))
-          failBecause('Typical value ' + (j + 1) + ' for parameter ' + (i + 1) + ' is not of type ' + expectedType);
+            failBecause('Typical value ' + (j + 1) + ' for parameter ' + (i + 1) + ' is not of type ' + expectedType);
       });
+
+      // For a multi typeclass, examples should have been provided for each possible type in the typeclass
+      if (isMultiTypeClass(typeRestrictions[0]))
+        verifyMultiTypeClassRestriction(typeRestrictions[0], typicalArguments[i], failBecause);
     });
 
     if (restrictions.every(function(r) { return r === NO_RESTRICTIONS; }))
@@ -207,7 +264,7 @@ module.exports = (function() {
       {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
       {type: 'function',  value: function() {}, typeclasses: ['function: maxarity 2', 'objectlike', /*'objectlikeornull' */]},
       {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'positive', 'objectlike'/*,'objectlikeornull' */]},
-      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike', 'positive' /*, 'strictarraylike',  'objectlikeornull' */]}
+      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike', 'positive', 'strictArrayLike', /*'objectlikeornull' */]}
     ];
 
     var naturalCommon = [
@@ -235,6 +292,7 @@ module.exports = (function() {
       natural: naturalCommon,
       objectlike: [],
       positive: naturalCommon.concat([{type: 'zero', value: 0}]),
+      strictArrayLike: [],
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
                                             value: {valueOf: function() { return null; }}},
                                            {type: 'object coercing to boolean',
@@ -859,11 +917,53 @@ module.exports = (function() {
   };
 
 
+  var makeArrayLike = function() {
+    var args = [].slice.call(arguments);
+
+    var result = {};
+    if (args.length === 1 && typeof(args[0]) === 'object' && ('length' in args[0])) {
+      // We've been passed an arraylike: copy it
+      for (var k in args[0])
+        result[k] = args[0][k];
+
+      return result;
+    }
+
+    args.forEach(function(arg, i) {
+      result[i] = arg;
+    });
+
+    result.length = args.length;
+
+    // We provide every, indexOf and slice for testing convenience
+    result.every = function() {
+      return [].every.apply(this, arguments);
+    };
+
+    result.slice = function() {
+      return makeArrayLike(this);
+    };
+
+    result.indexOf = function(val, from) {
+      from = from || 0;
+
+      for (var i = from, l = this.length; i < l; i++)
+        if (this[i] === val)
+          return i;
+
+      return -1;
+    };
+
+    return result;
+  };
+
+
   var toExport = {
     addCurryStyleTests: addCurryStyleTests,
     addDoubleCurryStyleTests: addDoubleCurryStyleTests,
     checkFunction: checkFunction,
-    checkModule:   checkModule
+    checkModule:   checkModule,
+    makeArrayLike: makeArrayLike
   };
 
 
