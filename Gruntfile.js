@@ -1,4 +1,8 @@
 module.exports = function(grunt) {
+
+  var filesToLint = ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
+                     'test/**/*.js'];
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
@@ -7,8 +11,9 @@ module.exports = function(grunt) {
 
 
     jshint: {
-      all: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
-            'test/**/*.js'],
+      all: {
+        src: filesToLint
+      },
 
       options: {
         newcap: false
@@ -114,9 +119,8 @@ module.exports = function(grunt) {
 
     watch: {
       lint: {
-        files: ['automation/**/*.js', 'customGruntTasks/**.*.js', 'docgen/**/*.js', 'Gruntfile.js', 'lib/**/*.js',
-              'test/**/*.js'],
-        tasks: ['jshint']
+        files: filesToLint,
+        tasks: ['newer:jshint']
       },
 
       docVersionGeneration: {
@@ -145,6 +149,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
   });
   grunt.loadNpmTasks('grunt-bump');
+  grunt.loadNpmTasks('grunt-newer');
 
 
   grunt.loadTasks('customGruntTasks');
