@@ -9,6 +9,7 @@
   var checkModule = testUtils.checkModule;
   var checkFunction = testUtils.checkFunction;
   var addCurryStyleTests = testUtils.addCurryStyleTests;
+  var addDoubleCurryStyleTests = testUtils.addDoubleCurryStyleTests;
 
   describe('base', function() {
 //  var testFixture = function(require, exports) {
@@ -157,7 +158,7 @@
       });
 
 
-      addCurryStyleTests(function(f) { return compose(id, f); });
+      addDoubleCurryStyleTests(function(f, g) { return compose(f, g); });
     });
 
 
@@ -730,7 +731,7 @@
     });
 
 
-    addCurryStyleTests(function(f) { return flip(f); });
+    addCurryStyleTests(function(f) { return flip(f); }, {arity: 2});
   });
 //
 //
