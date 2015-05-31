@@ -12,26 +12,12 @@
 <section class="categoryContents">
 <h2 class="categoryListHeader">Categories</h2>
 <ul class="categoryList">
-<li class="categoryListItem"><a href="#DataTYpes">DataTYpes</a></li>
 <li class="categoryListItem"><a href="#DataTypes">DataTypes</a></li>
 <li class="categoryListItem"><a href="#Function">Function</a></li>
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
 <li class="categoryListItem"><a href="#Maths">Maths</a></li>
 <li class="categoryListItem"><a href="#Types">Types</a></li>
 </ul>
-</section>
-<section class="categoryRef" id="DataTYpes">
-<h2 class="categoryName">DataTYpes</h2>
-<section class="functionRef" id="getJustValue">
-<h3 class="functionName">getJustValue</h3>
-<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getJustValue(j);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">j: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Just</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.</p>
-<section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.getJustValue(funkierJS.Just(3)); // =&gt; 3&#39;,
-</code></pre></section>
 </section>
 <section class="categoryRef" id="DataTypes">
 <h2 class="categoryName">DataTypes</h2>
@@ -59,6 +45,17 @@ operator.</p>
 <section class="functionRef" id="Nothing">
 <h3 class="functionName">Nothing</h3>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
+</section>
+<section class="functionRef" id="getJustValue">
+<h3 class="functionName">getJustValue</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getJustValue(j);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">j: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Just</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
+Just.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getJustValue(funkierJS.Just(3)); // =&gt; 3&#39;,
+</code></pre></section>
 </section>
 <section class="functionRef" id="isJust">
 <h3 class="functionName">isJust</h3>

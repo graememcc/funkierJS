@@ -1,20 +1,5 @@
 # funkierJS API: By Category #
 
-## DataTYpes##
-### getJustValue ###
-**Usage:** `var result = getJustValue(j);`
-
-Parameters:  
-j `Just`
-
-Returns: `any`
-
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
-
-#### Examples ####
-    funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
-***
 ## DataTypes##
 ### Just ###
 **Usage:** `var result = Just(a);`
@@ -44,6 +29,20 @@ It is an error to call Maybe.
 ***
 ### Nothing ###
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### getJustValue ###
+**Usage:** `var result = getJustValue(j);`
+
+Parameters:  
+j `Just`
+
+Returns: `any`
+
+Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
+Just.
+
+#### Examples ####
+    funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
 ***
 ### isJust ###
 **Usage:** `var result = isJust(a);`
