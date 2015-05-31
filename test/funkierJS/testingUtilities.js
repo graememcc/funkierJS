@@ -7,8 +7,12 @@ module.exports = (function() {
 
   var curryModule = require('../../lib/components/curry');
   var arityOf = curryModule.arityOf;
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
   var bind = curryModule.bind;
+  var bindWithContextAndArity = curryModule.bindWithContextAndArity;
   var objectCurry = curryModule.objectCurry;
+  var objectCurryWithArity = curryModule.objectCurryWithArity;
 
 
   /*
@@ -84,7 +88,7 @@ module.exports = (function() {
   Object.freeze(ANYVALUE);
 
 
-  var typeclasses = ['function: minarity 1', 'function: minarity 2',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
+  var typeclasses = ['function: arity 1', 'function: minarity 1', 'function: minarity 2',/*'integer',*/  'natural', 'strictNatural'/*'arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'*/];
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
       return true;
@@ -99,6 +103,7 @@ module.exports = (function() {
 
   var primitiveTypeOf = {
     'function': 'function',
+    'function: arity 1': 'function',
     'function: minarity 1': 'function',
     'function: minarity 2': 'function',
     'natural':  'number',
@@ -110,8 +115,9 @@ module.exports = (function() {
 
   var restrictionVerifiers = {
     'function': function(f) { return typeof(f) === 'function'; },
-    'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length === 1; },
-    'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length === 2; },
+    'function: arity 1': function(f) { return typeof(f) === 'function' && f.length === 1; },
+    'function: minarity 1': function(f) { return typeof(f) === 'function' && f.length >= 1; },
+    'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length >= 2; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
                                         typeof(o) === 'string';},
@@ -245,6 +251,8 @@ module.exports = (function() {
 
 
     var bogusForTypeClass = {
+      'function: arity 1':    [{type: 'function with arity 0', value: function() {}},
+                               {type: 'function with arity 2', value: function(x, y) {}}],
       'function: minarity 1': [{type: 'function with arity 0', value: function() {}}],
       'function: minarity 2': [{type: 'function with arity 0', value: function() {}},
                                {type: 'function with arity 1', value: function(x) {}}],
@@ -519,18 +527,25 @@ module.exports = (function() {
    * Helper function for testing function manipulating other functions. This adds tests that the results are curried
    * in the same "style" as the manipulated function. We make the following assumptions:
    *
-   *  - The caller has exercised the usual case of functions being curried with "curry"
    *  - The function being manipulated must have an arity of at least 1
    *  - The caller can supply a function which will take the function to be manipulated and return the result
    *
+   * Optionally takes an options object containing the following properties:
+   *   - arity:   the arity of the function to supply to the manipulator
+   *   - returns: the value to return from the function supplied to the manipulator
+   *
    */
 
-  var addCurryStyleTests = function(manipulator) {
+  var addCurryStyleTests = function(manipulator, options) {
+    options = options || {};
+    var arity = options.arity || 1;
+
     it('When original function is object curried, result is considered object curried for currying purposes',
           function() {
-      var f = objectCurry(function(x, y) { return this; });
+      var f = objectCurryWithArity(arity, function(x) { return options.returns; });
       var manipulated = manipulator(f);
       var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
         objectCurry(fn);
       };
 
@@ -541,10 +556,355 @@ module.exports = (function() {
     it('When original function is bind curried, result is considered bind curried for currying purposes',
         function() {
       var obj = {};
-      var f = bind(obj, function(x, y) { return this; });
+      var f = bindWithContextAndArity(arity, obj, function(x, y) { return options.returns; });
       var manipulated = manipulator(f);
       var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
         bind(fn);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('When original function is curried, result is considered curried for currying purposes', function() {
+      var obj = {};
+      var f = curryWithArity(arity, function(x) { return options.returns; });
+      var manipulated = manipulator(f);
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        bind(fn);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('When original function is not curried, result is considered curried for currying purposes', function() {
+      var args = ['a', 'b', 'c', 'd', 'e', 'f'];
+      var obj = {};
+      var fBody = 'return ' + (options.returns ? options.returns.toString() : 'undefined') + ';';
+      var f = Function.apply(Object.create(Function.prototype), args.slice(0, arity).concat([fBody]));
+      var manipulated = manipulator(f);
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        curry(fn);
+      };
+
+      expect(fn).to.not.throw();
+    });
+  };
+
+
+  /*
+   * Helper function for testing function manipulating pairs of other functions. This adds tests that the results are curried
+   * in the most consistent "style" as the manipulated functions. We make the following assumptions:
+   *
+   *  - The caller has exercised the usual case of functions being curried with "curry" or not curried
+   *  - The functions being manipulated must have an arity of at least 1
+   *  - The caller can supply a function which will take the functions to be manipulated and return the result
+   *
+   * Optionally takes values to be returned by the functions being manipulated
+   *
+   */
+
+  var addDoubleCurryStyleTests = function(manipulator, f1Return, f2Return) {
+    it('If both functions are object curried, then the result is too', function() {
+      var context = null;
+      var f1 = objectCurry(function(x) { context = this; return f1Return; });
+      var f2 = objectCurry(function(x) {return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (1)', function() {
+      var context = null;
+      var f1 = objectCurry(function(x) { context = this;  return f1Return; });
+      var f2 = function(x) { return f2Return; };
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (2)', function() {
+      var context = null;
+      var f1 = objectCurry(function(x) { context = this;  return f1Return; });
+      var f2 = curry(function(x) { return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (3)', function() {
+      var context = null;
+      var f1 = objectCurry(function(x) { context = this;  return f1Return; });
+      var f2 = bind({}, function(x) { return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (4)', function() {
+      var context = null;
+      var f1 = function(x) { return f1Return; };
+      var f2 = objectCurry(function(x) { context = this;  return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (5)', function() {
+      var context = null;
+      var f1 = curry(function(x) { return f1Return; });
+      var f2 = objectCurry(function(x) { context = this;  return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is object curried, then the result is too (6)', function() {
+      var context = null;
+      var f1 = bind({}, function(x) { return f1Return; });
+      var f2 = objectCurry(function(x) { context = this;  return f2Return; });
+      var obj = {};
+      obj.manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      obj.manipulated(1);
+
+      expect(context).to.equal(obj);
+      var fn = function() {
+        if (!arityOf._isCurried(obj.manipulated)) throw new Error('Not curried!');
+        // If the result is also objectCurried, then objectCurrying it again won't throw
+        objectCurry(obj.manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If both functions are bound to the same context, then the result is too', function() {
+      var context = null;
+      var obj = {};
+      var f1 = bind(obj, function(x) { return f1Return; });
+      var f2 = bind(obj, function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+      // Assume that the returned function has arity at least 1
+      manipulated(1);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is also bound, then binding it again with the same context won't throw
+        bind(obj, manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If both functions are bound to different contexts, then the result is curried in the standard fashion', function() {
+      var obj = {};
+      var obj2 = {};
+      var f1 = bind(obj, function(x) { return f1Return; });
+      var f2 = bind(obj2, function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is bound, the other not, then the result is curried in the standard fashion (1)', function() {
+      var obj = {};
+      var f1 = bind(obj, function(x) { return f1Return; });
+      var f2 = function(x) { return f2Return; };
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is bound, the other not, then the result is curried in the standard fashion (2)', function() {
+      var obj = {};
+      var f1 = bind(obj, function(x) { return f1Return; });
+      var f2 = curry(function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is bound, the other not, then the result is curried in the standard fashion (3)', function() {
+      var obj = {};
+      var f1 = function(x) { return f1Return; };
+      var f2 = bind(obj, function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one function is bound, the other not, then the result is curried in the standard fashion (4)', function() {
+      var context;
+      var obj = {};
+      var f1 = curry(function(x) { return f1Return; });
+      var f2 = bind(obj, function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If both functions are curried, then the result is too', function() {
+      var context;
+      var f1 = curry(function(x) { return f1Return; });
+      var f2 = curry(function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one functions is curried, the other not, then the result is curried in the standard manner (1)', function() {
+      var f1 = curry(function(x) { return f1Return; });
+      var f2 = function(x) { return f2Return; };
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If one functions is curried, the other not, then the result is curried in the standard manner (2)', function() {
+      var f1 = function(x) { return f1Return; };
+      var f2 = curry(function(x) { return f2Return; });
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
+      };
+
+      expect(fn).to.not.throw();
+    });
+
+
+    it('If neither functions is curried then the result is', function() {
+      var f1 = function(x) { return f1Return; };
+      var f2 = function(x) { return f2Return; };
+      var manipulated = manipulator(f1, f2);
+
+      var fn = function() {
+        if (!arityOf._isCurried(manipulated)) throw new Error('Not curried!');
+        // If the result is curried, then currying again won't throw
+        curry(manipulated);
       };
 
       expect(fn).to.not.throw();
@@ -554,6 +914,7 @@ module.exports = (function() {
 
   var toExport = {
     addCurryStyleTests: addCurryStyleTests,
+    addDoubleCurryStyleTests: addDoubleCurryStyleTests,
     checkFunction: checkFunction,
     checkModule:   checkModule
   };
