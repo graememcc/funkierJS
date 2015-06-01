@@ -21,6 +21,24 @@ module.exports = function(grunt) {
     },
 
 
+    browserify: {
+      standalone: {
+        src: ['lib/funkier.js'],
+        dest: 'dist/funkierJS.js',
+        options:  {
+          browserifyOptions: {
+            standalone: 'funkierJS'
+          }
+        }
+      },
+
+      standalonetests: {
+        src: ['browser_test/testsuite-raw.js'],
+        dest: 'browser_test/testsuite.js',
+      }
+    },
+
+
     generation: {
       autoTests: {
         src: ['lib/components/*.js'],
@@ -120,7 +138,7 @@ module.exports = function(grunt) {
     watch: {
       lint: {
         files: filesToLint,
-        tasks: ['newer:jshint']
+        tasks: ['newer:jshint', 'browserify']
       },
 
       docVersionGeneration: {
@@ -148,6 +166,7 @@ module.exports = function(grunt) {
   tasks.map(function(task) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
   });
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-newer');
 
