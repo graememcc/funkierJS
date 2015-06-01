@@ -1,5 +1,21 @@
 # funkierJS API #
 
+### Err ###
+Category: DataTypes
+
+**Usage:** `var result = Err(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments
+
+#### Examples ####
+    var result = funkierJS.Err(new TypeError('boom');
+***
 ### Just ###
 Category: DataTypes
 
@@ -11,7 +27,7 @@ a `any`
 Returns: `Just`
 
 A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.
+Throws when called with no arguments.
 
 #### Examples ####
     var result = funkierJS.Just(42);
@@ -34,6 +50,22 @@ It is an error to call Maybe.
 Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### Ok ###
+Category: DataTypes
+
+**Usage:** `var result = Ok(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Ok`
+
+An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.
+
+#### Examples ####
+    var result = funkierJS.Ok(42);
 ***
 ### Pair ###
 Category: DataTypes
@@ -60,6 +92,18 @@ Throws a TypeError if called with zero arguments.
     var p1 = new funkierJS.Pair(2, 3);
     var p2 = funkierJS.Pair(2)(3);
     var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### Result ###
+Category: DataTypes
+
+**Usage:** `Result();`
+
+The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.
+
+Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
+
+It is an error to call Result.
 ***
 ### add ###
 Category: Maths
@@ -629,6 +673,30 @@ A wrapper around the division operator.
 #### Examples ####
     funkierJS.arityOf(4, 2); // => 2;
 ***
+### either ###
+Category: DataTypes
+
+**Usage:** `var result = either(f1, f2, r);`
+
+Parameters:  
+f1 `function`  
+f2 `function`  
+r `Result`
+
+Returns: `function`
+
+Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.
+
+Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.
+
+#### Examples ####
+    var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
+    f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
+    f(funkierJS.Err(':(')); // logs 'Bad: :(' to the console
+***
 ### equals ###
 Category: Types
 
@@ -717,6 +785,22 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.fst(p); // => 2',
 ***
+### getErrValue ###
+Category: DataTypes
+
+**Usage:** `var result = getErrValue(e);`
+
+Parameters:  
+e `Err`
+
+Returns: `any`
+
+Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.
+
+#### Examples ####
+    funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
+***
 ### getJustValue ###
 Category: DataTypes
 
@@ -732,6 +816,22 @@ Just.
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+### getOkValue ###
+Category: DataTypes
+
+**Usage:** `var result = getOkValue(o);`
+
+Parameters:  
+o `Ok`
+
+Returns: `any`
+
+Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.
+
+#### Examples ####
+    funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
 ***
 ### getType ###
 Category: Types
@@ -858,6 +958,21 @@ Returns true if typeof the given value equals "boolean", false otherwise.
 #### Examples ####
     funkierJS.isBoolean(false); // => true
 ***
+### isErr ###
+Category: DataTypes
+
+**Usage:** `var result = isErr(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Err object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isErr(funkierJS.Err(4)); // => true
+***
 ### isJust ###
 Category: DataTypes
 
@@ -948,6 +1063,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 #### Examples ####
     funkierJS.isObject(null); // => true
 ***
+### isOk ###
+Category: DataTypes
+
+**Usage:** `var result = isOk(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Ok object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isOk(funkierJS.Ok('foo)); // => true
+***
 ### isPair ###
 Category: DataTypes
 
@@ -978,6 +1108,21 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 
 #### Examples ####
     funkierJS.isRealObject(null); // => false
+***
+### isResult ###
+Category: DataTypes
+
+**Usage:** `var result = isResult(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Result object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
 ***
 ### isString ###
 Category: Types
@@ -1104,13 +1249,41 @@ curried.
 #### Examples ####
     var g = function(x) {
       if (x < 10)
-        throw new Error(\'Bad value\');
+        throw new Error('Bad value');
       return x;
     };
     
     var f = funkierJS.makeMaybeReturner(g);
-    f(11); // returns Just(11)
-    f(5); // returns Nothing
+    f(11); // => Just(11)
+    f(5); // => Nothing
+***
+### makeResultReturner ###
+Category: DataTypes
+
+**Usage:** `var result = makeResultReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error('Bad value');
+      return x;
+    };
+    
+    var f = funkierJS.makeResultReturner(g);
+    f(11); // => Ok(11)
+    f(5); // => Err(Error('Bad value');
 ***
 ### max ###
 Category: Maths
@@ -1600,6 +1773,22 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.xorPred(c, d);',
     f("foo"); // false',
 ***
+### Err ###
+Category: DataTypes
+
+**Usage:** `var result = Err(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments
+
+#### Examples ####
+    var result = funkierJS.Err(new TypeError('boom');
+***
 ### Just ###
 Category: DataTypes
 
@@ -1611,7 +1800,7 @@ a `any`
 Returns: `Just`
 
 A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.
+Throws when called with no arguments.
 
 #### Examples ####
     var result = funkierJS.Just(42);
@@ -1634,6 +1823,22 @@ It is an error to call Maybe.
 Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### Ok ###
+Category: DataTypes
+
+**Usage:** `var result = Ok(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Ok`
+
+An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.
+
+#### Examples ####
+    var result = funkierJS.Ok(42);
 ***
 ### Pair ###
 Category: DataTypes
@@ -1660,6 +1865,18 @@ Throws a TypeError if called with zero arguments.
     var p1 = new funkierJS.Pair(2, 3);
     var p2 = funkierJS.Pair(2)(3);
     var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### Result ###
+Category: DataTypes
+
+**Usage:** `Result();`
+
+The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.
+
+Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
+
+It is an error to call Result.
 ***
 ### add ###
 Category: Maths
@@ -2229,6 +2446,30 @@ A wrapper around the division operator.
 #### Examples ####
     funkierJS.arityOf(4, 2); // => 2;
 ***
+### either ###
+Category: DataTypes
+
+**Usage:** `var result = either(f1, f2, r);`
+
+Parameters:  
+f1 `function`  
+f2 `function`  
+r `Result`
+
+Returns: `function`
+
+Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.
+
+Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.
+
+#### Examples ####
+    var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
+    f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
+    f(funkierJS.Err(':(')); // logs 'Bad: :(' to the console
+***
 ### equals ###
 Category: Types
 
@@ -2317,6 +2558,22 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.fst(p); // => 2',
 ***
+### getErrValue ###
+Category: DataTypes
+
+**Usage:** `var result = getErrValue(e);`
+
+Parameters:  
+e `Err`
+
+Returns: `any`
+
+Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.
+
+#### Examples ####
+    funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
+***
 ### getJustValue ###
 Category: DataTypes
 
@@ -2332,6 +2589,22 @@ Just.
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+### getOkValue ###
+Category: DataTypes
+
+**Usage:** `var result = getOkValue(o);`
+
+Parameters:  
+o `Ok`
+
+Returns: `any`
+
+Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.
+
+#### Examples ####
+    funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
 ***
 ### getType ###
 Category: Types
@@ -2458,6 +2731,21 @@ Returns true if typeof the given value equals "boolean", false otherwise.
 #### Examples ####
     funkierJS.isBoolean(false); // => true
 ***
+### isErr ###
+Category: DataTypes
+
+**Usage:** `var result = isErr(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Err object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isErr(funkierJS.Err(4)); // => true
+***
 ### isJust ###
 Category: DataTypes
 
@@ -2548,6 +2836,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 #### Examples ####
     funkierJS.isObject(null); // => true
 ***
+### isOk ###
+Category: DataTypes
+
+**Usage:** `var result = isOk(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Ok object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isOk(funkierJS.Ok('foo)); // => true
+***
 ### isPair ###
 Category: DataTypes
 
@@ -2578,6 +2881,21 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 
 #### Examples ####
     funkierJS.isRealObject(null); // => false
+***
+### isResult ###
+Category: DataTypes
+
+**Usage:** `var result = isResult(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Result object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
 ***
 ### isString ###
 Category: Types
@@ -2704,13 +3022,41 @@ curried.
 #### Examples ####
     var g = function(x) {
       if (x < 10)
-        throw new Error(\'Bad value\');
+        throw new Error('Bad value');
       return x;
     };
     
     var f = funkierJS.makeMaybeReturner(g);
-    f(11); // returns Just(11)
-    f(5); // returns Nothing
+    f(11); // => Just(11)
+    f(5); // => Nothing
+***
+### makeResultReturner ###
+Category: DataTypes
+
+**Usage:** `var result = makeResultReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error('Bad value');
+      return x;
+    };
+    
+    var f = funkierJS.makeResultReturner(g);
+    f(11); // => Ok(11)
+    f(5); // => Err(Error('Bad value');
 ***
 ### max ###
 Category: Maths
@@ -3200,6 +3546,22 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.xorPred(c, d);',
     f("foo"); // false',
 ***
+### Err ###
+Category: DataTypes
+
+**Usage:** `var result = Err(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments
+
+#### Examples ####
+    var result = funkierJS.Err(new TypeError('boom');
+***
 ### Just ###
 Category: DataTypes
 
@@ -3211,7 +3573,7 @@ a `any`
 Returns: `Just`
 
 A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.
+Throws when called with no arguments.
 
 #### Examples ####
     var result = funkierJS.Just(42);
@@ -3234,6 +3596,22 @@ It is an error to call Maybe.
 Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### Ok ###
+Category: DataTypes
+
+**Usage:** `var result = Ok(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Ok`
+
+An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.
+
+#### Examples ####
+    var result = funkierJS.Ok(42);
 ***
 ### Pair ###
 Category: DataTypes
@@ -3260,6 +3638,18 @@ Throws a TypeError if called with zero arguments.
     var p1 = new funkierJS.Pair(2, 3);
     var p2 = funkierJS.Pair(2)(3);
     var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### Result ###
+Category: DataTypes
+
+**Usage:** `Result();`
+
+The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.
+
+Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
+
+It is an error to call Result.
 ***
 ### add ###
 Category: Maths
@@ -3829,6 +4219,30 @@ A wrapper around the division operator.
 #### Examples ####
     funkierJS.arityOf(4, 2); // => 2;
 ***
+### either ###
+Category: DataTypes
+
+**Usage:** `var result = either(f1, f2, r);`
+
+Parameters:  
+f1 `function`  
+f2 `function`  
+r `Result`
+
+Returns: `function`
+
+Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.
+
+Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.
+
+#### Examples ####
+    var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
+    f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
+    f(funkierJS.Err(':(')); // logs 'Bad: :(' to the console
+***
 ### equals ###
 Category: Types
 
@@ -3917,6 +4331,22 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.fst(p); // => 2',
 ***
+### getErrValue ###
+Category: DataTypes
+
+**Usage:** `var result = getErrValue(e);`
+
+Parameters:  
+e `Err`
+
+Returns: `any`
+
+Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.
+
+#### Examples ####
+    funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
+***
 ### getJustValue ###
 Category: DataTypes
 
@@ -3932,6 +4362,22 @@ Just.
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+### getOkValue ###
+Category: DataTypes
+
+**Usage:** `var result = getOkValue(o);`
+
+Parameters:  
+o `Ok`
+
+Returns: `any`
+
+Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.
+
+#### Examples ####
+    funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
 ***
 ### getType ###
 Category: Types
@@ -4058,6 +4504,21 @@ Returns true if typeof the given value equals "boolean", false otherwise.
 #### Examples ####
     funkierJS.isBoolean(false); // => true
 ***
+### isErr ###
+Category: DataTypes
+
+**Usage:** `var result = isErr(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Err object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isErr(funkierJS.Err(4)); // => true
+***
 ### isJust ###
 Category: DataTypes
 
@@ -4148,6 +4609,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 #### Examples ####
     funkierJS.isObject(null); // => true
 ***
+### isOk ###
+Category: DataTypes
+
+**Usage:** `var result = isOk(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Ok object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isOk(funkierJS.Ok('foo)); // => true
+***
 ### isPair ###
 Category: DataTypes
 
@@ -4178,6 +4654,21 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 
 #### Examples ####
     funkierJS.isRealObject(null); // => false
+***
+### isResult ###
+Category: DataTypes
+
+**Usage:** `var result = isResult(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Result object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
 ***
 ### isString ###
 Category: Types
@@ -4304,13 +4795,41 @@ curried.
 #### Examples ####
     var g = function(x) {
       if (x < 10)
-        throw new Error(\'Bad value\');
+        throw new Error('Bad value');
       return x;
     };
     
     var f = funkierJS.makeMaybeReturner(g);
-    f(11); // returns Just(11)
-    f(5); // returns Nothing
+    f(11); // => Just(11)
+    f(5); // => Nothing
+***
+### makeResultReturner ###
+Category: DataTypes
+
+**Usage:** `var result = makeResultReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error('Bad value');
+      return x;
+    };
+    
+    var f = funkierJS.makeResultReturner(g);
+    f(11); // => Ok(11)
+    f(5); // => Err(Error('Bad value');
 ***
 ### max ###
 Category: Maths
@@ -4800,6 +5319,22 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.xorPred(c, d);',
     f("foo"); // false',
 ***
+### Err ###
+Category: DataTypes
+
+**Usage:** `var result = Err(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments
+
+#### Examples ####
+    var result = funkierJS.Err(new TypeError('boom');
+***
 ### Just ###
 Category: DataTypes
 
@@ -4811,7 +5346,7 @@ a `any`
 Returns: `Just`
 
 A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.
+Throws when called with no arguments.
 
 #### Examples ####
     var result = funkierJS.Just(42);
@@ -4834,6 +5369,22 @@ It is an error to call Maybe.
 Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### Ok ###
+Category: DataTypes
+
+**Usage:** `var result = Ok(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Ok`
+
+An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.
+
+#### Examples ####
+    var result = funkierJS.Ok(42);
 ***
 ### Pair ###
 Category: DataTypes
@@ -4860,6 +5411,18 @@ Throws a TypeError if called with zero arguments.
     var p1 = new funkierJS.Pair(2, 3);
     var p2 = funkierJS.Pair(2)(3);
     var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### Result ###
+Category: DataTypes
+
+**Usage:** `Result();`
+
+The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.
+
+Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
+
+It is an error to call Result.
 ***
 ### add ###
 Category: Maths
@@ -5429,6 +5992,30 @@ A wrapper around the division operator.
 #### Examples ####
     funkierJS.arityOf(4, 2); // => 2;
 ***
+### either ###
+Category: DataTypes
+
+**Usage:** `var result = either(f1, f2, r);`
+
+Parameters:  
+f1 `function`  
+f2 `function`  
+r `Result`
+
+Returns: `function`
+
+Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.
+
+Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.
+
+#### Examples ####
+    var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
+    f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
+    f(funkierJS.Err(':(')); // logs 'Bad: :(' to the console
+***
 ### equals ###
 Category: Types
 
@@ -5517,6 +6104,22 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.fst(p); // => 2',
 ***
+### getErrValue ###
+Category: DataTypes
+
+**Usage:** `var result = getErrValue(e);`
+
+Parameters:  
+e `Err`
+
+Returns: `any`
+
+Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.
+
+#### Examples ####
+    funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
+***
 ### getJustValue ###
 Category: DataTypes
 
@@ -5532,6 +6135,22 @@ Just.
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+### getOkValue ###
+Category: DataTypes
+
+**Usage:** `var result = getOkValue(o);`
+
+Parameters:  
+o `Ok`
+
+Returns: `any`
+
+Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.
+
+#### Examples ####
+    funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
 ***
 ### getType ###
 Category: Types
@@ -5658,6 +6277,21 @@ Returns true if typeof the given value equals "boolean", false otherwise.
 #### Examples ####
     funkierJS.isBoolean(false); // => true
 ***
+### isErr ###
+Category: DataTypes
+
+**Usage:** `var result = isErr(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Err object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isErr(funkierJS.Err(4)); // => true
+***
 ### isJust ###
 Category: DataTypes
 
@@ -5748,6 +6382,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 #### Examples ####
     funkierJS.isObject(null); // => true
 ***
+### isOk ###
+Category: DataTypes
+
+**Usage:** `var result = isOk(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Ok object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isOk(funkierJS.Ok('foo)); // => true
+***
 ### isPair ###
 Category: DataTypes
 
@@ -5778,6 +6427,21 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 
 #### Examples ####
     funkierJS.isRealObject(null); // => false
+***
+### isResult ###
+Category: DataTypes
+
+**Usage:** `var result = isResult(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Result object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
 ***
 ### isString ###
 Category: Types
@@ -5904,13 +6568,41 @@ curried.
 #### Examples ####
     var g = function(x) {
       if (x < 10)
-        throw new Error(\'Bad value\');
+        throw new Error('Bad value');
       return x;
     };
     
     var f = funkierJS.makeMaybeReturner(g);
-    f(11); // returns Just(11)
-    f(5); // returns Nothing
+    f(11); // => Just(11)
+    f(5); // => Nothing
+***
+### makeResultReturner ###
+Category: DataTypes
+
+**Usage:** `var result = makeResultReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error('Bad value');
+      return x;
+    };
+    
+    var f = funkierJS.makeResultReturner(g);
+    f(11); // => Ok(11)
+    f(5); // => Err(Error('Bad value');
 ***
 ### max ###
 Category: Maths
@@ -6400,6 +7092,22 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.xorPred(c, d);',
     f("foo"); // false',
 ***
+### Err ###
+Category: DataTypes
+
+**Usage:** `var result = Err(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Just`
+
+An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments
+
+#### Examples ####
+    var result = funkierJS.Err(new TypeError('boom');
+***
 ### Just ###
 Category: DataTypes
 
@@ -6411,7 +7119,7 @@ a `any`
 Returns: `Just`
 
 A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.
+Throws when called with no arguments.
 
 #### Examples ####
     var result = funkierJS.Just(42);
@@ -6434,6 +7142,22 @@ It is an error to call Maybe.
 Category: DataTypes
 
 A Nothing is a type of Maybe representing an unsuccessful computation.
+***
+### Ok ###
+Category: DataTypes
+
+**Usage:** `var result = Ok(a);`
+
+Parameters:  
+a `any`
+
+Returns: `Ok`
+
+An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.
+
+#### Examples ####
+    var result = funkierJS.Ok(42);
 ***
 ### Pair ###
 Category: DataTypes
@@ -6460,6 +7184,18 @@ Throws a TypeError if called with zero arguments.
     var p1 = new funkierJS.Pair(2, 3);
     var p2 = funkierJS.Pair(2)(3);
     var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
+***
+### Result ###
+Category: DataTypes
+
+**Usage:** `Result();`
+
+The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.
+
+Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
+
+It is an error to call Result.
 ***
 ### add ###
 Category: Maths
@@ -7029,6 +7765,30 @@ A wrapper around the division operator.
 #### Examples ####
     funkierJS.arityOf(4, 2); // => 2;
 ***
+### either ###
+Category: DataTypes
+
+**Usage:** `var result = either(f1, f2, r);`
+
+Parameters:  
+f1 `function`  
+f2 `function`  
+r `Result`
+
+Returns: `function`
+
+Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.
+
+Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.
+
+#### Examples ####
+    var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
+    f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
+    f(funkierJS.Err(':(')); // logs 'Bad: :(' to the console
+***
 ### equals ###
 Category: Types
 
@@ -7117,6 +7877,22 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.fst(p); // => 2',
 ***
+### getErrValue ###
+Category: DataTypes
+
+**Usage:** `var result = getErrValue(e);`
+
+Parameters:  
+e `Err`
+
+Returns: `any`
+
+Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.
+
+#### Examples ####
+    funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
+***
 ### getJustValue ###
 Category: DataTypes
 
@@ -7132,6 +7908,22 @@ Just.
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
+***
+### getOkValue ###
+Category: DataTypes
+
+**Usage:** `var result = getOkValue(o);`
+
+Parameters:  
+o `Ok`
+
+Returns: `any`
+
+Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.
+
+#### Examples ####
+    funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
 ***
 ### getType ###
 Category: Types
@@ -7258,6 +8050,21 @@ Returns true if typeof the given value equals "boolean", false otherwise.
 #### Examples ####
     funkierJS.isBoolean(false); // => true
 ***
+### isErr ###
+Category: DataTypes
+
+**Usage:** `var result = isErr(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Err object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isErr(funkierJS.Err(4)); // => true
+***
 ### isJust ###
 Category: DataTypes
 
@@ -7348,6 +8155,21 @@ Returns true if typeof the given value equals "object", false otherwise.
 #### Examples ####
     funkierJS.isObject(null); // => true
 ***
+### isOk ###
+Category: DataTypes
+
+**Usage:** `var result = isOk(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Ok object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isOk(funkierJS.Ok('foo)); // => true
+***
 ### isPair ###
 Category: DataTypes
 
@@ -7378,6 +8200,21 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 
 #### Examples ####
     funkierJS.isRealObject(null); // => false
+***
+### isResult ###
+Category: DataTypes
+
+**Usage:** `var result = isResult(a);`
+
+Parameters:  
+a `any`
+
+Returns: `boolean`
+
+Returns true when the given value is a Result object, and false otherwise.
+
+#### Examples ####
+    funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
 ***
 ### isString ###
 Category: Types
@@ -7504,13 +8341,41 @@ curried.
 #### Examples ####
     var g = function(x) {
       if (x < 10)
-        throw new Error(\'Bad value\');
+        throw new Error('Bad value');
       return x;
     };
     
     var f = funkierJS.makeMaybeReturner(g);
-    f(11); // returns Just(11)
-    f(5); // returns Nothing
+    f(11); // => Just(11)
+    f(5); // => Nothing
+***
+### makeResultReturner ###
+Category: DataTypes
+
+**Usage:** `var result = makeResultReturner(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+
+The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
+curried.
+
+#### Examples ####
+    var g = function(x) {
+      if (x < 10)
+        throw new Error('Bad value');
+      return x;
+    };
+    
+    var f = funkierJS.makeResultReturner(g);
+    f(11); // => Ok(11)
+    f(5); // => Err(Error('Bad value');
 ***
 ### max ###
 Category: Maths

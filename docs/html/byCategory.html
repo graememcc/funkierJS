@@ -21,13 +21,24 @@
 </section>
 <section class="categoryRef" id="DataTypes">
 <h2 class="categoryName">DataTypes</h2>
+<section class="functionRef" id="Err">
+<h3 class="functionName">Err</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Err(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
+<p>An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+Throws if called without any arguments</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var result = funkierJS.Err(new TypeError(&#39;boom&#39;);
+</code></pre></section>
+</section>
 <section class="functionRef" id="Just">
 <h3 class="functionName">Just</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Just(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
 <p>A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
-constructor is new-agnostic.</p>
+Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var result = funkierJS.Just(42);
 </code></pre></section>
@@ -45,6 +56,17 @@ operator.</p>
 <section class="functionRef" id="Nothing">
 <h3 class="functionName">Nothing</h3>
 <p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
+</section>
+<section class="functionRef" id="Ok">
+<h3 class="functionName">Ok</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Ok(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Ok</code></li></ul></div>
+<p>An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+Throws when called with no arguments.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var result = funkierJS.Ok(42);
+</code></pre></section>
 </section>
 <section class="functionRef" id="Pair">
 <h3 class="functionName">Pair</h3>
@@ -64,6 +86,14 @@ var p2 = funkierJS.Pair(2)(3);
 var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
 </code></pre></section>
 </section>
+<section class="functionRef" id="Result">
+<h3 class="functionName">Result</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">Result();</code></p>
+<p>The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
+datatype from Haskell, or the Result type from Rust.</p>
+<p>Result is the &#39;base class&#39; of <a href="#Ok"><code>Ok</code></a> and <a href="#Err"><code>Err</code></a>. It is provided only for the instanceof operator.</p>
+<p>It is an error to call Result.</p>
+</section>
 <section class="functionRef" id="asArray">
 <h3 class="functionName">asArray</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
@@ -74,6 +104,22 @@ the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === 
 not a pair.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="either">
+<h3 class="functionName">either</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = either(f1, f2, r);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Result</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
+be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
+with the unwrapped value. In either case, the result of of the called function is returned.</p>
+<p>Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
+is not a Result.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = funkierJS.either(function(x) {console.log(&#39;Good: &#39; + x);}, function(x) {console.log(&#39;Bad: &#39; + x);});
+f(funkierJS.Ok(2)); // =&gt; logs &#39;Good: 2&#39; to the console
+f(funkierJS.Err(&#39;:(&#39;)); // logs &#39;Bad: :(&#39; to the console
 </code></pre></section>
 </section>
 <section class="functionRef" id="first">
@@ -93,6 +139,17 @@ called with a non-pair value.</p>
 funkierJS.fst(p); // =&gt; 2&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="getErrValue">
+<h3 class="functionName">getErrValue</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getErrValue(e);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">e: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Err</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
+Err.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getErrValue(funkierJS.Err(4)); // =&gt; 4&#39;,
+</code></pre></section>
+</section>
 <section class="functionRef" id="getJustValue">
 <h3 class="functionName">getJustValue</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getJustValue(j);</code></p>
@@ -102,6 +159,27 @@ funkierJS.fst(p); // =&gt; 2&#39;,
 Just.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.getJustValue(funkierJS.Just(3)); // =&gt; 3&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="getOkValue">
+<h3 class="functionName">getOkValue</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOkValue(o);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Ok</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
+Ok.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getOkValue(funkierJS.Ok(3)); // =&gt; 3&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="isErr">
+<h3 class="functionName">isErr</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isErr(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true when the given value is a Err object, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isErr(funkierJS.Err(4)); // =&gt; true
 </code></pre></section>
 </section>
 <section class="functionRef" id="isJust">
@@ -134,6 +212,16 @@ Just.</p>
 <pre><code>funkierJS.isNothing(funkierJS.Nothing); // =&gt; true
 </code></pre></section>
 </section>
+<section class="functionRef" id="isOk">
+<h3 class="functionName">isOk</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isOk(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true when the given value is a Ok object, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isOk(funkierJS.Ok(&#39;foo)); // =&gt; true
+</code></pre></section>
+</section>
 <section class="functionRef" id="isPair">
 <h3 class="functionName">isPair</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
@@ -142,6 +230,16 @@ Just.</p>
 <p>Returns true if the given value is a Pair, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
+</code></pre></section>
+</section>
+<section class="functionRef" id="isResult">
+<h3 class="functionName">isResult</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isResult(a);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true when the given value is a Result object, and false otherwise.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isResult(funkierJS.Ok(3)) &amp;&amp; funkierJS.isResult(funkierJS.Err(false)); // =&gt; true
 </code></pre></section>
 </section>
 <section class="functionRef" id="makeMaybeReturner">
@@ -157,13 +255,35 @@ curried.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var g = function(x) {
   if (x &lt; 10)
-    throw new Error(\&#39;Bad value\&#39;);
+    throw new Error(&#39;Bad value&#39;);
   return x;
 };
 
 var f = funkierJS.makeMaybeReturner(g);
-f(11); // returns Just(11)
-f(5); // returns Nothing
+f(11); // =&gt; Just(11)
+f(5); // =&gt; Nothing
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeResultReturner">
+<h3 class="functionName">makeResultReturner</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeResultReturner(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
+original. If the function f throws during execution, then the exception will be caught, and an Err object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.</p>
+<p>The function will be curried in the same style as the original, or using <a href="#curry"><code>curry</code></a> if the function was not
+curried.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var g = function(x) {
+  if (x &lt; 10)
+    throw new Error(&#39;Bad value&#39;);
+  return x;
+};
+
+var f = funkierJS.makeResultReturner(g);
+f(11); // =&gt; Ok(11)
+f(5); // =&gt; Err(Error(&#39;Bad value&#39;);
 </code></pre></section>
 </section>
 <section class="functionRef" id="second">
