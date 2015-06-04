@@ -339,7 +339,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":9,"../internalUtilities":12,"./curry":2}],2:[function(require,module,exports){
+},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],2:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -953,7 +953,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":12}],3:[function(require,module,exports){
+},{"../internalUtilities":13}],3:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1229,7 +1229,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":9,"./curry":2}],4:[function(require,module,exports){
+},{"../funcUtils":10,"./curry":2}],4:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -2152,7 +2152,1172 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":9,"../internalUtilities":12,"./curry":2}],6:[function(require,module,exports){
+},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],6:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+  /* jshint -W001 */
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var objectCurry = curryModule.objectCurry;
+
+
+  var base = require('./base');
+  var flip = base.flip;
+
+
+  var maybe = require('./maybe');
+  var Just = maybe.Just;
+  var Nothing = maybe.Nothing;
+
+
+  var internalUtilities = require('../internalUtilities');
+  var checkObjectLike = internalUtilities.checkObjectLike;
+
+
+  /*
+   * <apifunction>
+   *
+   * callPropWithArity
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: arity: natural
+   * Returns: function
+   *
+   * Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function
+   * requires all the original arguments in their original order, and an object as its final parameter. The returned
+   * function will then try to call the named property on the given object,
+   *
+   * Note that the function is curried in the standard sense. In particular the function is not object curried.
+   *
+   * Examples:
+   *   var myMap = funkierJS.callPropWithArity('map', 1);
+   *   myMap(f, arr); // => returns arr.map(f);
+   *
+   *   var myFoldr = funkierJS.callPropWithArity('reduceRight', 2);
+   *   myFoldr(f, initialValue, arr); // => arr.reduceRight(f, initialValue);
+   *
+   */
+
+  var callPropWithArity = curry(function(prop, arity) {
+    return curryWithArity(arity + 1, function() {
+      // curryWithArity guarantees we will be called with arity + 1 args
+      var propArgs = [].slice.call(arguments, 0, arity);
+      var obj = arguments[arity];
+
+      return obj[prop].apply(obj, propArgs);
+    });
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * callProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Returns: function
+   *
+   * A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+   * property on the given object.
+   *
+   * Examples:
+   *   var myObj = { return42: function() { return 42; }};
+   *   var callReturn42 = funkierJS.callProp('return42');
+   *   var callReturn42(myObj); // => 42
+   *
+   */
+
+  var callProp = flip(callPropWithArity)(0);
+
+
+  /*
+   * <apifunction>
+   *
+   * hasOwnProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+   * object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
+   * property.
+   *
+   * Examples:
+   *   funkierJS.hasOwnProperty('funkier', {funkier: 1}); // => true
+   *   funkierJS.hasOwnProperty('toString', {funkier: 1}); // => false
+   *
+   */
+
+  var hasOwnProperty = curry(function(prop, obj) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * hasProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+   * returns true if the given object or some object in the prototype chain has the specified property.
+   *
+   * Examples:
+   *   funkierJS.hasProperty('funkier', {funkier: 1}); // => true
+   *   funkierJS.hasProperty('toString', {funkier: 1}); // => true
+   *
+   */
+
+  var hasProperty = curry(function(prop, object) {
+    return prop in object;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * instanceOf
+   *
+   * Category: Object
+   *
+   * Parameter: constructor: function
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+   * if the function's prototype property is in the prototype chain of the given object.
+   *
+   * Examples:
+   *   var Constructor = function() {};
+   *   funkierJS.instanceOf(Constructor, new Constructor()); // => true
+   *   funkierJS.instanceOf(Function, {}); // => false
+   *
+   */
+
+  var instanceOf = curry(function(constructor, object) {
+    return object instanceof constructor;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * isPrototypeOf
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+   * whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
+   *
+   * Examples:
+   *   var Constructor = function() {};
+   *   funkierJS.isPrototypeOf(Constructor.prototype, new Constructor()); // => true
+   *   funkierJS.isPrototypeOf(Function.prototype, {}); // => false
+   *
+   */
+
+  var isPrototypeOf = curry(function(proto, obj) {
+    return Object.prototype.isPrototypeOf.call(proto, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createObject
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Returns: object
+   *
+   * Returns a new object whose internal prototype property is the given object protoObject.
+   *
+   * Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
+   * to the created object, use [createObjectWithProps](#createObjectWithProps).
+   *
+   * Examples:
+   *   var obj = {};
+   *   var newObj = funkierJS.createObject(obj);
+   *   funkierJS.isPrototypeOf(obj, newObj); // => true
+   *
+   */
+
+  var createObject = curry(function(obj) {
+    return Object.create(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createObjectWithProps
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Parameter: descriptorsObject: object
+   * Returns: object
+   *
+   * Creates an object whose internal prototype property is protoObj, and which has the additional properties described
+   * in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
+   * form accepted by Object.create, Object.defineProperties etc.
+   *
+   * Examples:
+   *   var obj = {};
+   *   var newObj = funkierJS.createObjectWithProps(obj, {prop: {configurable: false, enumerable: false,
+   *                                                             writeable: true, value: 1}});
+   *   funkierJS.isPrototypeOf(obj, newObj); // => true
+   *   funkierJS.hasOwnProperty('prop', newObj); // => true',
+   *
+   */
+
+  var createObjectWithProps = curry(function(obj, descriptor) {
+    return Object.create(obj, descriptor);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * defineProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: descriptor: object
+   * Parameter: o: objectLike
+   * Returns: objectLike
+   *
+   * A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
+   * object that the property hould be defined on. Returns the object o, after having defined the relevant property
+   * per the descriptor. Throws a TypeError if the descriptor is not an object.
+   *
+   * Examples:
+   *   var a = {};',
+   *   funkierJS.hasOwnProperty('foo', a); // => false
+   *   funkierJS.defineProperty('foo', {value: 42}, a);
+   *   funkierJS.hasOwnProperty('foo', a); // => true
+   *
+   */
+
+  var defineProperty = curry(function(prop, descriptor, obj) {
+    descriptor = checkObjectLike(descriptor, {strict: true});
+    return Object.defineProperty(obj, prop, descriptor);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * defineProperties
+   *
+   * Category: Object
+   *
+   * Parameter: descriptors: object
+   * Parameter: o: objectLike
+   * Returns: objectLike
+   *
+   * A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+   * descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
+   * properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
+   *
+   * Examples:
+   *   var a = {};',
+   *   funkierJS.hasOwnProperty('foo', a); // => false
+   *   funkierJS.defineProperties({foo: {value: 42}}, a);
+   *   funkierJS.hasOwnProperty('foo', a); // => true
+   *
+   */
+
+  var defineProperties = curry(function(descriptors, obj) {
+    // We're not strict here: for example one might want to install array-like properties from an array
+    descriptors = checkObjectLike(descriptors, {allowNull: false});
+    obj = checkObjectLike(obj, {allowNull: false});
+    return Object.defineProperties(obj, descriptors);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getOwnPropertyDescriptor
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: o: objectLike
+   * Returns: object
+   *
+   * A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
+   * has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
+   * undefined.
+   *
+   * Examples:
+   *   var a = {foo: 42};',
+   *   funkierJS.getOwnPropertyDescriptor('foo', a); // => {configurable: true, enumerable: true, writable: true,
+   *                                                        value: 42}
+   *   funkierJS.getOwnPropertyDescriptor('toString', a); // => undefined',
+   *
+   */
+
+  var getOwnPropertyDescriptor = flip(Object.getOwnPropertyDescriptor);
+
+
+  /*
+   * <apifunction>
+   *
+   * extract
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: object
+   * Returns: any
+   *
+   * Synonyms: tap
+   *
+   * Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+   *
+   * Examples:
+   *   funkierJS.extract('foo', {foo: 42}); // => 42
+   *
+   */
+
+  var extract = curry(function(prop, obj) {
+    return obj[prop];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extractOrDefault
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: default: any
+   * Parameter: obj: object
+   * Returns: any
+   *
+   * Synonyms: defaultTap
+   *
+   * Extracts the given property from the given object, unless the property is not found in the object or its prototype
+   * chain, in which case the specified default value is returned.
+   *
+   * Examples:
+   *   funkierJS.extractOrDefaultt('foo', 43, {bar: 42}); // => 43
+   *
+   */
+
+  var extractOrDefault = curry(function(prop, defaultVal, obj) {
+    if (!(prop in obj))
+      return defaultVal;
+
+    return obj[prop];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * maybeExtract
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: object
+   * Returns: Maybe
+   *
+   * Synonyms: safeExtract | maybeTap | safeTap
+   *
+   * Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
+   * either in the object, or its prototype chain, then Nothing is returned.
+   *
+   * Examples:
+   *   funkierJS.maybeExtract('foo', {}); // => Nothing
+   *
+   */
+
+  var maybeExtract = curry(function(prop, obj) {
+    if (!(prop in obj))
+      return Nothing;
+
+    // Handle case where there is no getter
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (('set' in descriptor) && descriptor.get === undefined)
+      return Nothing;
+
+    return Just(obj[prop]);
+  });
+
+
+  // A thousand curses!
+  // Per the ECMAScript spec, when setting a property on an object, the property descriptor - if it exists -
+  // should be checked. Setting should fail when writable=false or there is no setter in the descriptor.
+  // If the property descriptor doesn't exist on the property, then walk up the prototype chain making the
+  // same check.
+  //
+  // Versions of V8 up to 3.11.9 fail to walk up the prototype chain. Further, when it was fixed, the fix
+  // was gated behind a flag, which defaulted to false until 3.13.6, when the flag was flipped and V8 became
+  // spec-compliant. The flag was removed in 3.25.4.
+  var engineHandlesProtosCorrectly = (function() {
+    var A = function(){};
+    Object.defineProperty(A.prototype, 'foo', {writable: false});
+    var compliant = false;
+    var b = new A();
+
+    try {
+      b.foo = 1;
+    } catch (e) {
+      compliant = true;
+    }
+
+    return compliant;
+  })();
+
+
+  // Utility function for set: work backwards to Object.prototype, looking for a property descriptor
+  var findPropertyDescriptor = function(prop, obj) {
+    var descriptor;
+    var toppedOut = false;
+
+    while (descriptor === undefined && !toppedOut) {
+      descriptor = getOwnPropertyDescriptor(prop, obj);
+      if (descriptor === undefined) {
+        if (obj === Object.prototype) {
+          toppedOut = true;
+        } else {
+          obj = Object.getPrototypeOf(obj);
+        }
+      }
+    }
+
+    return descriptor;
+  };
+
+
+ // Utility function, taking a property and an object, returning true if that property is writable
+  var checkIfWritable = function(prop, obj) {
+    var writable = true;
+    var descriptor = findPropertyDescriptor(prop, obj);
+
+    // Don't modify writable false properties
+    if (descriptor && 'writable' in descriptor && descriptor.writable === false)
+      writable = false;
+
+    // Don't modify no setter properties
+    if (descriptor && writable && 'set' in descriptor && descriptor.set === undefined)
+      writable = false;
+
+    return writable;
+  };
+
+
+  /*
+   * <apifunction>
+   *
+   * set
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: setProp
+   *
+   * Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
+   * o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+   * not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
+   * is not already present.
+   *
+   * Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
+   * to ensure existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.set('foo', 42, a); // => returns a
+   *   a.foo // => 42
+   *
+   */
+
+  var set = curry(function(prop, val, obj) {
+    // We manually emulate the operation of [[CanPut]], rather than just setting in a
+    // try-catch. We don't want to suppress other errors: for example the property's
+    // setter function might throw
+    var writable = checkIfWritable(prop, obj);
+
+    if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
+      writable = false;
+
+    if (!writable)
+      throw new Error('Cannot write to property ' + prop);
+
+    obj[prop] = val;
+    return obj;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeSet
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: Maybe
+   *
+   * Synonyms: maybeSet | maybeSetProp | safeSetProp
+   *
+   * Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
+   * successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
+   * object. If unable to modify or create the property, then Nothing will be returned.
+   *
+   * Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
+   * to ensure existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeSet('foo', 42, a); // => returns Nothing
+   *   a.foo // => 1
+   *
+   */
+
+  var safeSet = curry(function(prop, val, obj) {
+    // We manually emulate the operation of [[CanPut]], rather than just setting in a
+    // try-catch. We don't want to suppress other errors: for example the property's
+    // setter function might throw
+    var writable = checkIfWritable(prop, obj);
+
+    if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
+      writable = false;
+
+    if (!writable)
+      return Nothing;
+
+    obj[prop] = val;
+    return Just(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * modify
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: modifyProp
+   *
+   * Sets the given property to the given value on the given object, providing it exists, and returns the object.
+   * Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+   * Throws when the property is not writable, when it has no setter function, or when the object is frozen.
+   *
+   * Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
+   * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
+   * where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
+   * existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.modify('foo', 42, a); // => returns a
+   *   a.foo // => 42
+   *
+   */
+
+  var modify = curry(function(prop, val, obj) {
+    // Return straight away if the property doesn't exist
+    if (!hasProperty(prop, obj))
+      throw new Error('Cannot modify non-existent property ' + prop);
+
+    return set(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeModify
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: maybeModify | maybeModifyProp | safeModifyProp
+   *
+   * Sets the given property to the given value on the given object, providing it exists, and returns the object,
+   * wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
+   * created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
+   * has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+   *
+   * Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
+   * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
+   * where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
+   * existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeModify('foo', 42, a); // => Nothing
+   *   a.foo // => 1
+   *
+   */
+
+  var safeModify = curry(function(prop, val, obj) {
+    // Return straight away if the property doesn't exist
+    if (!hasProperty(prop, obj))
+      return Nothing;
+
+    return safeSet(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
+   * o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+   * Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
+   * successfully created when it already exists, but only in the prototype chain.
+   *
+   * Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
+   * creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
+   * required.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.create('bar', 42, a); // => returns a
+   *   a.bar // => 42
+   *
+   */
+
+  var createProp = curry(function(prop, val, obj) {
+    // Return straight away if the property exists
+    if (hasOwnProperty(prop, obj))
+      throw new Error('Attempt to recreate existing property ' + prop);
+
+    return set(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeCreateProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: Maybe
+   *
+   * Synonyms: maybeCreate
+   *
+   *
+   * Creates the given property to the given value on the given object, returning the object wrapped in a Just.
+   * Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in
+   * that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or
+   * cannot be extended. Note that the property will be successfully created when it already exists, but only in the
+   * prototype chain.
+   *
+   * Alternatively, one can use [`create`](#create) for a version that will throw on failure. Similarly,
+   * [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
+   * creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
+   * required.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeCreateProp('bar', 42, a); // => returns Nothing
+   *   a.foo // => undefined
+   *
+   */
+
+  var safeCreateProp = curry(function(prop, val, obj) {
+    // Return straight away if the property exists
+    if (hasOwnProperty(prop, obj))
+      return Nothing;
+
+    return safeSet(prop, val, obj);
+  });
+
+
+
+  /*
+   * <apifunction>
+   *
+   * deleteProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
+   * delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+   *
+   * Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
+   * depending on the outcome of the operation.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.delete('foo',  a); // => returns a
+   *   a.foo // => undefined
+   *
+   */
+
+  var deleteProp = curry(function(prop, obj) {
+    obj = checkObjectLike(obj);
+
+    if (!obj.hasOwnProperty(prop))
+      return obj;
+
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor.configurable === false)
+      throw new Error('Cannot delete property ' + prop + ': not configurable!');
+
+    delete obj[prop];
+    return obj;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeDeleteProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: maybeDelete
+   *
+   * Deletes the given property from the given the given object, returning the object wrapped as a Just value.
+   * Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
+   * descriptor or the object being frozen or sealed) then Nothing will be returned.
+   *
+   * Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
+   *
+   * Examples:
+   *   var a = {};
+   *   funkierJS.delete('foo',  a); // => returns Nothing
+   *
+   */
+
+  var safeDeleteProp = curry(function(prop, obj) {
+    obj = checkObjectLike(obj);
+
+    if (!obj.hasOwnProperty(prop))
+      return Just(obj);
+
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor.configurable === false)
+      return Nothing;
+
+    delete obj[prop];
+    return Just(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * keys
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+   * properties. Returns an empty array for non-objects.
+   *
+   * Examples:
+   *   funkierJS.keys({foo: 1, bar: 2}); // => returns ['foo', 'bar'] or ['bar', 'foo'] depending on native
+   *                                     //    environment
+   *
+   */
+
+  var keys = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return Object.keys(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getOwnPropertyNames
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+   * object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
+   * the property names is not defined.
+   *
+   * Examples:
+   *   funkierJS.getOwnPropertyNames({foo: 1, bar: 2}); // => returns ['foo', 'bar'] or ['bar', 'foo'] depending on
+   *                                                    // native environment
+   *
+   */
+
+  var getOwnPropertyNames = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return Object.getOwnPropertyNames(obj);
+  });
+
+
+
+  /*
+   * <apifunction>
+   *
+   * keyValues
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+   * of a property from the object, and the second element is the value of the property. This function only returns
+   * key-value pairs for the object's own properties. Returns an empty array for non-objects.  The order of the values
+   * is not defined.
+   *
+   * Examples:
+   *   funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
+   *                                          // native environment
+   *
+   */
+
+  var keyValues = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return keys(obj).map(function(k) {return [k, obj[k]];});
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * descriptors
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+   * of a property from the object, and the second element is its property descriptor. This function only returns
+   * key-value pairs for the object's own properties. Returns an empty array for non-objects.  The order of the values
+   * is not defined.
+   *
+   * Examples:
+   *   funkierJS.descriptors({foo: 1}); // => returns [['foo', {configurable: true, writable: true, enumerable: true,
+   *                                                            value: 1}]
+   *
+   */
+
+  var descriptors = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return keys(obj).map(function(k) {return [k, getOwnPropertyDescriptor(k, obj)];});
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * clone
+   *
+   * Category: Object
+   *
+   * Synonyms: shallowClone
+   *
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
+   * and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
+   * from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
+   * the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+   * Non-primitive values are copied by reference.
+   *
+   * Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
+   * will have these same functions using the same scope. Getting/setting such a property in the clone may affect the
+   * corresponding property in the original.
+   *
+   */
+
+  var shallowCloneInternal = function(obj, isRecursive) {
+    if (typeof(obj) === 'function')
+      return obj;
+
+    if (typeof(obj) !== 'object')
+      throw new TypeError('shallowClone called on non-object');
+
+    if (Array.isArray(obj)) {
+      var newArray = obj.slice();
+
+      Object.keys(obj).forEach(function(k) {
+        var n = k - 0;
+        if (isNaN(n)) {
+          newArray[k] = obj[k];
+          return;
+        }
+
+        if (Math.floor(n) === n && Math.ceil(n) === n) return;
+        newArray[k] = obj[k];
+      });
+
+      return newArray;
+    }
+
+    if (obj === null)
+      return isRecursive ? Object.create(null) : null;
+
+    if (obj === Object.prototype)
+      return {};
+
+    var result = shallowCloneInternal(Object.getPrototypeOf(obj), true);
+
+    Object.getOwnPropertyNames(obj).forEach(function(k) {
+      var desc = Object.getOwnPropertyDescriptor(obj, k);
+      Object.defineProperty(result, k, desc);
+    });
+
+    return result;
+  };
+
+
+  var shallowClone = curry(function(obj) {
+    return shallowCloneInternal(obj, false);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extend
+   *
+   * Category: Object
+   *
+   * Parameter: source: objectLike
+   * Parameter: dest: objectLike
+   * Returns: objectLike
+   *
+   * Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
+   * into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
+   * properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
+   * afterwards source.foo === dest.foo will be true.
+   *
+   * Examples:
+   *   var a = {bar: 1};
+   *   funkierJS.extend(a, {foo: 42}); // => a === {foo: 42, bar: 1}
+   *
+   */
+
+  var extend = curry(function(source, dest) {
+    for (var k in source)
+      dest[k] = source[k];
+
+    return dest;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extendOwn
+   *
+   * Category: Object
+   *
+   * Parameter: source: objectLike
+   * Parameter: dest: objectLike
+   * Returns: objectLike
+   *
+   * Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
+   * source's prototype chain are not copied. Any extant properties with the same name are overwritten.
+   * Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
+   * source whose value is an object, then afterwards source.foo === dest.foo will be true.
+   *
+   * Examples:
+   *   var a = funkierJS.createObject({bar: 1});
+   *   a.baz = 2;
+   *   var b = {foo: 3};
+   *   funkierJS.extendOwn(b, a); // b == {foo: 3, baz: 2}
+   *
+   */
+
+  var extendOwn = curry(function(source, dest) {
+    var keys = Object.keys(source);
+
+    keys.forEach(function(k) {
+      dest[k] = source[k];
+    });
+
+    return dest;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * curryOwn
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as
+   * writable: false), then curries the member functions of the object using the [`objectCurry`](#objectCurry) method.
+   * If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the
+   * object's own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters
+   * in their descriptor are ignored.
+   *
+   * The all-or-nothing approach was taken to avoid the difficulty in reasoning that would ensue on partial success:
+   * the client would be left having to manually enumerate the functions to see which ones did get curried. The
+   * avoidance of functions returned from properties with getter/setter descriptors is to avoid any lexical scoping
+   * ambiguities.
+   *
+   * Examples:
+   *   var obj = {foo: function(x, y) { return this.bar + x + y; }, bar: 10};
+   *   funkierJS.curryOwn(obj);
+   *   obj.foo(2)(3); // => 15
+   *
+   */
+
+  var curryOwn = curry(function(obj) {
+    var keys = Object.keys(obj);
+
+    var funcKeys = keys.filter(function(k) {
+      var desc = Object.getOwnPropertyDescriptor(obj, k);
+      return typeof(obj[k]) === 'function' && desc.hasOwnProperty('configurable') && desc.hasOwnProperty('writable');
+    });
+
+    if (funcKeys.some(function(k) { return Object.getOwnPropertyDescriptor(obj, k).writable === false; }))
+      return obj;
+
+    funcKeys.forEach(function(k) {
+      obj[k] = objectCurry(obj[k]);
+    });
+
+    return obj;
+  });
+
+
+  return {
+    callProp: callProp,
+    callPropWithArity: callPropWithArity,
+    clone: shallowClone,
+    createObject: createObject,
+    createObjectWithProps: createObjectWithProps,
+    createProp: createProp,
+    curryOwn: curryOwn,
+    descriptors: descriptors,
+    defaultTap: extractOrDefault,
+    defineProperty: defineProperty,
+    defineProperties: defineProperties,
+    deleteProp: deleteProp,
+    extend: extend,
+    extendOwn: extendOwn,
+    extract: extract,
+    extractOrDefault: extractOrDefault,
+    getOwnPropertyDescriptor: getOwnPropertyDescriptor,
+    getOwnPropertyNames: getOwnPropertyNames,
+    hasOwnProperty: hasOwnProperty,
+    hasProperty: hasProperty,
+    instanceOf: instanceOf,
+    isPrototypeOf: isPrototypeOf,
+    keys: keys,
+    keyValues: keyValues,
+    maybeCreate: safeCreateProp,
+    maybeDelete: safeDeleteProp,
+    maybeExtract: maybeExtract,
+    maybeModify: safeModify,
+    maybeModifyProp: safeModify,
+    maybeSet: safeSet,
+    maybeSetProp: safeSet,
+    maybeTap: maybeExtract,
+    modify: modify,
+    modifyProp: modify,
+    safeCreateProp: safeCreateProp,
+    safeDeleteProp: safeDeleteProp,
+    safeExtract: maybeExtract,
+    safeModify: safeModify,
+    safeModifyProp: safeModify,
+    safeSet: safeSet,
+    safeSetProp: safeSet,
+    safeTap: maybeExtract,
+    set: set,
+    setProp: set,
+    shallowClone: shallowClone,
+    tap: extract
+  };
+})();
+
+},{"../internalUtilities":13,"./base":1,"./curry":2,"./maybe":5}],7:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2361,7 +3526,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":12,"./curry":2}],7:[function(require,module,exports){
+},{"../internalUtilities":13,"./curry":2}],8:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2697,7 +3862,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":9,"../internalUtilities":12,"./curry":2}],8:[function(require,module,exports){
+},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],9:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3184,7 +4349,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2}],9:[function(require,module,exports){
+},{"./curry":2}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3245,7 +4410,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":2}],10:[function(require,module,exports){
+},{"./components/curry":2}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3257,6 +4422,7 @@ module.exports = (function() {
     base: require('./components/base'),
     curry: require('./components/curry'),
     logical: require('./components/logical'),
+    object: require('./components/object'),
     maths: require('./components/maths'),
     maybe: require('./components/maybe'),
     pair: require('./components/pair'),
@@ -3323,7 +4489,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":1,"./components/curry":2,"./components/logical":3,"./components/maths":4,"./components/maybe":5,"./components/pair":6,"./components/result":7,"./components/types":8,"./help":11}],11:[function(require,module,exports){
+},{"./components/base":1,"./components/curry":2,"./components/logical":3,"./components/maths":4,"./components/maybe":5,"./components/object":6,"./components/pair":7,"./components/result":8,"./components/types":9,"./help":12}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3554,6 +4720,45 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#bitwisexor');
           break;
 
+        case funkier.callProp:
+          console.log('callProp:');
+          console.log('');
+          console.log('A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified');
+          console.log('property on the given object.');
+          console.log('');
+          console.log('Usage: var x = callProp(prop)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callprop');
+          break;
+
+        case funkier.callPropWithArity:
+          console.log('callPropWithArity:');
+          console.log('');
+          console.log('Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function');
+          console.log('requires all the original arguments in their original order, and an object as its final parameter. The returned');
+          console.log('function will then try to call the named property on the given object,');
+          console.log('');
+          console.log('Usage: var x = callPropWithArity(prop, arity)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callpropwitharity');
+          break;
+
+        case funkier.clone:
+          console.log('clone:');
+          console.log('');
+          console.log('Synonyms: shallowClone');
+          console.log('');
+          console.log('Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object');
+          console.log('and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values');
+          console.log('from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of');
+          console.log('the clone if they are in the prototype chain of the original object. Functions are returned unchanged.');
+          console.log('Non-primitive values are copied by reference.');
+          console.log('');
+          console.log('Usage: var x = clone(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#clone');
+          break;
+
         case funkier.compose:
           console.log('compose:');
           console.log('');
@@ -3612,6 +4817,41 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant0');
           break;
 
+        case funkier.createObject:
+          console.log('createObject:');
+          console.log('');
+          console.log('Returns a new object whose internal prototype property is the given object protoObject.');
+          console.log('');
+          console.log('Usage: var x = createObject(protoObject)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createobject');
+          break;
+
+        case funkier.createObjectWithProps:
+          console.log('createObjectWithProps:');
+          console.log('');
+          console.log('Creates an object whose internal prototype property is protoObj, and which has the additional properties described');
+          console.log('in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the');
+          console.log('form accepted by Object.create, Object.defineProperties etc.');
+          console.log('');
+          console.log('Usage: var x = createObjectWithProps(protoObject, descriptorsObject)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createobjectwithprops');
+          break;
+
+        case funkier.createProp:
+          console.log('createProp:');
+          console.log('');
+          console.log('Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating');
+          console.log('o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.');
+          console.log('Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be');
+          console.log('successfully created when it already exists, but only in the prototype chain.');
+          console.log('');
+          console.log('Usage: var x = createProp(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createprop');
+          break;
+
         case funkier.curry:
           console.log('curry:');
           console.log('');
@@ -3626,6 +4866,20 @@ module.exports = (function() {
           console.log('Usage: var x = curry(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#curry');
+          break;
+
+        case funkier.curryOwn:
+          console.log('curryOwn:');
+          console.log('');
+          console.log('Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as');
+          console.log('writable: false), then curries the member functions of the object using the [`objectCurry`](#objectCurry) method.');
+          console.log('If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the');
+          console.log('object\'s own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters');
+          console.log('in their descriptor are ignored.');
+          console.log('');
+          console.log('Usage: var x = curryOwn(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#curryown');
           break;
 
         case funkier.curryWithArity:
@@ -3658,6 +4912,54 @@ module.exports = (function() {
           console.log('Usage: var x = deepEqual(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#deepequal');
+          break;
+
+        case funkier.defineProperties:
+          console.log('defineProperties:');
+          console.log('');
+          console.log('A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property');
+          console.log('descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the');
+          console.log('properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.');
+          console.log('');
+          console.log('Usage: var x = defineProperties(descriptors, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#defineproperties');
+          break;
+
+        case funkier.defineProperty:
+          console.log('defineProperty:');
+          console.log('');
+          console.log('A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the');
+          console.log('object that the property hould be defined on. Returns the object o, after having defined the relevant property');
+          console.log('per the descriptor. Throws a TypeError if the descriptor is not an object.');
+          console.log('');
+          console.log('Usage: var x = defineProperty(prop, descriptor, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#defineproperty');
+          break;
+
+        case funkier.deleteProp:
+          console.log('deleteProp:');
+          console.log('');
+          console.log('Deletes the given property from the given the given object, returning the object. Equivalent to evaluating');
+          console.log('delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.');
+          console.log('');
+          console.log('Usage: var x = deleteProp(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#deleteprop');
+          break;
+
+        case funkier.descriptors:
+          console.log('descriptors:');
+          console.log('');
+          console.log('Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name');
+          console.log('of a property from the object, and the second element is its property descriptor. This function only returns');
+          console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
+          console.log('is not defined.');
+          console.log('');
+          console.log('Usage: var x = descriptors(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#descriptors');
           break;
 
         case funkier.div:
@@ -3724,6 +5026,57 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#exp');
           break;
 
+        case funkier.extend:
+          console.log('extend:');
+          console.log('');
+          console.log('Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties');
+          console.log('into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All');
+          console.log('properties are shallow-copied: in other words, if \'foo\' is a property of source whose value is an object, then');
+          console.log('afterwards source.foo === dest.foo will be true.');
+          console.log('');
+          console.log('Usage: var x = extend(source, dest)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extend');
+          break;
+
+        case funkier.extendOwn:
+          console.log('extendOwn:');
+          console.log('');
+          console.log('Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from');
+          console.log('source\'s prototype chain are not copied. Any extant properties with the same name are overwritten.');
+          console.log('Returns the modified dest object. All properties are shallow-copied: in other words, if \'foo\' is a property of');
+          console.log('source whose value is an object, then afterwards source.foo === dest.foo will be true.');
+          console.log('');
+          console.log('Usage: var x = extendOwn(source, dest)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extendown');
+          break;
+
+        case funkier.extract:
+          console.log('extract:');
+          console.log('');
+          console.log('Synonyms: tap');
+          console.log('');
+          console.log('Extracts the given property from the given object. Equivalent to evaluating obj[prop].');
+          console.log('');
+          console.log('Usage: var x = extract(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extract');
+          break;
+
+        case funkier.extractOrDefault:
+          console.log('extractOrDefault:');
+          console.log('');
+          console.log('Synonyms: defaultTap');
+          console.log('');
+          console.log('Extracts the given property from the given object, unless the property is not found in the object or its prototype');
+          console.log('chain, in which case the specified default value is returned.');
+          console.log('');
+          console.log('Usage: var x = extractOrDefault(prop, default, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extractordefault');
+          break;
+
         case funkier.flip:
           console.log('flip:');
           console.log('');
@@ -3780,6 +5133,30 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getokvalue');
           break;
 
+        case funkier.getOwnPropertyDescriptor:
+          console.log('getOwnPropertyDescriptor:');
+          console.log('');
+          console.log('A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself');
+          console.log('has the given property, then the object\'s property descriptor for the given object is returned, otherwise it returns');
+          console.log('undefined.');
+          console.log('');
+          console.log('Usage: var x = getOwnPropertyDescriptor(prop, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertydescriptor');
+          break;
+
+        case funkier.getOwnPropertyNames:
+          console.log('getOwnPropertyNames:');
+          console.log('');
+          console.log('A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the');
+          console.log('object\'s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of');
+          console.log('the property names is not defined.');
+          console.log('');
+          console.log('Usage: var x = getOwnPropertyNames(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertynames');
+          break;
+
         case funkier.getType:
           console.log('getType:');
           console.log('');
@@ -3815,6 +5192,29 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#greaterthanequal');
           break;
 
+        case funkier.hasOwnProperty:
+          console.log('hasOwnProperty:');
+          console.log('');
+          console.log('A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an');
+          console.log('object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified');
+          console.log('property.');
+          console.log('');
+          console.log('Usage: var x = hasOwnProperty(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasownproperty');
+          break;
+
+        case funkier.hasProperty:
+          console.log('hasProperty:');
+          console.log('');
+          console.log('A curried wrapper around the \'in\' operator. Takes a string representing a property name and an object, and');
+          console.log('returns true if the given object or some object in the prototype chain has the specified property.');
+          console.log('');
+          console.log('Usage: var x = hasProperty(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasproperty');
+          break;
+
         case funkier.id:
           console.log('id:');
           console.log('');
@@ -3823,6 +5223,17 @@ module.exports = (function() {
           console.log('Usage: var x = id(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#id');
+          break;
+
+        case funkier.instanceOf:
+          console.log('instanceOf:');
+          console.log('');
+          console.log('A curried wrapper around the \'instanceof\' operator. Takes a constructor function and an object, and returns true');
+          console.log('if the function\'s prototype property is in the prototype chain of the given object.');
+          console.log('');
+          console.log('Usage: var x = instanceOf(constructor, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#instanceof');
           break;
 
         case funkier.is:
@@ -3948,6 +5359,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#ispair');
           break;
 
+        case funkier.isPrototypeOf:
+          console.log('isPrototypeOf:');
+          console.log('');
+          console.log('A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object');
+          console.log('whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.');
+          console.log('');
+          console.log('Usage: var x = isPrototypeOf(protoObject, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isprototypeof');
+          break;
+
         case funkier.isRealObject:
           console.log('isRealObject:');
           console.log('');
@@ -3987,6 +5409,30 @@ module.exports = (function() {
           console.log('Usage: var x = isUndefined(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isundefined');
+          break;
+
+        case funkier.keyValues:
+          console.log('keyValues:');
+          console.log('');
+          console.log('Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name');
+          console.log('of a property from the object, and the second element is the value of the property. This function only returns');
+          console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
+          console.log('is not defined.');
+          console.log('');
+          console.log('Usage: var x = keyValues(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keyvalues');
+          break;
+
+        case funkier.keys:
+          console.log('keys:');
+          console.log('');
+          console.log('A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object\'s own');
+          console.log('properties. Returns an empty array for non-objects.');
+          console.log('');
+          console.log('Usage: var x = keys(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keys');
           break;
 
         case funkier.leftShift:
@@ -4068,6 +5514,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#max');
           break;
 
+        case funkier.maybeExtract:
+          console.log('maybeExtract:');
+          console.log('');
+          console.log('Synonyms: safeExtract, maybeTap, safeTap');
+          console.log('');
+          console.log('Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,');
+          console.log('either in the object, or its prototype chain, then Nothing is returned.');
+          console.log('');
+          console.log('Usage: var x = maybeExtract(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#maybeextract');
+          break;
+
         case funkier.min:
           console.log('min:');
           console.log('');
@@ -4076,6 +5535,20 @@ module.exports = (function() {
           console.log('Usage: var x = min(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#min');
+          break;
+
+        case funkier.modify:
+          console.log('modify:');
+          console.log('');
+          console.log('Synonyms: modifyProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, providing it exists, and returns the object.');
+          console.log('Equivalent to evaluating o[prop] = value. The property will not be created when it doesn\'t exist on the object.');
+          console.log('Throws when the property is not writable, when it has no setter function, or when the object is frozen.');
+          console.log('');
+          console.log('Usage: var x = modify(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#modify');
           break;
 
         case funkier.multiply:
@@ -4217,6 +5690,65 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rightshiftzero');
           break;
 
+        case funkier.safeCreateProp:
+          console.log('safeCreateProp:');
+          console.log('');
+          console.log('Synonyms: maybeCreate');
+          console.log('');
+          console.log('Creates the given property to the given value on the given object, returning the object wrapped in a Just.');
+          console.log('Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in');
+          console.log('that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or');
+          console.log('cannot be extended. Note that the property will be successfully created when it already exists, but only in the');
+          console.log('prototype chain.');
+          console.log('');
+          console.log('Usage: var x = safeCreateProp(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safecreateprop');
+          break;
+
+        case funkier.safeDeleteProp:
+          console.log('safeDeleteProp:');
+          console.log('');
+          console.log('Synonyms: maybeDelete');
+          console.log('');
+          console.log('Deletes the given property from the given the given object, returning the object wrapped as a Just value.');
+          console.log('Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual');
+          console.log('descriptor or the object being frozen or sealed) then Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeDeleteProp(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safedeleteprop');
+          break;
+
+        case funkier.safeModify:
+          console.log('safeModify:');
+          console.log('');
+          console.log('Synonyms: maybeModify, maybeModifyProp, safeModifyProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, providing it exists, and returns the object,');
+          console.log('wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be');
+          console.log('created when it doesn\'t exist on the object; nor will it be amended when the property is not writable, when it');
+          console.log('has no setter function, or when the object is frozen. In such cases, Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeModify(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safemodify');
+          break;
+
+        case funkier.safeSet:
+          console.log('safeSet:');
+          console.log('');
+          console.log('Synonyms: maybeSet, maybeSetProp, safeSetProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, returning the object wrapped in a Just value when');
+          console.log('successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn\'t exist on the');
+          console.log('object. If unable to modify or create the property, then Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeSet(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safeset');
+          break;
+
         case funkier.sectionLeft:
           console.log('sectionLeft:');
           console.log('');
@@ -4237,6 +5769,21 @@ module.exports = (function() {
           console.log('Usage: var x = sectionRight(f, x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sectionright');
+          break;
+
+        case funkier.set:
+          console.log('set:');
+          console.log('');
+          console.log('Synonyms: setProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating');
+          console.log('o[prop] = value. The property will be created if it doesn\'t exist on the object. Throws when the property is');
+          console.log('not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property');
+          console.log('is not already present.');
+          console.log('');
+          console.log('Usage: var x = set(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#set');
           break;
 
         case funkier.snd:
@@ -4315,7 +5862,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4377,6 +5924,41 @@ module.exports = (function() {
 
 
   /*
+   * isObjectLike: returns true if the given value is a string, array, function, or object,
+   *               and false otherwise.
+   *
+   */
+
+  var isObjectLike = function(v, options) {
+    options = options || {};
+    var strict = options.strict || false;
+    var allowNull = options.allowNull || false;
+
+    var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
+    if (strict && Array.isArray(v))
+      return false;
+
+    return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
+  };
+
+
+  /* checkObjectLike: takes a value and throws if it is not object-like, otherwise returns the object
+   *
+   */
+
+  var checkObjectLike = function(v, options) {
+    options = options || {};
+    var message = options.message || 'Value is not an object';
+    var allowNull = options.allowNull || false;
+
+    if (!isObjectLike(v, options))
+      throw new TypeError(message);
+
+    return v;
+  };
+
+
+  /*
    * isArrayLike: returns true if the given value is a string, array, or 'array-like', and false otherwise.
    *              Takes an optional 'noStrings' argument: strings will not be considered 'array-like' when
    *              this is true.
@@ -4433,8 +6015,10 @@ module.exports = (function() {
 
   return {
     checkIntegral: checkIntegral,
+    checkObjectLike: checkObjectLike,
     checkPositiveIntegral: checkPositiveIntegral,
     isArrayLike: isArrayLike,
+    isObjectLike: isObjectLike,
     valueStringifier: valueStringifier
   };
 })();
@@ -4454,41 +6038,6 @@ module.exports = (function() {
 //
 //
 //    var makeModule = function(require, exports) {
-//      /*
-//       * isObjectLike: returns true if the given value is a string, array, function, or object,
-//       *               and false otherwise.
-//       *
-//       */
-//
-//      var isObjectLike = function(v, options) {
-//        options = options || {};
-//        var strict = options.strict || false;
-//        var allowNull = options.allowNull || false;
-//
-//        var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
-//        if (strict && Array.isArray(v))
-//          return false;
-//
-//        return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
-//      };
-//
-//
-//      /* checkObjectLike: takes a value and throws if it is not object-like, otherwise return a copy.
-//       *
-//       */
-//
-//      var checkObjectLike = function(v, options) {
-//        options = options || {};
-//        var message = options.message || 'Value is not an object';
-//        var allowNull = options.allowNull || false;
-//
-//        if (!isObjectLike(v, options))
-//          throw new TypeError(message);
-//
-//        return v;
-//      };
-//
-//
 //      /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
 //       *                 return a copy.
 //       *
@@ -4537,5 +6086,5 @@ module.exports = (function() {
 //    }();
 //})();
 
-},{}]},{},[10])(10)
+},{}]},{},[11])(11)
 });

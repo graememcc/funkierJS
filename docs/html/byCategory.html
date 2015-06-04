@@ -16,6 +16,7 @@
 <li class="categoryListItem"><a href="#Function">Function</a></li>
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
 <li class="categoryListItem"><a href="#Maths">Maths</a></li>
+<li class="categoryListItem"><a href="#Object">Object</a></li>
 <li class="categoryListItem"><a href="#Types">Types</a></li>
 </ul>
 </section>
@@ -1089,6 +1090,532 @@ funkierJS.odd(3); // =&gt; true
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.subtract(3, 1); // =&gt; 2;
 </code></pre></section>
+</section>
+<section class="categoryRef" id="Object">
+<h2 class="categoryName">Object</h2>
+<section class="functionRef" id="callProp">
+<h3 class="functionName">callProp</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = callProp(prop);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+property on the given object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var myObj = { return42: function() { return 42; }};
+var callReturn42 = funkierJS.callProp(&#39;return42&#39;);
+var callReturn42(myObj); // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="callPropWithArity">
+<h3 class="functionName">callPropWithArity</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = callPropWithArity(prop, arity);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">arity: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function
+requires all the original arguments in their original order, and an object as its final parameter. The returned
+function will then try to call the named property on the given object,</p>
+<p>Note that the function is curried in the standard sense. In particular the function is not object curried.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var myMap = funkierJS.callPropWithArity(&#39;map&#39;, 1);
+myMap(f, arr); // =&gt; returns arr.map(f);
+
+var myFoldr = funkierJS.callPropWithArity(&#39;reduceRight&#39;, 2);
+myFoldr(f, initialValue, arr); // =&gt; arr.reduceRight(f, initialValue);
+</code></pre></section>
+</section>
+<section class="functionRef" id="clone">
+<h3 class="functionName">clone</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">shallowClone</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = clone(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
+and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
+from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
+the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+Non-primitive values are copied by reference.</p>
+<p>Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
+will have these same functions using the same scope. Getting/setting such a property in the clone may affect the
+corresponding property in the original.</p>
+</section>
+<section class="functionRef" id="createObject">
+<h3 class="functionName">createObject</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = createObject(protoObject);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">protoObject: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
+<p>Returns a new object whose internal prototype property is the given object protoObject.</p>
+<p>Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
+to the created object, use <a href="#createObjectWithProps">createObjectWithProps</a>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var obj = {};
+var newObj = funkierJS.createObject(obj);
+funkierJS.isPrototypeOf(obj, newObj); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="createObjectWithProps">
+<h3 class="functionName">createObjectWithProps</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = createObjectWithProps(protoObject, descriptorsObject);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">protoObject: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param">descriptorsObject: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
+<p>Creates an object whose internal prototype property is protoObj, and which has the additional properties described
+in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
+form accepted by Object.create, Object.defineProperties etc.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var obj = {};
+var newObj = funkierJS.createObjectWithProps(obj, {prop: {configurable: false, enumerable: false,
+                                                          writeable: true, value: 1}});
+funkierJS.isPrototypeOf(obj, newObj); // =&gt; true
+funkierJS.hasOwnProperty(&#39;prop&#39;, newObj); // =&gt; true&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="createProp">
+<h3 class="functionName">createProp</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = createProp(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
+o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
+successfully created when it already exists, but only in the prototype chain.</p>
+<p>Alternatively, one can use <a href="#safeCreateProp"><code>safeCreateProp</code></a> for a version that will not throw in the above circumstances.
+Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to modify existing properties without
+creating them, and <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to either modify or create the property as
+required.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+funkierJS.create(&#39;bar&#39;, 42, a); // =&gt; returns a
+a.bar // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="curryOwn">
+<h3 class="functionName">curryOwn</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = curryOwn(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as
+writable: false), then curries the member functions of the object using the <a href="#objectCurry"><code>objectCurry</code></a> method.
+If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the
+object&#39;s own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters
+in their descriptor are ignored.</p>
+<p>The all-or-nothing approach was taken to avoid the difficulty in reasoning that would ensue on partial success:
+the client would be left having to manually enumerate the functions to see which ones did get curried. The
+avoidance of functions returned from properties with getter/setter descriptors is to avoid any lexical scoping
+ambiguities.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var obj = {foo: function(x, y) { return this.bar + x + y; }, bar: 10};
+funkierJS.curryOwn(obj);
+obj.foo(2)(3); // =&gt; 15
+</code></pre></section>
+</section>
+<section class="functionRef" id="defaultTap">
+<h3 class="functionName">defaultTap</h3>
+<p class="see">See <a class="synonymLink" href="#extractOrDefault"><code class="synonymCode">extractOrDefault</code></a></p>
+</section>
+<section class="functionRef" id="defineProperties">
+<h3 class="functionName">defineProperties</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = defineProperties(descriptors, o);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">descriptors: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
+properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {};&#39;,
+funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; false
+funkierJS.defineProperties({foo: {value: 42}}, a);
+funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="defineProperty">
+<h3 class="functionName">defineProperty</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = defineProperty(prop, descriptor, o);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">descriptor: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
+object that the property hould be defined on. Returns the object o, after having defined the relevant property
+per the descriptor. Throws a TypeError if the descriptor is not an object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {};&#39;,
+funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; false
+funkierJS.defineProperty(&#39;foo&#39;, {value: 42}, a);
+funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="deleteProp">
+<h3 class="functionName">deleteProp</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = deleteProp(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
+delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.</p>
+<p>Alternatively, one can use <a href="#safeDeleteProp"><code>safeDeleteProp</code></a> that will return the appropriate Maybe value
+depending on the outcome of the operation.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+funkierJS.delete(&#39;foo&#39;,  a); // =&gt; returns a
+a.foo // =&gt; undefined
+</code></pre></section>
+</section>
+<section class="functionRef" id="descriptors">
+<h3 class="functionName">descriptors</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = descriptors(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+of a property from the object, and the second element is its property descriptor. This function only returns
+key-value pairs for the object&#39;s own properties. Returns an empty array for non-objects.  The order of the values
+is not defined.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.descriptors({foo: 1}); // =&gt; returns [[&#39;foo&#39;, {configurable: true, writable: true, enumerable: true,
+                                                         value: 1}]
+</code></pre></section>
+</section>
+<section class="functionRef" id="extend">
+<h3 class="functionName">extend</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = extend(source, dest);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">source: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param">dest: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
+into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
+properties are shallow-copied: in other words, if &#39;foo&#39; is a property of source whose value is an object, then
+afterwards source.foo === dest.foo will be true.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {bar: 1};
+funkierJS.extend(a, {foo: 42}); // =&gt; a === {foo: 42, bar: 1}
+</code></pre></section>
+</section>
+<section class="functionRef" id="extendOwn">
+<h3 class="functionName">extendOwn</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = extendOwn(source, dest);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">source: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param">dest: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
+source&#39;s prototype chain are not copied. Any extant properties with the same name are overwritten.
+Returns the modified dest object. All properties are shallow-copied: in other words, if &#39;foo&#39; is a property of
+source whose value is an object, then afterwards source.foo === dest.foo will be true.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = funkierJS.createObject({bar: 1});
+a.baz = 2;
+var b = {foo: 3};
+funkierJS.extendOwn(b, a); // b == {foo: 3, baz: 2}
+</code></pre></section>
+</section>
+<section class="functionRef" id="extract">
+<h3 class="functionName">extract</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">tap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = extract(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Extracts the given property from the given object. Equivalent to evaluating obj[prop].</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.extract(&#39;foo&#39;, {foo: 42}); // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="extractOrDefault">
+<h3 class="functionName">extractOrDefault</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">defaultTap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = extractOrDefault(prop, default, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">default: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Extracts the given property from the given object, unless the property is not found in the object or its prototype
+chain, in which case the specified default value is returned.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
+</code></pre></section>
+</section>
+<section class="functionRef" id="getOwnPropertyDescriptor">
+<h3 class="functionName">getOwnPropertyDescriptor</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOwnPropertyDescriptor(prop, o);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
+<p>A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
+has the given property, then the object&#39;s property descriptor for the given object is returned, otherwise it returns
+undefined.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 42};&#39;,
+funkierJS.getOwnPropertyDescriptor(&#39;foo&#39;, a); // =&gt; {configurable: true, enumerable: true, writable: true,
+                                                     value: 42}
+funkierJS.getOwnPropertyDescriptor(&#39;toString&#39;, a); // =&gt; undefined&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="getOwnPropertyNames">
+<h3 class="functionName">getOwnPropertyNames</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOwnPropertyNames(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+object&#39;s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
+the property names is not defined.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getOwnPropertyNames({foo: 1, bar: 2}); // =&gt; returns [&#39;foo&#39;, &#39;bar&#39;] or [&#39;bar&#39;, &#39;foo&#39;] depending on
+                                                 // native environment
+</code></pre></section>
+</section>
+<section class="functionRef" id="hasOwnProperty">
+<h3 class="functionName">hasOwnProperty</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = hasOwnProperty(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
+property.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.hasOwnProperty(&#39;funkier&#39;, {funkier: 1}); // =&gt; true
+funkierJS.hasOwnProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="hasProperty">
+<h3 class="functionName">hasProperty</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = hasProperty(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A curried wrapper around the &#39;in&#39; operator. Takes a string representing a property name and an object, and
+returns true if the given object or some object in the prototype chain has the specified property.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.hasProperty(&#39;funkier&#39;, {funkier: 1}); // =&gt; true
+funkierJS.hasProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="instanceOf">
+<h3 class="functionName">instanceOf</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = instanceOf(constructor, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">constructor: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A curried wrapper around the &#39;instanceof&#39; operator. Takes a constructor function and an object, and returns true
+if the function&#39;s prototype property is in the prototype chain of the given object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var Constructor = function() {};
+funkierJS.instanceOf(Constructor, new Constructor()); // =&gt; true
+funkierJS.instanceOf(Function, {}); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="isPrototypeOf">
+<h3 class="functionName">isPrototypeOf</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPrototypeOf(protoObject, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">protoObject: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var Constructor = function() {};
+funkierJS.isPrototypeOf(Constructor.prototype, new Constructor()); // =&gt; true
+funkierJS.isPrototypeOf(Function.prototype, {}); // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="keyValues">
+<h3 class="functionName">keyValues</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = keyValues(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+of a property from the object, and the second element is the value of the property. This function only returns
+key-value pairs for the object&#39;s own properties. Returns an empty array for non-objects.  The order of the values
+is not defined.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.keyValues({foo: 1, bar: 2}); // =&gt; returns [[&#39;foo&#39;, 1], [&#39;bar&#39;, 2]] or [[&#39;bar&#39;, 2], [&#39;foo&#39;, 1]] depending on
+                                       // native environment
+</code></pre></section>
+</section>
+<section class="functionRef" id="keys">
+<h3 class="functionName">keys</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = keys(obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object&#39;s own
+properties. Returns an empty array for non-objects.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.keys({foo: 1, bar: 2}); // =&gt; returns [&#39;foo&#39;, &#39;bar&#39;] or [&#39;bar&#39;, &#39;foo&#39;] depending on native
+                                  //    environment
+</code></pre></section>
+</section>
+<section class="functionRef" id="maybeCreate">
+<h3 class="functionName">maybeCreate</h3>
+<p class="see">See <a class="synonymLink" href="#safeCreateProp"><code class="synonymCode">safeCreateProp</code></a></p>
+</section>
+<section class="functionRef" id="maybeDelete">
+<h3 class="functionName">maybeDelete</h3>
+<p class="see">See <a class="synonymLink" href="#safeDeleteProp"><code class="synonymCode">safeDeleteProp</code></a></p>
+</section>
+<section class="functionRef" id="maybeExtract">
+<h3 class="functionName">maybeExtract</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">safeExtract</code></li><li class="synonym"><code class="synonymName">maybeTap</code></li><li class="synonym"><code class="synonymName">safeTap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = maybeExtract(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<p>Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
+either in the object, or its prototype chain, then Nothing is returned.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.maybeExtract(&#39;foo&#39;, {}); // =&gt; Nothing
+</code></pre></section>
+</section>
+<section class="functionRef" id="maybeModify">
+<h3 class="functionName">maybeModify</h3>
+<p class="see">See <a class="synonymLink" href="#safeModify"><code class="synonymCode">safeModify</code></a></p>
+</section>
+<section class="functionRef" id="maybeModifyProp">
+<h3 class="functionName">maybeModifyProp</h3>
+<p class="see">See <a class="synonymLink" href="#safeModify"><code class="synonymCode">safeModify</code></a></p>
+</section>
+<section class="functionRef" id="maybeSet">
+<h3 class="functionName">maybeSet</h3>
+<p class="see">See <a class="synonymLink" href="#safeSet"><code class="synonymCode">safeSet</code></a></p>
+</section>
+<section class="functionRef" id="maybeSetProp">
+<h3 class="functionName">maybeSetProp</h3>
+<p class="see">See <a class="synonymLink" href="#safeSet"><code class="synonymCode">safeSet</code></a></p>
+</section>
+<section class="functionRef" id="maybeTap">
+<h3 class="functionName">maybeTap</h3>
+<p class="see">See <a class="synonymLink" href="#maybeExtract"><code class="synonymCode">maybeExtract</code></a></p>
+</section>
+<section class="functionRef" id="modify">
+<h3 class="functionName">modify</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">modifyProp</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = modify(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Sets the given property to the given value on the given object, providing it exists, and returns the object.
+Equivalent to evaluating o[prop] = value. The property will not be created when it doesn&#39;t exist on the object.
+Throws when the property is not writable, when it has no setter function, or when the object is frozen.</p>
+<p>Alternatively, one can use <a href="#safeModify"><code>safeModify</code></a> for a version that will not throw in the above circumstances.
+Similarly, <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to both modify existing properties and create them
+where required, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants to ensure
+existing values will not be changed.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+funkierJS.modify(&#39;foo&#39;, 42, a); // =&gt; returns a
+a.foo // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="modifyProp">
+<h3 class="functionName">modifyProp</h3>
+<p class="see">See <a class="synonymLink" href="#modify"><code class="synonymCode">modify</code></a></p>
+</section>
+<section class="functionRef" id="safeCreateProp">
+<h3 class="functionName">safeCreateProp</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeCreate</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeCreateProp(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<p>Creates the given property to the given value on the given object, returning the object wrapped in a Just.
+Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in
+that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or
+cannot be extended. Note that the property will be successfully created when it already exists, but only in the
+prototype chain.</p>
+<p>Alternatively, one can use <a href="#create"><code>create</code></a> for a version that will throw on failure. Similarly,
+<a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to modify existing properties without
+creating them, and <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to either modify or create the property as
+required.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+Object.freeze(a);
+funkierJS.safeCreateProp(&#39;bar&#39;, 42, a); // =&gt; returns Nothing
+a.foo // =&gt; undefined
+</code></pre></section>
+</section>
+<section class="functionRef" id="safeDeleteProp">
+<h3 class="functionName">safeDeleteProp</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeDelete</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeDeleteProp(prop, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Deletes the given property from the given the given object, returning the object wrapped as a Just value.
+Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
+descriptor or the object being frozen or sealed) then Nothing will be returned.</p>
+<p>Alternatively, one can use <a href="#delete"><code>delete</code></a> that will return not wrap the object, and throw on error.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {};
+funkierJS.delete(&#39;foo&#39;,  a); // =&gt; returns Nothing
+</code></pre></section>
+</section>
+<section class="functionRef" id="safeExtract">
+<h3 class="functionName">safeExtract</h3>
+<p class="see">See <a class="synonymLink" href="#maybeExtract"><code class="synonymCode">maybeExtract</code></a></p>
+</section>
+<section class="functionRef" id="safeModify">
+<h3 class="functionName">safeModify</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeModify</code></li><li class="synonym"><code class="synonymName">maybeModifyProp</code></li><li class="synonym"><code class="synonymName">safeModifyProp</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeModify(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Sets the given property to the given value on the given object, providing it exists, and returns the object,
+wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
+created when it doesn&#39;t exist on the object; nor will it be amended when the property is not writable, when it
+has no setter function, or when the object is frozen. In such cases, Nothing will be returned.</p>
+<p>Alternatively, one can use <a href="#modify"><code>modify</code></a> for a version that will throw in the above circumstances.
+Similarly, <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to both modify existing properties and create them
+where required, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants to ensure
+existing values will not be changed.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+Object.freeze(a);
+funkierJS.safeModify(&#39;foo&#39;, 42, a); // =&gt; Nothing
+a.foo // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="safeModifyProp">
+<h3 class="functionName">safeModifyProp</h3>
+<p class="see">See <a class="synonymLink" href="#safeModify"><code class="synonymCode">safeModify</code></a></p>
+</section>
+<section class="functionRef" id="safeSet">
+<h3 class="functionName">safeSet</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeSet</code></li><li class="synonym"><code class="synonymName">maybeSetProp</code></li><li class="synonym"><code class="synonymName">safeSetProp</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeSet(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<p>Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
+successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn&#39;t exist on the
+object. If unable to modify or create the property, then Nothing will be returned.</p>
+<p>Alternatively, one can use <a href="#set"><code>set</code></a> for a version that will throw in the above circumstances.
+Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to guarantee the property is not
+created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants
+to ensure existing values will not be changed.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+Object.freeze(a);
+funkierJS.safeSet(&#39;foo&#39;, 42, a); // =&gt; returns Nothing
+a.foo // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="safeSetProp">
+<h3 class="functionName">safeSetProp</h3>
+<p class="see">See <a class="synonymLink" href="#safeSet"><code class="synonymCode">safeSet</code></a></p>
+</section>
+<section class="functionRef" id="safeTap">
+<h3 class="functionName">safeTap</h3>
+<p class="see">See <a class="synonymLink" href="#maybeExtract"><code class="synonymCode">maybeExtract</code></a></p>
+</section>
+<section class="functionRef" id="set">
+<h3 class="functionName">set</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">setProp</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = set(prop, val, obj);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<p>Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
+o[prop] = value. The property will be created if it doesn&#39;t exist on the object. Throws when the property is
+not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
+is not already present.</p>
+<p>Alternatively, one can use <a href="#safeSet"><code>safeSet</code></a> for a version that will not throw in the above circumstances.
+Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to guarantee the property is not
+created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants
+to ensure existing values will not be changed.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = {foo: 1};
+funkierJS.set(&#39;foo&#39;, 42, a); // =&gt; returns a
+a.foo // =&gt; 42
+</code></pre></section>
+</section>
+<section class="functionRef" id="setProp">
+<h3 class="functionName">setProp</h3>
+<p class="see">See <a class="synonymLink" href="#set"><code class="synonymCode">set</code></a></p>
+</section>
+<section class="functionRef" id="shallowClone">
+<h3 class="functionName">shallowClone</h3>
+<p class="see">See <a class="synonymLink" href="#clone"><code class="synonymCode">clone</code></a></p>
+</section>
+<section class="functionRef" id="tap">
+<h3 class="functionName">tap</h3>
+<p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
 </section>
 <section class="categoryRef" id="Types">
 <h2 class="categoryName">Types</h2>

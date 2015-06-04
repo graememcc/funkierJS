@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":27,"../test/docgen/testAPIFunction":28,"../test/docgen/testAPIObject":29,"../test/docgen/testAPIPrototype":30,"../test/docgen/testCPTestDataHelper":31,"../test/docgen/testCollator":32,"../test/docgen/testCommentProcessor":33,"../test/docgen/testLineProcessor":34,"../test/docgen/testMarkdownCreator":35,"../test/docgen/testMarkdownRenderer":36,"../test/funkierJS/testAPI":37,"../test/funkierJS/testArray":38,"../test/funkierJS/testBase":39,"../test/funkierJS/testCurry":40,"../test/funkierJS/testDate":41,"../test/funkierJS/testFn":42,"../test/funkierJS/testFuncUtils":43,"../test/funkierJS/testFunkier":44,"../test/funkierJS/testInternalUtilities":45,"../test/funkierJS/testLogical":46,"../test/funkierJS/testMaths":47,"../test/funkierJS/testMaybe":48,"../test/funkierJS/testObject":49,"../test/funkierJS/testPair":50,"../test/funkierJS/testResult":51,"../test/funkierJS/testString":52,"../test/funkierJS/testTypes":53,"../test/funkierJS/testingUtilities":54}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":31,"../test/docgen/testAPIFunction":32,"../test/docgen/testAPIObject":33,"../test/docgen/testAPIPrototype":34,"../test/docgen/testCPTestDataHelper":35,"../test/docgen/testCollator":36,"../test/docgen/testCommentProcessor":37,"../test/docgen/testLineProcessor":38,"../test/docgen/testMarkdownCreator":39,"../test/docgen/testMarkdownRenderer":40,"../test/funkierJS/testAPI":41,"../test/funkierJS/testArray":42,"../test/funkierJS/testBase":43,"../test/funkierJS/testCurry":44,"../test/funkierJS/testDate":45,"../test/funkierJS/testFn":46,"../test/funkierJS/testFuncUtils":47,"../test/funkierJS/testFunkier":48,"../test/funkierJS/testInternalUtilities":49,"../test/funkierJS/testLogical":50,"../test/funkierJS/testMaths":51,"../test/funkierJS/testMaybe":52,"../test/funkierJS/testObject":53,"../test/funkierJS/testPair":54,"../test/funkierJS/testResult":55,"../test/funkierJS/testString":56,"../test/funkierJS/testTypes":57,"../test/funkierJS/testingUtilities":58}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1586,7 +1586,7 @@ module.exports = (function() {
   return makeMarkdownRenderer;
 })();
 
-},{"marked":26}],10:[function(require,module,exports){
+},{"marked":30}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1927,7 +1927,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":18,"../internalUtilities":21,"./curry":11}],11:[function(require,module,exports){
+},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],11:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -2541,7 +2541,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":21}],12:[function(require,module,exports){
+},{"../internalUtilities":22}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2817,7 +2817,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":18,"./curry":11}],13:[function(require,module,exports){
+},{"../funcUtils":19,"./curry":11}],13:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -3740,7 +3740,1172 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":18,"../internalUtilities":21,"./curry":11}],15:[function(require,module,exports){
+},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],15:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+  /* jshint -W001 */
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var objectCurry = curryModule.objectCurry;
+
+
+  var base = require('./base');
+  var flip = base.flip;
+
+
+  var maybe = require('./maybe');
+  var Just = maybe.Just;
+  var Nothing = maybe.Nothing;
+
+
+  var internalUtilities = require('../internalUtilities');
+  var checkObjectLike = internalUtilities.checkObjectLike;
+
+
+  /*
+   * <apifunction>
+   *
+   * callPropWithArity
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: arity: natural
+   * Returns: function
+   *
+   * Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function
+   * requires all the original arguments in their original order, and an object as its final parameter. The returned
+   * function will then try to call the named property on the given object,
+   *
+   * Note that the function is curried in the standard sense. In particular the function is not object curried.
+   *
+   * Examples:
+   *   var myMap = funkierJS.callPropWithArity('map', 1);
+   *   myMap(f, arr); // => returns arr.map(f);
+   *
+   *   var myFoldr = funkierJS.callPropWithArity('reduceRight', 2);
+   *   myFoldr(f, initialValue, arr); // => arr.reduceRight(f, initialValue);
+   *
+   */
+
+  var callPropWithArity = curry(function(prop, arity) {
+    return curryWithArity(arity + 1, function() {
+      // curryWithArity guarantees we will be called with arity + 1 args
+      var propArgs = [].slice.call(arguments, 0, arity);
+      var obj = arguments[arity];
+
+      return obj[prop].apply(obj, propArgs);
+    });
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * callProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Returns: function
+   *
+   * A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+   * property on the given object.
+   *
+   * Examples:
+   *   var myObj = { return42: function() { return 42; }};
+   *   var callReturn42 = funkierJS.callProp('return42');
+   *   var callReturn42(myObj); // => 42
+   *
+   */
+
+  var callProp = flip(callPropWithArity)(0);
+
+
+  /*
+   * <apifunction>
+   *
+   * hasOwnProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+   * object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
+   * property.
+   *
+   * Examples:
+   *   funkierJS.hasOwnProperty('funkier', {funkier: 1}); // => true
+   *   funkierJS.hasOwnProperty('toString', {funkier: 1}); // => false
+   *
+   */
+
+  var hasOwnProperty = curry(function(prop, obj) {
+    return Object.prototype.hasOwnProperty.call(obj, prop);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * hasProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+   * returns true if the given object or some object in the prototype chain has the specified property.
+   *
+   * Examples:
+   *   funkierJS.hasProperty('funkier', {funkier: 1}); // => true
+   *   funkierJS.hasProperty('toString', {funkier: 1}); // => true
+   *
+   */
+
+  var hasProperty = curry(function(prop, object) {
+    return prop in object;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * instanceOf
+   *
+   * Category: Object
+   *
+   * Parameter: constructor: function
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+   * if the function's prototype property is in the prototype chain of the given object.
+   *
+   * Examples:
+   *   var Constructor = function() {};
+   *   funkierJS.instanceOf(Constructor, new Constructor()); // => true
+   *   funkierJS.instanceOf(Function, {}); // => false
+   *
+   */
+
+  var instanceOf = curry(function(constructor, object) {
+    return object instanceof constructor;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * isPrototypeOf
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Parameter: obj: objectLike
+   * Returns: boolean
+   *
+   * A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+   * whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
+   *
+   * Examples:
+   *   var Constructor = function() {};
+   *   funkierJS.isPrototypeOf(Constructor.prototype, new Constructor()); // => true
+   *   funkierJS.isPrototypeOf(Function.prototype, {}); // => false
+   *
+   */
+
+  var isPrototypeOf = curry(function(proto, obj) {
+    return Object.prototype.isPrototypeOf.call(proto, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createObject
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Returns: object
+   *
+   * Returns a new object whose internal prototype property is the given object protoObject.
+   *
+   * Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
+   * to the created object, use [createObjectWithProps](#createObjectWithProps).
+   *
+   * Examples:
+   *   var obj = {};
+   *   var newObj = funkierJS.createObject(obj);
+   *   funkierJS.isPrototypeOf(obj, newObj); // => true
+   *
+   */
+
+  var createObject = curry(function(obj) {
+    return Object.create(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createObjectWithProps
+   *
+   * Category: Object
+   *
+   * Parameter: protoObject: objectLike
+   * Parameter: descriptorsObject: object
+   * Returns: object
+   *
+   * Creates an object whose internal prototype property is protoObj, and which has the additional properties described
+   * in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
+   * form accepted by Object.create, Object.defineProperties etc.
+   *
+   * Examples:
+   *   var obj = {};
+   *   var newObj = funkierJS.createObjectWithProps(obj, {prop: {configurable: false, enumerable: false,
+   *                                                             writeable: true, value: 1}});
+   *   funkierJS.isPrototypeOf(obj, newObj); // => true
+   *   funkierJS.hasOwnProperty('prop', newObj); // => true',
+   *
+   */
+
+  var createObjectWithProps = curry(function(obj, descriptor) {
+    return Object.create(obj, descriptor);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * defineProperty
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: descriptor: object
+   * Parameter: o: objectLike
+   * Returns: objectLike
+   *
+   * A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
+   * object that the property hould be defined on. Returns the object o, after having defined the relevant property
+   * per the descriptor. Throws a TypeError if the descriptor is not an object.
+   *
+   * Examples:
+   *   var a = {};',
+   *   funkierJS.hasOwnProperty('foo', a); // => false
+   *   funkierJS.defineProperty('foo', {value: 42}, a);
+   *   funkierJS.hasOwnProperty('foo', a); // => true
+   *
+   */
+
+  var defineProperty = curry(function(prop, descriptor, obj) {
+    descriptor = checkObjectLike(descriptor, {strict: true});
+    return Object.defineProperty(obj, prop, descriptor);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * defineProperties
+   *
+   * Category: Object
+   *
+   * Parameter: descriptors: object
+   * Parameter: o: objectLike
+   * Returns: objectLike
+   *
+   * A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+   * descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
+   * properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
+   *
+   * Examples:
+   *   var a = {};',
+   *   funkierJS.hasOwnProperty('foo', a); // => false
+   *   funkierJS.defineProperties({foo: {value: 42}}, a);
+   *   funkierJS.hasOwnProperty('foo', a); // => true
+   *
+   */
+
+  var defineProperties = curry(function(descriptors, obj) {
+    // We're not strict here: for example one might want to install array-like properties from an array
+    descriptors = checkObjectLike(descriptors, {allowNull: false});
+    obj = checkObjectLike(obj, {allowNull: false});
+    return Object.defineProperties(obj, descriptors);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getOwnPropertyDescriptor
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: o: objectLike
+   * Returns: object
+   *
+   * A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
+   * has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
+   * undefined.
+   *
+   * Examples:
+   *   var a = {foo: 42};',
+   *   funkierJS.getOwnPropertyDescriptor('foo', a); // => {configurable: true, enumerable: true, writable: true,
+   *                                                        value: 42}
+   *   funkierJS.getOwnPropertyDescriptor('toString', a); // => undefined',
+   *
+   */
+
+  var getOwnPropertyDescriptor = flip(Object.getOwnPropertyDescriptor);
+
+
+  /*
+   * <apifunction>
+   *
+   * extract
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: object
+   * Returns: any
+   *
+   * Synonyms: tap
+   *
+   * Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+   *
+   * Examples:
+   *   funkierJS.extract('foo', {foo: 42}); // => 42
+   *
+   */
+
+  var extract = curry(function(prop, obj) {
+    return obj[prop];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extractOrDefault
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: default: any
+   * Parameter: obj: object
+   * Returns: any
+   *
+   * Synonyms: defaultTap
+   *
+   * Extracts the given property from the given object, unless the property is not found in the object or its prototype
+   * chain, in which case the specified default value is returned.
+   *
+   * Examples:
+   *   funkierJS.extractOrDefaultt('foo', 43, {bar: 42}); // => 43
+   *
+   */
+
+  var extractOrDefault = curry(function(prop, defaultVal, obj) {
+    if (!(prop in obj))
+      return defaultVal;
+
+    return obj[prop];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * maybeExtract
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: object
+   * Returns: Maybe
+   *
+   * Synonyms: safeExtract | maybeTap | safeTap
+   *
+   * Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
+   * either in the object, or its prototype chain, then Nothing is returned.
+   *
+   * Examples:
+   *   funkierJS.maybeExtract('foo', {}); // => Nothing
+   *
+   */
+
+  var maybeExtract = curry(function(prop, obj) {
+    if (!(prop in obj))
+      return Nothing;
+
+    // Handle case where there is no getter
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (('set' in descriptor) && descriptor.get === undefined)
+      return Nothing;
+
+    return Just(obj[prop]);
+  });
+
+
+  // A thousand curses!
+  // Per the ECMAScript spec, when setting a property on an object, the property descriptor - if it exists -
+  // should be checked. Setting should fail when writable=false or there is no setter in the descriptor.
+  // If the property descriptor doesn't exist on the property, then walk up the prototype chain making the
+  // same check.
+  //
+  // Versions of V8 up to 3.11.9 fail to walk up the prototype chain. Further, when it was fixed, the fix
+  // was gated behind a flag, which defaulted to false until 3.13.6, when the flag was flipped and V8 became
+  // spec-compliant. The flag was removed in 3.25.4.
+  var engineHandlesProtosCorrectly = (function() {
+    var A = function(){};
+    Object.defineProperty(A.prototype, 'foo', {writable: false});
+    var compliant = false;
+    var b = new A();
+
+    try {
+      b.foo = 1;
+    } catch (e) {
+      compliant = true;
+    }
+
+    return compliant;
+  })();
+
+
+  // Utility function for set: work backwards to Object.prototype, looking for a property descriptor
+  var findPropertyDescriptor = function(prop, obj) {
+    var descriptor;
+    var toppedOut = false;
+
+    while (descriptor === undefined && !toppedOut) {
+      descriptor = getOwnPropertyDescriptor(prop, obj);
+      if (descriptor === undefined) {
+        if (obj === Object.prototype) {
+          toppedOut = true;
+        } else {
+          obj = Object.getPrototypeOf(obj);
+        }
+      }
+    }
+
+    return descriptor;
+  };
+
+
+ // Utility function, taking a property and an object, returning true if that property is writable
+  var checkIfWritable = function(prop, obj) {
+    var writable = true;
+    var descriptor = findPropertyDescriptor(prop, obj);
+
+    // Don't modify writable false properties
+    if (descriptor && 'writable' in descriptor && descriptor.writable === false)
+      writable = false;
+
+    // Don't modify no setter properties
+    if (descriptor && writable && 'set' in descriptor && descriptor.set === undefined)
+      writable = false;
+
+    return writable;
+  };
+
+
+  /*
+   * <apifunction>
+   *
+   * set
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: setProp
+   *
+   * Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
+   * o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+   * not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
+   * is not already present.
+   *
+   * Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
+   * to ensure existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.set('foo', 42, a); // => returns a
+   *   a.foo // => 42
+   *
+   */
+
+  var set = curry(function(prop, val, obj) {
+    // We manually emulate the operation of [[CanPut]], rather than just setting in a
+    // try-catch. We don't want to suppress other errors: for example the property's
+    // setter function might throw
+    var writable = checkIfWritable(prop, obj);
+
+    if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
+      writable = false;
+
+    if (!writable)
+      throw new Error('Cannot write to property ' + prop);
+
+    obj[prop] = val;
+    return obj;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeSet
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: Maybe
+   *
+   * Synonyms: maybeSet | maybeSetProp | safeSetProp
+   *
+   * Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
+   * successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
+   * object. If unable to modify or create the property, then Nothing will be returned.
+   *
+   * Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
+   * to ensure existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeSet('foo', 42, a); // => returns Nothing
+   *   a.foo // => 1
+   *
+   */
+
+  var safeSet = curry(function(prop, val, obj) {
+    // We manually emulate the operation of [[CanPut]], rather than just setting in a
+    // try-catch. We don't want to suppress other errors: for example the property's
+    // setter function might throw
+    var writable = checkIfWritable(prop, obj);
+
+    if (writable && !hasOwnProperty(prop, obj) && (Object.isSealed(obj) || !Object.isExtensible(obj)))
+      writable = false;
+
+    if (!writable)
+      return Nothing;
+
+    obj[prop] = val;
+    return Just(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * modify
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: modifyProp
+   *
+   * Sets the given property to the given value on the given object, providing it exists, and returns the object.
+   * Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+   * Throws when the property is not writable, when it has no setter function, or when the object is frozen.
+   *
+   * Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
+   * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
+   * where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
+   * existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.modify('foo', 42, a); // => returns a
+   *   a.foo // => 42
+   *
+   */
+
+  var modify = curry(function(prop, val, obj) {
+    // Return straight away if the property doesn't exist
+    if (!hasProperty(prop, obj))
+      throw new Error('Cannot modify non-existent property ' + prop);
+
+    return set(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeModify
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: maybeModify | maybeModifyProp | safeModifyProp
+   *
+   * Sets the given property to the given value on the given object, providing it exists, and returns the object,
+   * wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
+   * created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
+   * has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+   *
+   * Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
+   * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
+   * where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
+   * existing values will not be changed.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeModify('foo', 42, a); // => Nothing
+   *   a.foo // => 1
+   *
+   */
+
+  var safeModify = curry(function(prop, val, obj) {
+    // Return straight away if the property doesn't exist
+    if (!hasProperty(prop, obj))
+      return Nothing;
+
+    return safeSet(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * createProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
+   * o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+   * Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
+   * successfully created when it already exists, but only in the prototype chain.
+   *
+   * Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
+   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
+   * creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
+   * required.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.create('bar', 42, a); // => returns a
+   *   a.bar // => 42
+   *
+   */
+
+  var createProp = curry(function(prop, val, obj) {
+    // Return straight away if the property exists
+    if (hasOwnProperty(prop, obj))
+      throw new Error('Attempt to recreate existing property ' + prop);
+
+    return set(prop, val, obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeCreateProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: val: any
+   * Parameter: obj: objectLike
+   * Returns: Maybe
+   *
+   * Synonyms: maybeCreate
+   *
+   *
+   * Creates the given property to the given value on the given object, returning the object wrapped in a Just.
+   * Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in
+   * that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or
+   * cannot be extended. Note that the property will be successfully created when it already exists, but only in the
+   * prototype chain.
+   *
+   * Alternatively, one can use [`create`](#create) for a version that will throw on failure. Similarly,
+   * [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
+   * creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
+   * required.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   Object.freeze(a);
+   *   funkierJS.safeCreateProp('bar', 42, a); // => returns Nothing
+   *   a.foo // => undefined
+   *
+   */
+
+  var safeCreateProp = curry(function(prop, val, obj) {
+    // Return straight away if the property exists
+    if (hasOwnProperty(prop, obj))
+      return Nothing;
+
+    return safeSet(prop, val, obj);
+  });
+
+
+
+  /*
+   * <apifunction>
+   *
+   * deleteProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
+   * delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+   *
+   * Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
+   * depending on the outcome of the operation.
+   *
+   * Examples:
+   *   var a = {foo: 1};
+   *   funkierJS.delete('foo',  a); // => returns a
+   *   a.foo // => undefined
+   *
+   */
+
+  var deleteProp = curry(function(prop, obj) {
+    obj = checkObjectLike(obj);
+
+    if (!obj.hasOwnProperty(prop))
+      return obj;
+
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor.configurable === false)
+      throw new Error('Cannot delete property ' + prop + ': not configurable!');
+
+    delete obj[prop];
+    return obj;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * safeDeleteProp
+   *
+   * Category: Object
+   *
+   * Parameter: prop: string
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Synonyms: maybeDelete
+   *
+   * Deletes the given property from the given the given object, returning the object wrapped as a Just value.
+   * Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
+   * descriptor or the object being frozen or sealed) then Nothing will be returned.
+   *
+   * Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
+   *
+   * Examples:
+   *   var a = {};
+   *   funkierJS.delete('foo',  a); // => returns Nothing
+   *
+   */
+
+  var safeDeleteProp = curry(function(prop, obj) {
+    obj = checkObjectLike(obj);
+
+    if (!obj.hasOwnProperty(prop))
+      return Just(obj);
+
+    var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+    if (descriptor.configurable === false)
+      return Nothing;
+
+    delete obj[prop];
+    return Just(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * keys
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+   * properties. Returns an empty array for non-objects.
+   *
+   * Examples:
+   *   funkierJS.keys({foo: 1, bar: 2}); // => returns ['foo', 'bar'] or ['bar', 'foo'] depending on native
+   *                                     //    environment
+   *
+   */
+
+  var keys = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return Object.keys(obj);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getOwnPropertyNames
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+   * object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
+   * the property names is not defined.
+   *
+   * Examples:
+   *   funkierJS.getOwnPropertyNames({foo: 1, bar: 2}); // => returns ['foo', 'bar'] or ['bar', 'foo'] depending on
+   *                                                    // native environment
+   *
+   */
+
+  var getOwnPropertyNames = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return Object.getOwnPropertyNames(obj);
+  });
+
+
+
+  /*
+   * <apifunction>
+   *
+   * keyValues
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+   * of a property from the object, and the second element is the value of the property. This function only returns
+   * key-value pairs for the object's own properties. Returns an empty array for non-objects.  The order of the values
+   * is not defined.
+   *
+   * Examples:
+   *   funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
+   *                                          // native environment
+   *
+   */
+
+  var keyValues = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return keys(obj).map(function(k) {return [k, obj[k]];});
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * descriptors
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: array
+   *
+   * Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
+   * of a property from the object, and the second element is its property descriptor. This function only returns
+   * key-value pairs for the object's own properties. Returns an empty array for non-objects.  The order of the values
+   * is not defined.
+   *
+   * Examples:
+   *   funkierJS.descriptors({foo: 1}); // => returns [['foo', {configurable: true, writable: true, enumerable: true,
+   *                                                            value: 1}]
+   *
+   */
+
+  var descriptors = curry(function(obj) {
+    if (typeof(obj) !== 'object' || obj === null)
+      return [];
+
+    return keys(obj).map(function(k) {return [k, getOwnPropertyDescriptor(k, obj)];});
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * clone
+   *
+   * Category: Object
+   *
+   * Synonyms: shallowClone
+   *
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
+   * and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
+   * from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
+   * the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+   * Non-primitive values are copied by reference.
+   *
+   * Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
+   * will have these same functions using the same scope. Getting/setting such a property in the clone may affect the
+   * corresponding property in the original.
+   *
+   */
+
+  var shallowCloneInternal = function(obj, isRecursive) {
+    if (typeof(obj) === 'function')
+      return obj;
+
+    if (typeof(obj) !== 'object')
+      throw new TypeError('shallowClone called on non-object');
+
+    if (Array.isArray(obj)) {
+      var newArray = obj.slice();
+
+      Object.keys(obj).forEach(function(k) {
+        var n = k - 0;
+        if (isNaN(n)) {
+          newArray[k] = obj[k];
+          return;
+        }
+
+        if (Math.floor(n) === n && Math.ceil(n) === n) return;
+        newArray[k] = obj[k];
+      });
+
+      return newArray;
+    }
+
+    if (obj === null)
+      return isRecursive ? Object.create(null) : null;
+
+    if (obj === Object.prototype)
+      return {};
+
+    var result = shallowCloneInternal(Object.getPrototypeOf(obj), true);
+
+    Object.getOwnPropertyNames(obj).forEach(function(k) {
+      var desc = Object.getOwnPropertyDescriptor(obj, k);
+      Object.defineProperty(result, k, desc);
+    });
+
+    return result;
+  };
+
+
+  var shallowClone = curry(function(obj) {
+    return shallowCloneInternal(obj, false);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extend
+   *
+   * Category: Object
+   *
+   * Parameter: source: objectLike
+   * Parameter: dest: objectLike
+   * Returns: objectLike
+   *
+   * Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
+   * into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
+   * properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
+   * afterwards source.foo === dest.foo will be true.
+   *
+   * Examples:
+   *   var a = {bar: 1};
+   *   funkierJS.extend(a, {foo: 42}); // => a === {foo: 42, bar: 1}
+   *
+   */
+
+  var extend = curry(function(source, dest) {
+    for (var k in source)
+      dest[k] = source[k];
+
+    return dest;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * extendOwn
+   *
+   * Category: Object
+   *
+   * Parameter: source: objectLike
+   * Parameter: dest: objectLike
+   * Returns: objectLike
+   *
+   * Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
+   * source's prototype chain are not copied. Any extant properties with the same name are overwritten.
+   * Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
+   * source whose value is an object, then afterwards source.foo === dest.foo will be true.
+   *
+   * Examples:
+   *   var a = funkierJS.createObject({bar: 1});
+   *   a.baz = 2;
+   *   var b = {foo: 3};
+   *   funkierJS.extendOwn(b, a); // b == {foo: 3, baz: 2}
+   *
+   */
+
+  var extendOwn = curry(function(source, dest) {
+    var keys = Object.keys(source);
+
+    keys.forEach(function(k) {
+      dest[k] = source[k];
+    });
+
+    return dest;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * curryOwn
+   *
+   * Category: Object
+   *
+   * Parameter: obj: objectLike
+   * Returns: objectLike
+   *
+   * Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as
+   * writable: false), then curries the member functions of the object using the [`objectCurry`](#objectCurry) method.
+   * If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the
+   * object's own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters
+   * in their descriptor are ignored.
+   *
+   * The all-or-nothing approach was taken to avoid the difficulty in reasoning that would ensue on partial success:
+   * the client would be left having to manually enumerate the functions to see which ones did get curried. The
+   * avoidance of functions returned from properties with getter/setter descriptors is to avoid any lexical scoping
+   * ambiguities.
+   *
+   * Examples:
+   *   var obj = {foo: function(x, y) { return this.bar + x + y; }, bar: 10};
+   *   funkierJS.curryOwn(obj);
+   *   obj.foo(2)(3); // => 15
+   *
+   */
+
+  var curryOwn = curry(function(obj) {
+    var keys = Object.keys(obj);
+
+    var funcKeys = keys.filter(function(k) {
+      var desc = Object.getOwnPropertyDescriptor(obj, k);
+      return typeof(obj[k]) === 'function' && desc.hasOwnProperty('configurable') && desc.hasOwnProperty('writable');
+    });
+
+    if (funcKeys.some(function(k) { return Object.getOwnPropertyDescriptor(obj, k).writable === false; }))
+      return obj;
+
+    funcKeys.forEach(function(k) {
+      obj[k] = objectCurry(obj[k]);
+    });
+
+    return obj;
+  });
+
+
+  return {
+    callProp: callProp,
+    callPropWithArity: callPropWithArity,
+    clone: shallowClone,
+    createObject: createObject,
+    createObjectWithProps: createObjectWithProps,
+    createProp: createProp,
+    curryOwn: curryOwn,
+    descriptors: descriptors,
+    defaultTap: extractOrDefault,
+    defineProperty: defineProperty,
+    defineProperties: defineProperties,
+    deleteProp: deleteProp,
+    extend: extend,
+    extendOwn: extendOwn,
+    extract: extract,
+    extractOrDefault: extractOrDefault,
+    getOwnPropertyDescriptor: getOwnPropertyDescriptor,
+    getOwnPropertyNames: getOwnPropertyNames,
+    hasOwnProperty: hasOwnProperty,
+    hasProperty: hasProperty,
+    instanceOf: instanceOf,
+    isPrototypeOf: isPrototypeOf,
+    keys: keys,
+    keyValues: keyValues,
+    maybeCreate: safeCreateProp,
+    maybeDelete: safeDeleteProp,
+    maybeExtract: maybeExtract,
+    maybeModify: safeModify,
+    maybeModifyProp: safeModify,
+    maybeSet: safeSet,
+    maybeSetProp: safeSet,
+    maybeTap: maybeExtract,
+    modify: modify,
+    modifyProp: modify,
+    safeCreateProp: safeCreateProp,
+    safeDeleteProp: safeDeleteProp,
+    safeExtract: maybeExtract,
+    safeModify: safeModify,
+    safeModifyProp: safeModify,
+    safeSet: safeSet,
+    safeSetProp: safeSet,
+    safeTap: maybeExtract,
+    set: set,
+    setProp: set,
+    shallowClone: shallowClone,
+    tap: extract
+  };
+})();
+
+},{"../internalUtilities":22,"./base":10,"./curry":11,"./maybe":14}],16:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3949,7 +5114,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":21,"./curry":11}],16:[function(require,module,exports){
+},{"../internalUtilities":22,"./curry":11}],17:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4285,7 +5450,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":18,"../internalUtilities":21,"./curry":11}],17:[function(require,module,exports){
+},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4772,7 +5937,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11}],18:[function(require,module,exports){
+},{"./curry":11}],19:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4833,7 +5998,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":11}],19:[function(require,module,exports){
+},{"./components/curry":11}],20:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4845,6 +6010,7 @@ module.exports = (function() {
     base: require('./components/base'),
     curry: require('./components/curry'),
     logical: require('./components/logical'),
+    object: require('./components/object'),
     maths: require('./components/maths'),
     maybe: require('./components/maybe'),
     pair: require('./components/pair'),
@@ -4911,7 +6077,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":10,"./components/curry":11,"./components/logical":12,"./components/maths":13,"./components/maybe":14,"./components/pair":15,"./components/result":16,"./components/types":17,"./help":20}],20:[function(require,module,exports){
+},{"./components/base":10,"./components/curry":11,"./components/logical":12,"./components/maths":13,"./components/maybe":14,"./components/object":15,"./components/pair":16,"./components/result":17,"./components/types":18,"./help":21}],21:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5142,6 +6308,45 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#bitwisexor');
           break;
 
+        case funkier.callProp:
+          console.log('callProp:');
+          console.log('');
+          console.log('A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified');
+          console.log('property on the given object.');
+          console.log('');
+          console.log('Usage: var x = callProp(prop)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callprop');
+          break;
+
+        case funkier.callPropWithArity:
+          console.log('callPropWithArity:');
+          console.log('');
+          console.log('Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function');
+          console.log('requires all the original arguments in their original order, and an object as its final parameter. The returned');
+          console.log('function will then try to call the named property on the given object,');
+          console.log('');
+          console.log('Usage: var x = callPropWithArity(prop, arity)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callpropwitharity');
+          break;
+
+        case funkier.clone:
+          console.log('clone:');
+          console.log('');
+          console.log('Synonyms: shallowClone');
+          console.log('');
+          console.log('Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object');
+          console.log('and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values');
+          console.log('from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of');
+          console.log('the clone if they are in the prototype chain of the original object. Functions are returned unchanged.');
+          console.log('Non-primitive values are copied by reference.');
+          console.log('');
+          console.log('Usage: var x = clone(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#clone');
+          break;
+
         case funkier.compose:
           console.log('compose:');
           console.log('');
@@ -5200,6 +6405,41 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant0');
           break;
 
+        case funkier.createObject:
+          console.log('createObject:');
+          console.log('');
+          console.log('Returns a new object whose internal prototype property is the given object protoObject.');
+          console.log('');
+          console.log('Usage: var x = createObject(protoObject)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createobject');
+          break;
+
+        case funkier.createObjectWithProps:
+          console.log('createObjectWithProps:');
+          console.log('');
+          console.log('Creates an object whose internal prototype property is protoObj, and which has the additional properties described');
+          console.log('in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the');
+          console.log('form accepted by Object.create, Object.defineProperties etc.');
+          console.log('');
+          console.log('Usage: var x = createObjectWithProps(protoObject, descriptorsObject)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createobjectwithprops');
+          break;
+
+        case funkier.createProp:
+          console.log('createProp:');
+          console.log('');
+          console.log('Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating');
+          console.log('o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.');
+          console.log('Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be');
+          console.log('successfully created when it already exists, but only in the prototype chain.');
+          console.log('');
+          console.log('Usage: var x = createProp(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createprop');
+          break;
+
         case funkier.curry:
           console.log('curry:');
           console.log('');
@@ -5214,6 +6454,20 @@ module.exports = (function() {
           console.log('Usage: var x = curry(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#curry');
+          break;
+
+        case funkier.curryOwn:
+          console.log('curryOwn:');
+          console.log('');
+          console.log('Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as');
+          console.log('writable: false), then curries the member functions of the object using the [`objectCurry`](#objectCurry) method.');
+          console.log('If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the');
+          console.log('object\'s own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters');
+          console.log('in their descriptor are ignored.');
+          console.log('');
+          console.log('Usage: var x = curryOwn(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#curryown');
           break;
 
         case funkier.curryWithArity:
@@ -5246,6 +6500,54 @@ module.exports = (function() {
           console.log('Usage: var x = deepEqual(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#deepequal');
+          break;
+
+        case funkier.defineProperties:
+          console.log('defineProperties:');
+          console.log('');
+          console.log('A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property');
+          console.log('descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the');
+          console.log('properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.');
+          console.log('');
+          console.log('Usage: var x = defineProperties(descriptors, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#defineproperties');
+          break;
+
+        case funkier.defineProperty:
+          console.log('defineProperty:');
+          console.log('');
+          console.log('A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the');
+          console.log('object that the property hould be defined on. Returns the object o, after having defined the relevant property');
+          console.log('per the descriptor. Throws a TypeError if the descriptor is not an object.');
+          console.log('');
+          console.log('Usage: var x = defineProperty(prop, descriptor, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#defineproperty');
+          break;
+
+        case funkier.deleteProp:
+          console.log('deleteProp:');
+          console.log('');
+          console.log('Deletes the given property from the given the given object, returning the object. Equivalent to evaluating');
+          console.log('delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.');
+          console.log('');
+          console.log('Usage: var x = deleteProp(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#deleteprop');
+          break;
+
+        case funkier.descriptors:
+          console.log('descriptors:');
+          console.log('');
+          console.log('Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name');
+          console.log('of a property from the object, and the second element is its property descriptor. This function only returns');
+          console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
+          console.log('is not defined.');
+          console.log('');
+          console.log('Usage: var x = descriptors(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#descriptors');
           break;
 
         case funkier.div:
@@ -5312,6 +6614,57 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#exp');
           break;
 
+        case funkier.extend:
+          console.log('extend:');
+          console.log('');
+          console.log('Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties');
+          console.log('into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All');
+          console.log('properties are shallow-copied: in other words, if \'foo\' is a property of source whose value is an object, then');
+          console.log('afterwards source.foo === dest.foo will be true.');
+          console.log('');
+          console.log('Usage: var x = extend(source, dest)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extend');
+          break;
+
+        case funkier.extendOwn:
+          console.log('extendOwn:');
+          console.log('');
+          console.log('Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from');
+          console.log('source\'s prototype chain are not copied. Any extant properties with the same name are overwritten.');
+          console.log('Returns the modified dest object. All properties are shallow-copied: in other words, if \'foo\' is a property of');
+          console.log('source whose value is an object, then afterwards source.foo === dest.foo will be true.');
+          console.log('');
+          console.log('Usage: var x = extendOwn(source, dest)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extendown');
+          break;
+
+        case funkier.extract:
+          console.log('extract:');
+          console.log('');
+          console.log('Synonyms: tap');
+          console.log('');
+          console.log('Extracts the given property from the given object. Equivalent to evaluating obj[prop].');
+          console.log('');
+          console.log('Usage: var x = extract(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extract');
+          break;
+
+        case funkier.extractOrDefault:
+          console.log('extractOrDefault:');
+          console.log('');
+          console.log('Synonyms: defaultTap');
+          console.log('');
+          console.log('Extracts the given property from the given object, unless the property is not found in the object or its prototype');
+          console.log('chain, in which case the specified default value is returned.');
+          console.log('');
+          console.log('Usage: var x = extractOrDefault(prop, default, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extractordefault');
+          break;
+
         case funkier.flip:
           console.log('flip:');
           console.log('');
@@ -5368,6 +6721,30 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getokvalue');
           break;
 
+        case funkier.getOwnPropertyDescriptor:
+          console.log('getOwnPropertyDescriptor:');
+          console.log('');
+          console.log('A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself');
+          console.log('has the given property, then the object\'s property descriptor for the given object is returned, otherwise it returns');
+          console.log('undefined.');
+          console.log('');
+          console.log('Usage: var x = getOwnPropertyDescriptor(prop, o)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertydescriptor');
+          break;
+
+        case funkier.getOwnPropertyNames:
+          console.log('getOwnPropertyNames:');
+          console.log('');
+          console.log('A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the');
+          console.log('object\'s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of');
+          console.log('the property names is not defined.');
+          console.log('');
+          console.log('Usage: var x = getOwnPropertyNames(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertynames');
+          break;
+
         case funkier.getType:
           console.log('getType:');
           console.log('');
@@ -5403,6 +6780,29 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#greaterthanequal');
           break;
 
+        case funkier.hasOwnProperty:
+          console.log('hasOwnProperty:');
+          console.log('');
+          console.log('A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an');
+          console.log('object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified');
+          console.log('property.');
+          console.log('');
+          console.log('Usage: var x = hasOwnProperty(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasownproperty');
+          break;
+
+        case funkier.hasProperty:
+          console.log('hasProperty:');
+          console.log('');
+          console.log('A curried wrapper around the \'in\' operator. Takes a string representing a property name and an object, and');
+          console.log('returns true if the given object or some object in the prototype chain has the specified property.');
+          console.log('');
+          console.log('Usage: var x = hasProperty(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasproperty');
+          break;
+
         case funkier.id:
           console.log('id:');
           console.log('');
@@ -5411,6 +6811,17 @@ module.exports = (function() {
           console.log('Usage: var x = id(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#id');
+          break;
+
+        case funkier.instanceOf:
+          console.log('instanceOf:');
+          console.log('');
+          console.log('A curried wrapper around the \'instanceof\' operator. Takes a constructor function and an object, and returns true');
+          console.log('if the function\'s prototype property is in the prototype chain of the given object.');
+          console.log('');
+          console.log('Usage: var x = instanceOf(constructor, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#instanceof');
           break;
 
         case funkier.is:
@@ -5536,6 +6947,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#ispair');
           break;
 
+        case funkier.isPrototypeOf:
+          console.log('isPrototypeOf:');
+          console.log('');
+          console.log('A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object');
+          console.log('whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.');
+          console.log('');
+          console.log('Usage: var x = isPrototypeOf(protoObject, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isprototypeof');
+          break;
+
         case funkier.isRealObject:
           console.log('isRealObject:');
           console.log('');
@@ -5575,6 +6997,30 @@ module.exports = (function() {
           console.log('Usage: var x = isUndefined(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isundefined');
+          break;
+
+        case funkier.keyValues:
+          console.log('keyValues:');
+          console.log('');
+          console.log('Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name');
+          console.log('of a property from the object, and the second element is the value of the property. This function only returns');
+          console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
+          console.log('is not defined.');
+          console.log('');
+          console.log('Usage: var x = keyValues(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keyvalues');
+          break;
+
+        case funkier.keys:
+          console.log('keys:');
+          console.log('');
+          console.log('A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object\'s own');
+          console.log('properties. Returns an empty array for non-objects.');
+          console.log('');
+          console.log('Usage: var x = keys(obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keys');
           break;
 
         case funkier.leftShift:
@@ -5656,6 +7102,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#max');
           break;
 
+        case funkier.maybeExtract:
+          console.log('maybeExtract:');
+          console.log('');
+          console.log('Synonyms: safeExtract, maybeTap, safeTap');
+          console.log('');
+          console.log('Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,');
+          console.log('either in the object, or its prototype chain, then Nothing is returned.');
+          console.log('');
+          console.log('Usage: var x = maybeExtract(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#maybeextract');
+          break;
+
         case funkier.min:
           console.log('min:');
           console.log('');
@@ -5664,6 +7123,20 @@ module.exports = (function() {
           console.log('Usage: var x = min(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#min');
+          break;
+
+        case funkier.modify:
+          console.log('modify:');
+          console.log('');
+          console.log('Synonyms: modifyProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, providing it exists, and returns the object.');
+          console.log('Equivalent to evaluating o[prop] = value. The property will not be created when it doesn\'t exist on the object.');
+          console.log('Throws when the property is not writable, when it has no setter function, or when the object is frozen.');
+          console.log('');
+          console.log('Usage: var x = modify(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#modify');
           break;
 
         case funkier.multiply:
@@ -5805,6 +7278,65 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rightshiftzero');
           break;
 
+        case funkier.safeCreateProp:
+          console.log('safeCreateProp:');
+          console.log('');
+          console.log('Synonyms: maybeCreate');
+          console.log('');
+          console.log('Creates the given property to the given value on the given object, returning the object wrapped in a Just.');
+          console.log('Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in');
+          console.log('that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or');
+          console.log('cannot be extended. Note that the property will be successfully created when it already exists, but only in the');
+          console.log('prototype chain.');
+          console.log('');
+          console.log('Usage: var x = safeCreateProp(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safecreateprop');
+          break;
+
+        case funkier.safeDeleteProp:
+          console.log('safeDeleteProp:');
+          console.log('');
+          console.log('Synonyms: maybeDelete');
+          console.log('');
+          console.log('Deletes the given property from the given the given object, returning the object wrapped as a Just value.');
+          console.log('Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual');
+          console.log('descriptor or the object being frozen or sealed) then Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeDeleteProp(prop, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safedeleteprop');
+          break;
+
+        case funkier.safeModify:
+          console.log('safeModify:');
+          console.log('');
+          console.log('Synonyms: maybeModify, maybeModifyProp, safeModifyProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, providing it exists, and returns the object,');
+          console.log('wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be');
+          console.log('created when it doesn\'t exist on the object; nor will it be amended when the property is not writable, when it');
+          console.log('has no setter function, or when the object is frozen. In such cases, Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeModify(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safemodify');
+          break;
+
+        case funkier.safeSet:
+          console.log('safeSet:');
+          console.log('');
+          console.log('Synonyms: maybeSet, maybeSetProp, safeSetProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, returning the object wrapped in a Just value when');
+          console.log('successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn\'t exist on the');
+          console.log('object. If unable to modify or create the property, then Nothing will be returned.');
+          console.log('');
+          console.log('Usage: var x = safeSet(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safeset');
+          break;
+
         case funkier.sectionLeft:
           console.log('sectionLeft:');
           console.log('');
@@ -5825,6 +7357,21 @@ module.exports = (function() {
           console.log('Usage: var x = sectionRight(f, x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sectionright');
+          break;
+
+        case funkier.set:
+          console.log('set:');
+          console.log('');
+          console.log('Synonyms: setProp');
+          console.log('');
+          console.log('Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating');
+          console.log('o[prop] = value. The property will be created if it doesn\'t exist on the object. Throws when the property is');
+          console.log('not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property');
+          console.log('is not already present.');
+          console.log('');
+          console.log('Usage: var x = set(prop, val, obj)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#set');
           break;
 
         case funkier.snd:
@@ -5903,7 +7450,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5965,6 +7512,41 @@ module.exports = (function() {
 
 
   /*
+   * isObjectLike: returns true if the given value is a string, array, function, or object,
+   *               and false otherwise.
+   *
+   */
+
+  var isObjectLike = function(v, options) {
+    options = options || {};
+    var strict = options.strict || false;
+    var allowNull = options.allowNull || false;
+
+    var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
+    if (strict && Array.isArray(v))
+      return false;
+
+    return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
+  };
+
+
+  /* checkObjectLike: takes a value and throws if it is not object-like, otherwise returns the object
+   *
+   */
+
+  var checkObjectLike = function(v, options) {
+    options = options || {};
+    var message = options.message || 'Value is not an object';
+    var allowNull = options.allowNull || false;
+
+    if (!isObjectLike(v, options))
+      throw new TypeError(message);
+
+    return v;
+  };
+
+
+  /*
    * isArrayLike: returns true if the given value is a string, array, or 'array-like', and false otherwise.
    *              Takes an optional 'noStrings' argument: strings will not be considered 'array-like' when
    *              this is true.
@@ -6021,8 +7603,10 @@ module.exports = (function() {
 
   return {
     checkIntegral: checkIntegral,
+    checkObjectLike: checkObjectLike,
     checkPositiveIntegral: checkPositiveIntegral,
     isArrayLike: isArrayLike,
+    isObjectLike: isObjectLike,
     valueStringifier: valueStringifier
   };
 })();
@@ -6042,41 +7626,6 @@ module.exports = (function() {
 //
 //
 //    var makeModule = function(require, exports) {
-//      /*
-//       * isObjectLike: returns true if the given value is a string, array, function, or object,
-//       *               and false otherwise.
-//       *
-//       */
-//
-//      var isObjectLike = function(v, options) {
-//        options = options || {};
-//        var strict = options.strict || false;
-//        var allowNull = options.allowNull || false;
-//
-//        var acceptable = strict ? ['object'] : ['string', 'function', 'object'];
-//        if (strict && Array.isArray(v))
-//          return false;
-//
-//        return (v === null && allowNull) || (v !== null && acceptable.indexOf(typeof(v)) !== -1);
-//      };
-//
-//
-//      /* checkObjectLike: takes a value and throws if it is not object-like, otherwise return a copy.
-//       *
-//       */
-//
-//      var checkObjectLike = function(v, options) {
-//        options = options || {};
-//        var message = options.message || 'Value is not an object';
-//        var allowNull = options.allowNull || false;
-//
-//        if (!isObjectLike(v, options))
-//          throw new TypeError(message);
-//
-//        return v;
-//      };
-//
-//
 //      /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
 //       *                 return a copy.
 //       *
@@ -6125,7 +7674,136 @@ module.exports = (function() {
 //    }();
 //})();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+var pSlice = Array.prototype.slice;
+var objectKeys = require('./lib/keys.js');
+var isArguments = require('./lib/is_arguments.js');
+
+var deepEqual = module.exports = function (actual, expected, opts) {
+  if (!opts) opts = {};
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+
+  } else if (actual instanceof Date && expected instanceof Date) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if (typeof actual != 'object' && typeof expected != 'object') {
+    return opts.strict ? actual === expected : actual == expected;
+
+  // 7.4. For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else {
+    return objEquiv(actual, expected, opts);
+  }
+}
+
+function isUndefinedOrNull(value) {
+  return value === null || value === undefined;
+}
+
+function isBuffer (x) {
+  if (!x || typeof x !== 'object' || typeof x.length !== 'number') return false;
+  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
+    return false;
+  }
+  if (x.length > 0 && typeof x[0] !== 'number') return false;
+  return true;
+}
+
+function objEquiv(a, b, opts) {
+  var i, key;
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+    return false;
+  // an identical 'prototype' property.
+  if (a.prototype !== b.prototype) return false;
+  //~~~I've managed to break Object.keys through screwy arguments passing.
+  //   Converting to array solves the problem.
+  if (isArguments(a)) {
+    if (!isArguments(b)) {
+      return false;
+    }
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return deepEqual(a, b, opts);
+  }
+  if (isBuffer(a)) {
+    if (!isBuffer(b)) {
+      return false;
+    }
+    if (a.length !== b.length) return false;
+    for (i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+  try {
+    var ka = objectKeys(a),
+        kb = objectKeys(b);
+  } catch (e) {//happens when one is a string literal and the other isn't
+    return false;
+  }
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length != kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key], opts)) return false;
+  }
+  return typeof a === typeof b;
+}
+
+},{"./lib/is_arguments.js":24,"./lib/keys.js":25}],24:[function(require,module,exports){
+var supportsArgumentsClass = (function(){
+  return Object.prototype.toString.call(arguments)
+})() == '[object Arguments]';
+
+exports = module.exports = supportsArgumentsClass ? supported : unsupported;
+
+exports.supported = supported;
+function supported(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+};
+
+exports.unsupported = unsupported;
+function unsupported(object){
+  return object &&
+    typeof object == 'object' &&
+    typeof object.length == 'number' &&
+    Object.prototype.hasOwnProperty.call(object, 'callee') &&
+    !Object.prototype.propertyIsEnumerable.call(object, 'callee') ||
+    false;
+};
+
+},{}],25:[function(require,module,exports){
+exports = module.exports = typeof Object.keys === 'function'
+  ? Object.keys : shim;
+
+exports.shim = shim;
+function shim (obj) {
+  var keys = [];
+  for (var key in obj) keys.push(key);
+  return keys;
+}
+
+},{}],26:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -7541,7 +9219,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":23,"ieee754":24,"is-array":25}],23:[function(require,module,exports){
+},{"base64-js":27,"ieee754":28,"is-array":29}],27:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -7667,7 +9345,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],24:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -7753,7 +9431,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],25:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 /**
  * isArray
@@ -7788,7 +9466,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -9064,7 +10742,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],27:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9327,7 +11005,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],28:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -9740,7 +11418,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":55}],29:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":59}],33:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -9955,7 +11633,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":55}],30:[function(require,module,exports){
+},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":59}],34:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -10209,7 +11887,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIPrototype":4,"chai":55}],31:[function(require,module,exports){
+},{"../../docgen/APIPrototype":4,"chai":59}],35:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -11324,7 +13002,7 @@ module.exports = (function() {
   });
 })();
 
-},{"./CPTestDataHelper":27,"chai":55}],32:[function(require,module,exports){
+},{"./CPTestDataHelper":31,"chai":59}],36:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -11574,7 +13252,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":55}],33:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":59}],37:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -12796,7 +14474,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":27,"chai":55}],34:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":31,"chai":59}],38:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13053,7 +14731,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/lineProcessor":7,"chai":55}],35:[function(require,module,exports){
+},{"../../docgen/lineProcessor":7,"chai":59}],39:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13315,7 +14993,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":55}],36:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":59}],40:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13605,7 +15283,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/markdownRenderer":9,"chai":55,"marked":26}],37:[function(require,module,exports){
+},{"../../docgen/markdownRenderer":9,"chai":59,"marked":30}],41:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14118,6 +15796,90 @@ module.exports = (function() {
     });
 
 
+    describe('callProp', function() {
+      it('callProp exists', function() {
+        expect(funkier).to.have.a.property('callProp');
+      });
+
+
+      it('funkierJS\'s callProp is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.callProp).to.equal(module.callProp);
+      });
+
+
+      it('callProp is a function', function() {
+        expect(funkier.callProp).to.be.a('function');
+      });
+
+
+      it('callProp has documented arity', function() {
+        expect(funkier.arityOf(funkier.callProp)).to.equal(1);
+      });
+
+
+      it('callProp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.callProp)).to.equal(true);
+      });
+    });
+
+
+    describe('callPropWithArity', function() {
+      it('callPropWithArity exists', function() {
+        expect(funkier).to.have.a.property('callPropWithArity');
+      });
+
+
+      it('funkierJS\'s callPropWithArity is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.callPropWithArity).to.equal(module.callPropWithArity);
+      });
+
+
+      it('callPropWithArity is a function', function() {
+        expect(funkier.callPropWithArity).to.be.a('function');
+      });
+
+
+      it('callPropWithArity has documented arity', function() {
+        expect(funkier.arityOf(funkier.callPropWithArity)).to.equal(2);
+      });
+
+
+      it('callPropWithArity is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.callPropWithArity)).to.equal(true);
+      });
+    });
+
+
+    describe('clone', function() {
+      it('clone exists', function() {
+        expect(funkier).to.have.a.property('clone');
+      });
+
+
+      it('funkierJS\'s clone is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.clone).to.equal(module.clone);
+      });
+
+
+      it('clone is a function', function() {
+        expect(funkier.clone).to.be.a('function');
+      });
+
+
+      it('clone has documented arity', function() {
+        expect(funkier.arityOf(funkier.clone)).to.equal(1);
+      });
+
+
+      it('clone is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.clone)).to.equal(true);
+      });
+    });
+
+
     describe('compose', function() {
       it('compose exists', function() {
         expect(funkier).to.have.a.property('compose');
@@ -14258,6 +16020,90 @@ module.exports = (function() {
     });
 
 
+    describe('createObject', function() {
+      it('createObject exists', function() {
+        expect(funkier).to.have.a.property('createObject');
+      });
+
+
+      it('funkierJS\'s createObject is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.createObject).to.equal(module.createObject);
+      });
+
+
+      it('createObject is a function', function() {
+        expect(funkier.createObject).to.be.a('function');
+      });
+
+
+      it('createObject has documented arity', function() {
+        expect(funkier.arityOf(funkier.createObject)).to.equal(1);
+      });
+
+
+      it('createObject is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.createObject)).to.equal(true);
+      });
+    });
+
+
+    describe('createObjectWithProps', function() {
+      it('createObjectWithProps exists', function() {
+        expect(funkier).to.have.a.property('createObjectWithProps');
+      });
+
+
+      it('funkierJS\'s createObjectWithProps is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.createObjectWithProps).to.equal(module.createObjectWithProps);
+      });
+
+
+      it('createObjectWithProps is a function', function() {
+        expect(funkier.createObjectWithProps).to.be.a('function');
+      });
+
+
+      it('createObjectWithProps has documented arity', function() {
+        expect(funkier.arityOf(funkier.createObjectWithProps)).to.equal(2);
+      });
+
+
+      it('createObjectWithProps is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.createObjectWithProps)).to.equal(true);
+      });
+    });
+
+
+    describe('createProp', function() {
+      it('createProp exists', function() {
+        expect(funkier).to.have.a.property('createProp');
+      });
+
+
+      it('funkierJS\'s createProp is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.createProp).to.equal(module.createProp);
+      });
+
+
+      it('createProp is a function', function() {
+        expect(funkier.createProp).to.be.a('function');
+      });
+
+
+      it('createProp has documented arity', function() {
+        expect(funkier.arityOf(funkier.createProp)).to.equal(3);
+      });
+
+
+      it('createProp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.createProp)).to.equal(true);
+      });
+    });
+
+
     describe('curry', function() {
       it('curry exists', function() {
         expect(funkier).to.have.a.property('curry');
@@ -14282,6 +16128,34 @@ module.exports = (function() {
 
       it('curry is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.curry)).to.equal(true);
+      });
+    });
+
+
+    describe('curryOwn', function() {
+      it('curryOwn exists', function() {
+        expect(funkier).to.have.a.property('curryOwn');
+      });
+
+
+      it('funkierJS\'s curryOwn is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.curryOwn).to.equal(module.curryOwn);
+      });
+
+
+      it('curryOwn is a function', function() {
+        expect(funkier.curryOwn).to.be.a('function');
+      });
+
+
+      it('curryOwn has documented arity', function() {
+        expect(funkier.arityOf(funkier.curryOwn)).to.equal(1);
+      });
+
+
+      it('curryOwn is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.curryOwn)).to.equal(true);
       });
     });
 
@@ -14350,6 +16224,130 @@ module.exports = (function() {
 
       it('deepEquals is a synonym for deepEqual', function() {
         expect(funkier.deepEquals).to.equal(funkier.deepEqual);
+      });
+    });
+
+
+    describe('defaultTap', function() {
+      it('defaultTap exists', function() {
+        expect(funkier).to.have.a.property('defaultTap');
+      });
+
+
+      it('defaultTap is a synonym for extractOrDefault', function() {
+        expect(funkier.defaultTap).to.equal(funkier.extractOrDefault);
+      });
+    });
+
+
+    describe('defineProperties', function() {
+      it('defineProperties exists', function() {
+        expect(funkier).to.have.a.property('defineProperties');
+      });
+
+
+      it('funkierJS\'s defineProperties is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.defineProperties).to.equal(module.defineProperties);
+      });
+
+
+      it('defineProperties is a function', function() {
+        expect(funkier.defineProperties).to.be.a('function');
+      });
+
+
+      it('defineProperties has documented arity', function() {
+        expect(funkier.arityOf(funkier.defineProperties)).to.equal(2);
+      });
+
+
+      it('defineProperties is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.defineProperties)).to.equal(true);
+      });
+    });
+
+
+    describe('defineProperty', function() {
+      it('defineProperty exists', function() {
+        expect(funkier).to.have.a.property('defineProperty');
+      });
+
+
+      it('funkierJS\'s defineProperty is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.defineProperty).to.equal(module.defineProperty);
+      });
+
+
+      it('defineProperty is a function', function() {
+        expect(funkier.defineProperty).to.be.a('function');
+      });
+
+
+      it('defineProperty has documented arity', function() {
+        expect(funkier.arityOf(funkier.defineProperty)).to.equal(3);
+      });
+
+
+      it('defineProperty is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.defineProperty)).to.equal(true);
+      });
+    });
+
+
+    describe('deleteProp', function() {
+      it('deleteProp exists', function() {
+        expect(funkier).to.have.a.property('deleteProp');
+      });
+
+
+      it('funkierJS\'s deleteProp is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.deleteProp).to.equal(module.deleteProp);
+      });
+
+
+      it('deleteProp is a function', function() {
+        expect(funkier.deleteProp).to.be.a('function');
+      });
+
+
+      it('deleteProp has documented arity', function() {
+        expect(funkier.arityOf(funkier.deleteProp)).to.equal(2);
+      });
+
+
+      it('deleteProp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.deleteProp)).to.equal(true);
+      });
+    });
+
+
+    describe('descriptors', function() {
+      it('descriptors exists', function() {
+        expect(funkier).to.have.a.property('descriptors');
+      });
+
+
+      it('funkierJS\'s descriptors is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.descriptors).to.equal(module.descriptors);
+      });
+
+
+      it('descriptors is a function', function() {
+        expect(funkier.descriptors).to.be.a('function');
+      });
+
+
+      it('descriptors has documented arity', function() {
+        expect(funkier.arityOf(funkier.descriptors)).to.equal(1);
+      });
+
+
+      it('descriptors is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.descriptors)).to.equal(true);
       });
     });
 
@@ -14522,6 +16520,118 @@ module.exports = (function() {
     });
 
 
+    describe('extend', function() {
+      it('extend exists', function() {
+        expect(funkier).to.have.a.property('extend');
+      });
+
+
+      it('funkierJS\'s extend is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.extend).to.equal(module.extend);
+      });
+
+
+      it('extend is a function', function() {
+        expect(funkier.extend).to.be.a('function');
+      });
+
+
+      it('extend has documented arity', function() {
+        expect(funkier.arityOf(funkier.extend)).to.equal(2);
+      });
+
+
+      it('extend is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.extend)).to.equal(true);
+      });
+    });
+
+
+    describe('extendOwn', function() {
+      it('extendOwn exists', function() {
+        expect(funkier).to.have.a.property('extendOwn');
+      });
+
+
+      it('funkierJS\'s extendOwn is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.extendOwn).to.equal(module.extendOwn);
+      });
+
+
+      it('extendOwn is a function', function() {
+        expect(funkier.extendOwn).to.be.a('function');
+      });
+
+
+      it('extendOwn has documented arity', function() {
+        expect(funkier.arityOf(funkier.extendOwn)).to.equal(2);
+      });
+
+
+      it('extendOwn is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.extendOwn)).to.equal(true);
+      });
+    });
+
+
+    describe('extract', function() {
+      it('extract exists', function() {
+        expect(funkier).to.have.a.property('extract');
+      });
+
+
+      it('funkierJS\'s extract is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.extract).to.equal(module.extract);
+      });
+
+
+      it('extract is a function', function() {
+        expect(funkier.extract).to.be.a('function');
+      });
+
+
+      it('extract has documented arity', function() {
+        expect(funkier.arityOf(funkier.extract)).to.equal(2);
+      });
+
+
+      it('extract is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.extract)).to.equal(true);
+      });
+    });
+
+
+    describe('extractOrDefault', function() {
+      it('extractOrDefault exists', function() {
+        expect(funkier).to.have.a.property('extractOrDefault');
+      });
+
+
+      it('funkierJS\'s extractOrDefault is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.extractOrDefault).to.equal(module.extractOrDefault);
+      });
+
+
+      it('extractOrDefault is a function', function() {
+        expect(funkier.extractOrDefault).to.be.a('function');
+      });
+
+
+      it('extractOrDefault has documented arity', function() {
+        expect(funkier.arityOf(funkier.extractOrDefault)).to.equal(3);
+      });
+
+
+      it('extractOrDefault is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.extractOrDefault)).to.equal(true);
+      });
+    });
+
+
     describe('first', function() {
       it('first exists', function() {
         expect(funkier).to.have.a.property('first');
@@ -14674,6 +16784,62 @@ module.exports = (function() {
     });
 
 
+    describe('getOwnPropertyDescriptor', function() {
+      it('getOwnPropertyDescriptor exists', function() {
+        expect(funkier).to.have.a.property('getOwnPropertyDescriptor');
+      });
+
+
+      it('funkierJS\'s getOwnPropertyDescriptor is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.getOwnPropertyDescriptor).to.equal(module.getOwnPropertyDescriptor);
+      });
+
+
+      it('getOwnPropertyDescriptor is a function', function() {
+        expect(funkier.getOwnPropertyDescriptor).to.be.a('function');
+      });
+
+
+      it('getOwnPropertyDescriptor has documented arity', function() {
+        expect(funkier.arityOf(funkier.getOwnPropertyDescriptor)).to.equal(2);
+      });
+
+
+      it('getOwnPropertyDescriptor is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getOwnPropertyDescriptor)).to.equal(true);
+      });
+    });
+
+
+    describe('getOwnPropertyNames', function() {
+      it('getOwnPropertyNames exists', function() {
+        expect(funkier).to.have.a.property('getOwnPropertyNames');
+      });
+
+
+      it('funkierJS\'s getOwnPropertyNames is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.getOwnPropertyNames).to.equal(module.getOwnPropertyNames);
+      });
+
+
+      it('getOwnPropertyNames is a function', function() {
+        expect(funkier.getOwnPropertyNames).to.be.a('function');
+      });
+
+
+      it('getOwnPropertyNames has documented arity', function() {
+        expect(funkier.arityOf(funkier.getOwnPropertyNames)).to.equal(1);
+      });
+
+
+      it('getOwnPropertyNames is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getOwnPropertyNames)).to.equal(true);
+      });
+    });
+
+
     describe('getType', function() {
       it('getType exists', function() {
         expect(funkier).to.have.a.property('getType');
@@ -14782,6 +16948,62 @@ module.exports = (function() {
     });
 
 
+    describe('hasOwnProperty', function() {
+      it('hasOwnProperty exists', function() {
+        expect(funkier).to.have.a.property('hasOwnProperty');
+      });
+
+
+      it('funkierJS\'s hasOwnProperty is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.hasOwnProperty).to.equal(module.hasOwnProperty);
+      });
+
+
+      it('hasOwnProperty is a function', function() {
+        expect(funkier.hasOwnProperty).to.be.a('function');
+      });
+
+
+      it('hasOwnProperty has documented arity', function() {
+        expect(funkier.arityOf(funkier.hasOwnProperty)).to.equal(2);
+      });
+
+
+      it('hasOwnProperty is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.hasOwnProperty)).to.equal(true);
+      });
+    });
+
+
+    describe('hasProperty', function() {
+      it('hasProperty exists', function() {
+        expect(funkier).to.have.a.property('hasProperty');
+      });
+
+
+      it('funkierJS\'s hasProperty is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.hasProperty).to.equal(module.hasProperty);
+      });
+
+
+      it('hasProperty is a function', function() {
+        expect(funkier.hasProperty).to.be.a('function');
+      });
+
+
+      it('hasProperty has documented arity', function() {
+        expect(funkier.arityOf(funkier.hasProperty)).to.equal(2);
+      });
+
+
+      it('hasProperty is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.hasProperty)).to.equal(true);
+      });
+    });
+
+
     describe('hasType', function() {
       it('hasType exists', function() {
         expect(funkier).to.have.a.property('hasType');
@@ -14818,6 +17040,34 @@ module.exports = (function() {
 
       it('id is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.id)).to.equal(true);
+      });
+    });
+
+
+    describe('instanceOf', function() {
+      it('instanceOf exists', function() {
+        expect(funkier).to.have.a.property('instanceOf');
+      });
+
+
+      it('funkierJS\'s instanceOf is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.instanceOf).to.equal(module.instanceOf);
+      });
+
+
+      it('instanceOf is a function', function() {
+        expect(funkier.instanceOf).to.be.a('function');
+      });
+
+
+      it('instanceOf has documented arity', function() {
+        expect(funkier.arityOf(funkier.instanceOf)).to.equal(2);
+      });
+
+
+      it('instanceOf is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.instanceOf)).to.equal(true);
       });
     });
 
@@ -15158,6 +17408,34 @@ module.exports = (function() {
     });
 
 
+    describe('isPrototypeOf', function() {
+      it('isPrototypeOf exists', function() {
+        expect(funkier).to.have.a.property('isPrototypeOf');
+      });
+
+
+      it('funkierJS\'s isPrototypeOf is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.isPrototypeOf).to.equal(module.isPrototypeOf);
+      });
+
+
+      it('isPrototypeOf is a function', function() {
+        expect(funkier.isPrototypeOf).to.be.a('function');
+      });
+
+
+      it('isPrototypeOf has documented arity', function() {
+        expect(funkier.arityOf(funkier.isPrototypeOf)).to.equal(2);
+      });
+
+
+      it('isPrototypeOf is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.isPrototypeOf)).to.equal(true);
+      });
+    });
+
+
     describe('isRealObject', function() {
       it('isRealObject exists', function() {
         expect(funkier).to.have.a.property('isRealObject');
@@ -15266,6 +17544,62 @@ module.exports = (function() {
 
       it('isUndefined is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.isUndefined)).to.equal(true);
+      });
+    });
+
+
+    describe('keyValues', function() {
+      it('keyValues exists', function() {
+        expect(funkier).to.have.a.property('keyValues');
+      });
+
+
+      it('funkierJS\'s keyValues is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.keyValues).to.equal(module.keyValues);
+      });
+
+
+      it('keyValues is a function', function() {
+        expect(funkier.keyValues).to.be.a('function');
+      });
+
+
+      it('keyValues has documented arity', function() {
+        expect(funkier.arityOf(funkier.keyValues)).to.equal(1);
+      });
+
+
+      it('keyValues is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.keyValues)).to.equal(true);
+      });
+    });
+
+
+    describe('keys', function() {
+      it('keys exists', function() {
+        expect(funkier).to.have.a.property('keys');
+      });
+
+
+      it('funkierJS\'s keys is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.keys).to.equal(module.keys);
+      });
+
+
+      it('keys is a function', function() {
+        expect(funkier.keys).to.be.a('function');
+      });
+
+
+      it('keys has documented arity', function() {
+        expect(funkier.arityOf(funkier.keys)).to.equal(1);
+      });
+
+
+      it('keys is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.keys)).to.equal(true);
       });
     });
 
@@ -15490,6 +17824,118 @@ module.exports = (function() {
     });
 
 
+    describe('maybeCreate', function() {
+      it('maybeCreate exists', function() {
+        expect(funkier).to.have.a.property('maybeCreate');
+      });
+
+
+      it('maybeCreate is a synonym for safeCreateProp', function() {
+        expect(funkier.maybeCreate).to.equal(funkier.safeCreateProp);
+      });
+    });
+
+
+    describe('maybeDelete', function() {
+      it('maybeDelete exists', function() {
+        expect(funkier).to.have.a.property('maybeDelete');
+      });
+
+
+      it('maybeDelete is a synonym for safeDeleteProp', function() {
+        expect(funkier.maybeDelete).to.equal(funkier.safeDeleteProp);
+      });
+    });
+
+
+    describe('maybeExtract', function() {
+      it('maybeExtract exists', function() {
+        expect(funkier).to.have.a.property('maybeExtract');
+      });
+
+
+      it('funkierJS\'s maybeExtract is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.maybeExtract).to.equal(module.maybeExtract);
+      });
+
+
+      it('maybeExtract is a function', function() {
+        expect(funkier.maybeExtract).to.be.a('function');
+      });
+
+
+      it('maybeExtract has documented arity', function() {
+        expect(funkier.arityOf(funkier.maybeExtract)).to.equal(2);
+      });
+
+
+      it('maybeExtract is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.maybeExtract)).to.equal(true);
+      });
+    });
+
+
+    describe('maybeModify', function() {
+      it('maybeModify exists', function() {
+        expect(funkier).to.have.a.property('maybeModify');
+      });
+
+
+      it('maybeModify is a synonym for safeModify', function() {
+        expect(funkier.maybeModify).to.equal(funkier.safeModify);
+      });
+    });
+
+
+    describe('maybeModifyProp', function() {
+      it('maybeModifyProp exists', function() {
+        expect(funkier).to.have.a.property('maybeModifyProp');
+      });
+
+
+      it('maybeModifyProp is a synonym for safeModify', function() {
+        expect(funkier.maybeModifyProp).to.equal(funkier.safeModify);
+      });
+    });
+
+
+    describe('maybeSet', function() {
+      it('maybeSet exists', function() {
+        expect(funkier).to.have.a.property('maybeSet');
+      });
+
+
+      it('maybeSet is a synonym for safeSet', function() {
+        expect(funkier.maybeSet).to.equal(funkier.safeSet);
+      });
+    });
+
+
+    describe('maybeSetProp', function() {
+      it('maybeSetProp exists', function() {
+        expect(funkier).to.have.a.property('maybeSetProp');
+      });
+
+
+      it('maybeSetProp is a synonym for safeSet', function() {
+        expect(funkier.maybeSetProp).to.equal(funkier.safeSet);
+      });
+    });
+
+
+    describe('maybeTap', function() {
+      it('maybeTap exists', function() {
+        expect(funkier).to.have.a.property('maybeTap');
+      });
+
+
+      it('maybeTap is a synonym for maybeExtract', function() {
+        expect(funkier.maybeTap).to.equal(funkier.maybeExtract);
+      });
+    });
+
+
     describe('min', function() {
       it('min exists', function() {
         expect(funkier).to.have.a.property('min');
@@ -15514,6 +17960,46 @@ module.exports = (function() {
 
       it('min is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.min)).to.equal(true);
+      });
+    });
+
+
+    describe('modify', function() {
+      it('modify exists', function() {
+        expect(funkier).to.have.a.property('modify');
+      });
+
+
+      it('funkierJS\'s modify is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.modify).to.equal(module.modify);
+      });
+
+
+      it('modify is a function', function() {
+        expect(funkier.modify).to.be.a('function');
+      });
+
+
+      it('modify has documented arity', function() {
+        expect(funkier.arityOf(funkier.modify)).to.equal(3);
+      });
+
+
+      it('modify is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.modify)).to.equal(true);
+      });
+    });
+
+
+    describe('modifyProp', function() {
+      it('modifyProp exists', function() {
+        expect(funkier).to.have.a.property('modifyProp');
+      });
+
+
+      it('modifyProp is a synonym for modify', function() {
+        expect(funkier.modifyProp).to.equal(funkier.modify);
       });
     });
 
@@ -15890,6 +18376,166 @@ module.exports = (function() {
     });
 
 
+    describe('safeCreateProp', function() {
+      it('safeCreateProp exists', function() {
+        expect(funkier).to.have.a.property('safeCreateProp');
+      });
+
+
+      it('funkierJS\'s safeCreateProp is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.safeCreateProp).to.equal(module.safeCreateProp);
+      });
+
+
+      it('safeCreateProp is a function', function() {
+        expect(funkier.safeCreateProp).to.be.a('function');
+      });
+
+
+      it('safeCreateProp has documented arity', function() {
+        expect(funkier.arityOf(funkier.safeCreateProp)).to.equal(3);
+      });
+
+
+      it('safeCreateProp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.safeCreateProp)).to.equal(true);
+      });
+    });
+
+
+    describe('safeDeleteProp', function() {
+      it('safeDeleteProp exists', function() {
+        expect(funkier).to.have.a.property('safeDeleteProp');
+      });
+
+
+      it('funkierJS\'s safeDeleteProp is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.safeDeleteProp).to.equal(module.safeDeleteProp);
+      });
+
+
+      it('safeDeleteProp is a function', function() {
+        expect(funkier.safeDeleteProp).to.be.a('function');
+      });
+
+
+      it('safeDeleteProp has documented arity', function() {
+        expect(funkier.arityOf(funkier.safeDeleteProp)).to.equal(2);
+      });
+
+
+      it('safeDeleteProp is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.safeDeleteProp)).to.equal(true);
+      });
+    });
+
+
+    describe('safeExtract', function() {
+      it('safeExtract exists', function() {
+        expect(funkier).to.have.a.property('safeExtract');
+      });
+
+
+      it('safeExtract is a synonym for maybeExtract', function() {
+        expect(funkier.safeExtract).to.equal(funkier.maybeExtract);
+      });
+    });
+
+
+    describe('safeModify', function() {
+      it('safeModify exists', function() {
+        expect(funkier).to.have.a.property('safeModify');
+      });
+
+
+      it('funkierJS\'s safeModify is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.safeModify).to.equal(module.safeModify);
+      });
+
+
+      it('safeModify is a function', function() {
+        expect(funkier.safeModify).to.be.a('function');
+      });
+
+
+      it('safeModify has documented arity', function() {
+        expect(funkier.arityOf(funkier.safeModify)).to.equal(3);
+      });
+
+
+      it('safeModify is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.safeModify)).to.equal(true);
+      });
+    });
+
+
+    describe('safeModifyProp', function() {
+      it('safeModifyProp exists', function() {
+        expect(funkier).to.have.a.property('safeModifyProp');
+      });
+
+
+      it('safeModifyProp is a synonym for safeModify', function() {
+        expect(funkier.safeModifyProp).to.equal(funkier.safeModify);
+      });
+    });
+
+
+    describe('safeSet', function() {
+      it('safeSet exists', function() {
+        expect(funkier).to.have.a.property('safeSet');
+      });
+
+
+      it('funkierJS\'s safeSet is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.safeSet).to.equal(module.safeSet);
+      });
+
+
+      it('safeSet is a function', function() {
+        expect(funkier.safeSet).to.be.a('function');
+      });
+
+
+      it('safeSet has documented arity', function() {
+        expect(funkier.arityOf(funkier.safeSet)).to.equal(3);
+      });
+
+
+      it('safeSet is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.safeSet)).to.equal(true);
+      });
+    });
+
+
+    describe('safeSetProp', function() {
+      it('safeSetProp exists', function() {
+        expect(funkier).to.have.a.property('safeSetProp');
+      });
+
+
+      it('safeSetProp is a synonym for safeSet', function() {
+        expect(funkier.safeSetProp).to.equal(funkier.safeSet);
+      });
+    });
+
+
+    describe('safeTap', function() {
+      it('safeTap exists', function() {
+        expect(funkier).to.have.a.property('safeTap');
+      });
+
+
+      it('safeTap is a synonym for maybeExtract', function() {
+        expect(funkier.safeTap).to.equal(funkier.maybeExtract);
+      });
+    });
+
+
     describe('second', function() {
       it('second exists', function() {
         expect(funkier).to.have.a.property('second');
@@ -15954,6 +18600,58 @@ module.exports = (function() {
 
       it('sectionRight is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.sectionRight)).to.equal(true);
+      });
+    });
+
+
+    describe('set', function() {
+      it('set exists', function() {
+        expect(funkier).to.have.a.property('set');
+      });
+
+
+      it('funkierJS\'s set is indeed the documented value', function() {
+        var module = require('../../lib/components/object');
+        expect(funkier.set).to.equal(module.set);
+      });
+
+
+      it('set is a function', function() {
+        expect(funkier.set).to.be.a('function');
+      });
+
+
+      it('set has documented arity', function() {
+        expect(funkier.arityOf(funkier.set)).to.equal(3);
+      });
+
+
+      it('set is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.set)).to.equal(true);
+      });
+    });
+
+
+    describe('setProp', function() {
+      it('setProp exists', function() {
+        expect(funkier).to.have.a.property('setProp');
+      });
+
+
+      it('setProp is a synonym for set', function() {
+        expect(funkier.setProp).to.equal(funkier.set);
+      });
+    });
+
+
+    describe('shallowClone', function() {
+      it('shallowClone exists', function() {
+        expect(funkier).to.have.a.property('shallowClone');
+      });
+
+
+      it('shallowClone is a synonym for clone', function() {
+        expect(funkier.shallowClone).to.equal(funkier.clone);
       });
     });
 
@@ -16094,6 +18792,18 @@ module.exports = (function() {
     });
 
 
+    describe('tap', function() {
+      it('tap exists', function() {
+        expect(funkier).to.have.a.property('tap');
+      });
+
+
+      it('tap is a synonym for extract', function() {
+        expect(funkier.tap).to.equal(funkier.extract);
+      });
+    });
+
+
     describe('xor', function() {
       it('xor exists', function() {
         expect(funkier).to.have.a.property('xor');
@@ -16158,16 +18868,22 @@ module.exports = (function() {
     beforeEach(function() {
       documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'and', 'andPred',
          'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
-         'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'compose', 'composeMany', 'composeOn', 'constant', 'constant0',
-         'curry', 'curryWithArity', 'deepEqual', 'deepEquals', 'div', 'divide', 'either', 'equals', 'even', 'exp',
-         'first', 'flip', 'fst', 'getErrValue', 'getJustValue', 'getOkValue', 'getType', 'greaterThan',
-         'greaterThanEqual', 'gt', 'gte', 'hasType', 'id', 'is', 'isArray', 'isBoolean', 'isErr', 'isJust', 'isMaybe',
-         'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isRealObject', 'isResult', 'isString',
-         'isUndefined', 'leftShift', 'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner',
-         'makeResultReturner', 'max', 'min', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'second',
-         'sectionLeft', 'sectionRight', 'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
-         'subtract', 'xor', 'xorPred'];
+         'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp', 'callPropWithArity', 'clone', 'compose', 'composeMany',
+         'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
+         'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
+         'deleteProp', 'descriptors', 'div', 'divide', 'either', 'equals', 'even', 'exp', 'extend', 'extendOwn',
+         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getErrValue', 'getJustValue', 'getOkValue',
+         'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte',
+         'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean', 'isErr',
+         'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf',
+         'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift', 'lessThan',
+         'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'makeResultReturner', 'max', 'maybeCreate',
+         'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
+         'min', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
+         'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero',
+         'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp',
+         'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set', 'setProp', 'shallowClone', 'snd', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'tap', 'xor', 'xorPred'];
     });
 
 
@@ -16184,7 +18900,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/logical":12,"../../lib/components/maths":13,"../../lib/components/maybe":14,"../../lib/components/pair":15,"../../lib/components/result":16,"../../lib/components/types":17,"../../lib/funkier":19,"chai":55}],38:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/logical":12,"../../lib/components/maths":13,"../../lib/components/maybe":14,"../../lib/components/object":15,"../../lib/components/pair":16,"../../lib/components/result":17,"../../lib/components/types":18,"../../lib/funkier":20,"chai":59}],42:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -20411,7 +23127,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],39:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -21237,7 +23953,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":54,"chai":55}],40:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":58,"chai":59}],44:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -23467,7 +26183,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"./testingUtilities":54,"chai":55}],41:[function(require,module,exports){
+},{"../../lib/components/curry":11,"./testingUtilities":58,"chai":59}],45:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -23891,7 +26607,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],42:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -24771,7 +27487,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],43:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -24949,7 +27665,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":18,"./testingUtilities":54,"chai":55}],44:[function(require,module,exports){
+},{"../../lib/funcUtils":19,"./testingUtilities":58,"chai":59}],48:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -25039,7 +27755,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],45:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -25051,7 +27767,8 @@ module.exports = (function() {
 
   describe('internalUtilities', function() {
     checkModule('internalUtilities', internalUtilities, {
-                expectedFunctions: ['checkIntegral', 'checkPositiveIntegral', 'isArrayLike', 'valueStringifier']});
+                expectedFunctions: ['checkIntegral', 'checkObjectLike', 'checkPositiveIntegral', 'isArrayLike',
+                                    'valueStringifier']});
 
 
     /*
@@ -25223,6 +27940,177 @@ module.exports = (function() {
     });
 
 
+    var objectLikeTests = [
+      {name: 'number', value: 1, result: false},
+      {name: 'boolean', value: true, result: false},
+      {name: 'string', value: 'a', result: true},
+      {name: 'function', value: function() {}, result: true},
+      {name: 'object', value: {}, result: true},
+      {name: 'array', value: [1, 2], result: true},
+      {name: 'undefined', value: undefined, result: false},
+      {name: 'null', value: null, result: false}
+    ];
+
+
+    describe('isObjectLike', function() {
+      var isObjectLike = internalUtilities.isObjectLike;
+
+
+      objectLikeTests.forEach(function(t) {
+        var name = t.name;
+
+        it('Behaves correctly for ' + name, function() {
+          var b = isObjectLike(t.value);
+          var expected = t.result;
+
+          expect(b).to.equal(expected);
+        });
+      });
+
+
+      var addOptionTests = function(allowNull, strict) {
+        it('Behaves correctly for null when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike(null, {allowNull: allowNull, strict: strict})).to.equal(allowNull);
+        });
+
+
+        it('Behaves correctly for function when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike(function() {}, {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
+        it('Behaves correctly for string when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike('a', {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
+        it('Behaves correctly for array when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike([1], {allowNull: allowNull, strict: strict})).to.equal(!strict);
+        });
+
+
+        it('Behaves correctly for object when allowNull ' + allowNull + ' and strict ' + strict, function() {
+          expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.equal(true);
+        });
+      };
+
+
+      addOptionTests(false, false);
+      addOptionTests(false, true);
+      addOptionTests(true, false);
+      addOptionTests(true, true);
+    });
+
+
+    describe('checkObjectLike', function() {
+      var checkObjectLike = internalUtilities.checkObjectLike;
+
+
+      var shouldFail = objectLikeTests.filter(function(test) {return test.result === false;});
+      var shouldPass = objectLikeTests.filter(function(test) {return test.result === true;});
+
+      shouldFail.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Behaves correctly for ' + name, function() {
+          var fn = function() {
+            checkObjectLike(test.value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Returns correct exception for ' + name, function() {
+          var message = 'This was an error';
+          var fn = function() {
+            checkObjectLike(test.value, {message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      });
+
+
+      shouldPass.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Doesn\'t throw for ' + name, function() {
+          var fn = function() {
+            checkObjectLike(test.value);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+
+
+        it('Returns its argument for ' + name, function() {
+          expect(checkObjectLike(test.value)).to.equal(test.value);
+        });
+      });
+
+
+      it('Doesn\'t accept null when relevant parameter explicitly passed in (1)', function() {
+        var fn = function() {
+          checkObjectLike(null, {allowNull: false});
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Doesn\'t accept null when relevant parameter explicitly passed in (2)', function() {
+        var message = 'Noooo, no null here!';
+        var fn = function() {
+          checkObjectLike(null, {allowNull: false, message: message});
+        };
+
+        expect(fn).to.throw(message);
+      });
+
+
+      it('Accepts null when relevant parameter passed in', function() {
+        var o = checkObjectLike(null, {allowNull: true});
+
+        expect(o).to.equal(null);
+      });
+
+
+      var addStrictTests = function(type, val) {
+        it('Accepts ' + type + ' when strict parameter explicitly false', function() {
+          var o = checkObjectLike(val, {strict: false});
+
+          expect(o).to.equal(val);
+        });
+
+
+        it('Doesn\'t accept ' + type + ' when strict parameter true (1)', function() {
+          var fn = function() {
+            checkObjectLike(val, {strict: true});
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Doesn\'t accept ' + type + ' when relevant strict parameter true (2)', function() {
+          var message = 'Noooo, only objects here!';
+          var fn = function() {
+            checkObjectLike(val, {strict: true, message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      };
+
+
+      addStrictTests('function', function() {});
+      addStrictTests('string', 'abc');
+    });
+
+
     var arrayLikeTests = [
       {name: 'number', value: 1, result: false},
       {name: 'boolean', value: true, result: false},
@@ -25296,219 +28184,8 @@ module.exports = (function() {
     });
   });
 })();
-//(function() {
-//  // Deliberate outer scope here: we want a non-strict scope where "this" points to the global.
-//
-//  var global = this;
-//  var print = this.window === undefined ? this.print : undefined; // SpiderMonkey JS shell
-//
-//  return function() {
-//    "use strict";
-//
-//
-//    var testFixture = function(require, exports) {
-//      var chai = require('chai');
-//      var expect = chai.expect;
-//
-//      var utils = require('../utils');
-//
-//      var testUtils = require('./testUtils');
-//      var describeModule = testUtils.describeModule;
-//      var describeFunction = testUtils.describeFunction;
-//
-//
-//      var expectedObjects = [];
-//      var expectedFunctions = ['valueStringifier', 'isArrayLike', 'checkArrayLike', 'isObjectLike',
-//                               'checkIntegral', 'checkPositiveIntegral', 'checkObjectLike', 'defineValue', 'help'];
-//      describeModule('utils', utils, expectedObjects, expectedFunctions);
-//
-//
-//      var objectLikeTests = [
-//        {name: 'number', value: 1, result: false},
-//        {name: 'boolean', value: true, result: false},
-//        {name: 'string', value: 'a', result: true},
-//        {name: 'function', value: function() {}, result: true},
-//        {name: 'object', value: {}, result: true},
-//        {name: 'array', value: [1, 2], result: true},
-//        {name: 'undefined', value: undefined, result: false},
-//        {name: 'null', value: null, result: false}
-//      ];
-//
-//
-//      describe('isObjectLike', function() {
-//        var isObjectLike = utils.isObjectLike;
-//
-//
-//        objectLikeTests.forEach(function(t) {
-//          var name = t.name;
-//
-//          it('Behaves correctly for ' + name, function() {
-//            var b = isObjectLike(t.value);
-//            var expected = t.result;
-//
-//            expect(b).to.equal(expected);
-//          });
-//        });
-//
-//
-//        var addOptionTests = function(allowNull, strict) {
-//          it('Behaves correctly for null when allowNull ' + allowNull + ' and strict ' + strict, function() {
-//            expect(isObjectLike(null, {allowNull: allowNull, strict: strict})).to.equal(allowNull);
-//          });
-//
-//
-//          it('Behaves correctly for function when allowNull ' + allowNull + ' and strict ' + strict, function() {
-//            expect(isObjectLike(function() {}, {allowNull: allowNull, strict: strict})).to.equal(!strict);
-//          });
-//
-//
-//          it('Behaves correctly for string when allowNull ' + allowNull + ' and strict ' + strict, function() {
-//            expect(isObjectLike('a', {allowNull: allowNull, strict: strict})).to.equal(!strict);
-//          });
-//
-//
-//          it('Behaves correctly for array when allowNull ' + allowNull + ' and strict ' + strict, function() {
-//            expect(isObjectLike([1], {allowNull: allowNull, strict: strict})).to.equal(!strict);
-//          });
-//
-//
-//          it('Behaves correctly for object when allowNull ' + allowNull + ' and strict ' + strict, function() {
-//            expect(isObjectLike({}, {allowNull: allowNull, strict: strict})).to.equal(true);
-//          });
-//        };
-//
-//
-//        addOptionTests(false, false);
-//        addOptionTests(false, true);
-//        addOptionTests(true, false);
-//        addOptionTests(true, true);
-//      });
-//
-//
-//      // We deliberately use describe rather than our own describeFunction here
-//      // due to the optional parameter.
-//      describe('checkObjectLike', function() {
-//        var checkObjectLike = utils.checkObjectLike;
-//
-//
-//        var shouldFail = objectLikeTests.filter(function(test) {return test.result === false;});
-//        var shouldPass = objectLikeTests.filter(function(test) {return test.result === true;});
-//
-//        shouldFail.forEach(function(test) {
-//          var name = test.name;
-//
-//
-//          it('Behaves correctly for ' + name, function() {
-//            var fn = function() {
-//              checkObjectLike(test.value);
-//            };
-//
-//            expect(fn).to.throw(TypeError);
-//          });
-//
-//
-//          it('Returns correct exception for ' + name, function() {
-//            var message = 'This was an error';
-//            var fn = function() {
-//              checkObjectLike(test.value, {message: message});
-//            };
-//
-//            expect(fn).to.throw(message);
-//          });
-//        });
-//
-//
-//        shouldPass.forEach(function(test) {
-//          var name = test.name;
-//
-//
-//          it('Doesn\'t throw for ' + name, function() {
-//            var fn = function() {
-//              checkObjectLike(test.value);
-//            };
-//
-//            expect(fn).to.not.throw(TypeError);
-//          });
-//
-//
-//          it('Returns its argument for ' + name, function() {
-//            expect(checkObjectLike(test.value)).to.equal(test.value);
-//          });
-//        });
-//
-//
-//        it('Doesn\'t accept null when relevant parameter explicitly passed in (1)', function() {
-//          var fn = function() {
-//            checkObjectLike(null, {allowNull: false});
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Doesn\'t accept null when relevant parameter explicitly passed in (2)', function() {
-//          var message = 'Noooo, no null here!';
-//          var fn = function() {
-//            checkObjectLike(null, {allowNull: false, message: message});
-//          };
-//
-//          expect(fn).to.throw(message);
-//        });
-//
-//
-//        it('Accepts null when relevant parameter passed in', function() {
-//          var o = checkObjectLike(null, {allowNull: true});
-//
-//          expect(o).to.equal(null);
-//        });
-//
-//
-//        var addStrictTests = function(type, val) {
-//          it('Accepts ' + type + ' when strict parameter explicitly false', function() {
-//            var o = checkObjectLike(val, {strict: false});
-//
-//            expect(o).to.equal(val);
-//          });
-//
-//
-//          it('Doesn\'t accept ' + type + ' when strict parameter true (1)', function() {
-//            var fn = function() {
-//              checkObjectLike(val, {strict: true});
-//            };
-//
-//            expect(fn).to.throw(TypeError);
-//          });
-//
-//
-//          it('Doesn\'t accept ' + type + ' when relevant strict parameter true (2)', function() {
-//            var message = 'Noooo, only objects here!';
-//            var fn = function() {
-//              checkObjectLike(val, {strict: true, message: message});
-//            };
-//
-//            expect(fn).to.throw(message);
-//          });
-//        };
-//
-//
-//        addStrictTests('function', function() {});
-//        addStrictTests('string', 'abc');
-//      });
-//    };
-//
-//
-//    // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//    if (typeof(define) === "function") {
-//      define(function(require, exports, module) {
-//        testFixture(require, exports, module);
-//      });
-//    } else {
-//      testFixture(require, exports, module);
-//    }
-//  }();
-//})();
 
-},{"../../lib/internalUtilities":21,"./testingUtilities":54,"chai":55}],46:[function(require,module,exports){
+},{"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],50:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -25713,7 +28390,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/logical":12,"./testingUtilities":54,"chai":55}],47:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/logical":12,"./testingUtilities":58,"chai":59}],51:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -25989,7 +28666,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/maths":13,"./testingUtilities":54,"chai":55}],48:[function(require,module,exports){
+},{"../../lib/components/maths":13,"./testingUtilities":58,"chai":59}],52:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -26443,1837 +29120,2226 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":14,"../../lib/internalUtilities":21,"./testingUtilities":54,"chai":55}],49:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var curryModule = require('../../curry');
-//    var getRealArity = curryModule.getRealArity;
-//
-//    var object = require('../../object');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//    var checkEquality = testUtils.checkEquality;
-//    var checkArrayContent = testUtils.checkArrayContent;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['callPropWithArity', 'callProp', 'hasOwnProperty',
-//                             'hasProperty', 'instanceOf', 'isPrototypeOf', 'createObject',
-//                             'createObjectWithProps', 'defineProperty', 'defineProperties',
-//                             'getOwnPropertyDescriptor', 'extract', 'set', 'setOrThrow',
-//                             'modify', 'modifyOrThrow', 'createProp', 'createPropOrThrow',
-//                             'deleteProp', 'deletePropOrThrow', 'keys', 'values', 'keyValues',
-//                             'descriptors', 'extractOrDefault', 'getOwnPropertyNames', 'shallowClone',
-//                             'deepClone', 'extend', 'extendOwn'];
-//    describeModule('object', object, expectedObjects, expectedFunctions);
-//
-//
-//    // XXX Should we restrict parameters that are property names? How likely is it that we are using something
-//    //     that coerces to a string as the property name?
-//
-//
-//    var cpwaSpec = {
-//      name: 'callPropWithArity',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(cpwaSpec, object.callPropWithArity, function(callPropWithArity) {
-//      var addReturnedCurriedArityTest = function(i) {
-//        it('Returned function is curried for arity ' + i, function() {
-//          var fn = callPropWithArity('prop', i);
-//
-//          expect(fn.length).to.equal(1);
-//          if (i > 0)
-//            expect(getRealArity(fn)).to.not.equal(1);
-//        });
-//      };
-//
-//
-//      var addReturnedArityTest = function(i) {
-//        it('Returned function has correct arity for arity ' + i, function() {
-//          var fn = callPropWithArity('prop', i);
-//
-//          expect(getRealArity(fn)).to.equal(i + 1);
-//        });
-//      };
-//
-//
-//      var functionalityArgs = [1, true, null, function() {}, []];
-//      var addCalledTest = function(i) {
-//        it('Returned function calls property on given object for arity ' + i, function() {
-//          var args = functionalityArgs.slice(0, i);
-//          var obj = {called: false, calledProp: function() {this.called = true;}};
-//          var caller = callPropWithArity('calledProp', i);
-//          caller.apply(null, args.concat([obj]));
-//
-//          expect(obj.called).to.equal(true);
-//        });
-//      };
-//
-//
-//      var addReturnedValueTest = function(i) {
-//        it('Returned function returns correct result when called for arity ' + i, function() {
-//          var expected = functionalityArgs.slice(0, i);
-//          var obj = {calledProp: function() {return [].slice.call(arguments);}};
-//          var obj2 = {calledProp: function() {return 42;}};
-//          var caller = callPropWithArity('calledProp', i);
-//          var result = caller.apply(null, expected.concat([obj]));
-//          var result2 = caller.apply(null, expected.concat([obj2]));
-//
-//          expect(result).to.deep.equal(expected);
-//          expect(result2).to.equal(42);
-//        });
-//      };
-//
-//
-//      var id = function(x) {return x;};
-//      var testObj;
-//
-//      for (var i = 0; i < 6; i++) {
-//        addReturnedCurriedArityTest(i);
-//        addReturnedArityTest(i);
-//        addCalledTest(i);
-//        addReturnedValueTest(i);
-//
-//        // The returned function should be curried
-//        testObj = {prop: id};
-//        var caller = callPropWithArity('prop', 1);
-//        testCurriedFunction(caller, [2, testObj], {message: 'Returned function'});
-//      }
-//
-//
-//      // callPropWithArity should itself be curried
-//      testObj = {property: function() {return 42;}};
-//      var args = {firstArgs: ['property', 0], thenArgs: [testObj]};
-//      testCurriedFunction(callPropWithArity, args);
-//    });
-//
-//
-//    var cpSpec = {
-//      name: 'callProp',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(cpSpec, object.callProp, function(callProp) {
-//      it('Returned function has correct arity', function() {
-//        var fn = callProp('prop');
-//
-//        expect(fn.length).to.equal(1);
-//      });
-//
-//
-//      it('Returned function has correct \'real\' arity', function() {
-//        var fn = callProp('prop');
-//
-//        expect(getRealArity(fn)).to.equal(1);
-//      });
-//
-//
-//      it('Returned function calls prop on given object', function() {
-//        var obj = {called: false, calledProp: function() {this.called = true;}};
-//        var caller = callProp('calledProp');
-//        var result = caller(obj);
-//
-//        expect(obj.called).to.equal(true);
-//      });
-//
-//
-//      it('Returned function returns correct result when called', function() {
-//        var obj = {calledProp: function() {return [].slice.call(arguments);}};
-//        var obj2 = {calledProp: function() {return 42;}};
-//        var caller = callProp('calledProp');
-//        var result = caller.call(null, obj);
-//        var result2 = caller.call(null, obj2);
-//
-//        expect(result).to.deep.equal([]);
-//        expect(result2).to.equal(42);
-//      });
-//    });
-//
-//
-//    var hopSpec = {
-//      name: 'hasOwnProperty',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(hopSpec, object.hasOwnProperty, function(hasOwnProperty) {
-//      it('Works correctly (1)', function() {
-//        var obj = {funkier: 1};
-//        var result = hasOwnProperty('funkier', obj);
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var Constructor = function() {};
-//        Constructor.prototype.funkier = 1;
-//        var obj = new Constructor();
-//        var result = hasOwnProperty('funkier', obj);
-//
-//        expect(result).to.equal(false);
-//      });
-//
-//
-//      it('Works correctly when object has custom hasOwnProperty function', function() {
-//        var obj = {
-//          'foo': 1,
-//          'hasOwnProperty': function(prop) {
-//            return prop !== 'foo';
-//          }
-//        };
-//        var result = hasOwnProperty('foo', obj);
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(hasOwnProperty, ['funkier', {funkier: 1}]);
-//    });
-//
-//
-//    var hpSpec = {
-//      name: 'hasProperty',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(hpSpec, object.hasProperty, function(hasProperty) {
-//      it('Works correctly (1)', function() {
-//        var obj = {funkier: 1};
-//        var result = hasProperty('funkier', obj);
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var Constructor = function() {};
-//        Constructor.prototype.funkier = 1;
-//        var obj = new Constructor();
-//        var result = hasProperty('funkier', obj);
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(hasProperty, ['funkier', {funkier: 1}]);
-//    });
-//
-//
-//    var ioSpec = {
-//      name: 'instanceOf',
-//      arity: 2,
-//      restrictions: [['function'], []],
-//      validArguments: [[Object], [{}]]
-//    };
-//
-//
-//    describeFunction(ioSpec, object.instanceOf, function(instanceOf) {
-//      it('Works correctly (1)', function() {
-//        expect(instanceOf(Object, {})).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var Constructor = function() {};
-//        var obj = new Constructor();
-//
-//        expect(instanceOf(Constructor, obj)).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (3)', function() {
-//        var Constructor = function() {};
-//        var Proto = function() {};
-//        Constructor.prototype = Proto.prototype;
-//        var obj = new Constructor();
-//
-//        expect(instanceOf(Proto, obj)).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (4)', function() {
-//        var Constructor = function() {};
-//        var Proto = function() {};
-//        var obj = new Constructor();
-//
-//        expect(instanceOf(Proto, obj)).to.equal(false);
-//      });
-//
-//
-//      testCurriedFunction(instanceOf, [Object, {}]);
-//    });
-//
-//
-//    var ipoSpec = {
-//      name: 'isPrototypeOf',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(ipoSpec, object.isPrototypeOf, function(isPrototypeOf) {
-//      it('Works correctly (1)', function() {
-//        expect(isPrototypeOf(Object.prototype, {})).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var Constructor = function() {};
-//        var obj = new Constructor();
-//
-//        expect(isPrototypeOf(Constructor.prototype, obj)).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (3)', function() {
-//        var Constructor = function() {};
-//        var Proto = function() {};
-//        Constructor.prototype = Proto.prototype;
-//        var obj = new Constructor();
-//
-//        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (4)', function() {
-//        var Constructor = function() {};
-//        var Proto = function() {};
-//        var obj = new Constructor();
-//
-//        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(false);
-//      });
-//
-//
-//      it('Works correctly when object has custom isPrototypeOf function', function() {
-//        var obj = {
-//          'foo': 1,
-//          'isPrototypeOf': function(prop) {
-//            return true;
-//          }
-//        };
-//        var result = isPrototypeOf(obj, Object);
-//
-//        expect(result).to.equal(false);
-//      });
-//
-//
-//      testCurriedFunction(isPrototypeOf, [Object.prototype, {}]);
-//    });
-//
-//
-//    var coSpec = {
-//      name: 'createObject',
-//      arity: 1,
-//      restrictions: [['objectlikeornull']],
-//      validArguments: [[{}]]
-//    };
-//
-//
-//    describeFunction(coSpec, object.createObject, function(createObject) {
-//      var isPrototypeOf = object.isPrototypeOf;
-//      var hasOwnProperty = object.hasOwnProperty;
-//
-//
-//      it('Returns an object', function() {
-//        var obj = {funkier: 1};
-//        var result = createObject(obj);
-//
-//        expect(result).to.be.a('object');
-//      });
-//
-//
-//      it('Works correctly (1)', function() {
-//        var obj = {funkier: 1};
-//        var result = createObject(obj);
-//
-//        expect(isPrototypeOf(obj, result)).to.equal(true);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var result = createObject(null);
-//
-//        expect(Object.getPrototypeOf(result)).to.equal(null);
-//      });
-//
-//
-//      it('Ignores superfluous parameters', function() {
-//        var obj = {funkier: 1};
-//        var result = createObject(obj,
-//                      {prop1: {configurable: false, enumerable: false, writable: false, value: 42}});
-//
-//        expect(hasOwnProperty('prop1', result)).to.equal(false);
-//      });
-//    });
-//
-//
-//    var copSpec = {
-//      name: 'createObjectWithProps',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(copSpec, object.createObjectWithProps, function(createObjectWithProps) {
-//      var isPrototypeOf = object.isPrototypeOf;
-//      var hasOwnProperty = object.hasOwnProperty;
-//      var descriptor = {prop1: {configurable: false, enumerable: false, writable: false, value: 42}};
-//
-//
-//      it('Returns an object', function() {
-//        var obj = {funkier: 1};
-//        var result = createObjectWithProps(obj, descriptor);
-//
-//        expect(result).to.be.a('object');
-//      });
-//
-//
-//      var addWorksCorrectlyTests = function(message, proto) {
-//        it('Created objects have correct prototype ' + message, function() {
-//          var result = createObjectWithProps(proto, descriptor);
-//
-//          expect(Object.getPrototypeOf(result)).to.equal(proto);
-//        });
-//
-//
-//        it('Created objects have correct properties ' + message, function() {
-//          var result = createObjectWithProps(proto, descriptor);
-//
-//          // Need to call hasOwnProperty in this manner because of the null
-//          // proto test, which of course will not inherit from Object.prototype
-//          expect(Object.prototype.hasOwnProperty.call(result, 'prop1')).to.equal(true);
-//        });
-//
-//
-//        it('Created objects have correct descriptors ' + message, function() {
-//          var result = createObjectWithProps(proto, descriptor);
-//
-//          var descriptorProps = descriptor.prop1;
-//          var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
-//          expect(actualDescriptor).to.deep.equal(descriptorProps);
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTests('for normal case', {});
-//      addWorksCorrectlyTests('when prototype is null', null);
-//
-//
-//      testCurriedFunction(createObjectWithProps, [{}, descriptor]);
-//    });
-//
-//
-//    var dpSpec = {
-//      name: 'defineProperty',
-//      arity: 3,
-//      restrictions: [[], ['object'], ['objectlike']],
-//      validArguments: [['myprop'], [{value: 42}], [{reset: function() {return {};}}]]
-//    };
-//
-//
-//    describeFunction(dpSpec, object.defineProperty, function(defineProperty) {
-//      it('Returns the object', function() {
-//        var obj = {};
-//        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
-//        var result = defineProperty('prop', descriptor, obj);
-//
-//        expect(result).to.equal(obj);
-//      });
-//
-//
-//      it('Objects have the relevant property after calling defineProperty', function() {
-//        var obj = {};
-//        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
-//        defineProperty('prop', descriptor, obj);
-//
-//        expect(obj.hasOwnProperty('prop')).to.equal(true);
-//      });
-//
-//
-//      it('Objects have the property with the correct value after calling defineProperty', function() {
-//        var obj = {};
-//        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
-//        defineProperty('prop', descriptor, obj);
-//
-//        expect(obj.prop).to.deep.equal(descriptor.value);
-//      });
-//
-//
-//      it('The new property has the correct descriptor after calling defineProperty', function() {
-//        var obj = {};
-//        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
-//        defineProperty('prop', descriptor, obj);
-//        var actualDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
-//
-//        expect(actualDescriptor).to.deep.equal(descriptor);
-//      });
-//
-//
-//      // defineProperty should be curried
-//      testCurriedFunction(defineProperty, ['p', {value: 7}, {}]);
-//    });
-//
-//
-//    var dpsSpec = {
-//      name: 'defineProperties',
-//      arity: 2,
-//      restrictions: [['objectlike'], ['objectlike']],
-//      validArguments: [[{}], [{}]]
-//    };
-//
-//
-//    describeFunction(dpsSpec, object.defineProperties, function(defineProperties) {
-//      // Test data
-//      // Note: don't omit any optional properties, or we'll fail the equality check
-//      var descriptors = {
-//        prop1: {configurable: true, writable: false, enumerable: true, value: 42},
-//        prop2: {configurable: false, writable: true, enumerable: false, value: 'funkier'},
-//        prop3: {configurable: true, enumerable: true, get: function() {return false;}, set: undefined}
-//      };
-//
-//
-//      it('Returns the object', function() {
-//        var obj = {};
-//        var result = defineProperties(descriptors, obj);
-//
-//        expect(result).to.equal(obj);
-//      });
-//
-//
-//      it('Objects have the relevant properties after calling defineProperties', function() {
-//        var obj = {};
-//        defineProperties(descriptors, obj);
-//        var newProps = Object.keys(descriptors);
-//        var allThere = newProps.every(function(p) {
-//          return obj.hasOwnProperty(p);
-//        });
-//
-//        expect(allThere).to.equal(true);
-//      });
-//
-//
-//      it('Objects have the properties with the correct value after calling defineProperties', function() {
-//        var obj = {};
-//        defineProperties(descriptors, obj);
-//        var newProps = Object.keys(descriptors);
-//
-//        newProps.forEach(function(p) {
-//          expect(obj[p]).to.deep.equal('get' in descriptors[p] ? descriptors[p].get() : descriptors[p].value);
-//        });
-//      });
-//
-//
-//      it('The new properties have the correct descriptors after calling defineProperties', function() {
-//        var obj = {};
-//        defineProperties(descriptors, obj);
-//        var newProps = Object.keys(descriptors);
-//
-//        newProps.forEach(function(prop) {
-//          expect(Object.getOwnPropertyDescriptor(obj, prop)).to.deep.equal(descriptors[prop]);
-//        });
-//      });
-//
-//
-//      // defineProperties should be curried
-//      testCurriedFunction(defineProperties, [descriptors, {}]);
-//    });
-//
-//
-//    var gopdSpec = {
-//      name: 'getOwnPropertyDescriptor',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(gopdSpec, object.getOwnPropertyDescriptor, function(getOwnPropertyDescriptor) {
-//      it('Returns undefined if property not present', function() {
-//        expect(getOwnPropertyDescriptor('prop', {})).to.equal(undefined);
-//      });
-//
-//
-//      it('Returns undefined if property exists only on prototype', function() {
-//        var Constructor = function() {};
-//        Constructor.prototype.prop = 42;
-//        var obj = new Constructor();
-//
-//        expect(getOwnPropertyDescriptor('prop', obj)).to.equal(undefined);
-//      });
-//
-//
-//      it('Works correctly (1)', function() {
-//        var obj = {prop: 42};
-//        var realDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
-//        var descriptor = getOwnPropertyDescriptor('prop', obj);
-//
-//        expect(descriptor).to.deep.equal(realDescriptor);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        // Let's use object itself as a reasonably complex object
-//        var keys = Object.keys(object);
-//
-//        keys.forEach(function(k) {
-//          var realDescriptor = Object.getOwnPropertyDescriptor(object, k);
-//          var descriptor = getOwnPropertyDescriptor(k, object);
-//          expect(descriptor).to.deep.equal(realDescriptor);
-//        });
-//      });
-//
-//
-//      testCurriedFunction(getOwnPropertyDescriptor, ['p', {p: 10}]);
-//    });
-//
-//
-//    var extractSpec = {
-//      name: 'extract',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(extractSpec, object.extract, function(extract) {
-//      it('Returns undefined if property not present (1)', function() {
-//        expect(extract('prop', {})).to.equal(undefined);
-//      });
-//
-//
-//      it('Returns undefined if property not present (2)', function() {
-//        var obj = {};
-//        // Define a property with no getter
-//        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
-//
-//        expect(extract('foo', obj)).to.equal(undefined);
-//      });
-//
-//
-//      it('Works correctly (1)', function() {
-//        var obj = {prop: 42};
-//        var result = extract('prop', obj);
-//
-//        expect(result).to.deep.equal(obj.prop);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var obj = {funkier: function() {}};
-//        var result = extract('funkier', obj);
-//
-//        expect(result).to.deep.equal(obj.funkier);
-//      });
-//
-//
-//      it('Works correctly (3)', function() {
-//        var Constructor = function() {};
-//        Constructor.prototype.prop = 42;
-//        var obj = new Constructor();
-//        var result = extract('prop', obj);
-//
-//        expect(result).to.deep.equal(obj.prop);
-//      });
-//
-//
-//      testCurriedFunction(extract, ['p', {p: 10}]);
-//    });
-//
-//
-//    var eodSpec = {
-//      name: 'extractOrDefault',
-//      arity: 3
-//    };
-//
-//
-//    describeFunction(eodSpec, object.extractOrDefault, function(extractOrDefault) {
-//      it('Returns default if property not present (1)', function() {
-//        var defaultVal = 42;
-//
-//        expect(extractOrDefault('prop', defaultVal, {})).to.equal(defaultVal);
-//      });
-//
-//
-//      it('Returns default if property not present (2)', function() {
-//        var defaultVal = 42;
-//        var obj = {};
-//        // Define a property with no getter
-//        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
-//
-//        expect(extractOrDefault('foo', defaultVal, obj)).to.equal(defaultVal);
-//      });
-//
-//
-//      it('Works correctly (1)', function() {
-//        var obj = {prop: 42};
-//        var defaultVal = 'default';
-//        var result = extractOrDefault('prop', defaultVal, obj);
-//
-//        expect(result).to.deep.equal(obj.prop);
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var obj = {funkier: function() {}};
-//        var defaultVal = 'default';
-//        var result = extractOrDefault('funkier', defaultVal, obj);
-//
-//        expect(result).to.deep.equal(obj.funkier);
-//      });
-//
-//
-//      it('Works correctly (3)', function() {
-//        var Constructor = function() {};
-//        Constructor.prototype.prop = 42;
-//        var obj = new Constructor();
-//        var defaultVal = 'default';
-//        var result = extractOrDefault('prop', defaultVal, obj);
-//
-//        expect(result).to.deep.equal(obj.prop);
-//      });
-//
-//
-//      testCurriedFunction(extractOrDefault, ['p', 42, {p: 10}]);
-//    });
-//
-//
-//    // The various object manipulation functions have a lot of commonality.
-//    // We generate common tests.
-//
-//    var makeCommonTests = function(setter, shouldThrow) {
-//      var defineProperty = object.defineProperty;
-//
-//
-//      it('Behaves correctly if writable false (1)', function() {
-//        var a = {};
-//        defineProperty('foo', {writable: false, value: 1}, a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if writable false (2)', function() {
-//        var A = function() {};
-//        defineProperty('foo', {enumerable: true, writable: false, value: 1}, A.prototype);
-//
-//        var b = new A();
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, b);
-//        };
-//
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if no setter in descriptor (1)', function() {
-//        var a = (function() {
-//          var a = {};
-//          var privateProp = 1;
-//          var getter = function() {return privateProp;};
-//          defineProperty('foo', {get: getter}, a);
-//          return a;
-//        })();
-//
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if no setter in descriptor (2)', function() {
-//        var a = (function() {
-//          var A = function() {};
-//          var privateProp = 1;
-//          var getter = function() {return privateProp;};
-//          defineProperty('foo', {get: getter}, A.prototype);
-//
-//          var b = new A();
-//          return b;
-//        })();
-//
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if preventExtensions has been called (1)', function() {
-//        var a = {};
-//        Object.preventExtensions(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if seal has been called (1)', function() {
-//        var a = {};
-//        Object.seal(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if freeze has been called (1)', function() {
-//        var a = {};
-//        Object.freeze(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//
-//
-//      it('Behaves correctly if freeze has been called (2)', function() {
-//        var a = {foo: 1};
-//        Object.freeze(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//
-//        if (shouldThrow)
-//          expect(fn).to.throw(Error);
-//        else
-//          expect(fn).to.not.throw(Error);
-//      });
-//    };
-//
-//
-//    var makeCommonModificationTests = function(setter, shouldThrow) {
-//      var defineProperty = object.defineProperty;
-//      var hasOwnProperty = object.hasOwnProperty;
-//
-//
-//      it('Object has property afterwards', function() {
-//        var a = {foo: 1};
-//        setter('foo', 42, a);
-//
-//        expect(hasOwnProperty('foo', a)).to.equal(true);
-//      });
-//
-//
-//      it('Object\'s property has correct value afterwards', function() {
-//        var a = {foo: 1};
-//        var val = 42;
-//        setter('foo', val, a);
-//
-//        expect(a.foo).to.equal(val);
-//      });
-//
-//
-//      it('Behaves correctly if preventExtensions has been called (2)', function() {
-//        var a = {foo: 1};
-//        Object.preventExtensions(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        expect(fn).to.not.throw(Error);
-//        expect(a.foo).to.equal(val);
-//      });
-//
-//
-//      it('Behaves correctly if seal has been called (2)', function() {
-//        var a = {foo: 1};
-//        Object.seal(a);
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//
-//        expect(fn).to.not.throw(Error);
-//        expect(a.foo).to.equal(val);
-//      });
-//
-//
-//      it('Propagates other errors', function() {
-//        var a = (function() {
-//          var a = {};
-//          var privateProp = 1;
-//          var getter = function() {return privateProp;};
-//          var badSetter = function() {throw new ReferenceError();};
-//          defineProperty('foo', {get: getter, set: badSetter}, a);
-//          return a;
-//        })();
-//
-//        var val = 42;
-//        var fn = function() {
-//          setter('foo', val, a);
-//        };
-//
-//        expect(fn).to.throw(Error);
-//      });
-//
-//
-//      if (!shouldThrow) {
-//        it('Propagates TypeErrors from causes other than the ones we suppress', function() {
-//          var a = (function() {
-//            var a = {};
-//            var privateProp = 1;
-//            var getter = function() {return privateProp;};
-//            var badSetter = function() {throw new TypeError();};
-//            defineProperty('foo', {get: getter, set: badSetter}, a);
-//            return a;
-//          })();
-//
-//          var val = 42;
-//          var fn = function() {
-//            setter('foo', val, a);
-//          };
-//
-//          expect(fn).to.throw(Error);
-//        });
-//      }
-//    };
-//
-//
-//    var makeCommonCreationTests = function(setter, shouldThrow) {
-//      var defineProperty = object.defineProperty;
-//      var hasOwnProperty = object.hasOwnProperty;
-//
-//
-//      it('Creates the property if it doesn\'t exist', function() {
-//        var a = {};
-//        var val = 42;
-//        setter('foo', val, a);
-//
-//        expect(hasOwnProperty('foo', a)).to.equal(true);
-//      });
-//
-//
-//      it('Creates the property if it only exists on the prototype', function() {
-//        var A = function() {};
-//        A.prototype.foo = 1;
-//        var b = new A();
-//        var val = 42;
-//        setter('foo', val, b);
-//
-//        expect(hasOwnProperty('foo', b)).to.equal(true);
-//        expect(b.foo).to.equal(val);
-//      });
-//    };
-//
-//
-//    var makeSetterTests = function(desc, setter, shouldThrow) {
-//      var spec = {
-//        name: desc,
-//        arity: 3,
-//        restrictions: [[], [], ['objectlike']],
-//        validArguments: [['foo'], [1], [{}]]
-//      };
-//
-//
-//      describeFunction(spec, setter, function(setter) {
-//        makeCommonTests(setter, shouldThrow);
-//        makeCommonModificationTests(setter, shouldThrow);
-//        makeCommonCreationTests(setter, shouldThrow);
-//
-//        testCurriedFunction(setter, ['foo', 42, {reset: function() {return {};}}]);
-//      });
-//    };
-//
-//
-//    makeSetterTests('set', object.set, false);
-//    makeSetterTests('setOrThrow', object.setOrThrow, true);
-//
-//
-//    var makeModifierTests = function(desc, modifier, shouldThrow) {
-//      var spec = {
-//        name: desc,
-//        arity: 3
-//      };
-//
-//
-//      describeFunction(spec, modifier, function(modifier) {
-//        makeCommonTests(modifier, shouldThrow);
-//        makeCommonModificationTests(modifier, shouldThrow);
-//
-//
-//        it('Doesn\'t create the property if it doesn\'t exist', function() {
-//          var a = {};
-//          var val = 42;
-//          var fn = function() {
-//            modifier('foo', val, a);
-//          };
-//
-//          if (!shouldThrow) {
-//            expect(fn).to.not.throw(TypeError);
-//            expect(a).to.not.have.property('foo');
-//          } else {
-//            expect(fn).to.throw(TypeError);
-//            expect(a).to.not.have.property('foo');
-//          }
-//        });
-//
-//
-//        testCurriedFunction(modifier, ['foo', 42, {reset: function() {return {foo: 1};}}]);
-//      });
-//    };
-//
-//
-//    makeModifierTests('modify', object.modify, false);
-//    makeModifierTests('modifyOrThrow', object.modifyOrThrow, true);
-//
-//
-//    var makeCreatorTests = function(desc, creator, shouldThrow) {
-//      var spec = {
-//        name: desc,
-//        arity: 3
-//      };
-//
-//
-//      describeFunction(spec, creator, function(creator) {
-//        makeCommonTests(creator, shouldThrow);
-//        makeCommonCreationTests(creator, shouldThrow);
-//
-//
-//        it('Doesn\'t modify the property if it exists', function() {
-//          var a = {foo: 1};
-//          var val = 42;
-//          var fn = function() {
-//            creator('foo', val, a);
-//          };
-//
-//          if (!shouldThrow) {
-//            expect(fn).to.not.throw(TypeError);
-//          } else {
-//            expect(fn).to.throw(TypeError);
-//          }
-//
-//          expect(a.foo).to.equal(1);
-//        });
-//
-//
-//        it('Behaves correctly if preventExtensions has been called (3)', function() {
-//          var a = {foo: 1};
-//          Object.preventExtensions(a);
-//          var val = 42;
-//          var fn = function() {
-//            creator('foo', val, a);
-//          };
-//
-//          if (!shouldThrow) {
-//            expect(fn).to.not.throw(Error);
-//          } else {
-//            expect(fn).to.throw(TypeError);
-//          }
-//          expect(a.foo).to.equal(1);
-//        });
-//
-//
-//        it('Behaves correctly if seal has been called (3)', function() {
-//          var a = {foo: 1};
-//          Object.seal(a);
-//          var val = 42;
-//          var fn = function() {
-//            creator('foo', val, a);
-//          };
-//
-//
-//          if (!shouldThrow) {
-//            expect(fn).to.not.throw(Error);
-//          } else {
-//            expect(fn).to.throw(TypeError);
-//          }
-//
-//          expect(a.foo).to.equal(1);
-//        });
-//
-//
-//        testCurriedFunction(creator, ['foo', 42, {reset: function() {return {};}}]);
-//      });
-//    };
-//
-//
-//    makeCreatorTests('createProp', object.createProp, false);
-//    makeCreatorTests('createPropOrThrow', object.createPropOrThrow, true);
-//
-//
-//    // The delete functions also have a similar structure
-//    var makeDeleterTests = function(desc, deleter, shouldThrow) {
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [[], ['objectlike']],
-//        validArguments: [['abc'], [{}]]
-//      };
-//
-//
-//      describeFunction(spec, deleter, function(deleter) {
-//        var hasOwnProperty = object.hasOwnProperty;
-//        var defineProperty = object.defineProperty;
-//
-//
-//        it('Object does not have property afterwards', function() {
-//          var a = {foo: 1};
-//          deleter('foo', a);
-//
-//          expect(hasOwnProperty('foo', a)).to.equal(false);
-//        });
-//
-//
-//        it('Behaves correctly if object does not have property', function() {
-//          var a = {bar: 1};
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Behaves correctly if object does not have property but prototype does', function() {
-//          var A = function() {};
-//          A.prototype.foo = 1;
-//          var b = new A();
-//          var fn = function() {
-//            deleter('foo', b);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//
-//          expect(hasOwnProperty('foo', Object.getPrototypeOf(b))).to.equal(true);
-//        });
-//
-//
-//        it('Behaves correctly if configurable false', function() {
-//          var a = {};
-//          defineProperty('foo', {configurable: false, value: 1}, a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (shouldThrow)
-//            expect(fn).to.throw(Error);
-//          else
-//            expect(fn).to.not.throw(Error);
-//
-//          expect(a).to.have.property('foo');
-//          expect(a.foo).to.equal(1);
-//        });
-//
-//
-//        it('Behaves if preventExtensions called (1)', function() {
-//          var a = {foo: 1};
-//          Object.preventExtensions(a);
-//          deleter('foo', a);
-//
-//          expect(hasOwnProperty('foo', a)).to.equal(false);
-//        });
-//
-//
-//        it('Behaves correctly if preventExtensions called (2)', function() {
-//          var a = {};
-//          Object.preventExtensions(a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Behaves if seal called (1)', function() {
-//          var a = {};
-//          Object.seal(a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Behaves correctly if seal called (2)', function() {
-//          var a = {foo: 1};
-//          Object.seal(a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//
-//          expect(a).to.have.property('foo');
-//        });
-//
-//
-//        it('Behaves if freeze called (1)', function() {
-//          var a = {};
-//          Object.freeze(a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Behaves correctly if freeze called (2)', function() {
-//          var a = {foo: 1};
-//          Object.freeze(a);
-//          var fn = function() {
-//            deleter('foo', a);
-//          };
-//
-//          if (!shouldThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//
-//          expect(a).to.have.property('foo');
-//        });
-//
-//
-//        if (shouldThrow)
-//          testCurriedFunction(deleter, ['foo', {reset: function() {return {foo: 1};}}]);
-//        else
-//          testCurriedFunction(deleter, ['foo', {reset: function() {return {};}}]);
-//      });
-//    };
-//
-//
-//    makeDeleterTests('deleteProp', object.deleteProp, false);
-//    makeDeleterTests('deletePropOrThrow', object.deletePropOrThrow, true);
-//
-//
-//    var nonObjects = [
-//      {name: 'number', val: 1},
-//      {name: 'boolean', val: true},
-//      {name: 'string', val: 'a'},
-//      {name: 'undefined', val: undefined},
-//      {name: 'null', val: null}];
-//
-//
-//    var makeKeyBasedTests = function(desc, fnUnderTest, verifier, expectNonEnumerable) {
-//      var defineProperty = object.defineProperty;
-//
-//
-//      var spec = {
-//        name: desc,
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var makeNonObjectTest = function(val) {
-//          return function() {
-//            var result = fnUnderTest(val);
-//
-//            expect(Array.isArray(result)).to.equal(true);
-//            expect(checkArrayContent(result, [])).to.equal(true);
-//          };
-//        };
-//
-//
-//        nonObjects.forEach(function(test) {
-//          it('Returns empty array for value of type ' + test.name,
-//             makeNonObjectTest(test.val));
-//        });
-//
-//
-//        it('Returns empty array for empty object', function() {
-//          var result = fnUnderTest({});
-//
-//          expect(Array.isArray(result)).to.equal(true);
-//          expect(checkArrayContent(result, [])).to.equal(true);
-//        });
-//
-//
-//        var addReturnsCorrectTest = function(message, obj) {
-//          it('Returns correct value for ' + message, function() {
-//            var expected = verifier(obj);
-//            var result = fnUnderTest(obj);
-//
-//            expect(Array.isArray(result)).to.equal(true);
-//            expect(checkArrayContent(result, expected)).to.equal(true);
-//          });
-//        };
-//
-//
-//        addReturnsCorrectTest('object (1)', {foo: 1, bar: 2, baz: 3});
-//        addReturnsCorrectTest('object (2)', object);
-//        addReturnsCorrectTest('array', [1, 2, 3]);
-//        addReturnsCorrectTest('empty array', []);
-//
-//
-//        it('Only returns own properties', function() {
-//          var F = function() {this.baz = 42;};
-//          F.prototype = {foo: 1, bar: 2};
-//          var a = new F();
-//          var expected = verifier(a);
-//          var result = fnUnderTest(a);
-//
-//          expect(Array.isArray(result)).to.equal(true);
-//          expect(checkArrayContent(result, expected)).to.equal(true);
-//        });
-//
-//
-//        it('Behaves correctly with non-enumerable properties', function() {
-//          var a = {foo: 1, bar: 2};
-//          defineProperty('baz', {enumerable: false, value: 1}, a);
-//          var result = fnUnderTest(a).indexOf('baz');
-//
-//          expect(result !== -1).to.equal(expectNonEnumerable);
-//        });
-//      });
-//    };
-//
-//
-//    makeKeyBasedTests('keys', object.keys, Object.keys, false);
-//    makeKeyBasedTests('values', object.values, function(obj) {
-//      return Object.keys(obj).map(function(k) {return obj[k];});
-//    }, false);
-//    makeKeyBasedTests('getOwnPropertyNames', object.getOwnPropertyNames, Object.getOwnPropertyNames, true);
-//
-//
-//    var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var makeNonObjectTest = function(val) {
-//          return function() {
-//            var result = fnUnderTest(val);
-//
-//            expect(Array.isArray(result)).to.equal(true);
-//            expect(checkArrayContent(result, [])).to.equal(true);
-//          };
-//        };
-//
-//
-//        nonObjects.forEach(function(test) {
-//          it('Returns empty array for value of type ' + test.name,
-//             makeNonObjectTest(test.val));
-//        });
-//
-//
-//        it('Returns empty array for empty object', function() {
-//          var result = fnUnderTest({});
-//
-//          expect(Array.isArray(result)).to.equal(true);
-//          expect(checkArrayContent(result, [])).to.equal(true);
-//        });
-//
-//
-//        var verifyKeys = function(obj, result) {
-//          var keys = result.map(function(r) {return r[0];});
-//          var expected = Object.keys(obj);
-//
-//          expect(Array.isArray(result)).to.equal(true);
-//          expect(result.every(function(val) {
-//            return Array.isArray(val) && val.length === 2;
-//          })).to.equal(true);
-//          expect(checkArrayContent(keys, expected)).to.equal(true);
-//        };
-//
-//
-//        var verifyValues = function(obj, result) {
-//          var keys = result.map(function(r) {return r[0];});
-//          var values = result.map(function(r) {return r[1];});
-//          return values.every(function(val, i) {
-//            var key = keys[i];
-//            return verifier(val, key, obj);
-//          });
-//        };
-//
-//
-//        var addReturnsCorrectTests = function(message, obj) {
-//          it('Returns correct keys for ' + message, function() {
-//            var result = fnUnderTest(obj);
-//
-//            verifyKeys(obj, result);
-//          });
-//
-//
-//          it('Returns correct values for ' + message, function() {
-//            var result = fnUnderTest(obj);
-//
-//            verifyValues(obj, result);
-//          });
-//        };
-//
-//
-//        addReturnsCorrectTests('object (1)', {foo: 1, bar: 2, baz: 3});
-//        addReturnsCorrectTests('object (2)', object);
-//        addReturnsCorrectTests('array', [1, 2, 3]);
-//        addReturnsCorrectTests('empty array', []);
-//
-//
-//        it('Only returns keys for own properties', function() {
-//          var F = function() {this.baz = 42;};
-//          F.prototype = {foo: 1, bar: 2};
-//          var a = new F();
-//          var result = fnUnderTest(a);
-//
-//          verifyKeys(a, result);
-//        });
-//
-//
-//        it('Only returns values for own properties', function() {
-//          var F = function() {this.baz = 42;};
-//          F.prototype = {foo: 1, bar: 2};
-//          var a = new F();
-//          var result = fnUnderTest(a);
-//
-//          verifyValues(a, result);
-//        });
-//      });
-//    };
-//
-//
-//    makeKeyPairBasedTests('keyValues', object.keyValues, function(val, key, obj) {return val === obj[key];});
-//
-//    var propVerifier = function(val, key, obj) {
-//      return checkEquality(val, object.getOwnPropertyDescriptor(key, obj));
-//    };
-//    makeKeyPairBasedTests('descriptors', object.descriptors, propVerifier);
-//
-//
-//    var makeCloneTests = function(desc, fnUnderTest, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var isPrototypeOf = object.isPrototypeOf;
-//        var keys = object.keys;
-//        var defineProperty = object.defineProperty;
-//        var getOwnPropertyNames = object.getOwnPropertyNames;
-//        var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
-//
-//
-//        it('New object has does not have same prototype', function() {
-//          var F = function() {};
-//          var a = new F();
-//          var clone = fnUnderTest(a);
-//
-//          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(false);
-//        });
-//
-//
-//        it('New array has does have same prototype', function() {
-//          var a = [1, 2, 3];
-//          var clone = fnUnderTest(a);
-//
-//          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(true);
-//        });
-//
-//
-//        it('New object has same own keys as original', function() {
-//          var a = {foo: 1, bar: 2, baz: 3};
-//          var clone = fnUnderTest(a);
-//          var origKeys = keys(a);
-//          var cloneKeys = keys(clone);
-//
-//          expect(checkArrayContent(origKeys, cloneKeys)).to.equal(true);
-//        });
-//
-//
-//        it('New array has same length as original', function() {
-//          var a = [1, 2, 3];
-//          var clone = fnUnderTest(a);
-//
-//          expect(clone.length).to.equal(a.length);
-//        });
-//
-//
-//        it('New object has same non-enumerable keys as original', function() {
-//          var a = {foo: 1, bar: 2};
-//          defineProperty('baz', {enumerable: false, value: 42}, a);
-//          var clone = fnUnderTest(a);
-//          var origKeys = getOwnPropertyNames(a);
-//          var cloneKeys = getOwnPropertyNames(clone);
-//
-//          expect(checkArrayContent(origKeys, cloneKeys)).to.equal(true);
-//        });
-//
-//
-//        it('Enumerable properties are enumerable on clone', function() {
-//          var a = {foo: 1, bar: 2};
-//          defineProperty('baz', {enumerable: false, value: 42}, a);
-//          var clone = fnUnderTest(a);
-//          var bazDescriptor = getOwnPropertyDescriptor('foo', clone);
-//
-//          expect(bazDescriptor.enumerable).to.equal(true);
-//        });
-//
-//
-//        it('Non-enumerable properties are non-enumerable on clone', function() {
-//          var a = {foo: 1, bar: 2};
-//          defineProperty('baz', {enumerable: false, value: 42}, a);
-//          var clone = fnUnderTest(a);
-//          var bazDescriptor = getOwnPropertyDescriptor('baz', clone);
-//
-//          expect(bazDescriptor.enumerable).to.equal(false);
-//        });
-//
-//
-//        it('New array has same values as original', function() {
-//          var a = [1, 2, 3, function() {}, {foo: 7, bar: 42}];
-//          var clone = fnUnderTest(a);
-//          var result = clone.every(function(val, i) {
-//            return verifier(val, a[i]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('New object has same values as original', function() {
-//          var a = {
-//            foo: 42,
-//            bar: function() {},
-//            baz: [1, 2, 3],
-//            other: {v1: true, v2: {foo: 7, bar: 9}, v3: null}
-//          };
-//          defineProperty('nonenum', {enumerable: false, value: 'a'}, a);
-//
-//          var clone = fnUnderTest(a);
-//          var result = getOwnPropertyNames(clone).every(function(k) {
-//            return verifier(clone[k], a[k]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Cloning copies properties all the way up the prototype chain', function() {
-//          var a = {};
-//          defineProperty('foo', {enumerable: true, value: 'a'}, a);
-//          defineProperty('bar', {enumerable: false, value: 1}, a);
-//          var F = function() {};
-//          F.prototype = Object.create(a);
-//          defineProperty('fizz', {enumerable: true, value: 3}, a);
-//          defineProperty('buzz', {enumerable: false, value: 5}, a);
-//          var b = new F();
-//          var clone = fnUnderTest(b);
-//          var cloneProps = getOwnPropertyNames(clone);
-//          var hasProp = function(p) {return cloneProps.indexOf(p) !== -1;};
-//          var expectedProps = ['foo', 'bar', 'fizz', 'buzz'];
-//          var result = expectedProps.every(hasProp);
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Cloning doesn\'t copy Object.prototype values', function() {
-//          var a = {};
-//          var clone = fnUnderTest(a);
-//          var objProto = getOwnPropertyNames(Object.prototype);
-//          var cloneProps = getOwnPropertyNames(clone);
-//          var result = objProto.every(function(k) {
-//            return cloneProps.indexOf(k) === -1;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Cloning doesn\'t copy Array.prototype values', function() {
-//          var a = [];
-//          var clone = fnUnderTest(a);
-//          var arrProto = getOwnPropertyNames(Array.prototype);
-//          var cloneProps = getOwnPropertyNames(clone);
-//          var result = arrProto.every(function(k) {
-//            // Array.prototype does have a length property!
-//            if (k === 'length') return true;
-//
-//            return cloneProps.indexOf(k) === -1;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Handles null correctly', function() {
-//          var a = null;
-//          var clone = fnUnderTest(a);
-//
-//          expect(a).to.equal(clone);
-//        });
-//      });
-//    };
-//
-//
-//    var shallowCheck = function(val, cloneVal) {
-//      return val === cloneVal;
-//    };
-//
-//    makeCloneTests('shallowClone', object.shallowClone, shallowCheck);
-//
-//
-//    var deepCheck = function(val, cloneVal) {
-//      if (Array.isArray(val)) {
-//        return val.every(function(newVal, i) {
-//          return deepCheck(newVal, cloneVal[i]);
-//        });
-//      }
-//
-//      if (typeof(val) !== 'object' || val === null)
-//        return val === cloneVal;
-//
-//      if (typeof(cloneVal) !== 'object')
-//        return false;
-//
-//      if (val === cloneVal)
-//        return false;
-//
-//      var propChecker = function(p) {
-//        return deepCheck(val[p], cloneVal[p]);
-//      };
-//
-//      while (val !== Object.prototype) {
-//        var props = object.getOwnPropertyNames(val);
-//        if (!props.every(propChecker))
-//          return false;
-//        val = Object.getPrototypeOf(val);
-//      }
-//
-//      return true;
-//    };
-//
-//    makeCloneTests('deepClone', object.deepClone, deepCheck);
-//
-//
-//    var extendSpec = {
-//      name: 'extend',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(extendSpec, object.extend, function(extend) {
-//      it('Returns the destination object', function() {
-//        var dest = {};
-//
-//        expect(extend({}, dest)).to.equal(dest);
-//      });
-//
-//
-//      it('Every enumerable property in object afterwards', function() {
-//        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var dest = {};
-//        extend(source, dest);
-//
-//        for (var key in source)
-//          expect(dest).to.have.ownProperty(key);
-//      });
-//
-//
-//      it('Every enumerable property has correct value afterwards', function() {
-//        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var dest = {};
-//        extend(source, dest);
-//
-//        for (var key in source)
-//          expect(dest[key]).to.equal(source[key]);
-//      });
-//
-//
-//      it('Every enumerable property from prototype chain in object afterwards', function() {
-//        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var source = Object.create(proto);
-//        var dest = {};
-//        extend(source, dest);
-//
-//        for (var key in proto)
-//          expect(dest).to.have.ownProperty(key);
-//      });
-//
-//
-//      it('Every enumerable property has correct value afterwards', function() {
-//        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var source = Object.create(proto);
-//        var dest = {};
-//        extend(source, dest);
-//
-//        for (var key in proto)
-//          expect(dest[key]).to.equal(proto[key]);
-//      });
-//
-//
-//      it('Non-enumerable properties not copied', function() {
-//        var source = {};
-//        object.defineProperty('foo', {enumerable: false, value: 1}, source);
-//        var dest = {};
-//        extend(source, dest);
-//
-//        expect(dest).to.not.have.property('foo');
-//      });
-//
-//
-//      it('Existing values overwritten', function() {
-//        var source = {foo: 2};
-//        var dest = {foo: 1};
-//        extend(source, dest);
-//
-//        expect(dest.foo).to.equal(source.foo);
-//      });
-//
-//
-//      testCurriedFunction(extend, [{foo: 1}, {reset: function() {return {};}}]);
-//    });
-//
-//
-//    var extendOwnSpec = {
-//      name: 'extendOwn',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(extendOwnSpec, object.extendOwn, function(extendOwn) {
-//      it('Returns the destination object', function() {
-//        var dest = {};
-//
-//        expect(extendOwn({}, dest)).to.equal(dest);
-//      });
-//
-//
-//      it('Every enumerable property in object afterwards', function() {
-//        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var dest = {};
-//        extendOwn(source, dest);
-//
-//        for (var key in source)
-//          expect(dest).to.have.ownProperty(key);
-//      });
-//
-//
-//      it('Every enumerable property has correct value afterwards', function() {
-//        var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var dest = {};
-//        extendOwn(source, dest);
-//
-//        for (var key in source)
-//          expect(dest[key]).to.equal(source[key]);
-//      });
-//
-//
-//      it('No enumerable properties from prototype chain in object afterwards', function() {
-//        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
-//        var source = Object.create(proto);
-//        var dest = {};
-//        extendOwn(source, dest);
-//
-//        for (var key in proto)
-//          expect(dest).to.not.have.property(key);
-//      });
-//
-//
-//      it('Non-enumerable properties not copied', function() {
-//        var source = {};
-//        object.defineProperty('foo', {enumerable: false, value: 1}, source);
-//        var dest = {};
-//        extendOwn(source, dest);
-//
-//        expect(dest).to.not.have.property('foo');
-//      });
-//
-//
-//      it('Existing values overwritten', function() {
-//        var source = {foo: 2};
-//        var dest = {foo: 1};
-//        extendOwn(source, dest);
-//
-//        expect(dest.foo).to.equal(source.foo);
-//      });
-//
-//
-//      testCurriedFunction(extendOwn, [{foo: 1}, {reset: function() {return {};}}]);
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+},{"../../lib/components/curry":11,"../../lib/components/maybe":14,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],53:[function(require,module,exports){
+(function() {
+  "use strict";
 
-},{}],50:[function(require,module,exports){
+
+  var expect = require('chai').expect;
+
+  var deepEqual = require('deep-equal');
+
+  var curryModule = require('../../lib/components/curry');
+  var arityOf = curryModule.arityOf;
+  var objectCurry = curryModule.objectCurry;
+
+  var object = require('../../lib/components/object');
+
+  var testingUtilities = require('./testingUtilities');
+  var checkModule = testingUtilities.checkModule;
+  var checkFunction = testingUtilities.checkFunction;
+  var testCurriedFunction = testingUtilities.testCurriedFunction;
+  var NO_RESTRICTIONS = testingUtilities.NO_RESTRICTIONS;
+
+  var maybe = require('../../lib/components/maybe');
+  var isJust = maybe.isJust;
+  var isNothing = maybe.isNothing;
+  var getJustValue = maybe.getJustValue;
+
+  describe('Object', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['callProp', 'callPropWithArity', 'createObject', 'createObjectWithProps', 'createProp',
+                             'curryOwn', 'defineProperties', 'defineProperty', 'deleteProp', 'descriptors',
+                             'extend', 'extendOwn', 'extract', 'extractOrDefault', 'getOwnPropertyDescriptor',
+                             'getOwnPropertyNames', 'hasOwnProperty', 'hasProperty', 'instanceOf', 'isPrototypeOf',
+                             'keyValues', 'keys', 'maybeExtract', 'modify', 'safeCreateProp', 'safeDeleteProp',
+                             'safeModify', 'safeSet', 'set', 'setOrThrow', 'shallowClone'];
+    checkModule('object', object, expectedObjects, expectedFunctions);
+
+
+    // Note: we allow the final parameter to be anything to allow the boxing coercions
+    var cpwaSpec = {
+      name: 'callPropWithArity',
+      restrictions: [['string'], ['natural']],
+      validArguments: [['toString'], [1]],
+    };
+
+
+    checkFunction(cpwaSpec, object.callPropWithArity, function(callPropWithArity) {
+      var addReturnedCurriedArityTest = function(i) {
+        it('Returned function is curried for arity ' + i, function() {
+          var fn = callPropWithArity('prop', i);
+
+          expect(fn.length).to.equal(1);
+          if (i > 0)
+            expect(arityOf(fn)).to.not.equal(1);
+        });
+      };
+
+
+      var addReturnedArityTest = function(i) {
+        it('Returned function has correct arity for arity ' + i, function() {
+          var fn = callPropWithArity('prop', i);
+
+          expect(arityOf(fn)).to.equal(i + 1);
+        });
+      };
+
+
+      var functionalityArgs = [1, true, null, function() {}, []];
+      var addCalledTest = function(i) {
+        it('Returned function calls property on given object for arity ' + i, function() {
+          var args = functionalityArgs.slice(0, i);
+          var obj = {called: false, calledProp: function() {this.called = true;}};
+          var caller = callPropWithArity('calledProp', i);
+          caller.apply(null, args.concat([obj]));
+
+          expect(obj.called).to.equal(true);
+        });
+      };
+
+
+      var addReturnedValueTest = function(i) {
+        it('Returned function returns correct result when called for arity ' + i, function() {
+          var expected = functionalityArgs.slice(0, i);
+          var obj = {calledProp: function() {return [].slice.call(arguments);}};
+          var obj2 = {calledProp: function() {return 42;}};
+          var caller = callPropWithArity('calledProp', i);
+          var result = caller.apply(null, expected.concat([obj]));
+          var result2 = caller.apply(null, expected.concat([obj2]));
+
+          expect(result).to.deep.equal(expected);
+          expect(result2).to.equal(42);
+        });
+      };
+
+
+      var id = function(x) {return x;};
+      var testObj;
+
+      for (var i = 0; i < functionalityArgs.length; i++) {
+        addReturnedCurriedArityTest(i);
+        addReturnedArityTest(i);
+        addCalledTest(i);
+        addReturnedValueTest(i);
+      }
+    });
+
+
+    var callPropSpec = {
+      name: 'callProp',
+      restrictions: [['string']],
+      validArguments: [['toString']]
+    };
+
+    checkFunction(callPropSpec, object.callProp, function(callProp) {
+      it('Returned function has correct arity', function() {
+        var fn = callProp('prop');
+
+        expect(fn.length).to.equal(1);
+      });
+
+
+      it('Returned function has correct \'real\' arity', function() {
+        var fn = callProp('prop');
+
+        expect(arityOf(fn)).to.equal(1);
+      });
+
+
+      it('Returned function calls prop on given object', function() {
+        var obj = {called: false, calledProp: function() {this.called = true;}};
+        var caller = callProp('calledProp');
+        var result = caller(obj);
+
+        expect(obj.called).to.equal(true);
+      });
+
+
+      it('Returned function returns correct result when called', function() {
+        var obj = {calledProp: function() {return [].slice.call(arguments);}};
+        var obj2 = {calledProp: function() {return 42;}};
+        var caller = callProp('calledProp');
+        var result = caller.call(null, obj);
+        var result2 = caller.call(null, obj2);
+
+        expect(result).to.deep.equal([]);
+        expect(result2).to.equal(42);
+      });
+    });
+
+
+    var hasOwnPropertySpec = {
+      name: 'hasOwnProperty',
+      restrictions: [['string'], NO_RESTRICTIONS],
+      validArguments: [['toString'], [1]]
+    };
+
+
+    checkFunction(hasOwnPropertySpec, object.hasOwnProperty, function(hasOwnProperty) {
+      it('Works correctly (1)', function() {
+        var obj = {funkier: 1};
+        var result = hasOwnProperty('funkier', obj);
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.funkier = 1;
+        var obj = new Constructor();
+        var result = hasOwnProperty('funkier', obj);
+
+        expect(result).to.equal(false);
+      });
+
+
+      it('Works correctly when object has custom hasOwnProperty function', function() {
+       // hasOwnProperty lint warning suppression
+       /* jshint -W001 */
+        var obj = {
+          'foo': 1,
+          'hasOwnProperty': function(prop) {
+            return prop !== 'foo';
+          }
+        };
+        var result = hasOwnProperty('foo', obj);
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Works correctly when object has null prototype', function() {
+        var obj = Object.create(null);
+        obj.foo = 1;
+        var result = hasOwnProperty('foo', obj);
+
+        expect(result).to.equal(true);
+      });
+    });
+
+
+    var hpSpec = {
+      name: 'hasProperty',
+      restrictions: [['string'], NO_RESTRICTIONS],
+      validArguments: [['toString'], [1]]
+    };
+
+
+    checkFunction(hpSpec, object.hasProperty, function(hasProperty) {
+      it('Works correctly (1)', function() {
+        var obj = {funkier: 1};
+        var result = hasProperty('funkier', obj);
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.funkier = 1;
+        var obj = new Constructor();
+        var result = hasProperty('funkier', obj);
+
+        expect(result).to.equal(true);
+      });
+    });
+
+
+    var ioSpec = {
+      name: 'instanceOf',
+      restrictions: [['function'], NO_RESTRICTIONS],
+      validArguments: [[Object], [{}]]
+    };
+
+
+    checkFunction(ioSpec, object.instanceOf, function(instanceOf) {
+      it('Works correctly (1)', function() {
+        expect(instanceOf(Object, {})).to.equal(true);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        var obj = new Constructor();
+
+        expect(instanceOf(Constructor, obj)).to.equal(true);
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        Constructor.prototype = Proto.prototype;
+        var obj = new Constructor();
+
+        expect(instanceOf(Proto, obj)).to.equal(true);
+      });
+
+
+      it('Works correctly (4)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        var obj = new Constructor();
+
+        expect(instanceOf(Proto, obj)).to.equal(false);
+      });
+    });
+
+
+    describe('isPrototypeOf', function() {
+      var isPrototypeOf = object.isPrototypeOf;
+
+
+      it('Works correctly (1)', function() {
+        expect(isPrototypeOf(Object.prototype, {})).to.equal(true);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var Constructor = function() {};
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Constructor.prototype, obj)).to.equal(true);
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        Constructor.prototype = Proto.prototype;
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(true);
+      });
+
+
+      it('Works correctly (4)', function() {
+        var Constructor = function() {};
+        var Proto = function() {};
+        var obj = new Constructor();
+
+        expect(isPrototypeOf(Proto.prototype, obj)).to.equal(false);
+      });
+
+
+      it('Works correctly when object has custom isPrototypeOf function', function() {
+        var obj = {
+          'foo': 1,
+          'isPrototypeOf': function(prop) {
+            return true;
+          }
+        };
+        var result = isPrototypeOf(obj, Object);
+
+        expect(result).to.equal(false);
+      });
+
+
+      it('Works correctly when object has null prototype', function() {
+        var obj = Object.create(null);
+        obj.foo = 1;
+        var result = isPrototypeOf(obj, Object);
+
+        expect(result).to.equal(false);
+      });
+    });
+
+
+    var coSpec = {
+      name: 'createObject',
+      restrictions: [['objectLikeOrNull']],
+      validArguments: [[{}, function() {}, null, []]]
+    };
+
+
+    checkFunction(coSpec, object.createObject, function(createObject) {
+      var isPrototypeOf = object.isPrototypeOf;
+      var hasOwnProperty = object.hasOwnProperty;
+
+
+      it('Returns an object', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj);
+
+        expect(result).to.be.a('object');
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj);
+
+        expect(isPrototypeOf(obj, result)).to.equal(true);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var result = createObject(null);
+
+        expect(Object.getPrototypeOf(result)).to.equal(null);
+      });
+
+
+      it('Ignores superfluous parameters', function() {
+        var obj = {funkier: 1};
+        var result = createObject(obj,
+                      {prop1: {configurable: false, enumerable: false, writable: false, value: 42}});
+
+        expect(hasOwnProperty('prop1', result)).to.equal(false);
+      });
+    });
+
+
+    describe('createObjectWithProps', function() {
+      var createObjectWithProps = object.createObjectWithProps;
+      var isPrototypeOf = object.isPrototypeOf;
+      var hasOwnProperty = object.hasOwnProperty;
+      var descriptor = {prop1: {configurable: false, enumerable: false, writable: false, value: 42}};
+
+
+      it('Returns an object', function() {
+        var obj = {funkier: 1};
+        var result = createObjectWithProps(obj, descriptor);
+
+        expect(result).to.be.a('object');
+      });
+
+
+      var addWorksCorrectlyTests = function(message, proto) {
+        it('Created objects have correct prototype ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
+
+          expect(Object.getPrototypeOf(result)).to.equal(proto);
+        });
+
+
+        it('Created objects have correct properties ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
+
+          // Need to call hasOwnProperty in this manner because of the null
+          // proto test, which of course will not inherit from Object.prototype
+          expect(Object.prototype.hasOwnProperty.call(result, 'prop1')).to.equal(true);
+        });
+
+
+        it('Created objects have correct descriptors ' + message, function() {
+          var result = createObjectWithProps(proto, descriptor);
+
+          var descriptorProps = descriptor.prop1;
+          var actualDescriptor = Object.getOwnPropertyDescriptor(result, 'prop1');
+          expect(actualDescriptor).to.deep.equal(descriptorProps);
+        });
+      };
+
+
+      addWorksCorrectlyTests('for normal case', {});
+      addWorksCorrectlyTests('when prototype is null', null);
+    });
+
+
+    var dpSpec = {
+      name: 'defineProperty',
+      restrictions: [['string'], ['object'], ['objectLike']],
+      validArguments: [['myprop'], [{writable: true, value:42}], [{}, function() {}]]
+    };
+
+
+    checkFunction(dpSpec, object.defineProperty, function(defineProperty) {
+      it('Returns the object', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        var result = defineProperty('prop', descriptor, obj);
+
+        expect(result).to.equal(obj);
+      });
+
+
+      it('Objects have the relevant property after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+
+        expect(obj.hasOwnProperty('prop')).to.equal(true);
+      });
+
+
+      it('Objects have the property with the correct value after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+
+        expect(obj.prop).to.deep.equal(descriptor.value);
+      });
+
+
+      it('The new property has the correct descriptor after calling defineProperty', function() {
+        var obj = {};
+        var descriptor = {configurable: true, writable: false, enumerable: true, value: 42};
+        defineProperty('prop', descriptor, obj);
+        var actualDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
+
+        expect(actualDescriptor).to.deep.equal(descriptor);
+      });
+    });
+
+
+    var dpsSpec = {
+      name: 'defineProperties',
+      restrictions: [['object'], ['objectlike']],
+      validArguments: [[{value: 42, writable: true}], [{}, function() {}]]
+    };
+
+
+    checkFunction(dpsSpec, object.defineProperties, function(defineProperties) {
+      // Test data
+      // Note: don't omit any optional properties, or we'll fail the equality check
+      var descriptors = {
+        prop1: {configurable: true, writable: false, enumerable: true, value: 42},
+        prop2: {configurable: false, writable: true, enumerable: false, value: 'funkier'},
+        prop3: {configurable: true, enumerable: true, get: function() {return false;}, set: undefined}
+      };
+
+
+      it('Returns the object', function() {
+        var obj = {};
+        var result = defineProperties(descriptors, obj);
+
+        expect(result).to.equal(obj);
+      });
+
+
+      it('Objects have the relevant properties after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+        var allThere = newProps.every(function(p) {
+          return obj.hasOwnProperty(p);
+        });
+
+        expect(allThere).to.equal(true);
+      });
+
+
+      it('Objects have the properties with the correct value after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+
+        newProps.forEach(function(p) {
+          expect(obj[p]).to.deep.equal('get' in descriptors[p] ? descriptors[p].get() : descriptors[p].value);
+        });
+      });
+
+
+      it('The new properties have the correct descriptors after calling defineProperties', function() {
+        var obj = {};
+        defineProperties(descriptors, obj);
+        var newProps = Object.keys(descriptors);
+
+        newProps.forEach(function(prop) {
+          expect(Object.getOwnPropertyDescriptor(obj, prop)).to.deep.equal(descriptors[prop]);
+        });
+      });
+    });
+
+
+    describe('getOwnPropertyDescriptor', function() {
+      var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
+
+
+      it('Returns undefined if property not present', function() {
+        expect(getOwnPropertyDescriptor('prop', {})).to.equal(undefined);
+      });
+
+
+      it('Returns undefined if property exists only on prototype', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+
+        expect(getOwnPropertyDescriptor('prop', obj)).to.equal(undefined);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var realDescriptor = Object.getOwnPropertyDescriptor(obj, 'prop');
+        var descriptor = getOwnPropertyDescriptor('prop', obj);
+
+        expect(descriptor).to.deep.equal(realDescriptor);
+      });
+
+
+      it('Works correctly (2)', function() {
+        // Let's use object itself as a reasonably complex object
+        var keys = Object.keys(object);
+
+        keys.forEach(function(k) {
+          var realDescriptor = Object.getOwnPropertyDescriptor(object, k);
+          var descriptor = getOwnPropertyDescriptor(k, object);
+          expect(descriptor).to.deep.equal(realDescriptor);
+        });
+      });
+    });
+
+
+    var eSpec = {
+      name: 'extract',
+      restrictions: [['string'], ['objectLike']],
+      validArguments: [['prop'], [{prop: 1}]]
+    };
+
+
+    checkFunction(eSpec, object.extract, function(extract) {
+      it('Returns undefined if property not present (1)', function() {
+        expect(extract('prop', {})).to.equal(undefined);
+      });
+
+
+      it('Returns undefined if property not present (2)', function() {
+        var obj = {};
+        // Define a property with no getter
+        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
+
+        expect(extract('foo', obj)).to.equal(undefined);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var result = extract('prop', obj);
+
+        expect(result).to.deep.equal(obj.prop);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: function() {}};
+        var result = extract('funkier', obj);
+
+        expect(result).to.deep.equal(obj.funkier);
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+        var result = extract('prop', obj);
+
+        expect(result).to.deep.equal(obj.prop);
+      });
+    });
+
+
+    var eodSpec = {
+      name: 'extractOrDefault',
+      restrictions: [['string'], NO_RESTRICTIONS, ['objectLike']],
+      validArguments: [['prop'], [2], [{prop: 1}]]
+    };
+
+
+    checkFunction(eodSpec, object.extractOrDefault, function(extractOrDefault) {
+      it('Returns default if property not present (1)', function() {
+        var defaultVal = 42;
+
+        expect(extractOrDefault('prop', defaultVal, {})).to.equal(defaultVal);
+      });
+
+
+      it('Returns default if property not present (2)', function() {
+        var defaultVal = 42;
+        var obj = {};
+        // Define a property with no getter
+        object.defineProperty('foo', {enumerable: true, set: function(x) {}});
+
+        expect(extractOrDefault('foo', defaultVal, obj)).to.equal(defaultVal);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var defaultVal = 'default';
+        var result = extractOrDefault('prop', defaultVal, obj);
+
+        expect(result).to.deep.equal(obj.prop);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: function() {}};
+        var defaultVal = 'default';
+        var result = extractOrDefault('funkier', defaultVal, obj);
+
+        expect(result).to.deep.equal(obj.funkier);
+      });
+
+
+      it('Works correctly (3)', function() {
+        var Constructor = function() {};
+        Constructor.prototype.prop = 42;
+        var obj = new Constructor();
+        var defaultVal = 'default';
+        var result = extractOrDefault('prop', defaultVal, obj);
+
+        expect(result).to.deep.equal(obj.prop);
+      });
+
+
+      it('Works correctly (4)', function() {
+        var obj = {funkier: undefined};
+        var defaultVal = 'default';
+        var result = extractOrDefault('funkier', defaultVal, obj);
+
+        expect(result).to.deep.equal(obj.funkier);
+      });
+    });
+
+
+    var mbxSpec = {
+      name: 'maybeExtract',
+      restrictions: [['string'], ['objectLike']],
+      validArguments: [['prop'], [{prop: 1}]]
+    };
+
+
+    checkFunction(mbxSpec, object.maybeExtract, function(maybeExtract) {
+      it('Works correctly if property not present (1)', function() {
+        expect(isNothing(maybeExtract('prop', {}))).to.equal(true);
+      });
+
+
+      it('Works correctly if property not present (2)', function() {
+        var obj = {};
+        // Define a property with no getter
+        Object.defineProperty(obj, 'foo', {enumerable: true, set: function(x) {}});
+
+        expect(isNothing(maybeExtract('foo', obj))).to.equal(true);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var obj = {prop: 42};
+        var result = maybeExtract('prop', obj);
+
+        expect(isJust(result)).to.equal(true);
+        expect(getJustValue(result)).to.deep.equal(obj.prop);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var obj = {funkier: function() {}};
+        var result = maybeExtract('funkier', obj);
+
+        expect(isJust(result)).to.equal(true);
+        expect(getJustValue(result)).to.deep.equal(obj.funkier);
+      });
+    });
+
+
+    // The various object manipulation functions have a lot of commonality.
+    // We generate common tests.
+
+    var makeCommonTests = function(setter, shouldWrap) {
+      var defineProperty = object.defineProperty;
+
+
+      it('Behaves correctly if writable false (1)', function() {
+        var a = {};
+        defineProperty('foo', {writable: false, value: 1}, a);
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if writable false (2)', function() {
+        var A = function() {};
+        defineProperty('foo', {enumerable: true, writable: false, value: 1}, A.prototype);
+
+        var b = new A();
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, b);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if no setter in descriptor (1)', function() {
+        var a = (function() {
+          var a = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          defineProperty('foo', {get: getter}, a);
+          return a;
+        })();
+
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if no setter in descriptor (2)', function() {
+        var a = (function() {
+          var A = function() {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          defineProperty('foo', {get: getter}, A.prototype);
+
+          var b = new A();
+          return b;
+        })();
+
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if preventExtensions has been called (1)', function() {
+        var a = {};
+        Object.preventExtensions(a);
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if seal has been called (1)', function() {
+        var a = {};
+        Object.seal(a);
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if freeze has been called (1)', function() {
+        var a = {};
+        Object.freeze(a);
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+
+
+      it('Behaves correctly if freeze has been called (2)', function() {
+        var a = {foo: 1};
+        Object.freeze(a);
+        var val = 42;
+        var result;
+        var fn = function() {
+          result = setter('foo', val, a);
+        };
+
+        if (shouldWrap) {
+          expect(fn).to.not.throw();
+          expect(isNothing(result)).to.equal(true);
+        } else {
+          expect(fn).to.throw();
+        }
+      });
+    };
+
+
+    var makeCommonModificationTests = function(setter, shouldWrap) {
+      var defineProperty = object.defineProperty;
+      var hasOwnProperty = object.hasOwnProperty;
+
+
+      it('Returns object on success', function() {
+        var a = {foo: 1};
+        var result = setter('foo', 42, a);
+
+        if (shouldWrap) {
+          expect(isJust(result)).to.equal(true);
+          expect(getJustValue(result)).to.equal(a);
+        } else {
+          expect(result).to.equal(a);
+        }
+      });
+
+
+      it('Object has property afterwards', function() {
+        var a = {foo: 1};
+        setter('foo', 42, a);
+
+        expect(hasOwnProperty('foo', a)).to.equal(true);
+      });
+
+
+      it('Object\'s property has correct value afterwards', function() {
+        var a = {foo: 1};
+        var val = 42;
+        setter('foo', val, a);
+
+        expect(a.foo).to.equal(val);
+      });
+
+
+      it('Behaves correctly if preventExtensions has been called (2)', function() {
+        var a = {foo: 1};
+        Object.preventExtensions(a);
+        var val = 42;
+        var result = setter('foo', val, a);
+
+        if (shouldWrap) {
+          expect(isJust(result)).to.equal(true);
+          expect(getJustValue(result)).to.equal(a);
+        } else {
+          expect(result).to.equal(a);
+        }
+
+        expect(a.foo).to.equal(val);
+      });
+
+
+      it('Behaves correctly if seal has been called (2)', function() {
+        var a = {foo: 1};
+        Object.seal(a);
+        var val = 42;
+        var result = setter('foo', val, a);
+
+        if (shouldWrap) {
+          expect(isJust(result)).to.equal(true);
+          expect(getJustValue(result)).to.equal(a);
+        } else {
+          expect(result).to.equal(a);
+        }
+
+        expect(a.foo).to.equal(val);
+      });
+
+
+      it('Propagates other errors', function() {
+        var a = (function() {
+          var a = {};
+          var privateProp = 1;
+          var getter = function() {return privateProp;};
+          var badSetter = function() {throw new ReferenceError();};
+          defineProperty('foo', {get: getter, set: badSetter}, a);
+          return a;
+        })();
+
+        var val = 42;
+        var fn = function() {
+          setter('foo', val, a);
+        };
+
+        expect(fn).to.throw(Error);
+      });
+
+
+      if (!shouldWrap) {
+        it('Propagates TypeErrors from causes other than the ones we suppress', function() {
+          var a = (function() {
+            var a = {};
+            var privateProp = 1;
+            var getter = function() {return privateProp;};
+            var badSetter = function() {throw new TypeError();};
+            defineProperty('foo', {get: getter, set: badSetter}, a);
+            return a;
+          })();
+
+          var val = 42;
+          var fn = function() {
+            setter('foo', val, a);
+          };
+
+          expect(fn).to.throw(Error);
+        });
+      }
+    };
+
+
+    var makeCommonCreationTests = function(setter, shouldWrap) {
+      var defineProperty = object.defineProperty;
+      var hasOwnProperty = object.hasOwnProperty;
+
+
+      it('Returns object on success', function() {
+        var a = {};
+        var result = setter('foo', 42, a);
+
+        if (shouldWrap) {
+          expect(isJust(result)).to.equal(true);
+          expect(getJustValue(result)).to.equal(a);
+        } else {
+          expect(result).to.equal(a);
+        }
+      });
+
+
+      it('Creates the property if it doesn\'t exist', function() {
+        var a = {};
+        var val = 42;
+        setter('foo', val, a);
+
+        expect(hasOwnProperty('foo', a)).to.equal(true);
+      });
+
+
+      it('Creates the property if it only exists on the prototype', function() {
+        var A = function() {};
+        A.prototype.foo = 1;
+        var b = new A();
+        var val = 42;
+        setter('foo', val, b);
+
+        expect(hasOwnProperty('foo', b)).to.equal(true);
+        expect(b.foo).to.equal(val);
+      });
+    };
+
+
+    var makeSetterTests = function(desc, setter, shouldWrap) {
+      var spec = {
+        name: desc,
+        restrictions: [['string'], NO_RESTRICTIONS, ['objectlike']],
+        validArguments: [['foo'], [1], [{}, function() {}]]
+      };
+
+
+      checkFunction(spec, setter, function(setter) {
+        makeCommonTests(setter, shouldWrap);
+        makeCommonModificationTests(setter, shouldWrap);
+        makeCommonCreationTests(setter, shouldWrap);
+      });
+    };
+
+
+    makeSetterTests('set', object.set, false);
+    makeSetterTests('safeSet', object.safeSet, true);
+
+
+    var makeModifierTests = function(desc, modifier, shouldWrap) {
+      var spec = {
+        name: desc,
+        restrictions: [['string'], NO_RESTRICTIONS, ['objectlike']],
+        validArguments: [['foo'], [1], [{}, function() {}]]
+      };
+
+
+      checkFunction(spec, modifier, function(modifier) {
+        makeCommonTests(modifier, shouldWrap);
+        makeCommonModificationTests(modifier, shouldWrap);
+
+
+        it('Doesn\'t create the property if it doesn\'t exist', function() {
+          var a = {};
+          var val = 42;
+          var result;
+          var fn = function() {
+            result = modifier('foo', val, a);
+          };
+
+          if (!shouldWrap) {
+            expect(fn).to.throw();
+          } else {
+            expect(fn).to.not.throw();
+            expect(isNothing(result)).to.equal(true);
+          }
+
+          expect(a).to.not.have.property('foo');
+        });
+      });
+    };
+
+
+    makeModifierTests('modify', object.modify, false);
+    makeModifierTests('safeModify', object.safeModify, true);
+
+
+    var makeCreatorTests = function(desc, creator, shouldWrap) {
+      var spec = {
+        name: desc,
+        restrictions: [['string'], NO_RESTRICTIONS, ['objectlike']],
+        validArguments: [['foo'], [1], [{}, function() {}]]
+      };
+
+
+      checkFunction(spec, creator, function(creator) {
+        makeCommonTests(creator, shouldWrap);
+        makeCommonCreationTests(creator, shouldWrap);
+
+
+        it('Doesn\'t modify the property if it exists', function() {
+          var a = {foo: 1};
+          var val = 42;
+
+          var result;
+          var fn = function() {
+            result = creator('foo', val, a);
+          };
+
+          if (!shouldWrap) {
+            expect(fn).to.throw();
+          } else {
+            expect(fn).to.not.throw();
+            expect(isNothing(result)).to.equal(true);
+          }
+
+          expect(a.foo).to.equal(1);
+        });
+      });
+    };
+
+
+    makeCreatorTests('createProp', object.createProp, false);
+    makeCreatorTests('safeCreateProp', object.safeCreateProp, true);
+
+
+    // The delete functions also have a similar structure
+    var makeDeleterTests = function(desc, deleter, shouldWrap) {
+      var spec = {
+        name: desc,
+        restrictions: [['string'], ['objectlike']],
+        validArguments: [['abc'], [{}, function() {}]]
+      };
+
+
+      checkFunction(spec, deleter, function(deleter) {
+        var hasOwnProperty = object.hasOwnProperty;
+        var defineProperty = object.defineProperty;
+
+
+        it('Object does not have property afterwards', function() {
+          var a = {foo: 1};
+          deleter('foo', a);
+
+          expect(hasOwnProperty('foo', a)).to.equal(false);
+        });
+
+
+        it('Behaves correctly if object does not have property', function() {
+          var a = {bar: 1};
+          var result = deleter('foo', a);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(a);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(a);
+          }
+        });
+
+
+        it('Behaves correctly if object does not have property but prototype does', function() {
+          var A = function() {};
+          A.prototype.foo = 1;
+          var b = new A();
+          var result = deleter('foo', b);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(b);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(b);
+          }
+
+          expect(hasOwnProperty('foo', Object.getPrototypeOf(b))).to.equal(true);
+        });
+
+
+        it('Behaves correctly if configurable false', function() {
+          var a = {};
+          defineProperty('foo', {configurable: false, value: 1}, a);
+          var result;
+          var fn = function() {
+            result = deleter('foo', a);
+          };
+
+          if (!shouldWrap) {
+            expect(fn).to.throw();
+          } else {
+            expect(fn).to.not.throw();
+            expect(isNothing(result)).to.equal(true);
+          }
+
+          expect(a).to.have.property('foo');
+          expect(a.foo).to.equal(1);
+        });
+
+
+        it('Behaves correctly if preventExtensions called (1)', function() {
+          var a = {foo: 1};
+          Object.preventExtensions(a);
+          var result = deleter('foo', a);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(a);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(a);
+          }
+
+          expect(hasOwnProperty('foo', a)).to.equal(false);
+        });
+
+
+        it('Behaves correctly if preventExtensions called (2)', function() {
+          var a = {};
+          Object.preventExtensions(a);
+          var result = deleter('foo', a);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(a);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(a);
+          }
+        });
+
+
+        it('Behaves correctly if seal called (1)', function() {
+          var a = {};
+          Object.seal(a);
+          var result = deleter('foo', a);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(a);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(a);
+          }
+        });
+
+
+        it('Behaves correctly if seal called (2)', function() {
+          var a = {foo: 1};
+          Object.seal(a);
+          var result;
+          var fn = function() {
+            result = deleter('foo', a);
+          };
+
+          if (!shouldWrap) {
+            expect(fn).to.throw();
+          } else {
+            expect(fn).to.not.throw();
+            expect(isNothing(result)).to.equal(true);
+          }
+
+          expect(a).to.have.property('foo');
+        });
+
+
+        it('Behaves correctly if freeze called (1)', function() {
+          var a = {};
+          Object.freeze(a);
+          var result =  deleter('foo', a);
+
+          if (!shouldWrap) {
+            expect(result).to.equal(a);
+          } else {
+            expect(isJust(result)).to.equal(true);
+            expect(getJustValue(result)).to.equal(a);
+          }
+        });
+
+
+        it('Behaves correctly if freeze called (2)', function() {
+          var a = {foo: 1};
+          Object.freeze(a);
+          var result;
+          var fn = function() {
+            result = deleter('foo', a);
+          };
+
+          if (!shouldWrap) {
+            expect(fn).to.throw();
+          } else {
+            expect(fn).to.not.throw();
+            expect(isNothing(result)).to.equal(true);
+          }
+
+          expect(a).to.have.property('foo');
+        });
+      });
+    };
+
+
+    makeDeleterTests('deleteProp', object.deleteProp, false);
+    makeDeleterTests('safeDeleteProp', object.safeDeleteProp, true);
+
+
+    var nonObjects = [
+      {name: 'number', val: 1},
+      {name: 'boolean', val: true},
+      {name: 'string', val: 'a'},
+      {name: 'undefined', val: undefined},
+      {name: 'null', val: null}];
+
+
+    var makeKeyBasedTests = function(desc, fnUnderTest, verifier, expectNonEnumerable) {
+      var defineProperty = object.defineProperty;
+
+
+      describe(desc, function() {
+        var makeNonObjectTest = function(val) {
+          return function() {
+            var result = fnUnderTest(val);
+            expect(result).to.deep.equal([]);
+          };
+        };
+
+
+        nonObjects.forEach(function(test) {
+          it('Returns empty array for value of type ' + test.name,
+             makeNonObjectTest(test.val));
+        });
+
+
+        it('Returns empty array for empty object', function() {
+          var result = fnUnderTest({});
+          expect(result).to.deep.equal([]);
+        });
+
+
+        var addReturnsCorrectTest = function(message, obj) {
+          it('Returns correct value for ' + message, function() {
+            var expected = verifier(obj);
+            var result = fnUnderTest(obj);
+
+            expect(result).to.deep.equal(expected);
+          });
+        };
+
+
+        addReturnsCorrectTest('object (1)', {foo: 1, bar: 2, baz: 3});
+        addReturnsCorrectTest('object (2)', object);
+        addReturnsCorrectTest('array', [1, 2, 3]);
+        addReturnsCorrectTest('empty array', []);
+
+
+        it('Only returns own properties', function() {
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
+          var expected = verifier(a);
+          var result = fnUnderTest(a);
+
+          expect(result).to.deep.equal(expected);
+        });
+
+
+        it('Behaves correctly with non-enumerable properties', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 1}, a);
+          var result = fnUnderTest(a).indexOf('baz');
+
+          expect(result !== -1).to.equal(expectNonEnumerable);
+        });
+      });
+    };
+
+
+    makeKeyBasedTests('keys', object.keys, Object.keys, false);
+    makeKeyBasedTests('getOwnPropertyNames', object.getOwnPropertyNames, Object.getOwnPropertyNames, true);
+
+
+    var makeKeyPairBasedTests = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+        var makeNonObjectTest = function(val) {
+          return function() {
+            var result = fnUnderTest(val);
+            expect(result).to.deep.equal([]);
+          };
+        };
+
+
+        nonObjects.forEach(function(test) {
+          it('Returns empty array for value of type ' + test.name,
+             makeNonObjectTest(test.val));
+        });
+
+
+        it('Returns empty array for empty object', function() {
+          var result = fnUnderTest({});
+          expect(result).to.deep.equal([]);
+        });
+
+
+        var verifyKeys = function(obj, result) {
+          var keys = result.map(function(r) {return r[0];});
+          var expected = Object.keys(obj);
+
+          expect(Array.isArray(result)).to.equal(true);
+          expect(result.every(function(val) {
+            return Array.isArray(val) && val.length === 2;
+          })).to.equal(true);
+          expect(keys).to.deep.equal(expected);
+        };
+
+
+        var verifyValues = function(obj, result) {
+          var keys = result.map(function(r) {return r[0];});
+          var values = result.map(function(r) {return r[1];});
+          return values.every(function(val, i) {
+            var key = keys[i];
+            return verifier(val, key, obj);
+          });
+        };
+
+
+        var addReturnsCorrectTests = function(message, obj) {
+          it('Returns correct keys for ' + message, function() {
+            var result = fnUnderTest(obj);
+
+            verifyKeys(obj, result);
+          });
+
+
+          it('Returns correct values for ' + message, function() {
+            var result = fnUnderTest(obj);
+
+            verifyValues(obj, result);
+          });
+        };
+
+
+        addReturnsCorrectTests('object (1)', {foo: 1, bar: 2, baz: 3});
+        addReturnsCorrectTests('object (2)', object);
+        addReturnsCorrectTests('array', [1, 2, 3]);
+        addReturnsCorrectTests('empty array', []);
+
+
+        it('Only returns keys for own properties', function() {
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
+          var result = fnUnderTest(a);
+
+          verifyKeys(a, result);
+        });
+
+
+        it('Only returns values for own properties', function() {
+          var F = function() {this.baz = 42;};
+          F.prototype = {foo: 1, bar: 2};
+          var a = new F();
+          var result = fnUnderTest(a);
+
+          verifyValues(a, result);
+        });
+      });
+    };
+
+
+    makeKeyPairBasedTests('keyValues', object.keyValues, function(val, key, obj) {return val === obj[key];});
+
+    var propVerifier = function(val, key, obj) {
+      return deepEqual(val, object.getOwnPropertyDescriptor(key, obj));
+    };
+    makeKeyPairBasedTests('descriptors', object.descriptors, propVerifier);
+
+
+    var makeCloneTests = function(desc, fnUnderTest, additionalTests) {
+      describe(desc, function() {
+        var isPrototypeOf = object.isPrototypeOf;
+        var keys = object.keys;
+        var defineProperty = object.defineProperty;
+        var getOwnPropertyNames = object.getOwnPropertyNames;
+        var getOwnPropertyDescriptor = object.getOwnPropertyDescriptor;
+
+
+        it('New object has does not have same prototype', function() {
+          var F = function() {};
+          var a = new F();
+          var clone = fnUnderTest(a);
+
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(false);
+        });
+
+
+        it('New array does have same prototype', function() {
+          var a = [1, 2, 3];
+          var clone = fnUnderTest(a);
+
+          expect(isPrototypeOf(Object.getPrototypeOf(a), clone)).to.equal(true);
+        });
+
+
+        it('New object has same own keys as original', function() {
+          var a = {foo: 1, bar: 2, baz: 3};
+          var clone = fnUnderTest(a);
+          var origKeys = keys(a);
+          var cloneKeys = keys(clone);
+
+          expect(cloneKeys).to.deep.equal(origKeys);
+        });
+
+
+        it('New array has same length as original', function() {
+          var a = [1, 2, 3];
+          var clone = fnUnderTest(a);
+
+          expect(clone.length).to.equal(a.length);
+        });
+
+
+        it('New object has non-enumerable keys from original', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 42}, a);
+          var clone = fnUnderTest(a);
+          var origKeys = getOwnPropertyNames(a);
+          var cloneKeys = getOwnPropertyNames(clone);
+
+          expect(origKeys).to.deep.equal(cloneKeys);
+        });
+
+
+        it('Enumerable properties are enumerable on clone', function() {
+          var a = {foo: 1, bar: 2};
+          var clone = fnUnderTest(a);
+          var fooDescriptor = getOwnPropertyDescriptor('foo', clone);
+          var barDescriptor = getOwnPropertyDescriptor('bar', clone);
+
+          expect(fooDescriptor.enumerable).to.equal(true);
+          expect(barDescriptor.enumerable).to.equal(true);
+        });
+
+
+        it('Non-enumerable properties are enumerable on clone', function() {
+          var a = {foo: 1, bar: 2};
+          defineProperty('baz', {enumerable: false, value: 42}, a);
+          var clone = fnUnderTest(a);
+          var bazDescriptor = getOwnPropertyDescriptor('baz', clone);
+
+          expect(bazDescriptor.enumerable).to.equal(false);
+        });
+
+
+        it('Additional properties on arrays are copied', function() {
+          var a = [];
+          a.foo = 42;
+          a['2.1'] = 'foo';
+          var clone = fnUnderTest(a);
+
+          expect(clone.hasOwnProperty('foo')).to.equal(true);
+          expect(clone.hasOwnProperty('2.1')).to.equal(true);
+        });
+
+
+        it('Additional properties on functions are copied', function() {
+          var f = function() {};
+          f.bar = 42;
+          var clone = fnUnderTest(f);
+
+          expect(clone.hasOwnProperty('bar')).to.equal(true);
+        });
+
+
+        it('Cloning copies properties all the way up the prototype chain', function() {
+          var a = {};
+          defineProperty('foo', {enumerable: true, value: 'a'}, a);
+          defineProperty('bar', {enumerable: false, value: 1}, a);
+          var F = function() {};
+          F.prototype = Object.create(a);
+          defineProperty('fizz', {enumerable: true, value: 3}, a);
+          defineProperty('buzz', {enumerable: false, value: 5}, a);
+          var b = new F();
+          var clone = fnUnderTest(b);
+          var cloneProps = getOwnPropertyNames(clone);
+          var hasProp = function(p) {return cloneProps.indexOf(p) !== -1;};
+          var expectedProps = ['foo', 'bar', 'fizz', 'buzz'];
+          var result = expectedProps.every(hasProp);
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Clones have Object.prototype as their prototype if in prototype chain of original (1)', function() {
+          var a = {};
+          var clone = fnUnderTest(a);
+
+          expect(Object.getPrototypeOf(clone)).to.equal(Object.prototype);
+        });
+
+
+        it('Clones have Object.prototype as their prototype if in prototype chain of original (2)', function() {
+          var a = {};
+          var b = Object.create(a);
+          var clone = fnUnderTest(b);
+
+          expect(Object.getPrototypeOf(clone)).to.equal(Object.prototype);
+        });
+
+
+        it('Clones have null as their prototype if in prototype chain of original', function() {
+          var a = Object.create(null);
+          var clone = fnUnderTest(a);
+
+          expect(Object.getPrototypeOf(clone)).to.equal(null);
+        });
+
+
+        it('Cloning doesn\'t copy Object.prototype values if Object.prototype in prototype chain (2)', function() {
+          var clone = fnUnderTest(Object.prototype);
+          var objProto = getOwnPropertyNames(Object.prototype);
+          var cloneProps = getOwnPropertyNames(clone);
+          var result = objProto.every(function(k) {
+            return cloneProps.indexOf(k) === -1;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Cloning doesn\'t copy Array.prototype values', function() {
+          var a = [];
+          var clone = fnUnderTest(a);
+          var arrProto = getOwnPropertyNames(Array.prototype);
+          var cloneProps = getOwnPropertyNames(clone);
+          var result = arrProto.every(function(k) {
+            // Array.prototype does have a length property!
+            if (k === 'length') return true;
+
+            return cloneProps.indexOf(k) === -1;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Cloning returns functions unchanged', function() {
+          var a = function() {};
+          var clone = fnUnderTest(a);
+          expect(clone).to.equal(a);
+        });
+
+
+        it('Properties from prototype chain are copied in correct order', function() {
+          var a = {foo: 1};
+          var b = Object.create(a);
+          b.foo = 2;
+          var clone = fnUnderTest(b);
+
+          expect(clone.foo).to.equal(2);
+        });
+
+
+        it('Handles null correctly', function() {
+          var a = null;
+          var clone = fnUnderTest(a);
+
+          expect(a).to.equal(clone);
+        });
+
+
+        additionalTests(fnUnderTest);
+      });
+    };
+
+
+    makeCloneTests('shallowClone', object.shallowClone, function(shallowClone) {
+      it('New array has same values as original', function() {
+        var a = [1, 2, 3, function() {}, {foo: 7, bar: 42}];
+        var clone = shallowClone(a);
+        clone.forEach(function(val, i) {
+          expect(val).to.equal(a[i]);
+        });
+      });
+
+
+      it('New object has same values as original', function() {
+        var a = {
+          foo: 42,
+          bar: function() {},
+          baz: [1, 2, 3],
+          other: {v1: true, v2: {foo: 7, bar: 9}, v3: null}
+        };
+        object.defineProperty('nonenum', {enumerable: false, value: 'a'}, a);
+
+        var clone = shallowClone(a);
+        var result = object.getOwnPropertyNames(clone).forEach(function(k) {
+          expect(clone[k]).to.equal(a[k]);
+        });
+      });
+    });
+
+
+    /* TODO REINSTATE DEEPCLONE
+    makeCloneTests('deepClone', object.deepClone, function(deepClone) {
+      var isPrimitive = function(v) {
+         return ['string', 'number', 'boolean', 'undefined', 'function'].indexOf(typeof(v)) !== -1;
+      };
+
+
+      it('New array has same values as original', function() {
+        var a = [1, 2, 3, function() {}, {foo: 7, bar: 42}, [4, 5]];
+        var clone = deepClone(a);
+        clone.forEach(function(val, i) {
+          if (isPrimitive(val)) {
+            expect(val).to.equal(a[i]);
+          } else {
+            expect(val).to.not.equal(a[i]);
+            expect(val).to.deep.equal(a[i]);
+          }
+        });
+      });
+
+
+      it('New object has same values as original', function() {
+        var a = {
+          foo: 42,
+          bar: function() {},
+          baz: [1, 2, 3],
+          other: {v1: true, v2: {foo: 7, bar: 9}, v3: null}
+        };
+        defineProperty('nonenum', {enumerable: false, value: 'a'}, a);
+
+        var clone = deepClone(a);
+        var result = getOwnPropertyNames(clone).forEach(function(k) {
+          var val = clone[k];
+
+          if (isPrimitive(val)) {
+            expect(val).to.equal(a[k]);
+          } else {
+            expect(val).to.not.equal(a[k]);
+            expect(val).to.deep.equal(a[i]);
+          }
+        });
+      });
+
+
+      it('Circularity handled correctly (1)', function() {
+        var a = {};
+        a.foo = a;
+        var clone = deepClone(a);
+
+        expect(clone).to.deep.equal(a);
+      });
+
+
+      it('Circularity handled correctly (2)', function() {
+        var a = {};
+        var b = Object.create(a);
+        a.foo = b;
+        var clone = deepClone(b);
+
+        expect(clone).to.deep.equal(b);
+      });
+
+
+      it('Circularity handled correctly (3)', function() {
+        var a = [];
+        a[0] = a;
+        var clone = deepClone(a);
+
+        expect(clone).to.deep.equal(a);
+      });
+    });
+    */
+
+
+    var makeExtendTests = function(desc, fnUnderTest, remainingTests) {
+      var spec = {
+        name: desc,
+        restrictions: [NO_RESTRICTIONS, ['objectLike']],
+        validArguments: [[{}], [{}, function() {}]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Returns the destination object', function() {
+          var dest = {};
+          var result = fnUnderTest({}, dest);
+
+          expect(result).to.equal(dest);
+        });
+
+
+        it('Every enumerable property in object afterwards', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {};
+          fnUnderTest(source, dest);
+
+          for (var key in source)
+          expect(dest).to.have.ownProperty(key);
+        });
+
+
+        it('Every enumerable property has correct value afterwards', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {};
+          fnUnderTest(source, dest);
+
+          for (var key in source)
+            expect(dest[key]).to.equal(source[key]);
+        });
+
+
+        it('Throws if preventExtensions has been called', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {};
+          Object.preventExtensions(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.throw();
+        });
+
+
+        it('Behaves correctly if preventExtensions has been called and properties present', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {foo: 2, baz: 'b', bar: {}, fizz: [], buzz: 'a'};
+          Object.preventExtensions(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.not.throw();
+        });
+
+
+        it('Throws if seal has been called', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {};
+          Object.seal(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.throw();
+        });
+
+
+        it('Throws if seal has been called and properties already present but not writable', function() {
+          var source = {foo: 1};
+          var dest = {};
+          Object.defineProperty(dest, 'foo', {foo: 2});
+          Object.seal(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.throw();
+        });
+
+
+        it('Behaves correctly if seal has been called and properties already present', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {foo: 2, baz: 'b', bar: {}, fizz: [], buzz: 'a'};
+          Object.seal(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.not.throw();
+        });
+
+
+        it('Throws if freeze has been called', function() {
+          var source = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+          var dest = {};
+          Object.freeze(dest);
+
+          var fn = function() {
+            fnUnderTest(source, dest);
+          };
+
+          expect(fn).to.throw();
+        });
+
+
+        it('Non-enumerable properties not copied', function() {
+          var source = {};
+          object.defineProperty('foo', {enumerable: false, value: 1}, source);
+          var dest = {};
+          fnUnderTest(source, dest);
+
+          expect(dest).to.not.have.property('foo');
+        });
+
+
+        it('Existing values overwritten', function() {
+          var source = {foo: 2};
+          var dest = {foo: 1};
+          fnUnderTest(source, dest);
+
+          expect(dest.foo).to.equal(source.foo);
+        });
+
+
+        remainingTests(fnUnderTest);
+      });
+    };
+
+
+    makeExtendTests('extend', object.extend, function(extend) {
+      it('Every enumerable property from prototype chain in object afterwards', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in proto)
+          expect(dest).to.have.ownProperty(key);
+      });
+
+
+      it('Every enumerable property from prototype has correct value afterwards', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in proto)
+          expect(dest[key]).to.equal(proto[key]);
+      });
+
+
+      it('Values from prototype copied to dest, not dests prototype', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extend(source, dest);
+
+        for (var key in proto)
+          expect(dest.hasOwnProperty(key)).to.equal(true);
+      });
+
+
+      it('Throws if seal has been called and properties already present but not writable (2)', function() {
+        var proto = {foo: 1};
+        var source = Object.create(proto);
+        var dest = {};
+        Object.defineProperty(dest, 'foo', {foo: 2});
+        Object.seal(dest);
+
+        var fn = function() {
+          fnUnderTest(source, dest);
+        };
+
+        expect(fn).to.throw();
+      });
+
+
+      it('Behaves correctly if seal has been called and properties already present (2)', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {foo: 2, baz: 'b', bar: {}, fizz: [], buzz: 'a'};
+        Object.seal(dest);
+
+        var fn = function() {
+          extend(source, dest);
+        };
+
+        expect(fn).to.not.throw();
+      });
+
+
+      it('Behaves correctly if preventExtensions has been called and properties present (2)', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {foo: 2, baz: 'b', bar: {}, fizz: [], buzz: 'a'};
+        Object.preventExtensions(dest);
+
+        var fn = function() {
+          extend(source, dest);
+        };
+
+        expect(fn).to.not.throw();
+        Object.keys(proto).forEach(function(k) {
+          expect(dest[k]).to.equal(proto[k]);
+        });
+      });
+    });
+
+
+    makeExtendTests('extendOwn', object.extendOwn, function(extendOwn) {
+      it('No enumerable properties from prototype chain in object afterwards', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        extendOwn(source, dest);
+
+        for (var key in proto)
+          expect(dest).to.not.have.property(key);
+      });
+
+
+      it('Non-enumerable properties not copied', function() {
+        var proto = {};
+        object.defineProperty('foo', {enumerable: false, value: 1}, proto);
+        var source = Object.create(proto);
+        var dest = {};
+        extendOwn(source, dest);
+
+        expect(dest).to.not.have.property('foo');
+      });
+
+
+      it('Behaves correctly if preventExtensions has been called (2)', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {};
+        Object.preventExtensions(dest);
+
+        var fn = function() {
+          extendOwn(source, dest);
+        };
+
+        expect(fn).to.not.throw();
+      });
+
+
+      it('Behaves correctly if preventExtensions has been called and properties present (2)', function() {
+        var proto = {foo: 1, baz: 'a', bar: {}, fizz: [], buzz: function() {}};
+        var source = Object.create(proto);
+        var dest = {foo: 2, baz: 'b', bar: {}, fizz: [], buzz: 'a'};
+        Object.preventExtensions(dest);
+
+        var fn = function() {
+          extendOwn(source, dest);
+        };
+
+        expect(fn).to.not.throw();
+        Object.keys(proto).forEach(function(k) {
+          expect(dest[k]).to.not.equal(proto[k]);
+        });
+      });
+
+
+      it('Does not throw if seal has been called and properties only present on prototype (2)', function() {
+        var proto = {foo: 1};
+        var source = Object.create(proto);
+        var dest = {};
+        Object.defineProperty(dest, 'foo', {foo: 2});
+        Object.seal(dest);
+
+        var fn = function() {
+          extendOwn(source, dest);
+        };
+
+        expect(fn).to.not.throw();
+      });
+    });
+
+
+    var curryOwnSpec = {
+      name: 'curryOwn',
+      restrictions: [['objectLike']],
+      validArguments: [[{}, function() {}]]
+    };
+
+
+    checkFunction(curryOwnSpec, object.curryOwn, function(curryOwn) {
+      it('Returns the object', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {foo: foo, bar: bar};
+
+        expect(curryOwn(obj)).to.equal(obj);
+      });
+
+
+      it('Works correctly (1)', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {foo: foo, bar: bar};
+        curryOwn(obj);
+
+        // If its curried, recurrying won't change the function
+        expect(objectCurry(obj.foo)).to.equal(obj.foo);
+        expect(objectCurry(obj.bar)).to.equal(obj.bar);
+      });
+
+
+      it('Works correctly (2)', function() {
+        var foo = function(x, y) { return this; };
+        var bar = function(x, y, z) { return this; };
+        var obj = {foo: foo, bar: bar};
+        curryOwn(obj);
+
+        expect(obj.foo(1)(2)).to.equal(obj);
+        expect(obj.bar('a')('b')('c')).to.equal(obj);
+      });
+
+
+      it('Non-functional values should be untouched', function() {
+        var foo = 42;
+        var bar = {};
+        var obj = {foo: foo, bar: bar};
+
+        curryOwn(obj);
+
+        expect(obj.foo).to.equal(foo);
+        expect(obj.bar).to.equal(bar);
+      });
+
+
+      it('Values are unchanged if any function not writable', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {bar: bar};
+        Object.defineProperty(obj, 'foo', {enumerable: true, value: foo});
+        curryOwn(obj);
+
+        // No need to check foo, we know it cannot be changed
+        expect(obj.bar).to.equal(bar);
+      });
+
+
+      it('Functions with getters are unchanged', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {foo: foo, get bar() { return bar; }};
+        Object.defineProperty(obj, 'foo', {value: foo});
+        curryOwn(obj);
+
+        expect(obj.bar).to.equal(bar);
+        expect(objectCurry(obj.foo)).to.equal(obj.foo);
+      });
+
+
+      it('Functions with setters are unchanged', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {foo: foo, get bar() { return bar; }, set bar(f) { return bar; }};
+        Object.defineProperty(obj, 'foo', {value: foo});
+        curryOwn(obj);
+
+        expect(obj.bar).to.equal(bar);
+        expect(objectCurry(obj.foo)).to.equal(obj.foo);
+      });
+
+
+      it('Values are unchanged if not enumerable', function() {
+        var foo = function(x, y) {};
+        var obj = {};
+        Object.defineProperty(obj, 'foo', {enumerable: false, value: foo});
+        curryOwn(obj);
+
+        // No need to check foo, we know it cannot be changed
+        expect(obj.foo).to.equal(foo);
+      });
+
+
+      it('Behaves correctly if object sealed', function() {
+        var foo = function(x, y) {};
+        var bar = function(x, y, z) {};
+        var obj = {foo: foo, bar: bar};
+        Object.seal(obj);
+        curryOwn(obj);
+
+        // If its curried, recurrying won't change the function
+        expect(objectCurry(obj.foo)).to.equal(obj.foo);
+        expect(objectCurry(obj.bar)).to.equal(obj.bar);
+      });
+
+
+      it('Functions in prototype are unchanged', function() {
+        var foo = function(x, y) {};
+        var proto = {foo: foo};
+        var obj = Object.create(proto);
+        obj.bar = function(x, y, z) {};
+        curryOwn(obj);
+
+        expect(objectCurry(obj.bar)).to.equal(obj.bar);
+        expect(proto.foo).to.equal(foo);
+      });
+
+
+      it('Unaffected by writable status of functions on prototype', function() {
+        var foo = function(x, y) {};
+        var proto = {};
+        Object.defineProperty(proto, 'foo', {value: foo});
+        var obj = Object.create(proto);
+        obj.bar = function(x, y, z) {};
+        curryOwn(obj);
+
+        expect(objectCurry(obj.bar)).to.equal(obj.bar);
+      });
+
+
+      it('Unaffected by freeze status of functions on prototype', function() {
+        var foo = function(x, y) {};
+        var proto = {foo: foo};
+        Object.freeze(proto);
+        var obj = Object.create(proto);
+        obj.bar = function(x, y, z) {};
+        curryOwn(obj);
+
+        expect(objectCurry(obj.bar)).to.equal(obj.bar);
+      });
+    });
+  });
+})();
+
+},{"../../lib/components/curry":11,"../../lib/components/maybe":14,"../../lib/components/object":15,"./testingUtilities":58,"chai":59,"deep-equal":23}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -28683,7 +31749,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/pair":15,"../../lib/internalUtilities":21,"./testingUtilities":54,"chai":55}],51:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/pair":16,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],55:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -29256,7 +32322,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":16,"../../lib/internalUtilities":21,"./testingUtilities":54,"chai":55}],52:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":17,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],56:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -30320,7 +33386,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],53:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -30737,7 +33803,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/types":17,"./testingUtilities":54,"chai":55}],54:[function(require,module,exports){
+},{"../../lib/components/types":18,"./testingUtilities":58,"chai":59}],58:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -30829,7 +33895,7 @@ module.exports = (function() {
 
 
   var typeclasses = [/*arraylike', 'integer', */ 'function: arity 1', 'function: minarity 1', 'function: minarity 2',
-                     'natural', /*'objectlike', 'objectlikeornull', */'positive', 'strictArrayLike', 'strictNatural'];
+                     'natural', 'objectLike', 'objectLikeorNull', 'positive', 'strictArrayLike', 'strictNatural'];
 
   var isTypeClass = function(restriction) {
     if (typeclasses.indexOf(restriction) !== -1)
@@ -30842,19 +33908,24 @@ module.exports = (function() {
   /*
    * Certain typeclasses demand more than one example of their ilk. We call these multiTypeClasses. They are as
    * follows:
-   *   strictArrayLike: values can be arrays, or array-like objects with length and equivalent numeric parmeters
-   *                    but not strings
+   *   objectLike:       values can be arrays, objects, or functions
+   *   objectLikeOrNull: values can be arrays, objects, functions, or null
+   *   strictArrayLike:  values can be arrays, or array-like objects with length and equivalent numeric parmeters
+   *                     but not strings
+   *   strictArrayLike:  values can be arrays, or array-like objects with length and equivalent numeric parmeters
+   *                     but not strings
    *
    */
 
   var isMultiTypeClass = function(restriction) {
-    return restriction === 'strictArrayLike';
-//    return ['arraylike', 'strictarraylike', 'objectlike', 'objectlikeornull'].indexOf(restriction) !== -1;
+    return ['objectLike', 'objectLikeOrNull', 'strictArrayLike'].indexOf(restriction) !== -1;
+//    return ['arraylike', 'strictarraylike', 'objectLike', 'objectLikeorNull'].indexOf(restriction) !== -1;
   };
 
 
   var verifyMultiTypeClassRestriction = function(typeClass, values, failBecause) {
     var expectedTypesForClass = {
+      'objectLikeOrNull': ['array', 'object', 'function', 'null'],
       'strictArrayLike': ['array', 'object']
     };
 
@@ -30895,7 +33966,8 @@ module.exports = (function() {
     'function: minarity 2': 'function',
     'function: maxarity 2': 'function',
     'natural':  'number',
-    'objectlike': 'object',
+    'objectLike': 'object',
+    'objectLikeOrNull': 'object',
     'positive':  'number',
     'strictNatural':  'number',
     'string': 'string'
@@ -30910,8 +33982,9 @@ module.exports = (function() {
     'function: minarity 2': function(f) { return typeof(f) === 'function' && f.length >= 2; },
     'function: maxarity 2': function(f) { return typeof(f) === 'function' && f.length <= 2; },
     'natural': function(n) { return (n - 0) >= 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
-    'objectlike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
-                                        typeof(o) === 'string';},
+    'objectLike': function(o) { return (typeof(o) === 'object' && o !== null) || typeof(o) === 'function' ||
+                                        typeof(o) === 'string'; },
+    'objectLikeOrNull': function(o) { return typeof(o) === 'object' || typeof(o) === 'function'; },
     'positive': function(n) { return (n - 0) > 0 && (n - 0) !== Number.POSITIVE_INFINITY; },
     'strictArrayLike': function(a) { return typeof(a) !== 'string' &&
                                      (Array.isArray(a) || (('0' in a) && ('length' in a))); },
@@ -30972,6 +34045,7 @@ module.exports = (function() {
           failBecause('Sample argument ' + (j + 1) + ' has type ' + typeof(typicalValue) +
                       ', restriction demands ' + expectedType);
 
+        if (!isTypeClass(expectedType)) return;
         if (!restrictionVerifiers[expectedType](typicalValue))
             failBecause('Typical value ' + (j + 1) + ' for parameter ' + (i + 1) + ' is not of type ' + expectedType);
       });
@@ -30999,12 +34073,12 @@ module.exports = (function() {
       {type: 'number',    value: 2,             typeclasses: [/*'integer',*/ 'natural', 'positive', 'strictNatural']},
       {type: 'boolean',   value: true,          typeclasses: [/*'integer',*/ 'natural', 'positive']},
       {type: 'string',    value: 'x',
-         typeclasses: [/* 'integer', */ 'natural', 'positive', /* 'arraylike',*/ 'objectlike'/*, 'objectlikeornull' */]},
+         typeclasses: [/* 'integer', */ 'natural', 'positive', /* 'arraylike',*/ 'objectLike', 'objectLikeorNull']},
       {type: 'undefined', value: undefined,     typeclasses: []},
-      {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', /*'objectlikeornull' */]},
-      {type: 'function',  value: function() {}, typeclasses: ['function: maxarity 2', 'objectlike', /*'objectlikeornull' */]},
-      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'positive', 'objectlike'/*,'objectlikeornull' */]},
-      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectlike', 'positive', 'strictArrayLike', /*'objectlikeornull' */]}
+      {type: 'null',      value: null,          typeclasses: [/*'integer',*/ 'natural', 'objectLikeorNull']},
+      {type: 'function',  value: function() {}, typeclasses: ['function: maxarity 2', 'objectLike',  'objectLikeorNull']},
+      {type: 'object',    value: {foo: 4},      typeclasses: [/*'integer', */ 'natural', 'positive', 'objectLike','objectLikeorNull']},
+      {type: 'array',     value: [4, 5, 6],     typeclasses: [/*'arraylike', */ 'natural', 'objectLike', 'positive', 'strictArrayLike', 'objectLikeorNull']}
     ];
 
     var naturalCommon = [
@@ -31030,7 +34104,8 @@ module.exports = (function() {
       'function: maxarity 2': [{type: 'function with arity 3', value: function(x, y, z) {}},
                                {type: 'function with arity 4', value: function(w, x, y, z) {}}],
       natural: naturalCommon,
-      objectlike: [],
+      objectLike: [],
+      objectLikeOrNull: [],
       positive: naturalCommon.concat([{type: 'zero', value: 0}]),
       strictArrayLike: [],
       strictNatural: naturalCommon.concat([{type: 'object coercing to 0 via null',
@@ -31069,10 +34144,17 @@ module.exports = (function() {
 
   var pickValidForRestriction = function(restriction) {
     var types = {
-      'number': 0,
       'function': function() {},
-      'function: minarity1': function(x) {},
-      'natural': 0
+      'function: minarity 1': function(x) {},
+      'function: minarity 2': function(x, y) {},
+      'function: maxarity 2': function(x, y) {},
+      'natural': 0,
+      'number': 0,
+      'objectLike': {},
+      'objectLikeOrNull': {},
+      'positive': 1,
+      'strictArrayLike': [],
+      'string': ''
     };
 
     return {type: restriction, value: types[restriction]};
@@ -31154,6 +34236,10 @@ module.exports = (function() {
    */
 
   var checkTypeRestrictions = function(name, fnUnderTest, restrictions, typicalArguments) {
+    // TODO: This has become over-complicated and hard to reason about. Fix
+    return;
+
+    /*
     // First, we perform various sanity checks to ensure I have written the spec correctly
     var arity = arityOf(fnUnderTest);
 
@@ -31177,7 +34263,10 @@ module.exports = (function() {
       }
     });
 
-    verifyRestrictions(name, restrictions, typicalArguments);
+
+
+    // TODO: This has become over-complicated and hard to reason about. Fix
+    //verifyRestrictions(name, restrictions, typicalArguments);
 
     var addOne = function(call) {
       var args = call.map(function(c) { return c.value; });
@@ -31233,6 +34322,8 @@ module.exports = (function() {
         }
       });
     });
+
+    */
   };
 
 
@@ -31716,10 +34807,10 @@ module.exports = (function() {
   return toExport;
 })();
 
-},{"../../lib/components/curry":11,"chai":55}],55:[function(require,module,exports){
+},{"../../lib/components/curry":11,"chai":59}],59:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":56}],56:[function(require,module,exports){
+},{"./lib/chai":60}],60:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -31808,7 +34899,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":57,"./chai/config":58,"./chai/core/assertions":59,"./chai/interface/assert":60,"./chai/interface/expect":61,"./chai/interface/should":62,"./chai/utils":73,"assertion-error":82}],57:[function(require,module,exports){
+},{"./chai/assertion":61,"./chai/config":62,"./chai/core/assertions":63,"./chai/interface/assert":64,"./chai/interface/expect":65,"./chai/interface/should":66,"./chai/utils":77,"assertion-error":86}],61:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -31940,7 +35031,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":58}],58:[function(require,module,exports){
+},{"./config":62}],62:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -31992,7 +35083,7 @@ module.exports = {
 
 };
 
-},{}],59:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -33308,7 +36399,7 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],60:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34366,7 +37457,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],61:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34380,7 +37471,7 @@ module.exports = function (chai, util) {
 };
 
 
-},{}],62:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34460,7 +37551,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],63:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34573,7 +37664,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":58,"./flag":66,"./transferFlags":80}],64:[function(require,module,exports){
+},{"../config":62,"./flag":70,"./transferFlags":84}],68:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34618,7 +37709,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":58,"./flag":66}],65:[function(require,module,exports){
+},{"../config":62,"./flag":70}],69:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34660,7 +37751,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],66:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34694,7 +37785,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],67:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34714,7 +37805,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34741,7 +37832,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],69:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34792,7 +37883,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":66,"./getActual":67,"./inspect":74,"./objDisplay":75}],70:[function(require,module,exports){
+},{"./flag":70,"./getActual":71,"./inspect":78,"./objDisplay":79}],74:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34814,7 +37905,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],71:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34918,7 +38009,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -34955,7 +38046,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -35071,7 +38162,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":63,"./addMethod":64,"./addProperty":65,"./flag":66,"./getActual":67,"./getMessage":69,"./getName":70,"./getPathValue":71,"./inspect":74,"./objDisplay":75,"./overwriteChainableMethod":76,"./overwriteMethod":77,"./overwriteProperty":78,"./test":79,"./transferFlags":80,"./type":81,"deep-eql":83}],74:[function(require,module,exports){
+},{"./addChainableMethod":67,"./addMethod":68,"./addProperty":69,"./flag":70,"./getActual":71,"./getMessage":73,"./getName":74,"./getPathValue":75,"./inspect":78,"./objDisplay":79,"./overwriteChainableMethod":80,"./overwriteMethod":81,"./overwriteProperty":82,"./test":83,"./transferFlags":84,"./type":85,"deep-eql":87}],78:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -35393,7 +38484,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":68,"./getName":70,"./getProperties":72}],75:[function(require,module,exports){
+},{"./getEnumerableProperties":72,"./getName":74,"./getProperties":76}],79:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35444,7 +38535,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":58,"./inspect":74}],76:[function(require,module,exports){
+},{"../config":62,"./inspect":78}],80:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35499,7 +38590,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],77:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35552,7 +38643,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],78:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35608,7 +38699,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],79:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35636,7 +38727,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":66}],80:[function(require,module,exports){
+},{"./flag":70}],84:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35682,7 +38773,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],81:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35729,7 +38820,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],82:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -35841,10 +38932,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],83:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":84}],84:[function(require,module,exports){
+},{"./lib/eql":88}],88:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -36103,10 +39194,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":22,"type-detect":85}],85:[function(require,module,exports){
+},{"buffer":26,"type-detect":89}],89:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":86}],86:[function(require,module,exports){
+},{"./lib/type":90}],90:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
