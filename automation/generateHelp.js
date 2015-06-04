@@ -66,7 +66,7 @@ module.exports = (function() {
       }
 
       documentedValue.summary.split('\n').forEach(function(line) {
-        buffer.push('          console.log(\'' + line.replace('\'', '\\\'') + '\');');
+        buffer.push('          console.log(\'' + line.replace(/([^\\])'/g, '$1\\\'') + '\');');
       });
       buffer.push('          console.log(\'\');');
       if (documentedValue instanceof APIFunction) {
