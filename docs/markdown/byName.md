@@ -743,7 +743,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -2107,6 +2107,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -2420,6 +2439,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -2438,6 +2477,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical
@@ -3226,7 +3342,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -4590,6 +4706,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -4903,6 +5038,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -4921,6 +5076,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical
@@ -5709,7 +5941,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -7073,6 +7305,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -7386,6 +7637,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -7404,6 +7675,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical
@@ -8192,7 +8540,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -9556,6 +9904,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -9869,6 +10236,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -9887,6 +10274,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical
@@ -10675,7 +11139,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -12039,6 +12503,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -12352,6 +12835,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -12370,6 +12873,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical
@@ -13158,7 +13738,7 @@ mapping over an array with `parseInt`, which has an optional *radix* parameter. 
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-one argument.
+one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
 
 It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -14522,6 +15102,25 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => true',
 ***
+### parseInt ###
+Category: Maths
+
+**Usage:** `var result = parseInt(s);`
+
+Parameters:  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+
+#### Examples ####
+    funkierJS.parseInt(101); // => 101
+***
+### parseIntInBase ###
+See `stringToInt`
+***
 ### plus ###
 See `add`
 ***
@@ -14835,6 +15434,26 @@ A wrapper around the strict inequality (!==) operator.
 ### strictNotEquals ###
 See `strictNotEqual`
 ***
+### stringToInt ###
+Category: Maths
+
+*Synonyms:* `parseIntInBase`
+
+**Usage:** `var result = stringToInt(base, s);`
+
+Parameters:  
+base `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.
+
+#### Examples ####
+    funkierJS.stringToInt(16, "80"); // => 128
+***
 ### subtract ###
 Category: Maths
 
@@ -14853,6 +15472,83 @@ A wrapper around the subtraction operator.
 ***
 ### tap ###
 See `extract`
+***
+### toBaseAndRadix ###
+See `toBaseAndString`
+***
+### toBaseAndString ###
+Category: Maths
+
+*Synonyms:* `toBaseAndRadix`
+
+**Usage:** `var result = toBaseAndString(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.
+
+#### Examples ####
+    funkierJS.toBaseAndString(2, 5); // => "101"
+***
+### toExponential ###
+Category: Maths
+
+**Usage:** `var result = toExponential(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.
+
+#### Examples ####
+    funkierJS.toExponential(3, 1); // => "1.000e+0"
+***
+### toFixed ###
+Category: Maths
+
+**Usage:** `var result = toFixed(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.
+
+#### Examples ####
+    funkierJS.toFixed(2, 1); // => "1.00"
+***
+### toPrecision ###
+Category: Maths
+
+**Usage:** `var result = toPrecision(x, y);`
+
+Parameters:  
+x `number`  
+y `number`
+
+Returns: `string`
+
+A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.
+
+#### Examples ####
+    funkierJS.toPrecision(3, 1); // => "1.000"
 ***
 ### xor ###
 Category: Logical

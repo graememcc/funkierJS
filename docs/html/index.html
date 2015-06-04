@@ -582,7 +582,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -1627,6 +1627,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -1871,6 +1887,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -1885,6 +1915,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
@@ -2492,7 +2579,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -3537,6 +3624,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -3781,6 +3884,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -3795,6 +3912,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
@@ -4402,7 +4576,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -5447,6 +5621,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -5691,6 +5881,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -5705,6 +5909,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
@@ -6312,7 +6573,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -7357,6 +7618,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -7601,6 +7878,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -7615,6 +7906,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
@@ -8222,7 +8570,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -9267,6 +9615,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -9511,6 +9875,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -9525,6 +9903,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>
@@ -10132,7 +10567,7 @@ mapping over an array with <code>parseInt</code>, which has an optional <em>radi
 the mapping function with additional metadata such as the position of the current element; when these factors
 collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
 <code>curryWithArity</code> with an arity of 1 to create a new function that guarantees <code>parseInt</code> will be called with only
-one argument.</p>
+one argument. (Note: funkierJS provides a <a href="#parseInt"><code>parseInt</code></a> function for this purpose).</p>
 <p>It is possible to recurry functions that have been previously curried with <a href="#curry"><code>curry</code></a> or <code>curryWithArity</code>,
 however generally it only makes sense to recurry a function that has not been partially applied: this will be
 equivalent to currying the original function. Recurrying a partially applied function will likely not work as you
@@ -11177,6 +11612,22 @@ var f = funkierJS.andPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
+<section class="functionRef" id="parseInt">
+<h3 class="functionName">parseInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = parseInt(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.parseInt(101); // =&gt; 101
+</code></pre></section>
+</section>
+<section class="functionRef" id="parseIntInBase">
+<h3 class="functionName">parseIntInBase</h3>
+<p class="see">See <a class="synonymLink" href="#stringToInt"><code class="synonymCode">stringToInt</code></a></p>
+</section>
 <section class="functionRef" id="plus">
 <h3 class="functionName">plus</h3>
 <p class="see">See <a class="synonymLink" href="#add"><code class="synonymCode">add</code></a></p>
@@ -11421,6 +11872,20 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">strictNotEquals</h3>
 <p class="see">See <a class="synonymLink" href="#strictNotEqual"><code class="synonymCode">strictNotEqual</code></a></p>
 </section>
+<section class="functionRef" id="stringToInt">
+<h3 class="functionName">stringToInt</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">parseIntInBase</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = stringToInt(base, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">base: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+not represent a valid number in the given base.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.stringToInt(16, &quot;80&quot;); // =&gt; 128
+</code></pre></section>
+</section>
 <section class="functionRef" id="subtract">
 <h3 class="functionName">subtract</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
@@ -11435,6 +11900,63 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndRadix">
+<h3 class="functionName">toBaseAndRadix</h3>
+<p class="see">See <a class="synonymLink" href="#toBaseAndString"><code class="synonymCode">toBaseAndString</code></a></p>
+</section>
+<section class="functionRef" id="toBaseAndString">
+<h3 class="functionName">toBaseAndString</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">toBaseAndRadix</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toExponential">
+<h3 class="functionName">toExponential</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+specified number of places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toFixed">
+<h3 class="functionName">toFixed</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+places after the decimal point.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toPrecision">
+<h3 class="functionName">toPrecision</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Maths">Maths</a></p>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+of significant digits.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toPrecision(3, 1); // =&gt; &quot;1.000&quot;
+</code></pre></section>
 </section>
 <section class="functionRef" id="xor">
 <h3 class="functionName">xor</h3>

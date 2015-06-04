@@ -2073,7 +2073,7 @@ module.exports = (function () {
    * the mapping function with additional metadata such as the position of the current element; when these factors
    * collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
    * `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-   * one argument.
+   * one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
    *
    * It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
    * however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -2109,8 +2109,6 @@ module.exports = (function () {
 
    // TODO: More realistic examples required
    // TODO: The paragraph about not recurrying partially applied functions is not particularly clear
-
-   // XXX Comment on the fact that we provide parseInt
 
 
   var curryWithArity = curryInternal.bind(null, null);
@@ -2822,14 +2820,16 @@ module.exports = (function() {
 "use strict";
 
 
-  var curry = require('./curry').curry;
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
 
-  //var base = require('./base');
-  //var flip = base.flip;
+  var base = require('./base');
+  var flip = base.flip;
 
-  //var object = require('./object');
-  //var callProp = object.callProp;
-  //var callPropWithArity = object.callPropWithArity;
+  var object = require('./object');
+  var callProp = object.callProp;
+  var callPropWithArity = object.callPropWithArity;
 
 
   /*
@@ -3328,78 +3328,145 @@ module.exports = (function() {
   var max = curry(Math.max);
 
 
-/*
-  var toFixed = defineValue(
-    'name: toFixed',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toFixed. Takes the number of digits',
-    'after the decimal point (which should be between 0 and 20), and a number.',
-    'Returns a string representing the number but with the specified number of places',
-    'after the decimal point.',
-    '--',
-    'toFixed(2, 1); // "1.00"',
-    callPropWithArity('toFixed', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toFixed
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+   * be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+   * places after the decimal point.
+   *
+   * Examples:
+   *   funkierJS.toFixed(2, 1); // => "1.00"
+   *
+   */
+
+  var toFixed = callPropWithArity('toFixed', 1);
 
 
-  var toExponential = defineValue(
-    'name: toExponential',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toExponential. Takes the number of',
-    'digits after the decimal point (which should be between 0 and 20), and a number.',
-    'Returns a string representing the number in exponential notation, with the',
-    'specified number of places after the decimal point.',
-    '--',
-    'toExponential(3, 1); // "1.000e+0"',
-    callPropWithArity('toExponential', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toExponential
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+   * be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+   * specified number of places after the decimal point.
+   *
+   * Examples:
+   *   funkierJS.toExponential(3, 1); // => "1.000e+0"
+   *
+   */
+
+  var toExponential = callPropWithArity('toExponential', 1);
 
 
-  var toPrecision = defineValue(
-    'name: toPrecision',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toPrecision. Takes the number of',
-    'significant digits (which should be between 1 and 21), and a number. Returns a',
-    'string representing the number, with the specified number of significant digits.',
-    '--',
-    'toPrecision(3, 1); // "1.000"',
-    callPropWithArity('toPrecision', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toPrecision
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+   * should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+   * of significant digits.
+   *
+   * Examples:
+   *   funkierJS.toPrecision(3, 1); // => "1.000"
+   *
+   */
+
+  var toPrecision = callPropWithArity('toPrecision', 1);
 
 
-  var toBaseAndString = defineValue(
-    'name: toBaseAndString',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toString. Takes a base between 2 and',
-      '36, and a number. Returns a string representing the given number in the given',
-      'base.',
-      '--',
-      'toBaseAndString(2, 5); // "101"',
-      callPropWithArity('toString', 1)
-    );
+  /*
+   * <apifunction>
+   *
+   * toBaseAndString
+   *
+   * Category: maths
+   *
+   * Synonyms: toBaseAndRadix
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+   * representing the given number in the given base.
+   * of significant digits.
+   *
+   * Examples:
+   *   funkierJS.toBaseAndString(2, 5); // => "101"
+   *
+   */
+
+  var toBaseAndString = callPropWithArity('toString', 1);
 
 
-    var stringToInt = defineValue(
-      'name: stringToInt',
-      'signature: n: number, s: string',
-      'classification: maths',
-      '',
-      'A curried wrapper around parseInt. Takes a base between 2 and 36, and a string,',
-      'and attempts to convert the string assuming it represents a number in the given',
-      'base. Returns NaN if the string does not represent a valid number given the base.',
-      '--',
-      'stringToInt(16, "80"); // 128',
-      flip(parseInt)
-    );
-*/
+  /*
+   * <apifunction>
+   *
+   * parseInt
+   *
+   * Category: maths
+   *
+   * Parameter: s: string
+   * Returns: number
+   *
+   * A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+   * assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+   *
+   * Examples:
+   *   funkierJS.parseInt(101); // => 101
+   *
+   */
+
+  var stringToInt = flip(parseInt);
+
+
+  /*
+   * <apifunction>
+   *
+   * stringToInt
+   *
+   * Category: maths
+   *
+   * Synonyms: parseIntInBase
+   *
+   * Parameter: base: number
+   * Parameter: s: string
+   * Returns: number
+   *
+   * A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+   * attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+   * not represent a valid number in the given base.
+   *
+   * Examples:
+   *   funkierJS.stringToInt(16, "80"); // => 128
+   *
+   */
+
+  // Deliberate name-mangling to avoid shadowing the global
+  var parseint = curryWithArity(1, parseInt);
 
 
   /*
@@ -3473,21 +3540,24 @@ module.exports = (function() {
     max: max,
     multiply: multiply,
     odd: odd,
+    parseInt: parseint,
+    parseIntInBase: stringToInt,
     plus: add,
     pow: exp,
     rem: rem,
     rightShift: rightShift,
     rightShiftZero: rightShiftZero,
-    //stringToInt: stringToInt,
-    subtract: subtract
-    //toBaseAndString: toBaseAndString,
-    //toExponential: toExponential,
-    //toFixed: toFixed,
-    //toPrecision: toPrecision
+    stringToInt: stringToInt,
+    subtract: subtract,
+    toBaseAndRadix: toBaseAndString,
+    toBaseAndString: toBaseAndString,
+    toExponential: toExponential,
+    toFixed: toFixed,
+    toPrecision: toPrecision
   };
 })();
 
-},{"./curry":11}],14:[function(require,module,exports){
+},{"./base":10,"./curry":11,"./object":15}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7248,6 +7318,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#orpred');
           break;
 
+        case funkier.parseInt:
+          console.log('parseInt:');
+          console.log('');
+          console.log('A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it');
+          console.log('assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.');
+          console.log('');
+          console.log('Usage: var x = parseInt(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#parseint');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -7409,6 +7490,20 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#strictnotequal');
           break;
 
+        case funkier.stringToInt:
+          console.log('stringToInt:');
+          console.log('');
+          console.log('Synonyms: parseIntInBase');
+          console.log('');
+          console.log('A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and');
+          console.log('attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does');
+          console.log('not represent a valid number in the given base.');
+          console.log('');
+          console.log('Usage: var x = stringToInt(base, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#stringtoint');
+          break;
+
         case funkier.subtract:
           console.log('subtract:');
           console.log('');
@@ -7417,6 +7512,56 @@ module.exports = (function() {
           console.log('Usage: var x = subtract(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#subtract');
+          break;
+
+        case funkier.toBaseAndString:
+          console.log('toBaseAndString:');
+          console.log('');
+          console.log('Synonyms: toBaseAndRadix');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string');
+          console.log('representing the given number in the given base.');
+          console.log('of significant digits.');
+          console.log('');
+          console.log('Usage: var x = toBaseAndString(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tobaseandstring');
+          break;
+
+        case funkier.toExponential:
+          console.log('toExponential:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should');
+          console.log('be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the');
+          console.log('specified number of places after the decimal point.');
+          console.log('');
+          console.log('Usage: var x = toExponential(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toexponential');
+          break;
+
+        case funkier.toFixed:
+          console.log('toFixed:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should');
+          console.log('be between 0 and 20), and a number. Returns a string representing the number but with the specified number of');
+          console.log('places after the decimal point.');
+          console.log('');
+          console.log('Usage: var x = toFixed(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tofixed');
+          break;
+
+        case funkier.toPrecision:
+          console.log('toPrecision:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which');
+          console.log('should be between 1 and 21), and a number. Returns a string representing the number with the specified number');
+          console.log('of significant digits.');
+          console.log('');
+          console.log('Usage: var x = toPrecision(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
           break;
 
         case funkier.xor:
@@ -18268,6 +18413,46 @@ module.exports = (function() {
     });
 
 
+    describe('parseInt', function() {
+      it('parseInt exists', function() {
+        expect(funkier).to.have.a.property('parseInt');
+      });
+
+
+      it('funkierJS\'s parseInt is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.parseInt).to.equal(module.parseInt);
+      });
+
+
+      it('parseInt is a function', function() {
+        expect(funkier.parseInt).to.be.a('function');
+      });
+
+
+      it('parseInt has documented arity', function() {
+        expect(funkier.arityOf(funkier.parseInt)).to.equal(1);
+      });
+
+
+      it('parseInt is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.parseInt)).to.equal(true);
+      });
+    });
+
+
+    describe('parseIntInBase', function() {
+      it('parseIntInBase exists', function() {
+        expect(funkier).to.have.a.property('parseIntInBase');
+      });
+
+
+      it('parseIntInBase is a synonym for stringToInt', function() {
+        expect(funkier.parseIntInBase).to.equal(funkier.stringToInt);
+      });
+    });
+
+
     describe('plus', function() {
       it('plus exists', function() {
         expect(funkier).to.have.a.property('plus');
@@ -18764,6 +18949,34 @@ module.exports = (function() {
     });
 
 
+    describe('stringToInt', function() {
+      it('stringToInt exists', function() {
+        expect(funkier).to.have.a.property('stringToInt');
+      });
+
+
+      it('funkierJS\'s stringToInt is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.stringToInt).to.equal(module.stringToInt);
+      });
+
+
+      it('stringToInt is a function', function() {
+        expect(funkier.stringToInt).to.be.a('function');
+      });
+
+
+      it('stringToInt has documented arity', function() {
+        expect(funkier.arityOf(funkier.stringToInt)).to.equal(2);
+      });
+
+
+      it('stringToInt is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.stringToInt)).to.equal(true);
+      });
+    });
+
+
     describe('subtract', function() {
       it('subtract exists', function() {
         expect(funkier).to.have.a.property('subtract');
@@ -18800,6 +19013,130 @@ module.exports = (function() {
 
       it('tap is a synonym for extract', function() {
         expect(funkier.tap).to.equal(funkier.extract);
+      });
+    });
+
+
+    describe('toBaseAndRadix', function() {
+      it('toBaseAndRadix exists', function() {
+        expect(funkier).to.have.a.property('toBaseAndRadix');
+      });
+
+
+      it('toBaseAndRadix is a synonym for toBaseAndString', function() {
+        expect(funkier.toBaseAndRadix).to.equal(funkier.toBaseAndString);
+      });
+    });
+
+
+    describe('toBaseAndString', function() {
+      it('toBaseAndString exists', function() {
+        expect(funkier).to.have.a.property('toBaseAndString');
+      });
+
+
+      it('funkierJS\'s toBaseAndString is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toBaseAndString).to.equal(module.toBaseAndString);
+      });
+
+
+      it('toBaseAndString is a function', function() {
+        expect(funkier.toBaseAndString).to.be.a('function');
+      });
+
+
+      it('toBaseAndString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toBaseAndString)).to.equal(2);
+      });
+
+
+      it('toBaseAndString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toBaseAndString)).to.equal(true);
+      });
+    });
+
+
+    describe('toExponential', function() {
+      it('toExponential exists', function() {
+        expect(funkier).to.have.a.property('toExponential');
+      });
+
+
+      it('funkierJS\'s toExponential is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toExponential).to.equal(module.toExponential);
+      });
+
+
+      it('toExponential is a function', function() {
+        expect(funkier.toExponential).to.be.a('function');
+      });
+
+
+      it('toExponential has documented arity', function() {
+        expect(funkier.arityOf(funkier.toExponential)).to.equal(2);
+      });
+
+
+      it('toExponential is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toExponential)).to.equal(true);
+      });
+    });
+
+
+    describe('toFixed', function() {
+      it('toFixed exists', function() {
+        expect(funkier).to.have.a.property('toFixed');
+      });
+
+
+      it('funkierJS\'s toFixed is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toFixed).to.equal(module.toFixed);
+      });
+
+
+      it('toFixed is a function', function() {
+        expect(funkier.toFixed).to.be.a('function');
+      });
+
+
+      it('toFixed has documented arity', function() {
+        expect(funkier.arityOf(funkier.toFixed)).to.equal(2);
+      });
+
+
+      it('toFixed is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toFixed)).to.equal(true);
+      });
+    });
+
+
+    describe('toPrecision', function() {
+      it('toPrecision exists', function() {
+        expect(funkier).to.have.a.property('toPrecision');
+      });
+
+
+      it('funkierJS\'s toPrecision is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toPrecision).to.equal(module.toPrecision);
+      });
+
+
+      it('toPrecision is a function', function() {
+        expect(funkier.toPrecision).to.be.a('function');
+      });
+
+
+      it('toPrecision has documented arity', function() {
+        expect(funkier.arityOf(funkier.toPrecision)).to.equal(2);
+      });
+
+
+      it('toPrecision is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
       });
     });
 
@@ -18880,10 +19217,12 @@ module.exports = (function() {
          'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'makeResultReturner', 'max', 'maybeCreate',
          'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
          'min', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero',
-         'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp',
-         'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set', 'setProp', 'shallowClone', 'snd', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'tap', 'xor', 'xorPred'];
+         'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase', 'plus', 'pow', 'rem',
+         'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify',
+         'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set',
+         'setProp', 'shallowClone', 'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
+         'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString', 'toExponential', 'toFixed',
+         'toPrecision', 'xor', 'xorPred'];
     });
 
 
@@ -28407,8 +28746,8 @@ module.exports = (function() {
     var expectedObjects = [];
     var expectedFunctions = ['add', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'div', 'divide', 'even',
                              'exp', 'greaterThan', 'greaterThanEqual', 'leftShift', 'lessThan', 'lessThanEqual', 'log',
-                             'max', 'min', 'multiply', 'odd', 'rem', 'rightShift', 'rightShiftZero', /*stringToInt', */
-                             'subtract'/*, 'toBaseAndString', 'toExponential', 'toFixed', 'toPrecision' */];
+                             'max', 'min', 'multiply', 'odd', 'parseInt', 'rem', 'rightShift', 'rightShiftZero',
+                             'stringToInt', 'subtract', 'toBaseAndString', 'toExponential', 'toFixed', 'toPrecision'];
     checkModule('maths', maths, expectedObjects, expectedFunctions);
 
 
@@ -28541,14 +28880,8 @@ module.exports = (function() {
     });
 
 
-/*
     var makeNumStringTest = function(desc, fnUnderTest, verifier, testData) {
-      var spec = {
-        name: desc
-      };
-
-
-      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+      describe(desc, function() {
         it('Returns a string', function() {
           var n = 17;
           var result = fnUnderTest(2, n);
@@ -28586,12 +28919,39 @@ module.exports = (function() {
     makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
 
 
-    var stringToIntSpec = {
-      name: 'stringToInt'
-    };
+    describe('parseInt', function() {
+      var parseInt = maths.parseInt;
 
 
-    checkFunction(stringToIntSpec, maths.stringToInt, function(stringToInt) {
+      it('Returns a number', function() {
+        var s = '17';
+        var result = parseInt(s);
+
+        expect(result).to.be.a('number');
+      });
+
+
+      it('Works correctly (2)', function() {
+        var s = 'abc';
+        var result = parseInt(s);
+
+        expect(isNaN(result)).to.equal(true);
+      });
+
+
+      it('Ignores superfluous arguments', function() {
+        var s = '101';
+        var result = parseInt(s, 2);
+
+        expect(result).to.equal(101);
+      });
+    });
+
+
+    describe('stringToInt', function() {
+      var stringToInt = maths.stringToInt;
+
+
       it('Returns a number', function() {
         var s = '17';
         var result = stringToInt(10, s);
@@ -28628,16 +28988,10 @@ module.exports = (function() {
     var numToLocaleStringSpec = {
       name: 'numToLocaleString'
     };
-*/
 
 
     var addEvenOddTests = function(desc, fnUnderTest, isEven) {
-      var spec = {
-        name: desc,
-      };
-
-
-      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+      describe(desc, function() {
         it('Works correctly (1)', function() {
           var result = fnUnderTest(2);
 

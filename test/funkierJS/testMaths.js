@@ -14,8 +14,8 @@
     var expectedObjects = [];
     var expectedFunctions = ['add', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'div', 'divide', 'even',
                              'exp', 'greaterThan', 'greaterThanEqual', 'leftShift', 'lessThan', 'lessThanEqual', 'log',
-                             'max', 'min', 'multiply', 'odd', 'rem', 'rightShift', 'rightShiftZero', /*stringToInt', */
-                             'subtract'/*, 'toBaseAndString', 'toExponential', 'toFixed', 'toPrecision' */];
+                             'max', 'min', 'multiply', 'odd', 'parseInt', 'rem', 'rightShift', 'rightShiftZero',
+                             'stringToInt', 'subtract', 'toBaseAndString', 'toExponential', 'toFixed', 'toPrecision'];
     checkModule('maths', maths, expectedObjects, expectedFunctions);
 
 
@@ -148,14 +148,8 @@
     });
 
 
-/*
     var makeNumStringTest = function(desc, fnUnderTest, verifier, testData) {
-      var spec = {
-        name: desc
-      };
-
-
-      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+      describe(desc, function() {
         it('Returns a string', function() {
           var n = 17;
           var result = fnUnderTest(2, n);
@@ -193,12 +187,39 @@
     makeNumStringTest('toString', maths.toBaseAndString, 'toString', baseTests);
 
 
-    var stringToIntSpec = {
-      name: 'stringToInt'
-    };
+    describe('parseInt', function() {
+      var parseInt = maths.parseInt;
 
 
-    checkFunction(stringToIntSpec, maths.stringToInt, function(stringToInt) {
+      it('Returns a number', function() {
+        var s = '17';
+        var result = parseInt(s);
+
+        expect(result).to.be.a('number');
+      });
+
+
+      it('Works correctly (2)', function() {
+        var s = 'abc';
+        var result = parseInt(s);
+
+        expect(isNaN(result)).to.equal(true);
+      });
+
+
+      it('Ignores superfluous arguments', function() {
+        var s = '101';
+        var result = parseInt(s, 2);
+
+        expect(result).to.equal(101);
+      });
+    });
+
+
+    describe('stringToInt', function() {
+      var stringToInt = maths.stringToInt;
+
+
       it('Returns a number', function() {
         var s = '17';
         var result = stringToInt(10, s);
@@ -235,16 +256,10 @@
     var numToLocaleStringSpec = {
       name: 'numToLocaleString'
     };
-*/
 
 
     var addEvenOddTests = function(desc, fnUnderTest, isEven) {
-      var spec = {
-        name: desc,
-      };
-
-
-      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+      describe(desc, function() {
         it('Works correctly (1)', function() {
           var result = fnUnderTest(2);
 

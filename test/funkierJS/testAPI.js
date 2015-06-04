@@ -2982,6 +2982,46 @@
     });
 
 
+    describe('parseInt', function() {
+      it('parseInt exists', function() {
+        expect(funkier).to.have.a.property('parseInt');
+      });
+
+
+      it('funkierJS\'s parseInt is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.parseInt).to.equal(module.parseInt);
+      });
+
+
+      it('parseInt is a function', function() {
+        expect(funkier.parseInt).to.be.a('function');
+      });
+
+
+      it('parseInt has documented arity', function() {
+        expect(funkier.arityOf(funkier.parseInt)).to.equal(1);
+      });
+
+
+      it('parseInt is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.parseInt)).to.equal(true);
+      });
+    });
+
+
+    describe('parseIntInBase', function() {
+      it('parseIntInBase exists', function() {
+        expect(funkier).to.have.a.property('parseIntInBase');
+      });
+
+
+      it('parseIntInBase is a synonym for stringToInt', function() {
+        expect(funkier.parseIntInBase).to.equal(funkier.stringToInt);
+      });
+    });
+
+
     describe('plus', function() {
       it('plus exists', function() {
         expect(funkier).to.have.a.property('plus');
@@ -3478,6 +3518,34 @@
     });
 
 
+    describe('stringToInt', function() {
+      it('stringToInt exists', function() {
+        expect(funkier).to.have.a.property('stringToInt');
+      });
+
+
+      it('funkierJS\'s stringToInt is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.stringToInt).to.equal(module.stringToInt);
+      });
+
+
+      it('stringToInt is a function', function() {
+        expect(funkier.stringToInt).to.be.a('function');
+      });
+
+
+      it('stringToInt has documented arity', function() {
+        expect(funkier.arityOf(funkier.stringToInt)).to.equal(2);
+      });
+
+
+      it('stringToInt is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.stringToInt)).to.equal(true);
+      });
+    });
+
+
     describe('subtract', function() {
       it('subtract exists', function() {
         expect(funkier).to.have.a.property('subtract');
@@ -3514,6 +3582,130 @@
 
       it('tap is a synonym for extract', function() {
         expect(funkier.tap).to.equal(funkier.extract);
+      });
+    });
+
+
+    describe('toBaseAndRadix', function() {
+      it('toBaseAndRadix exists', function() {
+        expect(funkier).to.have.a.property('toBaseAndRadix');
+      });
+
+
+      it('toBaseAndRadix is a synonym for toBaseAndString', function() {
+        expect(funkier.toBaseAndRadix).to.equal(funkier.toBaseAndString);
+      });
+    });
+
+
+    describe('toBaseAndString', function() {
+      it('toBaseAndString exists', function() {
+        expect(funkier).to.have.a.property('toBaseAndString');
+      });
+
+
+      it('funkierJS\'s toBaseAndString is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toBaseAndString).to.equal(module.toBaseAndString);
+      });
+
+
+      it('toBaseAndString is a function', function() {
+        expect(funkier.toBaseAndString).to.be.a('function');
+      });
+
+
+      it('toBaseAndString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toBaseAndString)).to.equal(2);
+      });
+
+
+      it('toBaseAndString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toBaseAndString)).to.equal(true);
+      });
+    });
+
+
+    describe('toExponential', function() {
+      it('toExponential exists', function() {
+        expect(funkier).to.have.a.property('toExponential');
+      });
+
+
+      it('funkierJS\'s toExponential is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toExponential).to.equal(module.toExponential);
+      });
+
+
+      it('toExponential is a function', function() {
+        expect(funkier.toExponential).to.be.a('function');
+      });
+
+
+      it('toExponential has documented arity', function() {
+        expect(funkier.arityOf(funkier.toExponential)).to.equal(2);
+      });
+
+
+      it('toExponential is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toExponential)).to.equal(true);
+      });
+    });
+
+
+    describe('toFixed', function() {
+      it('toFixed exists', function() {
+        expect(funkier).to.have.a.property('toFixed');
+      });
+
+
+      it('funkierJS\'s toFixed is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toFixed).to.equal(module.toFixed);
+      });
+
+
+      it('toFixed is a function', function() {
+        expect(funkier.toFixed).to.be.a('function');
+      });
+
+
+      it('toFixed has documented arity', function() {
+        expect(funkier.arityOf(funkier.toFixed)).to.equal(2);
+      });
+
+
+      it('toFixed is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toFixed)).to.equal(true);
+      });
+    });
+
+
+    describe('toPrecision', function() {
+      it('toPrecision exists', function() {
+        expect(funkier).to.have.a.property('toPrecision');
+      });
+
+
+      it('funkierJS\'s toPrecision is indeed the documented value', function() {
+        var module = require('../../lib/components/maths');
+        expect(funkier.toPrecision).to.equal(module.toPrecision);
+      });
+
+
+      it('toPrecision is a function', function() {
+        expect(funkier.toPrecision).to.be.a('function');
+      });
+
+
+      it('toPrecision has documented arity', function() {
+        expect(funkier.arityOf(funkier.toPrecision)).to.equal(2);
+      });
+
+
+      it('toPrecision is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
       });
     });
 
@@ -3594,10 +3786,12 @@
          'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'makeResultReturner', 'max', 'maybeCreate',
          'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
          'min', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'orPred', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero',
-         'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp',
-         'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set', 'setProp', 'shallowClone', 'snd', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'subtract', 'tap', 'xor', 'xorPred'];
+         'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase', 'plus', 'pow', 'rem',
+         'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify',
+         'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set',
+         'setProp', 'shallowClone', 'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
+         'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString', 'toExponential', 'toFixed',
+         'toPrecision', 'xor', 'xorPred'];
     });
 
 

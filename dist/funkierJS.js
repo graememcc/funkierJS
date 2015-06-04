@@ -485,7 +485,7 @@ module.exports = (function () {
    * the mapping function with additional metadata such as the position of the current element; when these factors
    * collide, one ends up trying to convert to numbers whose radix equals the array index. Instead, one could use
    * `curryWithArity` with an arity of 1 to create a new function that guarantees `parseInt` will be called with only
-   * one argument.
+   * one argument. (Note: funkierJS provides a [`parseInt`](#parseInt) function for this purpose).
    *
    * It is possible to recurry functions that have been previously curried with [`curry`](#curry) or `curryWithArity`,
    * however generally it only makes sense to recurry a function that has not been partially applied: this will be
@@ -521,8 +521,6 @@ module.exports = (function () {
 
    // TODO: More realistic examples required
    // TODO: The paragraph about not recurrying partially applied functions is not particularly clear
-
-   // XXX Comment on the fact that we provide parseInt
 
 
   var curryWithArity = curryInternal.bind(null, null);
@@ -1234,14 +1232,16 @@ module.exports = (function() {
 "use strict";
 
 
-  var curry = require('./curry').curry;
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
 
-  //var base = require('./base');
-  //var flip = base.flip;
+  var base = require('./base');
+  var flip = base.flip;
 
-  //var object = require('./object');
-  //var callProp = object.callProp;
-  //var callPropWithArity = object.callPropWithArity;
+  var object = require('./object');
+  var callProp = object.callProp;
+  var callPropWithArity = object.callPropWithArity;
 
 
   /*
@@ -1740,78 +1740,145 @@ module.exports = (function() {
   var max = curry(Math.max);
 
 
-/*
-  var toFixed = defineValue(
-    'name: toFixed',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toFixed. Takes the number of digits',
-    'after the decimal point (which should be between 0 and 20), and a number.',
-    'Returns a string representing the number but with the specified number of places',
-    'after the decimal point.',
-    '--',
-    'toFixed(2, 1); // "1.00"',
-    callPropWithArity('toFixed', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toFixed
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
+   * be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
+   * places after the decimal point.
+   *
+   * Examples:
+   *   funkierJS.toFixed(2, 1); // => "1.00"
+   *
+   */
+
+  var toFixed = callPropWithArity('toFixed', 1);
 
 
-  var toExponential = defineValue(
-    'name: toExponential',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toExponential. Takes the number of',
-    'digits after the decimal point (which should be between 0 and 20), and a number.',
-    'Returns a string representing the number in exponential notation, with the',
-    'specified number of places after the decimal point.',
-    '--',
-    'toExponential(3, 1); // "1.000e+0"',
-    callPropWithArity('toExponential', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toExponential
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
+   * be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
+   * specified number of places after the decimal point.
+   *
+   * Examples:
+   *   funkierJS.toExponential(3, 1); // => "1.000e+0"
+   *
+   */
+
+  var toExponential = callPropWithArity('toExponential', 1);
 
 
-  var toPrecision = defineValue(
-    'name: toPrecision',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toPrecision. Takes the number of',
-    'significant digits (which should be between 1 and 21), and a number. Returns a',
-    'string representing the number, with the specified number of significant digits.',
-    '--',
-    'toPrecision(3, 1); // "1.000"',
-    callPropWithArity('toPrecision', 1)
-  );
+  /*
+   * <apifunction>
+   *
+   * toPrecision
+   *
+   * Category: maths
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+   * should be between 1 and 21), and a number. Returns a string representing the number with the specified number
+   * of significant digits.
+   *
+   * Examples:
+   *   funkierJS.toPrecision(3, 1); // => "1.000"
+   *
+   */
+
+  var toPrecision = callPropWithArity('toPrecision', 1);
 
 
-  var toBaseAndString = defineValue(
-    'name: toBaseAndString',
-    'signature: x: number, y: number',
-    'classification: maths',
-    '',
-    'A curried wrapper around Number.prototype.toString. Takes a base between 2 and',
-      '36, and a number. Returns a string representing the given number in the given',
-      'base.',
-      '--',
-      'toBaseAndString(2, 5); // "101"',
-      callPropWithArity('toString', 1)
-    );
+  /*
+   * <apifunction>
+   *
+   * toBaseAndString
+   *
+   * Category: maths
+   *
+   * Synonyms: toBaseAndRadix
+   *
+   * Parameter: x: number
+   * Parameter: y: number
+   * Returns: string
+   *
+   * A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+   * representing the given number in the given base.
+   * of significant digits.
+   *
+   * Examples:
+   *   funkierJS.toBaseAndString(2, 5); // => "101"
+   *
+   */
+
+  var toBaseAndString = callPropWithArity('toString', 1);
 
 
-    var stringToInt = defineValue(
-      'name: stringToInt',
-      'signature: n: number, s: string',
-      'classification: maths',
-      '',
-      'A curried wrapper around parseInt. Takes a base between 2 and 36, and a string,',
-      'and attempts to convert the string assuming it represents a number in the given',
-      'base. Returns NaN if the string does not represent a valid number given the base.',
-      '--',
-      'stringToInt(16, "80"); // 128',
-      flip(parseInt)
-    );
-*/
+  /*
+   * <apifunction>
+   *
+   * parseInt
+   *
+   * Category: maths
+   *
+   * Parameter: s: string
+   * Returns: number
+   *
+   * A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
+   * assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+   *
+   * Examples:
+   *   funkierJS.parseInt(101); // => 101
+   *
+   */
+
+  var stringToInt = flip(parseInt);
+
+
+  /*
+   * <apifunction>
+   *
+   * stringToInt
+   *
+   * Category: maths
+   *
+   * Synonyms: parseIntInBase
+   *
+   * Parameter: base: number
+   * Parameter: s: string
+   * Returns: number
+   *
+   * A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and
+   * attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does
+   * not represent a valid number in the given base.
+   *
+   * Examples:
+   *   funkierJS.stringToInt(16, "80"); // => 128
+   *
+   */
+
+  // Deliberate name-mangling to avoid shadowing the global
+  var parseint = curryWithArity(1, parseInt);
 
 
   /*
@@ -1885,21 +1952,24 @@ module.exports = (function() {
     max: max,
     multiply: multiply,
     odd: odd,
+    parseInt: parseint,
+    parseIntInBase: stringToInt,
     plus: add,
     pow: exp,
     rem: rem,
     rightShift: rightShift,
     rightShiftZero: rightShiftZero,
-    //stringToInt: stringToInt,
-    subtract: subtract
-    //toBaseAndString: toBaseAndString,
-    //toExponential: toExponential,
-    //toFixed: toFixed,
-    //toPrecision: toPrecision
+    stringToInt: stringToInt,
+    subtract: subtract,
+    toBaseAndRadix: toBaseAndString,
+    toBaseAndString: toBaseAndString,
+    toExponential: toExponential,
+    toFixed: toFixed,
+    toPrecision: toPrecision
   };
 })();
 
-},{"./curry":2}],5:[function(require,module,exports){
+},{"./base":1,"./curry":2,"./object":6}],5:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5660,6 +5730,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#orpred');
           break;
 
+        case funkier.parseInt:
+          console.log('parseInt:');
+          console.log('');
+          console.log('A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it');
+          console.log('assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.');
+          console.log('');
+          console.log('Usage: var x = parseInt(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#parseint');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -5821,6 +5902,20 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#strictnotequal');
           break;
 
+        case funkier.stringToInt:
+          console.log('stringToInt:');
+          console.log('');
+          console.log('Synonyms: parseIntInBase');
+          console.log('');
+          console.log('A curried wrapper around parseInt when called with two arguments. Takes a base between 2 and 36, and a string, and');
+          console.log('attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does');
+          console.log('not represent a valid number in the given base.');
+          console.log('');
+          console.log('Usage: var x = stringToInt(base, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#stringtoint');
+          break;
+
         case funkier.subtract:
           console.log('subtract:');
           console.log('');
@@ -5829,6 +5924,56 @@ module.exports = (function() {
           console.log('Usage: var x = subtract(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#subtract');
+          break;
+
+        case funkier.toBaseAndString:
+          console.log('toBaseAndString:');
+          console.log('');
+          console.log('Synonyms: toBaseAndRadix');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string');
+          console.log('representing the given number in the given base.');
+          console.log('of significant digits.');
+          console.log('');
+          console.log('Usage: var x = toBaseAndString(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tobaseandstring');
+          break;
+
+        case funkier.toExponential:
+          console.log('toExponential:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should');
+          console.log('be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the');
+          console.log('specified number of places after the decimal point.');
+          console.log('');
+          console.log('Usage: var x = toExponential(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toexponential');
+          break;
+
+        case funkier.toFixed:
+          console.log('toFixed:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should');
+          console.log('be between 0 and 20), and a number. Returns a string representing the number but with the specified number of');
+          console.log('places after the decimal point.');
+          console.log('');
+          console.log('Usage: var x = toFixed(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tofixed');
+          break;
+
+        case funkier.toPrecision:
+          console.log('toPrecision:');
+          console.log('');
+          console.log('A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which');
+          console.log('should be between 1 and 21), and a number. Returns a string representing the number with the specified number');
+          console.log('of significant digits.');
+          console.log('');
+          console.log('Usage: var x = toPrecision(x, y)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
           break;
 
         case funkier.xor:
