@@ -195,7 +195,8 @@ module.exports = (function() {
    */
 
   var checkMinimumIndent = function(line, indentLevel) {
-    var indentRegExp = new RegExp(indentLevel === 0 ? '^\\S' : '^\\s{' + indentLevel + '}');
+    if (indentLevel === 0) return;
+    var indentRegExp = new RegExp('^\\s{' + indentLevel + '}');
     if (!indentRegExp.test(line))
       throw new Error('Inconsistent indentation! Line \'' + line + '\' has less indentation than surrounding docs');
   };
@@ -362,7 +363,7 @@ module.exports = (function() {
       if (lineKeyword === 'examples') {
         // The examples keyword must be indented correctly (but account for the fact that we've already removed the
         // global indent)
-        checkMinimumIndent(line, 0);
+        removeIndent(line, 0);
 
         options.examples = [];
         return  MODE_EXAMPLES;

@@ -721,7 +721,8 @@ module.exports = (function() {
    */
 
   var checkMinimumIndent = function(line, indentLevel) {
-    var indentRegExp = new RegExp(indentLevel === 0 ? '^\\S' : '^\\s{' + indentLevel + '}');
+    if (indentLevel === 0) return;
+    var indentRegExp = new RegExp('^\\s{' + indentLevel + '}');
     if (!indentRegExp.test(line))
       throw new Error('Inconsistent indentation! Line \'' + line + '\' has less indentation than surrounding docs');
   };
@@ -888,7 +889,7 @@ module.exports = (function() {
       if (lineKeyword === 'examples') {
         // The examples keyword must be indented correctly (but account for the fact that we've already removed the
         // global indent)
-        checkMinimumIndent(line, 0);
+        removeIndent(line, 0);
 
         options.examples = [];
         return  MODE_EXAMPLES;
@@ -16351,8 +16352,25 @@ module.exports = (function() {
             });
 
 
-            it('Does not throw if line of ' + field + ' other than first has more indentation than name for ' + type,
-               function() {
+            it('Does not throw if line of ' + field + ' other than first has more indentation than name for ' + type +
+               ' (1)', function() {
+              // Ensure the field has multiple lines
+              testData = testData.replaceProperty(field, [field + ':', 'Line 2', 'Line 3']);
+
+              // Add more indentation to the third line of the field
+              var existing = testData.getPropertyValue(field);
+              testData = testData.replaceProperty(field, [existing[0], existing[1], '  ' + existing[2]]);
+
+              var fn = function() {
+                commentProcessor(testData);
+              };
+
+              expect(fn).to.not.throw();
+            });
+
+
+            it('Does not throw if line of ' + field + ' other than first has more indentation than name for ' + type +
+               ' (2)', function() {
               // Ensure the field has multiple lines
               testData = testData.replaceProperty(field, [field + ':', 'Line 2', 'Line 3']);
 
