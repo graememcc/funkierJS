@@ -856,6 +856,11 @@ with <a href="#curry"><code>curry</code></a> or <a href="#curryWithArity"><code>
 have already been bound with an implicit <code>null</code> execution context. Equally, functions curried with
 <a href="#objectCurry"><code>objectCurry</code></a> and <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be passed to <code>bind</code>, due
 to the different way in which they acquire an execution context. <code>bind</code> will throw in such cases.</p>
+<p>Note also that many of the function manipulating functions, such as <a href="#flip"><code>flip</code></a>, <a href="#compose"><code>compose</code></a> etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+<a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -908,6 +913,11 @@ have already been bound with an implicit <code>null</code> execution context. Li
 using either <a href="#objectCurry"><code>objectCurry</code></a> or <a href="#objectCurryWithArity"><code>objectCurryWithArity</code></a> cannot be curried
 using <code>bindWithContextAndArity</code>, due to the different mechanism they use to acquire an execution context.
 <code>bindWithContextAndArity</code> will throw in that such cases.</p>
+<p>Note also that many of the function manipulating functions, such as <a href="#flip"><code>flip</code></a>, <a href="#compose"><code>compose</code></a> etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+<a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1123,6 +1133,11 @@ Similarly, functions returned from <a href="#curry"><code>curry</code></a>, <a h
 <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a> cannot be curried with this function, and will throw an
 error, just as those functions curry functions and their partial applications returned from <code>objectCurry</code>.
 <code>objectCurry</code> will throw when provided with an invalid function.</p>
+<p>Note also that many of the function manipulating functions, such as <a href="#flip"><code>flip</code></a>, <a href="#compose"><code>compose</code></a> etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+<a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1170,6 +1185,11 @@ as the execution context has now been bound. <code>objectCurryWithArity</code> a
 <a href="#bindWithContextAndArity"><code>bindWithContextAndArity</code></a>, and nor can those functions curry functions returned from
 <code>objectCurryWithArity</code>, or their subsequent partial applications. <code>objectCurryWithArity</code> will throw when provided
 with such a function.</p>
+<p>Note also that many of the function manipulating functions, such as <a href="#flip"><code>flip</code></a>, <a href="#compose"><code>compose</code></a> etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+<a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>

@@ -897,6 +897,27 @@
       });
 
 
+      it('Calling with curried function and function\'s arity returns original (6)', function() {
+        var f = curry(function() {});
+
+        expect(curryWithArity(0, f)).to.equal(f);
+      });
+
+
+      it('Calling with curried function and function\'s arity returns original (7)', function() {
+        var f = curry(function(x) {});
+
+        expect(curryWithArity(1, f)).to.equal(f);
+      });
+
+
+      it('Calling with curried function and function\'s arity returns original (8)', function() {
+        var f = curry(function(x, y) {});
+
+        expect(curryWithArity(2, f)).to.equal(f);
+      });
+
+
       it('Curried function bound to null execution context (1)', function() {
         var f = curryWithArity(1, function(a, b) { return this; });
         var context = {foo: 42, f: f};
@@ -1492,6 +1513,60 @@
       });
 
 
+      it('Recurrying with same function and arity returns same function (1)', function() {
+        var context = {};
+        var f = function() {};
+        var curried = bindWithContextAndArity(1, context, f);
+
+        expect(bindWithContextAndArity(1, context, curried)).to.equal(curried);
+      });
+
+
+      it('Recurrying with same function and arity returns same function (2)', function() {
+        var context = {};
+        var f = function() {};
+        var curried = bindWithContextAndArity(2, context, f);
+
+        expect(bindWithContextAndArity(2, context, curried)).to.equal(curried);
+      });
+
+
+      it('Recurrying with same function and arity returns same function (3)', function() {
+        var context = {};
+        var f = function(x, y) {};
+        var curried = bindWithContextAndArity(0, context, f);
+
+        expect(bindWithContextAndArity(0, context, curried)).to.equal(curried);
+      });
+
+
+      it('Recurrying with same function and arity returns same function (4)', function() {
+        var context = {};
+        var f = function() {};
+        var curried = bind(context, f);
+
+        expect(bindWithContextAndArity(0, context, curried)).to.equal(curried);
+      });
+
+
+      it('Recurrying with same function and arity returns same function (5)', function() {
+        var context = {};
+        var f = function(x) {};
+        var curried = bind(context, f);
+
+        expect(bindWithContextAndArity(1, context, curried)).to.equal(curried);
+      });
+
+
+      it('Recurrying with same function and arity returns same function (6)', function() {
+        var context = {};
+        var f = function(x, y) {};
+        var curried = bind(context, f);
+
+        expect(bindWithContextAndArity(2, context, curried)).to.equal(curried);
+      });
+
+
       it('Functions cannot be recurried if curried with objectCurry (1)', function() {
         var curried = objectCurry(function() {});
         var fn = function() {
@@ -2048,6 +2123,27 @@
         var f = objectCurryWithArity(0, function() {});
 
         expect(objectCurryWithArity(0, f)).to.equal(f);
+      });
+
+
+      it('Calling with curried function and function\'s arity returns original (6)', function() {
+        var f = objectCurry(function() {});
+
+        expect(objectCurryWithArity(0, f)).to.equal(f);
+      });
+
+
+      it('Calling with curried function and function\'s arity returns original (7)', function() {
+        var f = objectCurry(function(a) {});
+
+        expect(objectCurryWithArity(1, f)).to.equal(f);
+      });
+
+
+      it('Calling with curried function and function\'s arity returns original (8)', function() {
+        var f = objectCurry(function(x, y) {});
+
+        expect(objectCurryWithArity(2, f)).to.equal(f);
       });
 
 

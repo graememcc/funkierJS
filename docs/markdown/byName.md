@@ -239,6 +239,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -300,6 +306,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -2393,6 +2405,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -2449,6 +2467,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -3617,6 +3641,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -3678,6 +3708,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -5771,6 +5807,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -5827,6 +5869,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -6995,6 +7043,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -7056,6 +7110,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -9149,6 +9209,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -9205,6 +9271,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -10373,6 +10445,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -10434,6 +10512,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -12527,6 +12611,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -12583,6 +12673,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -13751,6 +13847,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -13812,6 +13914,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -15905,6 +16013,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -15961,6 +16075,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -17129,6 +17249,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -17190,6 +17316,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -19283,6 +19415,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -19339,6 +19477,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -20507,6 +20651,12 @@ have already been bound with an implicit `null` execution context. Equally, func
 [`objectCurry`](#objectCurry) and [`objectCurryWithArity`](#objectCurryWithArity) cannot be passed to `bind`, due
 to the different way in which they acquire an execution context. `bind` will throw in such cases.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -20568,6 +20718,12 @@ have already been bound with an implicit `null` execution context. Likewise, fun
 using either [`objectCurry`](#objectCurry) or [`objectCurryWithArity`](#objectCurryWithArity) cannot be curried
 using `bindWithContextAndArity`, due to the different mechanism they use to acquire an execution context.
 `bindWithContextAndArity` will throw in that such cases.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -22661,6 +22817,12 @@ Similarly, functions returned from [`curry`](#curry), [`curryWithArity`](#curryW
 error, just as those functions curry functions and their partial applications returned from `objectCurry`.
 `objectCurry` will throw when provided with an invalid function.
 
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -22717,6 +22879,12 @@ as the execution context has now been bound. `objectCurryWithArity` also cannot 
 [`bindWithContextAndArity`](#bindWithContextAndArity), and nor can those functions curry functions returned from
 `objectCurryWithArity`, or their subsequent partial applications. `objectCurryWithArity` will throw when provided
 with such a function.
+
+Note also that many of the function manipulating functions, such as [`flip`](#flip), [`compose`](#compose) etc.
+will curry the result in the same manner as the supplied functions, or otherwise will curry them using
+[`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
+when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
+This limitation may be removed in future versions of the library.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
