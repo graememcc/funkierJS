@@ -4,6 +4,10 @@ module.exports = (function() {
   var fs = require('fs');
   var path = require('path');
 
+  var marked = require('marked');
+
+  var he = require('he');
+
   var APIFunction = require('../docgen/APIFunction');
   var APIObject = require('../docgen/APIObject');
 
@@ -43,6 +47,15 @@ module.exports = (function() {
     '})();'];
 
 
+  var stripMarkdownFrom = function(line) {
+    var lines = marked(line).split('<');
+    return he.decode(lines.map(function(s) {
+      var i = s.indexOf('>');
+      return i !== -1 ? s.slice(i + 1) : s;
+    }).join(''));
+  };
+
+
   return function(collated, options) {
     var buffer = preamble;
 
@@ -65,7 +78,7 @@ module.exports = (function() {
         buffer.push('          console.log(\'\');');
       }
 
-      documentedValue.summary.split('\n').forEach(function(line) {
+      stripMarkdownFrom(documentedValue.summary).split('\n').forEach(function(line) {
         buffer.push('          console.log(\'' + line.replace(/([^\\])'/g, '$1\\\'') + '\');');
       });
       buffer.push('          console.log(\'\');');

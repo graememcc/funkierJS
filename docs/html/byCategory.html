@@ -28,7 +28,7 @@
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Err(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
-<p>An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+<p>An Err is a type of <a href="#Result"><code>Result</code></a> representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var result = funkierJS.Err(new TypeError(&#39;boom&#39;);
@@ -39,7 +39,7 @@ Throws if called without any arguments</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Just(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
-<p>A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+<p>A Just is a type of <a href="#Maybe"><code>Maybe</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var result = funkierJS.Just(42);
@@ -57,14 +57,14 @@ operator.</p>
 </section>
 <section class="functionRef" id="Nothing">
 <h3 class="functionName">Nothing</h3>
-<p>A Nothing is a type of Maybe representing an unsuccessful computation.</p>
+<p>A Nothing is a type of <a href="#Maybe"><code>Maybe</code></a> representing an unsuccessful computation.</p>
 </section>
 <section class="functionRef" id="Ok">
 <h3 class="functionName">Ok</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = Ok(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Ok</code></li></ul></div>
-<p>An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+<p>An Ok is a type of <a href="#Result"><code>Result</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var result = funkierJS.Ok(42);
@@ -76,8 +76,8 @@ Throws when called with no arguments.</p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
 <p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.</p>
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions <a href="#fst"><code>fst</code></a> and
+<a href="#snd"><code>snd</code></a> respectively. The constructor is new-agnostic.</p>
 <p>The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
 outside of the usual mechanisms.</p>
@@ -91,8 +91,8 @@ var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
 <section class="functionRef" id="Result">
 <h3 class="functionName">Result</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">Result();</code></p>
-<p>The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.</p>
+<p>The <code>Result</code> type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+<code>Either</code> datatype from Haskell, or the <code>Result</code> type from Rust.</p>
 <p>Result is the &#39;base class&#39; of <a href="#Ok"><code>Ok</code></a> and <a href="#Err"><code>Err</code></a>. It is provided only for the instanceof operator.</p>
 <p>It is an error to call Result.</p>
 </section>
@@ -101,9 +101,9 @@ datatype from Haskell, or the Result type from Rust.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = asArray(p);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
-<p>Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.</p>
+<p>Takes a pair, and returns a 2-element array containing the values contained in the given <a href="#Pair"><code>Pair</code></a> p.
+Specifically, if the resulting array is named arr, then we have <code>arr[0] === fst(p)</code> and <code>arr[1] === snd(p)</code>.
+Throws a TypeError if p is not a pair.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.asArray(funkierJS.Pair(7, 10)); // =&gt; [7, 10]&#39;,
 </code></pre></section>
@@ -113,9 +113,10 @@ not a pair.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = either(f1, f2, r);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Result</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.</p>
+<p>Takes two functions of arity 1 or greater, and a <a href="#Result"><code>Result</code></a>. If the <a href="#Result"><code>Result</code></a> is an <a href="#Ok"><code>Ok</code></a>
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the <a href="#Result"><code>Result</code></a> is an
+<a href="#Err"><code>Err</code></a> value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.</p>
 <p>Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.</p>
 <section class="examples"><h4>Examples</h4>
@@ -134,8 +135,8 @@ f(funkierJS.Err(&#39;:(&#39;)); // logs &#39;Bad: :(&#39; to the console
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fst(p);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.</p>
+<p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the first value that was supplied to the <a href="#Pair"><code>Pair</code></a>
+constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
 funkierJS.fst(p); // =&gt; 2&#39;,
@@ -146,8 +147,8 @@ funkierJS.fst(p); // =&gt; 2&#39;,
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getErrValue(e);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">e: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Err</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.</p>
+<p>Returns the value wrapped by the given <a href="#Err"><code>Err</code></a> instance e. Throws a TypeError if called with anything other
+than an <a href="#Err"><code>Err</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.getErrValue(funkierJS.Err(4)); // =&gt; 4&#39;,
 </code></pre></section>
@@ -157,8 +158,8 @@ Err.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getJustValue(j);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">j: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Just</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.</p>
+<p>Returns the value wrapped by the given <a href="#Just"><code>Just</code></a> instance j. Throws a TypeError if called with anything other
+than a <a href="#Just"><code>Just</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.getJustValue(funkierJS.Just(3)); // =&gt; 3&#39;,
 </code></pre></section>
@@ -168,8 +169,8 @@ Just.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOkValue(o);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Ok</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.</p>
+<p>Returns the value wrapped by the given <a href="#Ok"><code>Ok</code></a> instance o. Throws a TypeError if called with anything other
+than an <a href="#Ok"><code>Ok</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.getOkValue(funkierJS.Ok(3)); // =&gt; 3&#39;,
 </code></pre></section>
@@ -179,7 +180,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isErr(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true when the given value is a Err object, and false otherwise.</p>
+<p>Returns true when the given value is a <a href="#Err"><code>Err</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isErr(funkierJS.Err(4)); // =&gt; true
 </code></pre></section>
@@ -189,7 +190,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isJust(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given value is a Just object, and false otherwise.</p>
+<p>Returns true if the given value is a <a href="#Just"><code>Just</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isJust(funkierJS.Just(42)); // =&gt; true
 </code></pre></section>
@@ -199,7 +200,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isMaybe(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true when the given value is a Maybe object, and false otherwise.</p>
+<p>Returns true when the given value is a <a href="#Maybe"><code>Maybe</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isMaybe(funkierJS.Nothing) &amp;&amp; funkierJS.isMaybe(funkierJS.Just(42)); // =&gt; true
 </code></pre></section>
@@ -209,7 +210,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNothing(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given value is the Nothing object, and false otherwise.</p>
+<p>Returns true if the given value is the <a href="#Nothing"><code>Nothing</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isNothing(funkierJS.Nothing); // =&gt; true
 </code></pre></section>
@@ -219,7 +220,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isOk(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true when the given value is a Ok object, and false otherwise.</p>
+<p>Returns true when the given value is a <a href="#Ok"><code>Ok</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isOk(funkierJS.Ok(&#39;foo)); // =&gt; true
 </code></pre></section>
@@ -229,7 +230,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPair(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given value is a Pair, and false otherwise.</p>
+<p>Returns true if the given value is a <a href="#Pair"><code>Pair</code></a>, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isPair(funkierJS.Pair(2, 3)); // =&gt; True
 </code></pre></section>
@@ -239,7 +240,7 @@ Ok.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isResult(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true when the given value is a Result object, and false otherwise.</p>
+<p>Returns true when the given value is a <a href="#Result"><code>Result</code></a> object, and false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isResult(funkierJS.Ok(3)) &amp;&amp; funkierJS.isResult(funkierJS.Err(false)); // =&gt; true
 </code></pre></section>
@@ -251,7 +252,7 @@ Ok.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.</p>
+the function is wrapped in a <a href="#Just"><code>Just</code></a> and returned.</p>
 <p>The function will be curried in the same style as the original, or using <a href="#curry"><code>curry</code></a> if the function was not
 curried.</p>
 <section class="examples"><h4>Examples</h4>
@@ -272,8 +273,8 @@ f(5); // =&gt; Nothing
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.</p>
+original. If the function f throws during execution, then the exception will be caught, and an <a href="#Err"><code>Err</code></a> object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an <a href="#Ok"><code>Ok</code></a> and returned.</p>
 <p>The function will be curried in the same style as the original, or using <a href="#curry"><code>curry</code></a> if the function was not
 curried.</p>
 <section class="examples"><h4>Examples</h4>
@@ -298,8 +299,8 @@ f(5); // =&gt; Err(Error(&#39;Bad value&#39;);
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = snd(p);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">p: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.</p>
+<p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the second value that was supplied to the <a href="#Pair"><code>Pair</code></a>
+constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
 funkierJS.cnd(p); // =&gt; 3&#39;,
@@ -311,7 +312,7 @@ funkierJS.cnd(p); // =&gt; 3&#39;,
 <h3 class="functionName">getCurrentTimeString</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getCurrentTimeString();</code></p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around calling the Date constructor without the &#39;new&#39; operator. Returns a string representing the
+<p>A wrapper around calling the Date constructor without the <code>new</code> operator. Returns a string representing the
 current date and time.</p>
 </section>
 <section class="functionRef" id="getDayOfMonth">
@@ -319,8 +320,8 @@ current date and time.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getDayOfMonth(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.</p>
+<p>A wrapper around <code>Date.prototype.getDate</code>. Takes a <code>Date</code> object, and returns an integer representing the day of
+the month (1-31) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.getDayOfMonth(a); // =&gt; 15
@@ -331,7 +332,7 @@ funkierJS.getDayOfMonth(a); // =&gt; 15
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getDayOfWeek(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+<p>A wrapper around <code>Date.prototype.getDay</code>. Takes a <code>Date</code> object, and returns an integer representing the day of the
 month (0-6) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -343,8 +344,8 @@ funkierJS.getDayOfWeek(a); // =&gt; 2
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getFullYear(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.</p>
+<p>A wrapper around <code>Date.prototype.getFullYear</code>. Takes a <code>Date</code> object, and returns a 4-digit integer representing
+the year of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.getFullYear(a); // =&gt; 2000
@@ -355,8 +356,8 @@ funkierJS.getFullYear(a); // =&gt; 2000
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getHours(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.</p>
+<p>A wrapper around <code>Date.prototype.getHours</code>. Takes a <code>Date</code> object, and returns a integer representing the hour
+field (0-23) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.getHours(a); // =&gt; 10
@@ -367,7 +368,7 @@ funkierJS.getHours(a); // =&gt; 10
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMilliseconds(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+<p>A wrapper around <code>Date.prototype.getMilliseconds</code>. Takes a <code>Date</code> object, and returns a integer representing the
 milliseconds field (0-999) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -379,7 +380,7 @@ funkierJS.getMilliseconds(a); // =&gt; 13
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMinutes(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+<p>A wrapper around <code>Date.prototype.getMinutes</code>. Takes a <code>Date</code> object, and returns a integer representing the minutes
 field (0-59) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -391,7 +392,7 @@ funkierJS.getMinutes(a); // =&gt; 11
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMonth(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+<p>A wrapper around <code>Date.prototype.getMonths</code>. Takes a <code>Date</code> object, and returns a integer representing the month
 field (0-11) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -403,7 +404,7 @@ funkierJS.getMonth(a); // =&gt; 1
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getSeconds(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+<p>A wrapper around <code>Date.prototype.getSeconds</code>. Takes a <code>Date</code> object, and returns a integer representing the seconds
 field (0-59) of the given date.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -415,15 +416,15 @@ funkierJS.getSeconds(a); // =&gt; 12
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getTimezoneOffset(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.</p>
+<p>A wrapper around <code>Date.prototype.getTimezoneOffset</code>. Takes a <code>Date</code> object, and returns the delta in minutes
+between the Javascript environment and UTC.</p>
 </section>
 <section class="functionRef" id="getUTCDayOfMonth">
 <h3 class="functionName">getUTCDayOfMonth</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCDayOfMonth(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+<p>A wrapper around <code>Date.prototype.getUTCDate</code>. Takes a <code>Date</code> object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCDayOfWeek">
@@ -431,7 +432,7 @@ the month (1-31) of the given date, adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCDayOfWeek(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+<p>A wrapper around <code>Date.prototype.getUTCDay</code>. Takes a <code>Date</code> object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCFullYear">
@@ -439,7 +440,7 @@ the week (0-6) of the given date, adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCFullYear(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+<p>A wrapper around <code>Date.prototype.getUTCFullYear</code>. Takes a <code>Date</code> object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCHours">
@@ -447,7 +448,7 @@ the year of the given date, adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCHours(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+<p>A wrapper around <code>Date.prototype.getUTCHours</code>. Takes a <code>Date</code> object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCMilliseconds">
@@ -455,15 +456,15 @@ field of the given date (0-23), adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMilliseconds(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.</p>
+<p>A wrapper around <code>Date.prototype.getUTCMilliseconds</code>. Takes a <code>Date</code> object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCMinutes">
 <h3 class="functionName">getUTCMinutes</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMinutes(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+<p>A wrapper around <code>Date.prototype.getUTCMinutes</code>. Takes a <code>Date</code> object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCMonth">
@@ -471,7 +472,7 @@ minutes field of the given date (0-59), adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMonth(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+<p>A wrapper around <code>Date.prototype.getUTCMonth</code>. Takes a <code>Date</code> object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="getUTCSeconds">
@@ -479,16 +480,16 @@ field of the given date (0-11), adjusted for UTC.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCSeconds(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+<p>A wrapper around <code>Date.prototype.getUTCSeconds</code>. Takes a <code>Date</code> object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.</p>
 </section>
 <section class="functionRef" id="makeDateFromMilliseconds">
 <h3 class="functionName">makeDateFromMilliseconds</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDateFromMilliseconds(milliseconds);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
 <p>A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new <code>Date</code> object whose value represents the date which is that many elapsed
 milliseconds since the epoch.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeDateFromMilliseconds(1400161244101);
@@ -498,10 +499,10 @@ milliseconds since the epoch.</p>
 <h3 class="functionName">makeDateFromString</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDateFromString(dateString);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">dateString: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.</p>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A wrapper around calling the <code>Date</code> constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new <code>Date</code> object whose value
+represents that given in the string.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeDateFromString(&#39;2000-01-01T10:00:01:000Z&#39;);
 </code></pre></section>
@@ -510,10 +511,10 @@ that given in the string.</p>
 <h3 class="functionName">makeDayDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDayDate(year, month, day);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
 <p>A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.</p>
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the <code>Date</code>
+are initialized to zero. Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeDayDate(2000, 0, 2); // =&gt; A date representing January 2 2000
 </code></pre></section>
@@ -522,10 +523,10 @@ are initialized to zero. Returns the new Date.</p>
 <h3 class="functionName">makeHourDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeHourDate(year, month, day, hour);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A curried wrapper around calling the <code>Date</code> constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.</p>
+the <code>Date</code> are initialized to zero. Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeHourDate(2000, 0, 2, 10); // =&gt; A date representing 10am, January 2 2000
 </code></pre></section>
@@ -534,10 +535,10 @@ the Date are initialized to zero. Returns the new Date.</p>
 <h3 class="functionName">makeMillisecondDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMillisecondDate(year, month, day, hour, minute, second, millisecond);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">second: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">millisecond: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.</p>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A curried wrapper around calling the <code>Date</code> constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // =&gt; A date representing 10:15:30:012,
                                                                    //    January 2 2000
@@ -547,10 +548,10 @@ the new Date.</p>
 <h3 class="functionName">makeMinuteDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMinuteDate(year, month, day, hour, minute);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A curried wrapper around calling the <code>Date</code> constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.</p>
+fields in the <code>Date</code> are initialized to zero. Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // =&gt; A date representing 10:15:00, January 2 2000
 </code></pre></section>
@@ -559,10 +560,10 @@ fields in the Date are initialized to zero. Returns the new Date.</p>
 <h3 class="functionName">makeMonthDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMonthDate(year, month);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.</p>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A curried wrapper around calling the <code>Date</code> constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the <code>Date</code> are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeMonthDate(2000, 0); // =&gt; A date representing January 1 2000
 </code></pre></section>
@@ -571,10 +572,10 @@ initialized to zero, with the exception of the day, which is initialized to 1. R
 <h3 class="functionName">makeSecondDate</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeSecondDate(year, month, day, hour, minute, second);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">second: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A curried wrapper around calling the <code>Date</code> constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.</p>
+All other fields in the <code>Date</code> are initialized to zero. Returns the new <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // =&gt; A date representing 10:15:30, January 2 2000
 </code></pre></section>
@@ -583,10 +584,10 @@ All other fields in the Date are initialized to zero. Returns the new Date.</p>
 <h3 class="functionName">setDayOfMonth</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setDayOfMonth(day, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A wrapper around <code>Date.prototype.setDate</code>. Takes a value between 1 and 31, and a <code>Date</code> object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given &#39;Date`
 object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -597,11 +598,11 @@ funkierJS.setDayOfMonth(1, a); // =&gt; a now refers to Feb 1 2000
 <h3 class="functionName">setFullYear</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setFullYear(year, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
-<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Date</code></li></ul></div>
+<p>A wrapper around <code>Date.prototype.setFullYear</code>. Takes a value and a <code>Date</code> object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.</p>
+Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setFullYear(2001, a); // =&gt; a now refers to Feb 15 2001
@@ -612,10 +613,10 @@ funkierJS.setFullYear(2001, a); // =&gt; a now refers to Feb 15 2001
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setHours(hours, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">hours: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+<p>A wrapper around <code>Date.prototype.setHours</code>. Takes a value between 0 and 23 representing the hour of the day, and
+a <code>Date</code> object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value &gt; 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.</p>
+to other fields. Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setHours(11, a); // =&gt; a now refers to 11:11:12:013
@@ -626,10 +627,10 @@ funkierJS.setHours(11, a); // =&gt; a now refers to 11:11:12:013
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMilliseconds(milliseconds, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+<p>A wrapper around <code>Date.prototype.setMilliseconds</code>. Takes a value between 0 and 999 representing the milliseconds,
+and a <code>Date</code> object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value &gt; 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.</p>
+a cascade of increments to other fields. Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setMilliseconds(20, a); // =&gt; a now refers to 10:11:12:020
@@ -640,10 +641,10 @@ funkierJS.setMilliseconds(20, a); // =&gt; a now refers to 10:11:12:020
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMinutes(minutes, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">minutes: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+<p>A wrapper around <code>Date.prototype.setMinutes</code>. Takes a value between 0 and 59 representing the minutes, and a
+<code>Date</code> object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value &gt; 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.</p>
+to other fields. Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setMinutes(59, a); // =&gt; a now refers to 10:59:12:013
@@ -654,9 +655,9 @@ funkierJS.setMinutes(59, a); // =&gt; a now refers to 10:59:12:013
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMonth(month, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+<p>A wrapper around <code>Date.prototype.setMonth</code>. Takes a value between 0 and 11 representing the month, and a <code>Date</code>
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value &gt; 11, then the year will be incremented by month div 12. Returns the given date object.</p>
+value &gt; 11, then the year will be incremented by month div 12. Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setMonth(2, a); // =&gt; a now refers to 15 March 2001
@@ -667,10 +668,10 @@ funkierJS.setMonth(2, a); // =&gt; a now refers to 15 March 2001
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setSeconds(seconds, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">seconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+<p>A wrapper around <code>Date.prototype.setSeconds</code>. Takes a value between 0 and 59 representing the seconds, and a
+<code>Date</code> object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value &gt; 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.</p>
+to other fields. Returns the given <code>Date</code> object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setSeconds(50, a); // =&gt; a now refers to 10:11:50:013
@@ -681,9 +682,9 @@ funkierJS.setSeconds(50, a); // =&gt; a now refers to 10:11:50:013
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setTimeSinceEpoch(milliseconds, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+<p>A wrapper around <code>Date.prototype.setTime</code>. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.</p>
+time that is that many seconds since the epoch. Returns the given <code>Date</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.setTimeSinceEpoch(1340122101412, a); // =&gt; a now refers to 19th July 2012, 16:08:21:041
@@ -694,76 +695,78 @@ funkierJS.setTimeSinceEpoch(1340122101412, a); // =&gt; a now refers to 19th Jul
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCDayOfMonth(day, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCDate</code>. Takes a value between 1 and 31, and a <code>Date</code> object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given <code>Date</code> object.</p>
 </section>
 <section class="functionRef" id="setUTCFullYear">
 <h3 class="functionName">setUTCFullYear</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCFullYear(year, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+<p>A wrapper around <code>Date.prototype.setUTCFullYear</code>. Takes a value and a <code>Date</code> object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.</p>
+a leap year. Returns the given <code>Date</code> object.</p>
 </section>
 <section class="functionRef" id="setUTCHours">
 <h3 class="functionName">setUTCHours</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCHours(hours, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">hours: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value &gt; 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCHours</code>. Takes a value between 0 and 23 representing the hour of the day, and
+a <code>Date</code> object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value &gt; 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given <code>Date</code> object.</p>
 </section>
 <section class="functionRef" id="setUTCMilliseconds">
 <h3 class="functionName">setUTCMilliseconds</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMilliseconds(milliseconds, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value &gt; 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCMilliseconds</code>. Takes a value between 0 and 999 representing the
+milliseconds, and a <code>Date</code> object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value &gt; 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given <code>Date</code>
+object.</p>
 </section>
 <section class="functionRef" id="setUTCMinutes">
 <h3 class="functionName">setUTCMinutes</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMinutes(minutes, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">minutes: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value &gt; 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCMinutes</code>. Takes a value between 0 and 59 representing the minutes, and a
+<code>Date</code> object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value &gt; 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given <code>Date</code> object.</p>
 </section>
 <section class="functionRef" id="setUTCMonth">
 <h3 class="functionName">setUTCMonth</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMonth(month, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value &gt; 11, then the year will be incremented by month div 12. Returns the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCMonth</code>. Takes a value between 0 and 11 representing the month, and a
+<code>Date</code> object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value &gt; 11, then the year will be incremented by month div 12. Returns the given <code>Date</code>
+object.</p>
 </section>
 <section class="functionRef" id="setUTCSeconds">
 <h3 class="functionName">setUTCSeconds</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCSeconds(seconds, d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">seconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
-<p>A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value &gt; 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.</p>
+<p>A wrapper around <code>Date.prototype.setUTCSeconds</code>. Takes a value between 0 and 59 representing the seconds, and a
+<code>Date</code> object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value &gt; 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given <code>Date</code> object.</p>
 </section>
 <section class="functionRef" id="toDateString">
 <h3 class="functionName">toDateString</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toDateString(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+<p>A wrapper around <code>Date.prototype.toDateString</code>. Takes a <code>Date</code> object, and returns a string representing the date
 portion of the object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -775,16 +778,16 @@ funkierJS.toDateString(a); // =&gt; &quot;Tue Feb 15 2000&quot; or similar
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toEpochMilliseconds(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.</p>
+<p>A wrapper around <code>Date.prototype.getTime</code>. Takes a <code>Date</code> object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.</p>
 </section>
 <section class="functionRef" id="toISOString">
 <h3 class="functionName">toISOString</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toISOString(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.</p>
+<p>A wrapper around <code>Date.prototype.toISOString</code>. Takes a <code>Date</code> object, and returns a string representation of the
+date in ISO format.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
 funkierJS.toISOString(a); // &quot;2000-02-15T10:11:12.013Z&quot; or similar&#39;,
@@ -795,7 +798,7 @@ funkierJS.toISOString(a); // &quot;2000-02-15T10:11:12.013Z&quot; or similar&#39
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toLocaleDateString(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+<p>A wrapper around <code>Date.prototype.toLocaleDateString</code>. Takes a <code>Date</code> object, and  a string representing the date
 portion of the object, formatted according to locale conventions.</p>
 </section>
 <section class="functionRef" id="toTimeString">
@@ -803,7 +806,7 @@ portion of the object, formatted according to locale conventions.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toTimeString(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+<p>A wrapper around <code>Date.prototype.toTimeString</code>. Takes a <code>Date</code> object, and returns a string representing the time
 portion of the object.</p>
 </section>
 <section class="functionRef" id="toUTCString">
@@ -811,7 +814,7 @@ portion of the object.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toUTCString(d);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+<p>A wrapper around <code>Date.prototype.toUTCString</code>. Takes a <code>Date</code> object, and returns a string representation of the
 equivalent date in UTC.</p>
 </section>
 <section class="categoryRef" id="Function">
@@ -949,8 +952,8 @@ has arity 0.</p>
 real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
 argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
 <p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
-will also be considered as having been curried that way, with the correct bound context.</p>
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned
+function will also be considered as having been curried that way, with the correct bound context.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f1 = function(a) {return a + 1;};
 var f2 = function(b) {return b * 2;};
@@ -970,8 +973,8 @@ has arity 0.</p>
 real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
 argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
 <p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned function
-will also be considered as having been curried that way, with the correct bound context.</p>
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned
+function will also be considered as having been curried that way, with the correct bound context.</p>
 <p>This function is intended to afford an approximation of writing functions in a point-free style.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f1 = function(a) {return a(2);};
@@ -1540,7 +1543,7 @@ be subject to rounding errors.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = max(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A curried wrapper around Math.max. Takes exactly two arguments.</p>
+<p>A curried wrapper around <code>Math.max</code>. Takes exactly two arguments.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.min(5, 2); // =&gt; 5;
 </code></pre></section>
@@ -1550,7 +1553,7 @@ be subject to rounding errors.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = min(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
-<p>A curried wrapper around Math.min. Takes exactly two arguments.</p>
+<p>A curried wrapper around <code>Math.min</code>. Takes exactly two arguments.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.min(5, 2); // =&gt; 2;
 </code></pre></section>
@@ -1582,7 +1585,8 @@ funkierJS.odd(3); // =&gt; true
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.</p>
+assuming it represents a number in base 10. Returns <code>NaN</code> if the string does not represent a valid number in base
+10.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.parseInt(101); // =&gt; 101
 </code></pre></section>
@@ -1662,9 +1666,8 @@ not represent a valid number in the given base.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toBaseAndString(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
-representing the given number in the given base.
-of significant digits.</p>
+<p>A curried wrapper around <code>Number.prototype.toString</code>. Takes a base between 2 and 36, and a number. Returns a string
+representing the given number in the given base.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.toBaseAndString(2, 5); // =&gt; &quot;101&quot;
 </code></pre></section>
@@ -1674,9 +1677,9 @@ of significant digits.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toExponential(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.</p>
+<p>A curried wrapper around <code>Number.prototype.toExponential</code>. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.toExponential(3, 1); // =&gt; &quot;1.000e+0&quot;
 </code></pre></section>
@@ -1686,9 +1689,9 @@ specified number of places after the decimal point.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toFixed(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.</p>
+<p>A curried wrapper around <code>Number.prototype.toFixed</code>. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.toFixed(2, 1); // =&gt; &quot;1.00&quot;
 </code></pre></section>
@@ -1698,7 +1701,7 @@ places after the decimal point.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toPrecision(x, y);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">x: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">y: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
-<p>A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+<p>A curried wrapper around <code>Number.prototype.toPrecision</code>. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1712,7 +1715,7 @@ of significant digits.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = callProp(prop);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
-<p>A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+<p>A shorthand for <code>callPropWithArity(prop, 0)</code>. Returns a new function that takes an object, and calls the specified
 property on the given object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var myObj = { return42: function() { return 42; }};
@@ -1745,8 +1748,8 @@ myFoldr(f, initialValue, arr); // =&gt; arr.reduceRight(f, initialValue);
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from <code>Object.prototype</code>, <code>Array.prototype</code>, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.</p>
 <p>Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
 will have these same functions using the same scope. Getting/setting such a property in the clone may affect the
@@ -1773,7 +1776,7 @@ funkierJS.isPrototypeOf(obj, newObj); // =&gt; true
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
 <p>Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.</p>
+form accepted by <code>Object.create</code>, <code>Object.defineProperties</code> etc.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var obj = {};
 var newObj = funkierJS.createObjectWithProps(obj, {prop: {configurable: false, enumerable: false,
@@ -1788,13 +1791,13 @@ funkierJS.hasOwnProperty(&#39;prop&#39;, newObj); // =&gt; true&#39;,
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+<code>o[prop] = value</code>. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.</p>
-<p>Alternatively, one can use <a href="#safeCreateProp"><code>safeCreateProp</code></a> for a version that will not throw in the above circumstances.
-Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to modify existing properties without
-creating them, and <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to either modify or create the property as
-required.</p>
+<p>Alternatively, one can use <a href="#safeCreateProp"><code>safeCreateProp</code></a> for a version that will not throw in the above
+circumstances.  Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to modify existing
+properties without creating them, and <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to either modify or
+create the property as required.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {foo: 1};
 funkierJS.create(&#39;bar&#39;, 42, a); // =&gt; returns a
@@ -1830,7 +1833,7 @@ obj.foo(2)(3); // =&gt; 15
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = defineProperties(descriptors, o);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">descriptors: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
-<p>A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+<p>A curried wrapper around <code>Object.defineProperties</code>. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1845,8 +1848,8 @@ funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = defineProperty(prop, descriptor, o);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">descriptor: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
-<p>A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+<p>A curried wrapper around <code>Object.defineProperty</code>. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {};&#39;,
@@ -1861,7 +1864,7 @@ funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.</p>
+<code>delete o[prop]</code>. Throws when the property is not configurable, including when the object is frozen or sealed.</p>
 <p>Alternatively, one can use <a href="#safeDeleteProp"><code>safeDeleteProp</code></a> that will return the appropriate Maybe value
 depending on the outcome of the operation.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1891,8 +1894,8 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if &#39;foo&#39; is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.</p>
+properties are shallow-copied: in other words, if <code>foo</code> is a property of source whose value is an object, then
+afterwards <code>source.foo === dest.foo</code> will be true.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {bar: 1};
 funkierJS.extend(a, {foo: 42}); // =&gt; a === {foo: 42, bar: 1}
@@ -1905,8 +1908,8 @@ funkierJS.extend(a, {foo: 42}); // =&gt; a === {foo: 42, bar: 1}
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source&#39;s prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if &#39;foo&#39; is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.</p>
+Returns the modified dest object. All properties are shallow-copied: in other words, if <code>foo</code> is a property of
+source whose value is an object, then afterwards <code>source.foo === dest.foo</code> will be true.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = funkierJS.createObject({bar: 1});
 a.baz = 2;
@@ -1920,7 +1923,7 @@ funkierJS.extendOwn(b, a); // b == {foo: 3, baz: 2}
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = extract(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
-<p>Extracts the given property from the given object. Equivalent to evaluating obj[prop].</p>
+<p>Extracts the given property from the given object. Equivalent to evaluating <code>obj[prop]</code>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.extract(&#39;foo&#39;, {foo: 42}); // =&gt; 42
 </code></pre></section>
@@ -1942,9 +1945,9 @@ chain, in which case the specified default value is returned.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOwnPropertyDescriptor(prop, o);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">o: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
-<p>A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object&#39;s property descriptor for the given object is returned, otherwise it returns
-undefined.</p>
+<p>A curried wrapper around <code>Object.getOwnPropertyDescriptor</code>. Takes a property name and an object. If the object
+itself has the given property, then the object&#39;s property descriptor for the given object is returned, otherwise
+it returns undefined.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {foo: 42};&#39;,
 funkierJS.getOwnPropertyDescriptor(&#39;foo&#39;, a); // =&gt; {configurable: true, enumerable: true, writable: true,
@@ -1957,7 +1960,7 @@ funkierJS.getOwnPropertyDescriptor(&#39;toString&#39;, a); // =&gt; undefined&#3
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getOwnPropertyNames(obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
-<p>A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+<p>A wrapper around <code>Object.getOwnPropertyNames</code>. Takes an object, and returns an array containing the names of the
 object&#39;s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1970,7 +1973,7 @@ the property names is not defined.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = hasOwnProperty(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+<p>A curried wrapper around <code>Object.prototype.hasOwnProperty</code>. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.</p>
 <section class="examples"><h4>Examples</h4>
@@ -1983,7 +1986,7 @@ funkierJS.hasOwnProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; false
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = hasProperty(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A curried wrapper around the &#39;in&#39; operator. Takes a string representing a property name and an object, and
+<p>A curried wrapper around the <code>in</code> operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.hasProperty(&#39;funkier&#39;, {funkier: 1}); // =&gt; true
@@ -1995,7 +1998,7 @@ funkierJS.hasProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; true
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = instanceOf(constructor, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">constructor: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A curried wrapper around the &#39;instanceof&#39; operator. Takes a constructor function and an object, and returns true
+<p>A curried wrapper around the <code>instanceof</code> operator. Takes a constructor function and an object, and returns true
 if the function&#39;s prototype property is in the prototype chain of the given object.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var Constructor = function() {};
@@ -2008,7 +2011,7 @@ funkierJS.instanceOf(Function, {}); // =&gt; false
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isPrototypeOf(protoObject, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">protoObject: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+<p>A curried wrapper around <code>Object.prototype.isPrototypeOf</code>. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var Constructor = function() {};
@@ -2026,8 +2029,8 @@ of a property from the object, and the second element is the value of the proper
 key-value pairs for the object&#39;s own properties. Returns an empty array for non-objects.  The order of the values
 is not defined.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.keyValues({foo: 1, bar: 2}); // =&gt; returns [[&#39;foo&#39;, 1], [&#39;bar&#39;, 2]] or [[&#39;bar&#39;, 2], [&#39;foo&#39;, 1]] depending on
-                                       // native environment
+<pre><code>funkierJS.keyValues({foo: 1, bar: 2}); // =&gt; returns [[&#39;foo&#39;, 1], [&#39;bar&#39;, 2]] or [[&#39;bar&#39;, 2], [&#39;foo&#39;, 1]]
+                                       // depending on native environment
 </code></pre></section>
 </section>
 <section class="functionRef" id="keys">
@@ -2035,7 +2038,7 @@ is not defined.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = keys(obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
-<p>A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object&#39;s own
+<p>A wrapper around <code>Object.keys</code>. Takes an object, and returns an array containing the names of the object&#39;s own
 properties. Returns an empty array for non-objects.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.keys({foo: 1, bar: 2}); // =&gt; returns [&#39;foo&#39;, &#39;bar&#39;] or [&#39;bar&#39;, &#39;foo&#39;] depending on native
@@ -2056,8 +2059,8 @@ properties. Returns an empty array for non-objects.</p>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = maybeExtract(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
-<p>Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.</p>
+<p>Extracts the given property from the given object, and wraps it in a <a href="#Just"><code>Just</code></a> value. When the property is
+not present, either in the object, or its prototype chain, then <a href="#Nothing"><code>Nothing</code></a> is returned.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.maybeExtract(&#39;foo&#39;, {}); // =&gt; Nothing
 </code></pre></section>
@@ -2089,12 +2092,12 @@ either in the object, or its prototype chain, then Nothing is returned.</p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn&#39;t exist on the object.
+Equivalent to evaluating <code>o[prop] = value</code>. The property will not be created when it doesn&#39;t exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.</p>
-<p>Alternatively, one can use <a href="#safeModify"><code>safeModify</code></a> for a version that will not throw in the above circumstances.
-Similarly, <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to both modify existing properties and create them
-where required, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants to ensure
-existing values will not be changed.</p>
+<p>Alternatively, one can use <a href="#safeModify"><code>safeModify</code></a> for a version that will not throw in the above
+circumstances.  Similarly, <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to both modify existing properties
+and create them where required, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when
+one wants to ensure existing values will not be changed.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {foo: 1};
 funkierJS.modify(&#39;foo&#39;, 42, a); // =&gt; returns a
@@ -2133,9 +2136,9 @@ a.foo // =&gt; undefined
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeDeleteProp(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
-<p>Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.</p>
+<p>Deletes the given property from the given the given object, returning the object wrapped as a <a href="#Just"><code>Just</code></a>
+value. Equivalent to evaluating <code>delete o[prop]</code>. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
 <p>Alternatively, one can use <a href="#delete"><code>delete</code></a> that will return not wrap the object, and throw on error.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {};
@@ -2153,9 +2156,9 @@ funkierJS.delete(&#39;foo&#39;,  a); // =&gt; returns Nothing
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn&#39;t exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.</p>
+wrapped in a <a href="#Just"><code>Just</code></a> value when successful. Equivalent to evaluating <code>o[prop] = value</code>. The property will
+not be created when it doesn&#39;t exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
 <p>Alternatively, one can use <a href="#modify"><code>modify</code></a> for a version that will throw in the above circumstances.
 Similarly, <a href="#set"><code>set</code></a> and <a href="#safeSet"><code>safeSet</code></a> can be used to both modify existing properties and create them
 where required, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants to ensure
@@ -2177,13 +2180,13 @@ a.foo // =&gt; 1
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = safeSet(prop, val, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
-<p>Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn&#39;t exist on the
-object. If unable to modify or create the property, then Nothing will be returned.</p>
+<p>Sets the given property to the given value on the given object, returning the object wrapped in a <a href="#Just"><code>Just</code></a>
+value when successful. Equivalent to evaluating <code>o[prop] = value</code>. The property will be created if it doesn&#39;t exist
+on the object. If unable to modify or create the property, then <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
 <p>Alternatively, one can use <a href="#set"><code>set</code></a> for a version that will throw in the above circumstances.
 Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to guarantee the property is not
-created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants
-to ensure existing values will not be changed.</p>
+created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when
+one wants to ensure existing values will not be changed.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {foo: 1};
 Object.freeze(a);
@@ -2206,13 +2209,13 @@ a.foo // =&gt; 1
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">prop: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">obj: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
 <p>Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn&#39;t exist on the object. Throws when the property is
+<code>o[prop] = value</code>. The property will be created if it doesn&#39;t exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.</p>
 <p>Alternatively, one can use <a href="#safeSet"><code>safeSet</code></a> for a version that will not throw in the above circumstances.
 Similarly, <a href="#modify"><code>modify</code></a> and <a href="#safeModify"><code>safeModify</code></a> can be used to guarantee the property is not
-created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when one wants
-to ensure existing values will not be changed.</p>
+created when it does not exist, or <a href="#create"><code>create</code></a> and <a href="#safeCreateProp"><code>safeCreateProp</code></a> can be used when
+one wants to ensure existing values will not be changed.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var a = {foo: 1};
 funkierJS.set(&#39;foo&#39;, 42, a); // =&gt; returns a
@@ -2285,7 +2288,7 @@ at each index are themselves deeply equal.</p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object&quot;s type: the result will be one of &quot;number&quot;, &quot;string&quot;, &quot;boolean&quot;, &quot;function&quot;, &quot;undefined&quot;, or &quot;object&quot;.</p>
+the object&#39;s type: the result will be one of &quot;number&quot;, &quot;string&quot;, &quot;boolean&quot;, &quot;function&quot;, &quot;undefined&quot;, or &quot;object&quot;.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.getType({}); // =&gt; &quot;object&quot;
 </code></pre></section>
@@ -2331,7 +2334,7 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isBoolean(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;boolean&quot;, false otherwise.</p>
+<p>Returns true if typeof the given value equals <code>&quot;boolean&quot;</code>, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isBoolean(false); // =&gt; true
 </code></pre></section>
@@ -2341,7 +2344,7 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isNull(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if the given object is null, false otherwise</p>
+<p>Returns true if the given object is <code>null</code>, false otherwise</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isNull(null); // =&gt; true
 </code></pre></section>
@@ -2361,7 +2364,7 @@ object equals the given string. Throws if the first argument is not a string.</p
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isObject(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;object&quot;, false otherwise.</p>
+<p>Returns true if typeof the given value equals <code>&quot;object&quot;</code>, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isObject(null); // =&gt; true
 </code></pre></section>
@@ -2382,7 +2385,7 @@ and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) ==
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isString(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;string&quot;, false otherwise.</p>
+<p>Returns true if typeof the given value equals <code>&quot;string&quot;</code>, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isString(&#39;a&#39;); // =&gt; true
 </code></pre></section>
@@ -2392,7 +2395,7 @@ and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) ==
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isUndefined(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
-<p>Returns true if typeof the given value equals &quot;undefined&quot;, false otherwise.</p>
+<p>Returns true if typeof the given value equals <code>&quot;undefined&quot;</code>, false otherwise.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.isUndefined(1); // =&gt; false
 </code></pre></section>

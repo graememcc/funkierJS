@@ -38,8 +38,8 @@ module.exports = (function() {
    * argument: `f` will recieve a partially applied `g`, and any remaining arguments.
    *
    * If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-   * supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-   * will also be considered as having been curried that way, with the correct bound context.
+   * supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+   * function will also be considered as having been curried that way, with the correct bound context.
    *
    * Examples:
    *
@@ -92,8 +92,8 @@ module.exports = (function() {
    * argument: `f` will recieve a partially applied `g`, and any remaining arguments.
    *
    * If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-   * supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-   * will also be considered as having been curried that way, with the correct bound context.
+   * supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+   * function will also be considered as having been curried that way, with the correct bound context.
    *
    * This function is intended to afford an approximation of writing functions in a point-free style.
    *
@@ -381,8 +381,8 @@ module.exports = (function () {
   var curryInternal = function(initialContext, length, fn) {
     length = checkPositiveIntegral(length, {strict: true});
 
-    // We can't use checkFunction from the funcUtils module here: it depends on the base module, which in turn depends on
-    // this module
+    // We can't use checkFunction from the funcUtils module here: it depends on the base module, which in turn depends
+    // on this module
     if (typeof(fn) !== 'function')
       throw new TypeError('Value to be curried is not a function');
 
@@ -1013,8 +1013,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-   * month (1-31) of the given date.
+   * A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+   * the month (1-31) of the given date.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1035,7 +1035,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+   * A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
    * month (0-6) of the given date.
    *
    * Examples:
@@ -1057,8 +1057,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-   * year of the given date.
+   * A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+   * the year of the given date.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1079,8 +1079,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-   * (0-23) of the given date.
+   * A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+   * field (0-23) of the given date.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1101,7 +1101,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+   * A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
    * milliseconds field (0-999) of the given date.
    *
    * Examples:
@@ -1123,7 +1123,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+   * A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
    * field (0-59) of the given date.
    *
    * Examples:
@@ -1145,7 +1145,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+   * A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
    * field (0-11) of the given date.
    *
    * Examples:
@@ -1167,7 +1167,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+   * A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
    * field (0-59) of the given date.
    *
    * Examples:
@@ -1189,8 +1189,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-   * midnight, January 1 1970.
+   * A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+   * since midnight, January 1 1970.
    *
    */
 
@@ -1207,8 +1207,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-   * the Javascript environment and UTC.
+   * A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+   * between the Javascript environment and UTC.
    *
    */
 
@@ -1225,7 +1225,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+   * A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
    * the month (1-31) of the given date, adjusted for UTC.
    *
    */
@@ -1242,7 +1242,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+   * A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
    * the week (0-6) of the given date, adjusted for UTC.
    *
    */
@@ -1261,7 +1261,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+   * A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
    * the year of the given date, adjusted for UTC.
    *
    */
@@ -1279,7 +1279,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+   * A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
    * field of the given date (0-23), adjusted for UTC.
    *
    */
@@ -1297,8 +1297,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-   * milliseconds field of the given date (0-999), adjusted for UTC.
+   * A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+   * the milliseconds field of the given date (0-999), adjusted for UTC.
    *
    */
 
@@ -1315,7 +1315,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+   * A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
    * minutes field of the given date (0-59), adjusted for UTC.
    *
    */
@@ -1333,7 +1333,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+   * A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
    * field of the given date (0-11), adjusted for UTC.
    *
    */
@@ -1351,7 +1351,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: number
    *
-   * A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+   * A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
    * seconds field of the given date (0-59), adjusted for UTC.
    *
    */
@@ -1369,7 +1369,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: string
    *
-   * A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+   * A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
    * portion of the object, formatted according to locale conventions.
    *
    */
@@ -1387,7 +1387,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: string
    *
-   * A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+   * A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
    * portion of the object.
    *
    * Examples:
@@ -1409,7 +1409,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: string
    *
-   * A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+   * A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
    * portion of the object.
    *
    */
@@ -1427,8 +1427,8 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: string
    *
-   * A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-   * in ISO format.
+   * A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+   * date in ISO format.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1449,7 +1449,7 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: string
    *
-   * A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+   * A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
    * equivalent date in UTC.
    *
    */
@@ -1468,11 +1468,11 @@ module.exports = (function() {
    *
    * Parameter: day: number
    * Parameter: d: Date
-   * Returns: date
+   * Returns: Date
    *
-   * A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-   * month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-   * in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+   * A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+   * the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+   * 31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
    * object.
    *
    * Examples:
@@ -1496,12 +1496,12 @@ module.exports = (function() {
    *
    * Parameter: year: number
    * Parameter: d: Date
-   * Returns: date
+   * Returns: Date
    *
-   * A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+   * A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
    * value. This may cause a change in other fields: for example, setting the year when the month and day represent
    * February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-   * Returns the given date object.
+   * Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1526,10 +1526,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-   * a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+   * A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+   * a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
    * value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-   * to other fields. Returns the given date object.
+   * to other fields. Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1554,10 +1554,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-   * and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+   * A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+   * and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
    * fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-   * a cascade of increments to other fields. Returns the given date object.
+   * a cascade of increments to other fields. Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1582,10 +1582,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-   * object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+   * A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+   * `Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
    * value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-   * to other fields. Returns the given date object.
+   * to other fields. Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1610,9 +1610,9 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+   * A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
    * object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-   * value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   * value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1637,10 +1637,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-   * object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+   * A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+   * `Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
    * value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-   * to other fields. Returns the given date object.
+   * to other fields. Returns the given `Date` object.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1665,9 +1665,9 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+   * A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
    * January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-   * time that is that many seconds since the epoch. Returns the given date.
+   * time that is that many seconds since the epoch. Returns the given `Date`.
    *
    * Examples:
    *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1692,10 +1692,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-   * month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-   * changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-   * Returns the given date object.
+   * A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+   * of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+   * example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+   * year. Returns the given `Date` object.
    *
    */
 
@@ -1716,10 +1716,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+   * A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
    * equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
    * month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-   * a leap year. Returns the given date object.
+   * a leap year. Returns the given `Date` object.
    *
    */
 
@@ -1740,10 +1740,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-   * a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-   * other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-   * of increments to other fields. Returns the given date object.
+   * A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+   * a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+   * in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+   * cascade of increments to other fields. Returns the given `Date` object.
    *
    */
 
@@ -1764,10 +1764,11 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-   * and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-   * a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-   * may in turn cause a cascade of increments to other fields. Returns the given date object.
+   * A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+   * milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+   * values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+   * milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+   * object.
    *
    */
 
@@ -1788,10 +1789,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-   * object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-   * other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-   * cascade of increments to other fields. Returns the given date object.
+   * A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+   * `Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+   * in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+   * cascade of increments to other fields. Returns the given `Date` object.
    *
    */
 
@@ -1812,9 +1813,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-   * object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-   * fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   * A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+   * `Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+   * in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+   * object.
    *
    */
 
@@ -1835,10 +1837,10 @@ module.exports = (function() {
    * Parameter: d: Date
    * Returns: date
    *
-   * A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-   * object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-   * other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-   * cascade of increments to other fields. Returns the local equivalent of the given date object.
+   * A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+   * `Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+   * in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+   * a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
    *
    */
 
@@ -1854,8 +1856,8 @@ module.exports = (function() {
     'signature: day: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and',
-    'a Date object, and sets the day of the month to the given value. Throws if the',
+    'A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and',
+    'a `Date` object, and sets the day of the month to the given value. Throws if the',
     'value is outside this range, or if the month contains fewer days than the given',
     'value.',
     '',
@@ -1895,7 +1897,7 @@ module.exports = (function() {
     'signature: hours: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setHours. Takes a value between 0-23',
+    'A wrapper around `Date.prototype.setHours`. Takes a value between 0-23',
     'representing the hour of the day, and sets the hour to the given value.',
     '',
     'Throws a TypeError for values outwith the range 0-23.',
@@ -1919,7 +1921,7 @@ module.exports = (function() {
     'signature: milliseconds: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setMilliseconds. Takes a value between 0-999',
+    'A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0-999',
     'representing the milliseconds, and sets the milliseconds to the given value.',
     '',
     'Throws a TypeError for values outside this range.',
@@ -1943,7 +1945,7 @@ module.exports = (function() {
     'signature: minutes: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setMinutes. Takes a value between 0-59',
+    'A wrapper around `Date.prototype.setMinutes`. Takes a value between 0-59',
     'representing the minutes, and sets the given date\'s minutes to that value.',
     '',
     'Throws a TypeError for values outside this range.',
@@ -1967,7 +1969,7 @@ module.exports = (function() {
     'signature: m: month, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setMonth. Takes a value between 0-11',
+    'A wrapper around `Date.prototype.setMonth`. Takes a value between 0-11',
     'representing the month, and sets the given date\'s month to that value.',
     '  ',
     'Throws a TypeError for values outside this range.',
@@ -1991,7 +1993,7 @@ module.exports = (function() {
     'signature: seconds: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setSeconds. Takes a value between 0-59',
+    'A wrapper around `Date.prototype.setSeconds`. Takes a value between 0-59',
     'representing the seconds, and sets the given date\'s seconds to that value.',
     '',
     'Throws a TypeError for values outside this range.',
@@ -2015,8 +2017,8 @@ module.exports = (function() {
     'signature: day: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a',
-    'Date object and sets the day of the month to the local equivalent of the given',
+    'A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a',
+    '`Date` object and sets the day of the month to the local equivalent of the given',
     'value.',
     '',
     'Throws a TypeError if the value is outside this range, or if the month contains',
@@ -2055,7 +2057,7 @@ module.exports = (function() {
     'signature: hours: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setUTCHours. Takes a value between 0-23',
+    'A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0-23',
     'representing the hour of the day, and sets the hour to the local equivalent of',
     'the given value.',
     '',
@@ -2077,7 +2079,7 @@ module.exports = (function() {
     'signature: milliseconds: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0-999',
+    'A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0-999',
     'representing the milliseconds, and sets the milliseconds to the local equivalent',
     'of the given value.',
     '',
@@ -2099,7 +2101,7 @@ module.exports = (function() {
     'signature: minutes: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0-59',
+    'A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0-59',
     'representing the minutes, and sets the given date\'s minutes to the local',
     'equivalent of that value.',
     '',
@@ -2121,7 +2123,7 @@ module.exports = (function() {
     'signature: month: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setUTCMonth. Takes a value between 0-11',
+    'A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0-11',
     'representing the month, and sets the given date\'s month to the local equivalent',
     'of that value.',
     '',
@@ -2143,7 +2145,7 @@ module.exports = (function() {
     'signature: seconds: number, d: date',
     'classification: date',
     '',
-    'A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0-59',
+    'A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0-59',
     'representing the seconds, and sets the given date\'s seconds to the local',
     'equivalent of that value.',
     '',
@@ -2174,7 +2176,7 @@ module.exports = (function() {
    *
    * Returns: string
    *
-   * A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+   * A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
    * current date and time.
    *
    */
@@ -2192,11 +2194,11 @@ module.exports = (function() {
    * Category: Date
    *
    * Parameter: dateString: string
-   * Returns: date
+   * Returns: Date
    *
-   * A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-   * non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-   * that given in the string.
+   * A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+   * a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+   * represents that given in the string.
    *
    * Examples:
    *   var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -2225,10 +2227,10 @@ module.exports = (function() {
    * Category: Date
    *
    * Parameter: milliseconds: number
-   * Returns: date
+   * Returns: Date
    *
    * A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-   * non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+   * non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
    * milliseconds since the epoch.
    *
    * Examples:
@@ -2259,11 +2261,11 @@ module.exports = (function() {
    *
    * Parameter: year: number
    * Parameter: month: number
-   * Returns: date
+   * Returns: Date
    *
-   * A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-   * type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-   * initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+   * A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+   * or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+   * initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -2285,11 +2287,11 @@ module.exports = (function() {
    * Parameter: year: number
    * Parameter: month: number
    * Parameter: day: number
-   * Returns: date
+   * Returns: Date
    *
    * A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-   * validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-   * are initialized to zero. Returns the new Date.
+   * validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+   * are initialized to zero. Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -2312,11 +2314,11 @@ module.exports = (function() {
    * Parameter: month: number
    * Parameter: day: number
    * Parameter: hour: number
-   * Returns: date
+   * Returns: Date
    *
-   * A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+   * A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
    * hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-   * the Date are initialized to zero. Returns the new Date.
+   * the `Date` are initialized to zero. Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -2340,11 +2342,11 @@ module.exports = (function() {
    * Parameter: day: number
    * Parameter: hour: number
    * Parameter: minute: number
-   * Returns: date
+   * Returns: Date
    *
-   * A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+   * A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
    * and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-   * fields in the Date are initialized to zero. Returns the new Date.
+   * fields in the `Date` are initialized to zero. Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -2369,11 +2371,11 @@ module.exports = (function() {
    * Parameter: hour: number
    * Parameter: minute: number
    * Parameter: second: number
-   * Returns: date
+   * Returns: Date
    *
-   * A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+   * A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
    * the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-   * All other fields in the Date are initialized to zero. Returns the new Date.
+   * All other fields in the `Date` are initialized to zero. Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -2399,11 +2401,11 @@ module.exports = (function() {
    * Parameter: minute: number
    * Parameter: second: number
    * Parameter: millisecond: number
-   * Returns: date
+   * Returns: Date
    *
-   * A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-   * the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-   * the new Date.
+   * A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+   * hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+   * Returns the new `Date`.
    *
    * Examples:
    *   var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -3237,7 +3239,7 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: number
    *
-   * A curried wrapper around Math.min. Takes exactly two arguments.
+   * A curried wrapper around `Math.min`. Takes exactly two arguments.
    *
    * Examples:
    *   funkierJS.min(5, 2); // => 2;
@@ -3259,7 +3261,7 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: number
    *
-   * A curried wrapper around Math.max. Takes exactly two arguments.
+   * A curried wrapper around `Math.max`. Takes exactly two arguments.
    *
    * Examples:
    *   funkierJS.min(5, 2); // => 5;
@@ -3281,9 +3283,9 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: string
    *
-   * A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-   * be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-   * places after the decimal point.
+   * A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+   * should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+   * of places after the decimal point.
    *
    * Examples:
    *   funkierJS.toFixed(2, 1); // => "1.00"
@@ -3304,9 +3306,9 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: string
    *
-   * A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-   * be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-   * specified number of places after the decimal point.
+   * A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+   * (which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+   * with the specified number of places after the decimal point.
    *
    * Examples:
    *   funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -3327,7 +3329,7 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: string
    *
-   * A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+   * A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
    * should be between 1 and 21), and a number. Returns a string representing the number with the specified number
    * of significant digits.
    *
@@ -3352,9 +3354,8 @@ module.exports = (function() {
    * Parameter: y: number
    * Returns: string
    *
-   * A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+   * A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
    * representing the given number in the given base.
-   * of significant digits.
    *
    * Examples:
    *   funkierJS.toBaseAndString(2, 5); // => "101"
@@ -3375,7 +3376,8 @@ module.exports = (function() {
    * Returns: number
    *
    * A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-   * assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+   * assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+   * 10.
    *
    * Examples:
    *   funkierJS.parseInt(101); // => 101
@@ -3559,7 +3561,7 @@ module.exports = (function() {
    *
    * Category: DataTypes
    *
-   * A Nothing is a type of Maybe representing an unsuccessful computation.
+   * A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
    *
    */
 
@@ -3577,7 +3579,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: Just
    *
-   * A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+   * A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
    * Throws when called with no arguments.
    *
    * Examples:
@@ -3612,7 +3614,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true when the given value is a Maybe object, and false otherwise.
+   * Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -3634,7 +3636,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if the given value is the Nothing object, and false otherwise.
+   * Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -3656,7 +3658,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if the given value is a Just object, and false otherwise.
+   * Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -3678,8 +3680,8 @@ module.exports = (function() {
    * Parameter: j: Just
    * Returns: any
    *
-   * Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-   * Just.
+   * Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+   * than a [`Just`](#Just).
    *
    * Examples:
    *   funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -3706,7 +3708,7 @@ module.exports = (function() {
    *
    * Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
    * original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-   * the function is wrapped in a Just and returned.
+   * the function is wrapped in a [`Just`](#Just) and returned.
    *
    * The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
    * curried.
@@ -3824,7 +3826,7 @@ module.exports = (function() {
    * Parameter: prop: string
    * Returns: function
    *
-   * A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+   * A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
    * property on the given object.
    *
    * Examples:
@@ -3848,7 +3850,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: boolean
    *
-   * A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+   * A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
    * object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
    * property.
    *
@@ -3874,7 +3876,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: boolean
    *
-   * A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+   * A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
    * returns true if the given object or some object in the prototype chain has the specified property.
    *
    * Examples:
@@ -3899,7 +3901,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: boolean
    *
-   * A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+   * A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
    * if the function's prototype property is in the prototype chain of the given object.
    *
    * Examples:
@@ -3925,7 +3927,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: boolean
    *
-   * A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+   * A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
    * whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
    *
    * Examples:
@@ -3980,7 +3982,7 @@ module.exports = (function() {
    *
    * Creates an object whose internal prototype property is protoObj, and which has the additional properties described
    * in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-   * form accepted by Object.create, Object.defineProperties etc.
+   * form accepted by `Object.create`, `Object.defineProperties` etc.
    *
    * Examples:
    *   var obj = {};
@@ -4008,8 +4010,8 @@ module.exports = (function() {
    * Parameter: o: objectLike
    * Returns: objectLike
    *
-   * A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-   * object that the property hould be defined on. Returns the object o, after having defined the relevant property
+   * A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+   * the object that the property hould be defined on. Returns the object o, after having defined the relevant property
    * per the descriptor. Throws a TypeError if the descriptor is not an object.
    *
    * Examples:
@@ -4037,7 +4039,7 @@ module.exports = (function() {
    * Parameter: o: objectLike
    * Returns: objectLike
    *
-   * A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+   * A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
    * descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
    * properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
    *
@@ -4068,9 +4070,9 @@ module.exports = (function() {
    * Parameter: o: objectLike
    * Returns: object
    *
-   * A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-   * has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-   * undefined.
+   * A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+   * itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+   * it returns undefined.
    *
    * Examples:
    *   var a = {foo: 42};',
@@ -4096,7 +4098,7 @@ module.exports = (function() {
    *
    * Synonyms: tap
    *
-   * Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+   * Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
    *
    * Examples:
    *   funkierJS.extract('foo', {foo: 42}); // => 42
@@ -4151,8 +4153,8 @@ module.exports = (function() {
    *
    * Synonyms: safeExtract | maybeTap | safeTap
    *
-   * Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-   * either in the object, or its prototype chain, then Nothing is returned.
+   * Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+   * not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
    *
    * Examples:
    *   funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -4249,14 +4251,14 @@ module.exports = (function() {
    * Synonyms: setProp
    *
    * Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-   * o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+   * `o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
    * not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
    * is not already present.
    *
    * Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
    * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-   * to ensure existing values will not be changed.
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+   * one wants to ensure existing values will not be changed.
    *
    * Examples:
    *   var a = {foo: 1};
@@ -4296,14 +4298,14 @@ module.exports = (function() {
    *
    * Synonyms: maybeSet | maybeSetProp | safeSetProp
    *
-   * Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-   * successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-   * object. If unable to modify or create the property, then Nothing will be returned.
+   * Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+   * value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+   * on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
    *
    * Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
    * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-   * to ensure existing values will not be changed.
+   * created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+   * one wants to ensure existing values will not be changed.
    *
    * Examples:
    *   var a = {foo: 1};
@@ -4345,13 +4347,13 @@ module.exports = (function() {
    * Synonyms: modifyProp
    *
    * Sets the given property to the given value on the given object, providing it exists, and returns the object.
-   * Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+   * Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
    * Throws when the property is not writable, when it has no setter function, or when the object is frozen.
    *
-   * Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-   * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-   * where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-   * existing values will not be changed.
+   * Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+   * circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+   * and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+   * one wants to ensure existing values will not be changed.
    *
    * Examples:
    *   var a = {foo: 1};
@@ -4384,9 +4386,9 @@ module.exports = (function() {
    * Synonyms: maybeModify | maybeModifyProp | safeModifyProp
    *
    * Sets the given property to the given value on the given object, providing it exists, and returns the object,
-   * wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-   * created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-   * has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+   * wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+   * not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+   * it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
    *
    * Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
    * Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -4423,14 +4425,14 @@ module.exports = (function() {
    * Returns: objectLike
    *
    * Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-   * o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+   * `o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
    * Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
    * successfully created when it already exists, but only in the prototype chain.
    *
-   * Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-   * Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-   * creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-   * required.
+   * Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+   * circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+   * properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+   * create the property as required.
    *
    * Examples:
    *   var a = {foo: 1};
@@ -4504,7 +4506,7 @@ module.exports = (function() {
    * Returns: objectLike
    *
    * Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-   * delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+   * `delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
    *
    * Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
    * depending on the outcome of the operation.
@@ -4544,9 +4546,9 @@ module.exports = (function() {
    *
    * Synonyms: maybeDelete
    *
-   * Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-   * Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-   * descriptor or the object being frozen or sealed) then Nothing will be returned.
+   * Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+   * value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+   * individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
    *
    * Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
    *
@@ -4581,7 +4583,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: array
    *
-   * A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+   * A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
    * properties. Returns an empty array for non-objects.
    *
    * Examples:
@@ -4608,7 +4610,7 @@ module.exports = (function() {
    * Parameter: obj: objectLike
    * Returns: array
    *
-   * A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+   * A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
    * object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
    * the property names is not defined.
    *
@@ -4643,8 +4645,8 @@ module.exports = (function() {
    * is not defined.
    *
    * Examples:
-   *   funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-   *                                          // native environment
+   *   funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+   *                                          // depending on native environment
    *
    */
 
@@ -4699,8 +4701,8 @@ module.exports = (function() {
    *
    * Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
    * and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-   * from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-   * the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+   * from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+   * of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
    * Non-primitive values are copied by reference.
    *
    * Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -4768,8 +4770,8 @@ module.exports = (function() {
    *
    * Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
    * into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-   * properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-   * afterwards source.foo === dest.foo will be true.
+   * properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+   * afterwards `source.foo === dest.foo` will be true.
    *
    * Examples:
    *   var a = {bar: 1};
@@ -4798,8 +4800,8 @@ module.exports = (function() {
    *
    * Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
    * source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-   * Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-   * source whose value is an object, then afterwards source.foo === dest.foo will be true.
+   * Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+   * source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
    *
    * Examples:
    *   var a = funkierJS.createObject({bar: 1});
@@ -4952,8 +4954,8 @@ module.exports = (function() {
    * Returns: Pair
    *
    * A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-   * new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-   * respectively. The constructor is new-agnostic.
+   * new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+   * [`snd`](#snd) respectively. The constructor is new-agnostic.
    *
    * The constructor is curried: when called with one argument, a function will be returned that expects a second
    * argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -5018,8 +5020,8 @@ module.exports = (function() {
    * Parameter: p: Pair
    * Returns: any
    *
-   * Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-   * called with a non-pair value.
+   * Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+   * constructor. Throws if called with a non-pair value.
    *
    * Examples:
    * var p = new funkierJS.Pair(2, 3);
@@ -5047,8 +5049,8 @@ module.exports = (function() {
    * Parameter: p: Pair
    * Returns: any
    *
-   * Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-   * called with a non-pair value.
+   * Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+   * constructor. Throws if called with a non-pair value.
    *
    * Examples:
    * var p = new funkierJS.Pair(2, 3);
@@ -5075,7 +5077,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if the given value is a Pair, and false otherwise.
+   * Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
    *
    * Examples:
    *   funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -5098,9 +5100,9 @@ module.exports = (function() {
    * Parameter: p: Pair
    * Returns: array
    *
-   * Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-   * the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-   * not a pair.
+   * Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+   * Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+   * Throws a TypeError if p is not a pair.
    *
    * Examples:
    *   funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -5158,8 +5160,8 @@ module.exports = (function() {
    *
    * Category: DataTypes
    *
-   * The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-   * datatype from Haskell, or the Result type from Rust.
+   * The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+   * `Either` datatype from Haskell, or the `Result` type from Rust.
    *
    * Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
    *
@@ -5183,7 +5185,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: Ok
    *
-   * An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+   * An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
    * Throws when called with no arguments.
    *
    * Examples:
@@ -5218,7 +5220,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: Just
    *
-   * An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+   * An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
    * Throws if called without any arguments
    *
    * Examples:
@@ -5254,7 +5256,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true when the given value is a Result object, and false otherwise.
+   * Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -5276,7 +5278,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true when the given value is a Err object, and false otherwise.
+   * Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -5298,7 +5300,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true when the given value is a Ok object, and false otherwise.
+   * Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
    *
    * Examples:
    *   funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -5320,8 +5322,8 @@ module.exports = (function() {
    * Parameter: o: Ok
    * Returns: any
    *
-   * Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-   * Ok.
+   * Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+   * than an [`Ok`](#Ok).
    *
    * Examples:
    *   funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -5346,8 +5348,8 @@ module.exports = (function() {
    * Parameter: e: Err
    * Returns: any
    *
-   * Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-   * Err.
+   * Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+   * than an [`Err`](#Err).
    *
    * Examples:
    *   funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -5373,8 +5375,8 @@ module.exports = (function() {
    * Returns: function
    *
    * Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-   * original. If the function f throws during execution, then the exception will be caught, and an Err object
-   * wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+   * original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+   * wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
    *
    * The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
    * curried.
@@ -5420,9 +5422,10 @@ module.exports = (function() {
    * Parameter: r: Result
    * Returns: function
    *
-   * Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-   * be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-   * with the unwrapped value. In either case, the result of of the called function is returned.
+   * Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+   * value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+   * [`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+   * called function is returned.
    *
    * Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
    * is not a Result.
@@ -5765,7 +5768,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if typeof the given value equals "string", false otherwise.
+   * Returns true if typeof the given value equals `"string"`, false otherwise.
    *
    * Examples:
    *   funkierJS.isString('a'); // => true
@@ -5785,7 +5788,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if typeof the given value equals "boolean", false otherwise.
+   * Returns true if typeof the given value equals `"boolean"`, false otherwise.
    *
    * Examples:
    *   funkierJS.isBoolean(false); // => true
@@ -5805,7 +5808,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if typeof the given value equals "undefined", false otherwise.
+   * Returns true if typeof the given value equals `"undefined"`, false otherwise.
    *
    * Examples:
    *   funkierJS.isUndefined(1); // => false
@@ -5825,7 +5828,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if typeof the given value equals "object", false otherwise.
+   * Returns true if typeof the given value equals `"object"`, false otherwise.
    *
    * Examples:
    *   funkierJS.isObject(null); // => true
@@ -5867,7 +5870,7 @@ module.exports = (function() {
    * Parameter: a: any
    * Returns: boolean
    *
-   * Returns true if the given object is null, false otherwise
+   * Returns true if the given object is `null`, false otherwise
    *
    * Examples:
    *   funkierJS.isNull(null); // => true
@@ -5913,7 +5916,7 @@ module.exports = (function() {
    * Returns: string
    *
    * A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-   * the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+   * the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
    *
    * Examples:
    *   funkierJS.getType({}); // => "object"
@@ -6116,6 +6119,7 @@ module.exports = (function() {
           console.log('An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.');
           console.log('Throws if called without any arguments');
           console.log('');
+          console.log('');
           console.log('Usage: var x = Err(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#err');
@@ -6126,6 +6130,7 @@ module.exports = (function() {
           console.log('');
           console.log('A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.');
           console.log('Throws when called with no arguments.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = Just(a)');
           console.log('');
@@ -6139,6 +6144,7 @@ module.exports = (function() {
           console.log('conditions. Authors can return an instance of the Just constructor when a function executes successfully, and the');
           console.log('Nothing object when an error occurs, or the computation is otherwise unsuccessful.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = Maybe()');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#maybe');
@@ -6149,6 +6155,7 @@ module.exports = (function() {
           console.log('');
           console.log('A Nothing is a type of Maybe representing an unsuccessful computation.');
           console.log('');
+          console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#nothing');
           break;
 
@@ -6157,6 +6164,7 @@ module.exports = (function() {
           console.log('');
           console.log('An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.');
           console.log('Throws when called with no arguments.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = Ok(a)');
           console.log('');
@@ -6167,8 +6175,9 @@ module.exports = (function() {
           console.log('Pair:');
           console.log('');
           console.log('A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a');
-          console.log('new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd');
-          console.log('respectively. The constructor is new-agnostic.');
+          console.log('new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and');
+          console.log('snd respectively. The constructor is new-agnostic.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = Pair(a, b)');
           console.log('');
@@ -6178,8 +6187,9 @@ module.exports = (function() {
         case funkier.Result:
           console.log('Result:');
           console.log('');
-          console.log('The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either');
-          console.log('datatype from Haskell, or the Result type from Rust.');
+          console.log('The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the');
+          console.log('Either datatype from Haskell, or the Result type from Rust.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = Result()');
           console.log('');
@@ -6193,6 +6203,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the addition operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = add(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#add');
@@ -6202,6 +6213,7 @@ module.exports = (function() {
           console.log('and:');
           console.log('');
           console.log('A wrapper around the logical and (&&) operator. Returns the logical and of the given arguments');
+          console.log('');
           console.log('');
           console.log('Usage: var x = and(x, y)');
           console.log('');
@@ -6214,6 +6226,7 @@ module.exports = (function() {
           console.log('Takes two unary predicate functions, and returns a new unary function that, when called, will call the original');
           console.log('functions with the given argument, and logically and their results, returning that value. Throws if either');
           console.log('argument is not a function of arity 1.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = andPred(f1, f2)');
           console.log('');
@@ -6230,6 +6243,7 @@ module.exports = (function() {
           console.log('reported (the function\'s length property will always be 0 or 1 in this case). For a partially applied function,');
           console.log('the amount of arguments not yet supplied will be returned.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = arityOf(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#arityof');
@@ -6238,9 +6252,10 @@ module.exports = (function() {
         case funkier.asArray:
           console.log('asArray:');
           console.log('');
-          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if');
+          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given Pair p. Specifically, if');
           console.log('the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is');
           console.log('not a pair.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = asArray(p)');
           console.log('');
@@ -6256,8 +6271,9 @@ module.exports = (function() {
           console.log('context is permanently bound to the supplied object. The function will be called when sufficient arguments have');
           console.log('been supplied. Superfluous arguments are discarded. It is possible to partially apply the resulting function, and');
           console.log('indeed the further resulting function(s). The resulting function and its partial applications will throw if they');
-          console.log('require at least one argument, but are invoked without any. `bind` throws if the first parameter is not an');
+          console.log('require at least one argument, but are invoked without any. bind throws if the first parameter is not an');
           console.log('an acceptable type for an execution context, or if the last parameter is not a function.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = bind(ctx, f)');
           console.log('');
@@ -6272,9 +6288,10 @@ module.exports = (function() {
           console.log('length. The function will be only called when the specified number of arguments have been supplied. Superfluous');
           console.log('arguments are discarded. It is possible to partially apply the resulting function, and indeed the further');
           console.log('resulting function(s). The resulting function and its partial applications will throw if they require at least');
-          console.log('one argument, but are invoked without any. `bindWithContextAndArity` throws if the arity is not a natural');
+          console.log('one argument, but are invoked without any. bindWithContextAndArity throws if the arity is not a natural');
           console.log('number, if the second parameter is not an acceptable type for an execution context, or if the last parameter is');
           console.log('not a function.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = bindWithContextAndArity(n, ctx, f)');
           console.log('');
@@ -6286,6 +6303,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the bitwise and (&) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = bitwiseAnd(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#bitwiseand');
@@ -6295,6 +6313,7 @@ module.exports = (function() {
           console.log('bitwiseNot:');
           console.log('');
           console.log('A wrapper around the bitwise not (~) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = bitwiseNot(x)');
           console.log('');
@@ -6306,6 +6325,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the bitwise or (&) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = bitwiseOr(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#bitwiseor');
@@ -6315,6 +6335,7 @@ module.exports = (function() {
           console.log('bitwiseXor:');
           console.log('');
           console.log('A wrapper around the bitwise xor (^) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = bitwiseXor(x, y)');
           console.log('');
@@ -6326,6 +6347,7 @@ module.exports = (function() {
           console.log('');
           console.log('A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified');
           console.log('property on the given object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = callProp(prop)');
           console.log('');
@@ -6339,6 +6361,7 @@ module.exports = (function() {
           console.log('requires all the original arguments in their original order, and an object as its final parameter. The returned');
           console.log('function will then try to call the named property on the given object,');
           console.log('');
+          console.log('');
           console.log('Usage: var x = callPropWithArity(prop, arity)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callpropwitharity');
@@ -6351,9 +6374,10 @@ module.exports = (function() {
           console.log('');
           console.log('Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object');
           console.log('and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values');
-          console.log('from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of');
-          console.log('the clone if they are in the prototype chain of the original object. Functions are returned unchanged.');
+          console.log('from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain');
+          console.log('of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.');
           console.log('Non-primitive values are copied by reference.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = clone(obj)');
           console.log('');
@@ -6363,9 +6387,10 @@ module.exports = (function() {
         case funkier.compose:
           console.log('compose:');
           console.log('');
-          console.log('Composes the two functions, returning a new function that consumes one argument, which is passed to `g`. The result');
-          console.log('of that call is then passed to `f`. That result is then returned. Throws if either parameter is not a function, or');
+          console.log('Composes the two functions, returning a new function that consumes one argument, which is passed to g. The result');
+          console.log('of that call is then passed to f. That result is then returned. Throws if either parameter is not a function, or');
           console.log('has arity 0.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = compose(f, g)');
           console.log('');
@@ -6379,6 +6404,7 @@ module.exports = (function() {
           console.log('Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity');
           console.log('zero, or if the value supplied is not an array.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = composeMany(fns)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#composemany');
@@ -6388,9 +6414,10 @@ module.exports = (function() {
           console.log('composeOn:');
           console.log('');
           console.log('Composes the two functions, returning a new function that consumes the specified number of arguments, which are');
-          console.log('then passed to `g`. The result of that call is then passed to `f`. That result is then returned. Throws if the');
+          console.log('then passed to g. The result of that call is then passed to f. That result is then returned. Throws if the');
           console.log('first parameter is not an integer greater than zero, if either parameter is not a function, or if either parameter');
           console.log('has arity 0.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = composeOn(argCount, f, g)');
           console.log('');
@@ -6403,6 +6430,7 @@ module.exports = (function() {
           console.log('Intended to be partially applied, first taking a value, returning a function that takes another parameter');
           console.log('and which always returns the first value.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = constant(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant');
@@ -6413,6 +6441,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns a function of arity zero that when called always returns the supplied value.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = constant0(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant0');
@@ -6422,6 +6451,7 @@ module.exports = (function() {
           console.log('createObject:');
           console.log('');
           console.log('Returns a new object whose internal prototype property is the given object protoObject.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = createObject(protoObject)');
           console.log('');
@@ -6434,6 +6464,7 @@ module.exports = (function() {
           console.log('Creates an object whose internal prototype property is protoObj, and which has the additional properties described');
           console.log('in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the');
           console.log('form accepted by Object.create, Object.defineProperties etc.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = createObjectWithProps(protoObject, descriptorsObject)');
           console.log('');
@@ -6448,6 +6479,7 @@ module.exports = (function() {
           console.log('Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be');
           console.log('successfully created when it already exists, but only in the prototype chain.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = createProp(prop, val, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#createprop');
@@ -6461,8 +6493,9 @@ module.exports = (function() {
           console.log('arguments one at a time, or by passing several arguments at once. The function can also be called with more');
           console.log('arguments than the given function\'s length, but the superfluous arguments will be ignored, and will not be');
           console.log('passed to the original function. If the curried function or any subsequent partial applications require at least');
-          console.log('one argument, then calling the function with no arguments will throw. `curry` throws if its argument is not a');
+          console.log('one argument, then calling the function with no arguments will throw. curry throws if its argument is not a');
           console.log('function. It will also throw if the function is known to be bound to a specific execution context.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = curry(f)');
           console.log('');
@@ -6473,10 +6506,11 @@ module.exports = (function() {
           console.log('curryOwn:');
           console.log('');
           console.log('Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as');
-          console.log('writable: false), then curries the member functions of the object using the [`objectCurry`](#objectCurry) method.');
+          console.log('writable: false), then curries the member functions of the object using the objectCurry method.');
           console.log('If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the');
           console.log('object\'s own properties are affected; those in the prototype chain are unperturbed. Properties with getter/setters');
           console.log('in their descriptor are ignored.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = curryOwn(obj)');
           console.log('');
@@ -6490,9 +6524,10 @@ module.exports = (function() {
           console.log('be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original');
           console.log('function will be called with a null execution context. It is possible to partially apply the resulting function,');
           console.log('and indeed the further resulting function(s). The resulting function and its partial applications will throw if');
-          console.log('they require at least one argument, but are invoked without any. `curryWithArity` throws if the arity is not a');
+          console.log('they require at least one argument, but are invoked without any. curryWithArity throws if the arity is not a');
           console.log('natural number, or if the second parameter is not a function. It will also throw if the given function is known');
           console.log('to be bound to a specific execution context.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = curryWithArity(n, f)');
           console.log('');
@@ -6510,6 +6545,7 @@ module.exports = (function() {
           console.log('are arrays with the same length, any additional properties installed on the arrays are deeply equal, and the items');
           console.log('at each index are themselves deeply equal.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = deepEqual(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#deepequal');
@@ -6522,6 +6558,7 @@ module.exports = (function() {
           console.log('descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the');
           console.log('properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = defineProperties(descriptors, o)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#defineproperties');
@@ -6530,9 +6567,10 @@ module.exports = (function() {
         case funkier.defineProperty:
           console.log('defineProperty:');
           console.log('');
-          console.log('A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the');
-          console.log('object that the property hould be defined on. Returns the object o, after having defined the relevant property');
+          console.log('A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and');
+          console.log('the object that the property hould be defined on. Returns the object o, after having defined the relevant property');
           console.log('per the descriptor. Throws a TypeError if the descriptor is not an object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = defineProperty(prop, descriptor, o)');
           console.log('');
@@ -6544,6 +6582,7 @@ module.exports = (function() {
           console.log('');
           console.log('Deletes the given property from the given the given object, returning the object. Equivalent to evaluating');
           console.log('delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = deleteProp(prop, obj)');
           console.log('');
@@ -6558,6 +6597,7 @@ module.exports = (function() {
           console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
           console.log('is not defined.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = descriptors(obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#descriptors');
@@ -6567,6 +6607,7 @@ module.exports = (function() {
           console.log('div:');
           console.log('');
           console.log('Returns the quotient on dividing x by y.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = div(x, y)');
           console.log('');
@@ -6578,6 +6619,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the division operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = divide(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#divide');
@@ -6586,9 +6628,11 @@ module.exports = (function() {
         case funkier.either:
           console.log('either:');
           console.log('');
-          console.log('Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will');
-          console.log('be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called');
-          console.log('with the unwrapped value. In either case, the result of of the called function is returned.');
+          console.log('Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok');
+          console.log('value, the first function f1 will be called with the unwrapped value.  Otherwise, if the Result is an');
+          console.log('Err value, the second function is called with the unwrapped value. In either case, the result of of the');
+          console.log('called function is returned.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = either(f1, f2, r)');
           console.log('');
@@ -6600,6 +6644,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the non-strict equality (==) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = equals(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#equals');
@@ -6609,6 +6654,7 @@ module.exports = (function() {
           console.log('even:');
           console.log('');
           console.log('Given a number, returns true if it is divisible by 2, and false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = even(x)');
           console.log('');
@@ -6622,6 +6668,7 @@ module.exports = (function() {
           console.log('');
           console.log('A curried wrapper around Math.pow.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = exp(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#exp');
@@ -6632,8 +6679,9 @@ module.exports = (function() {
           console.log('');
           console.log('Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties');
           console.log('into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All');
-          console.log('properties are shallow-copied: in other words, if \'foo\' is a property of source whose value is an object, then');
+          console.log('properties are shallow-copied: in other words, if foo is a property of source whose value is an object, then');
           console.log('afterwards source.foo === dest.foo will be true.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = extend(source, dest)');
           console.log('');
@@ -6645,8 +6693,9 @@ module.exports = (function() {
           console.log('');
           console.log('Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from');
           console.log('source\'s prototype chain are not copied. Any extant properties with the same name are overwritten.');
-          console.log('Returns the modified dest object. All properties are shallow-copied: in other words, if \'foo\' is a property of');
+          console.log('Returns the modified dest object. All properties are shallow-copied: in other words, if foo is a property of');
           console.log('source whose value is an object, then afterwards source.foo === dest.foo will be true.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = extendOwn(source, dest)');
           console.log('');
@@ -6659,6 +6708,7 @@ module.exports = (function() {
           console.log('Synonyms: tap');
           console.log('');
           console.log('Extracts the given property from the given object. Equivalent to evaluating obj[prop].');
+          console.log('');
           console.log('');
           console.log('Usage: var x = extract(prop, obj)');
           console.log('');
@@ -6673,6 +6723,7 @@ module.exports = (function() {
           console.log('Extracts the given property from the given object, unless the property is not found in the object or its prototype');
           console.log('chain, in which case the specified default value is returned.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = extractOrDefault(prop, default, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extractordefault');
@@ -6682,6 +6733,7 @@ module.exports = (function() {
           console.log('flip:');
           console.log('');
           console.log('Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = flip(f)');
           console.log('');
@@ -6693,8 +6745,9 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: first');
           console.log('');
-          console.log('Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if');
-          console.log('called with a non-pair value.');
+          console.log('Accessor function for Pair tuples. Returns the first value that was supplied to the Pair');
+          console.log('constructor. Throws if called with a non-pair value.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = fst(p)');
           console.log('');
@@ -6704,8 +6757,9 @@ module.exports = (function() {
         case funkier.getCurrentTimeString:
           console.log('getCurrentTimeString:');
           console.log('');
-          console.log('A wrapper around calling the Date constructor without the \'new\' operator. Returns a string representing the');
+          console.log('A wrapper around calling the Date constructor without the new operator. Returns a string representing the');
           console.log('current date and time.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getCurrentTimeString()');
           console.log('');
@@ -6715,8 +6769,9 @@ module.exports = (function() {
         case funkier.getDayOfMonth:
           console.log('getDayOfMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the');
-          console.log('month (1-31) of the given date.');
+          console.log('A wrapper around Date.prototype.getDate. Takes a Date object, and returns an integer representing the day of');
+          console.log('the month (1-31) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getDayOfMonth(d)');
           console.log('');
@@ -6726,8 +6781,9 @@ module.exports = (function() {
         case funkier.getDayOfWeek:
           console.log('getDayOfWeek:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the');
+          console.log('A wrapper around Date.prototype.getDay. Takes a Date object, and returns an integer representing the day of the');
           console.log('month (0-6) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getDayOfWeek(d)');
           console.log('');
@@ -6737,8 +6793,9 @@ module.exports = (function() {
         case funkier.getErrValue:
           console.log('getErrValue:');
           console.log('');
-          console.log('Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an');
-          console.log('Err.');
+          console.log('Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other');
+          console.log('than an Err.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getErrValue(e)');
           console.log('');
@@ -6748,8 +6805,9 @@ module.exports = (function() {
         case funkier.getFullYear:
           console.log('getFullYear:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the');
-          console.log('year of the given date.');
+          console.log('A wrapper around Date.prototype.getFullYear. Takes a Date object, and returns a 4-digit integer representing');
+          console.log('the year of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getFullYear(d)');
           console.log('');
@@ -6759,8 +6817,9 @@ module.exports = (function() {
         case funkier.getHours:
           console.log('getHours:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field');
-          console.log('(0-23) of the given date.');
+          console.log('A wrapper around Date.prototype.getHours. Takes a Date object, and returns a integer representing the hour');
+          console.log('field (0-23) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getHours(d)');
           console.log('');
@@ -6770,8 +6829,9 @@ module.exports = (function() {
         case funkier.getJustValue:
           console.log('getJustValue:');
           console.log('');
-          console.log('Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a');
-          console.log('Just.');
+          console.log('Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other');
+          console.log('than a Just.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getJustValue(j)');
           console.log('');
@@ -6781,8 +6841,9 @@ module.exports = (function() {
         case funkier.getMilliseconds:
           console.log('getMilliseconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the');
+          console.log('A wrapper around Date.prototype.getMilliseconds. Takes a Date object, and returns a integer representing the');
           console.log('milliseconds field (0-999) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getMilliseconds(d)');
           console.log('');
@@ -6792,8 +6853,9 @@ module.exports = (function() {
         case funkier.getMinutes:
           console.log('getMinutes:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes');
+          console.log('A wrapper around Date.prototype.getMinutes. Takes a Date object, and returns a integer representing the minutes');
           console.log('field (0-59) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getMinutes(d)');
           console.log('');
@@ -6803,8 +6865,9 @@ module.exports = (function() {
         case funkier.getMonth:
           console.log('getMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month');
+          console.log('A wrapper around Date.prototype.getMonths. Takes a Date object, and returns a integer representing the month');
           console.log('field (0-11) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getMonth(d)');
           console.log('');
@@ -6814,8 +6877,9 @@ module.exports = (function() {
         case funkier.getOkValue:
           console.log('getOkValue:');
           console.log('');
-          console.log('Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an');
-          console.log('Ok.');
+          console.log('Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other');
+          console.log('than an Ok.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getOkValue(o)');
           console.log('');
@@ -6825,9 +6889,10 @@ module.exports = (function() {
         case funkier.getOwnPropertyDescriptor:
           console.log('getOwnPropertyDescriptor:');
           console.log('');
-          console.log('A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself');
-          console.log('has the given property, then the object\'s property descriptor for the given object is returned, otherwise it returns');
-          console.log('undefined.');
+          console.log('A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object');
+          console.log('itself has the given property, then the object\'s property descriptor for the given object is returned, otherwise');
+          console.log('it returns undefined.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getOwnPropertyDescriptor(prop, o)');
           console.log('');
@@ -6841,6 +6906,7 @@ module.exports = (function() {
           console.log('object\'s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of');
           console.log('the property names is not defined.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = getOwnPropertyNames(obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertynames');
@@ -6849,8 +6915,9 @@ module.exports = (function() {
         case funkier.getSeconds:
           console.log('getSeconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds');
+          console.log('A wrapper around Date.prototype.getSeconds. Takes a Date object, and returns a integer representing the seconds');
           console.log('field (0-59) of the given date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getSeconds(d)');
           console.log('');
@@ -6860,8 +6927,9 @@ module.exports = (function() {
         case funkier.getTimezoneOffset:
           console.log('getTimezoneOffset:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between');
-          console.log('the Javascript environment and UTC.');
+          console.log('A wrapper around Date.prototype.getTimezoneOffset. Takes a Date object, and returns the delta in minutes');
+          console.log('between the Javascript environment and UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getTimezoneOffset(d)');
           console.log('');
@@ -6872,7 +6940,8 @@ module.exports = (function() {
           console.log('getType:');
           console.log('');
           console.log('A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing');
-          console.log('the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".');
+          console.log('the object\'s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getType(a)');
           console.log('');
@@ -6882,8 +6951,9 @@ module.exports = (function() {
         case funkier.getUTCDayOfMonth:
           console.log('getUTCDayOfMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of');
+          console.log('A wrapper around Date.prototype.getUTCDate. Takes a Date object, and returns an integer representing the day of');
           console.log('the month (1-31) of the given date, adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCDayOfMonth(d)');
           console.log('');
@@ -6893,8 +6963,9 @@ module.exports = (function() {
         case funkier.getUTCDayOfWeek:
           console.log('getUTCDayOfWeek:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of');
+          console.log('A wrapper around Date.prototype.getUTCDay. Takes a Date object, and returns an integer representing the day of');
           console.log('the week (0-6) of the given date, adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCDayOfWeek(d)');
           console.log('');
@@ -6904,8 +6975,9 @@ module.exports = (function() {
         case funkier.getUTCFullYear:
           console.log('getUTCFullYear:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing');
+          console.log('A wrapper around Date.prototype.getUTCFullYear. Takes a Date object, and returns a 4-digit integer representing');
           console.log('the year of the given date, adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCFullYear(d)');
           console.log('');
@@ -6915,8 +6987,9 @@ module.exports = (function() {
         case funkier.getUTCHours:
           console.log('getUTCHours:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours');
+          console.log('A wrapper around Date.prototype.getUTCHours. Takes a Date object, and returns an integer representing the hours');
           console.log('field of the given date (0-23), adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCHours(d)');
           console.log('');
@@ -6926,8 +6999,9 @@ module.exports = (function() {
         case funkier.getUTCMilliseconds:
           console.log('getUTCMilliseconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the');
-          console.log('milliseconds field of the given date (0-999), adjusted for UTC.');
+          console.log('A wrapper around Date.prototype.getUTCMilliseconds. Takes a Date object, and returns an integer representing');
+          console.log('the milliseconds field of the given date (0-999), adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCMilliseconds(d)');
           console.log('');
@@ -6937,8 +7011,9 @@ module.exports = (function() {
         case funkier.getUTCMinutes:
           console.log('getUTCMinutes:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the');
+          console.log('A wrapper around Date.prototype.getUTCMinutes. Takes a Date object, and returns an integer representing the');
           console.log('minutes field of the given date (0-59), adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCMinutes(d)');
           console.log('');
@@ -6948,8 +7023,9 @@ module.exports = (function() {
         case funkier.getUTCMonth:
           console.log('getUTCMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month');
+          console.log('A wrapper around Date.prototype.getUTCMonth. Takes a Date object, and returns an integer representing the month');
           console.log('field of the given date (0-11), adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCMonth(d)');
           console.log('');
@@ -6959,8 +7035,9 @@ module.exports = (function() {
         case funkier.getUTCSeconds:
           console.log('getUTCSeconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the');
+          console.log('A wrapper around Date.prototype.getUTCSeconds. Takes a Date object, and returns an integer representing the');
           console.log('seconds field of the given date (0-59), adjusted for UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = getUTCSeconds(d)');
           console.log('');
@@ -6974,6 +7051,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the less than or equal (<=) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = greaterThan(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#greaterthan');
@@ -6985,6 +7063,7 @@ module.exports = (function() {
           console.log('Synonyms: gte');
           console.log('');
           console.log('A wrapper around the greater than or equal (=>) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = greaterThanEqual(x, y)');
           console.log('');
@@ -6998,6 +7077,7 @@ module.exports = (function() {
           console.log('object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified');
           console.log('property.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = hasOwnProperty(prop, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasownproperty');
@@ -7006,8 +7086,9 @@ module.exports = (function() {
         case funkier.hasProperty:
           console.log('hasProperty:');
           console.log('');
-          console.log('A curried wrapper around the \'in\' operator. Takes a string representing a property name and an object, and');
+          console.log('A curried wrapper around the in operator. Takes a string representing a property name and an object, and');
           console.log('returns true if the given object or some object in the prototype chain has the specified property.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = hasProperty(prop, obj)');
           console.log('');
@@ -7019,6 +7100,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns the supplied value. Superfluous values are ignored.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = id(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#id');
@@ -7027,8 +7109,9 @@ module.exports = (function() {
         case funkier.instanceOf:
           console.log('instanceOf:');
           console.log('');
-          console.log('A curried wrapper around the \'instanceof\' operator. Takes a constructor function and an object, and returns true');
+          console.log('A curried wrapper around the instanceof operator. Takes a constructor function and an object, and returns true');
           console.log('if the function\'s prototype property is in the prototype chain of the given object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = instanceOf(constructor, obj)');
           console.log('');
@@ -7040,8 +7123,9 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: hasType');
           console.log('');
-          console.log('Given a string that could be returned by the `typeof` operator, and a value, returns true if typeof the given');
+          console.log('Given a string that could be returned by the typeof operator, and a value, returns true if typeof the given');
           console.log('object equals the given string. Throws if the first argument is not a string.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = is(type, value)');
           console.log('');
@@ -7053,6 +7137,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true if the given value is an array, false otherwise');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isArray(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isarray');
@@ -7062,6 +7147,7 @@ module.exports = (function() {
           console.log('isBoolean:');
           console.log('');
           console.log('Returns true if typeof the given value equals "boolean", false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isBoolean(a)');
           console.log('');
@@ -7073,6 +7159,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true when the given value is a Err object, and false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isErr(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#iserr');
@@ -7082,6 +7169,7 @@ module.exports = (function() {
           console.log('isJust:');
           console.log('');
           console.log('Returns true if the given value is a Just object, and false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isJust(a)');
           console.log('');
@@ -7093,6 +7181,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true when the given value is a Maybe object, and false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isMaybe(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#ismaybe');
@@ -7102,6 +7191,7 @@ module.exports = (function() {
           console.log('isNothing:');
           console.log('');
           console.log('Returns true if the given value is the Nothing object, and false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isNothing(a)');
           console.log('');
@@ -7113,6 +7203,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true if the given object is null, false otherwise');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isNull(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isnull');
@@ -7122,6 +7213,7 @@ module.exports = (function() {
           console.log('isNumber:');
           console.log('');
           console.log('Returns true if typeof the given value equals "number", false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isNumber(a)');
           console.log('');
@@ -7133,6 +7225,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true if typeof the given value equals "object", false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isObject(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isobject');
@@ -7143,6 +7236,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true when the given value is a Ok object, and false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isOk(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isok');
@@ -7152,6 +7246,7 @@ module.exports = (function() {
           console.log('isPair:');
           console.log('');
           console.log('Returns true if the given value is a Pair, and false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isPair(a)');
           console.log('');
@@ -7164,6 +7259,7 @@ module.exports = (function() {
           console.log('A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object');
           console.log('whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isPrototypeOf(protoObject, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isprototypeof');
@@ -7172,8 +7268,9 @@ module.exports = (function() {
         case funkier.isRealObject:
           console.log('isRealObject:');
           console.log('');
-          console.log('Returns true if the value is a *real* Javascript object, i.e. an object for which `funkierJS.isObject(a) === true`');
-          console.log('and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.');
+          console.log('Returns true if the value is a real Javascript object, i.e. an object for which funkierJS.isObject(a) === true');
+          console.log('and funkierJS.isNull(a) === false and funkierJS.isArray(a) === false.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isRealObject(a)');
           console.log('');
@@ -7185,6 +7282,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true when the given value is a Result object, and false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isResult(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isresult');
@@ -7195,6 +7293,7 @@ module.exports = (function() {
           console.log('');
           console.log('Returns true if typeof the given value equals "string", false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = isString(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isstring');
@@ -7204,6 +7303,7 @@ module.exports = (function() {
           console.log('isUndefined:');
           console.log('');
           console.log('Returns true if typeof the given value equals "undefined", false otherwise.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = isUndefined(a)');
           console.log('');
@@ -7218,6 +7318,7 @@ module.exports = (function() {
           console.log('key-value pairs for the object\'s own properties. Returns an empty array for non-objects.  The order of the values');
           console.log('is not defined.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = keyValues(obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keyvalues');
@@ -7229,6 +7330,7 @@ module.exports = (function() {
           console.log('A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object\'s own');
           console.log('properties. Returns an empty array for non-objects.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = keys(obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keys');
@@ -7238,6 +7340,7 @@ module.exports = (function() {
           console.log('leftShift:');
           console.log('');
           console.log('A wrapper around the left shift (<<) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = leftShift(x, y)');
           console.log('');
@@ -7251,6 +7354,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the less than (<) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = lessThan(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#lessthan');
@@ -7263,6 +7367,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the less than or equal (<=) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = lessThanEqual(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#lessthanequal');
@@ -7274,6 +7379,7 @@ module.exports = (function() {
           console.log('Returns the logarithm of y in the given base x. Note that this function uses the change of base formula, so may');
           console.log('be subject to rounding errors.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = log(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#log');
@@ -7283,8 +7389,9 @@ module.exports = (function() {
           console.log('makeDateFromMilliseconds:');
           console.log('');
           console.log('A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a');
-          console.log('non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed');
+          console.log('non-numeric argument. Returns a new Date object whose value represents the date which is that many elapsed');
           console.log('milliseconds since the epoch.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = makeDateFromMilliseconds(milliseconds)');
           console.log('');
@@ -7294,9 +7401,10 @@ module.exports = (function() {
         case funkier.makeDateFromString:
           console.log('makeDateFromString:');
           console.log('');
-          console.log('A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a');
-          console.log('non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents');
-          console.log('that given in the string.');
+          console.log('A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with');
+          console.log('a non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value');
+          console.log('represents that given in the string.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = makeDateFromString(dateString)');
           console.log('');
@@ -7310,6 +7418,7 @@ module.exports = (function() {
           console.log('validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date');
           console.log('are initialized to zero. Returns the new Date.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = makeDayDate(year, month, day)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedaydate');
@@ -7321,6 +7430,7 @@ module.exports = (function() {
           console.log('A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the');
           console.log('hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in');
           console.log('the Date are initialized to zero. Returns the new Date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = makeHourDate(year, month, day, hour)');
           console.log('');
@@ -7334,6 +7444,7 @@ module.exports = (function() {
           console.log('original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of');
           console.log('the function is wrapped in a Just and returned.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = makeMaybeReturner(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemaybereturner');
@@ -7342,9 +7453,10 @@ module.exports = (function() {
         case funkier.makeMillisecondDate:
           console.log('makeMillisecondDate:');
           console.log('');
-          console.log('A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,');
-          console.log('the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns');
-          console.log('the new Date.');
+          console.log('A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the');
+          console.log('hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.');
+          console.log('Returns the new Date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = makeMillisecondDate(year, month, day, hour, minute, second, millisecond)');
           console.log('');
@@ -7358,6 +7470,7 @@ module.exports = (function() {
           console.log('and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other');
           console.log('fields in the Date are initialized to zero. Returns the new Date.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = makeMinuteDate(year, month, day, hour, minute)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeminutedate');
@@ -7366,9 +7479,10 @@ module.exports = (function() {
         case funkier.makeMonthDate:
           console.log('makeMonthDate:');
           console.log('');
-          console.log('A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or');
-          console.log('type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are');
+          console.log('A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation');
+          console.log('or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are');
           console.log('initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = makeMonthDate(year, month)');
           console.log('');
@@ -7382,6 +7496,7 @@ module.exports = (function() {
           console.log('original. If the function f throws during execution, then the exception will be caught, and an Err object');
           console.log('wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = makeResultReturner(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeresultreturner');
@@ -7394,6 +7509,7 @@ module.exports = (function() {
           console.log('the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.');
           console.log('All other fields in the Date are initialized to zero. Returns the new Date.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = makeSecondDate(year, month, day, hour, minute, second)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeseconddate');
@@ -7403,6 +7519,7 @@ module.exports = (function() {
           console.log('max:');
           console.log('');
           console.log('A curried wrapper around Math.max. Takes exactly two arguments.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = max(x, y)');
           console.log('');
@@ -7414,8 +7531,9 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: safeExtract, maybeTap, safeTap');
           console.log('');
-          console.log('Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,');
-          console.log('either in the object, or its prototype chain, then Nothing is returned.');
+          console.log('Extracts the given property from the given object, and wraps it in a Just value. When the property is');
+          console.log('not present, either in the object, or its prototype chain, then Nothing is returned.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = maybeExtract(prop, obj)');
           console.log('');
@@ -7426,6 +7544,7 @@ module.exports = (function() {
           console.log('min:');
           console.log('');
           console.log('A curried wrapper around Math.min. Takes exactly two arguments.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = min(x, y)');
           console.log('');
@@ -7441,6 +7560,7 @@ module.exports = (function() {
           console.log('Equivalent to evaluating o[prop] = value. The property will not be created when it doesn\'t exist on the object.');
           console.log('Throws when the property is not writable, when it has no setter function, or when the object is frozen.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = modify(prop, val, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#modify');
@@ -7451,6 +7571,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the multiplication operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = multiply(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#multiply');
@@ -7460,6 +7581,7 @@ module.exports = (function() {
           console.log('not:');
           console.log('');
           console.log('A wrapper around the logical not (!) operator. Returns the logical negation of the given argument.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = not(b)');
           console.log('');
@@ -7473,6 +7595,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the inequality (!=) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = notEqual(a, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#notequal');
@@ -7484,6 +7607,7 @@ module.exports = (function() {
           console.log('Takes a unary predicate function, and returns a new unary function that, when called, will call the original');
           console.log('function with the given argument, and return the negated result. Throws if f is not a function, or has an');
           console.log('arity other than 1.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = notPred(f)');
           console.log('');
@@ -7500,8 +7624,9 @@ module.exports = (function() {
           console.log('Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has');
           console.log('non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some');
           console.log('other function-manipulating function); however the partial applications of the result will throw if they');
-          console.log('require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a');
+          console.log('require at least one argument, but are invoked without any. objectCurry throws if its parameter is not a');
           console.log('function. The resulting function will throw if invoked with an undefined execution context.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = objectCurry(f)');
           console.log('');
@@ -7518,8 +7643,9 @@ module.exports = (function() {
           console.log('of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero');
           console.log('length, it may be called without any arguments for the purpose of establishing an execution context; however');
           console.log('its partial applications throw if they require at least one argument, but are invoked without any.');
-          console.log('`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.');
+          console.log('objectCurryWithArity throws if the arity is not a natural number or if the second parameter is not a function.');
           console.log('The resulting function will throw if invoked with an undefined execution context.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = objectCurryWithArity(n, f)');
           console.log('');
@@ -7531,6 +7657,7 @@ module.exports = (function() {
           console.log('');
           console.log('Given a number, returns true if it is not divisible by 2, and false otherwise.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = odd(x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#odd');
@@ -7540,6 +7667,7 @@ module.exports = (function() {
           console.log('or:');
           console.log('');
           console.log('A wrapper around the logical or (||) operator. Returns the logical or of the given arguments');
+          console.log('');
           console.log('');
           console.log('Usage: var x = or(x, y)');
           console.log('');
@@ -7553,6 +7681,7 @@ module.exports = (function() {
           console.log('functions with the given argument, and logically or their results, returning that value. Throws if either');
           console.log('argument is not a function of arity 1.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = orPred(f1, f2)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#orpred');
@@ -7562,7 +7691,9 @@ module.exports = (function() {
           console.log('parseInt:');
           console.log('');
           console.log('A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it');
-          console.log('assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.');
+          console.log('assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base');
+          console.log('10.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = parseInt(s)');
           console.log('');
@@ -7574,6 +7705,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the remainder (%) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = rem(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rem');
@@ -7584,6 +7716,7 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around the right shift (>>) operator.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = rightShift(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rightshift');
@@ -7593,6 +7726,7 @@ module.exports = (function() {
           console.log('rightShiftZero:');
           console.log('');
           console.log('A wrapper around the left shift (>>>) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = rightShiftZero(x, y)');
           console.log('');
@@ -7610,6 +7744,7 @@ module.exports = (function() {
           console.log('cannot be extended. Note that the property will be successfully created when it already exists, but only in the');
           console.log('prototype chain.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = safeCreateProp(prop, val, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#safecreateprop');
@@ -7620,9 +7755,10 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: maybeDelete');
           console.log('');
-          console.log('Deletes the given property from the given the given object, returning the object wrapped as a Just value.');
-          console.log('Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual');
-          console.log('descriptor or the object being frozen or sealed) then Nothing will be returned.');
+          console.log('Deletes the given property from the given the given object, returning the object wrapped as a Just');
+          console.log('value. Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the');
+          console.log('individual descriptor or the object being frozen or sealed) then Nothing will be returned.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = safeDeleteProp(prop, obj)');
           console.log('');
@@ -7635,9 +7771,10 @@ module.exports = (function() {
           console.log('Synonyms: maybeModify, maybeModifyProp, safeModifyProp');
           console.log('');
           console.log('Sets the given property to the given value on the given object, providing it exists, and returns the object,');
-          console.log('wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be');
-          console.log('created when it doesn\'t exist on the object; nor will it be amended when the property is not writable, when it');
-          console.log('has no setter function, or when the object is frozen. In such cases, Nothing will be returned.');
+          console.log('wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will');
+          console.log('not be created when it doesn\'t exist on the object; nor will it be amended when the property is not writable, when');
+          console.log('it has no setter function, or when the object is frozen. In such cases, Nothing will be returned.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = safeModify(prop, val, obj)');
           console.log('');
@@ -7649,9 +7786,10 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: maybeSet, maybeSetProp, safeSetProp');
           console.log('');
-          console.log('Sets the given property to the given value on the given object, returning the object wrapped in a Just value when');
-          console.log('successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn\'t exist on the');
-          console.log('object. If unable to modify or create the property, then Nothing will be returned.');
+          console.log('Sets the given property to the given value on the given object, returning the object wrapped in a Just');
+          console.log('value when successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn\'t exist');
+          console.log('on the object. If unable to modify or create the property, then Nothing will be returned.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = safeSet(prop, val, obj)');
           console.log('');
@@ -7664,6 +7802,7 @@ module.exports = (function() {
           console.log('Partially applies the binary function f with the given argument x, with x being supplied as the first argument');
           console.log('to f. The given function f will be curried if necessary. Throws if f is not a binary function.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = sectionLeft(f, x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sectionleft');
@@ -7674,6 +7813,7 @@ module.exports = (function() {
           console.log('');
           console.log('Partially applies the binary function f with the given argument x, with x being supplied as the second argument');
           console.log('to f. The given function f will be curried if necessary. Throws if f is not a binary function.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = sectionRight(f, x)');
           console.log('');
@@ -7690,6 +7830,7 @@ module.exports = (function() {
           console.log('not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property');
           console.log('is not already present.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = set(prop, val, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#set');
@@ -7698,10 +7839,11 @@ module.exports = (function() {
         case funkier.setDayOfMonth:
           console.log('setDayOfMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
-          console.log('month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31');
-          console.log('in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date');
+          console.log('A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of');
+          console.log('the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to');
+          console.log('31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given \'Date`');
           console.log('object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setDayOfMonth(day, d)');
           console.log('');
@@ -7714,7 +7856,8 @@ module.exports = (function() {
           console.log('A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given');
           console.log('value. This may cause a change in other fields: for example, setting the year when the month and day represent');
           console.log('February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.');
-          console.log('Returns the given date object.');
+          console.log('Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setFullYear(year, d)');
           console.log('');
@@ -7727,7 +7870,8 @@ module.exports = (function() {
           console.log('A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and');
           console.log('a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the');
           console.log('value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments');
-          console.log('to other fields. Returns the given date object.');
+          console.log('to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setHours(hours, d)');
           console.log('');
@@ -7740,7 +7884,8 @@ module.exports = (function() {
           console.log('A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
           console.log('and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other');
           console.log('fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause');
-          console.log('a cascade of increments to other fields. Returns the given date object.');
+          console.log('a cascade of increments to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setMilliseconds(milliseconds, d)');
           console.log('');
@@ -7750,10 +7895,11 @@ module.exports = (function() {
         case funkier.setMinutes:
           console.log('setMinutes:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
-          console.log('object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a');
+          console.log('Date object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the');
           console.log('value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments');
-          console.log('to other fields. Returns the given date object.');
+          console.log('to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setMinutes(minutes, d)');
           console.log('');
@@ -7765,7 +7911,8 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date');
           console.log('object, and sets the month to the given value. Invalid values will cause a change in other fields: if the');
-          console.log('value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('value > 11, then the year will be incremented by month div 12. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setMonth(month, d)');
           console.log('');
@@ -7775,10 +7922,11 @@ module.exports = (function() {
         case funkier.setSeconds:
           console.log('setSeconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
-          console.log('object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a');
+          console.log('Date object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the');
           console.log('value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments');
-          console.log('to other fields. Returns the given date object.');
+          console.log('to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setSeconds(seconds, d)');
           console.log('');
@@ -7790,7 +7938,8 @@ module.exports = (function() {
           console.log('');
           console.log('A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,');
           console.log('January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and');
-          console.log('time that is that many seconds since the epoch. Returns the given date.');
+          console.log('time that is that many seconds since the epoch. Returns the given Date.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setTimeSinceEpoch(milliseconds, d)');
           console.log('');
@@ -7800,10 +7949,11 @@ module.exports = (function() {
         case funkier.setUTCDayOfMonth:
           console.log('setUTCDayOfMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
-          console.log('month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,');
-          console.log('changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.');
-          console.log('Returns the given date object.');
+          console.log('A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day');
+          console.log('of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for');
+          console.log('example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the');
+          console.log('year. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCDayOfMonth(day, d)');
           console.log('');
@@ -7816,7 +7966,8 @@ module.exports = (function() {
           console.log('A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local');
           console.log('equivalent of the given value. This may cause a change in other fields: for example, setting the year when the');
           console.log('month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not');
-          console.log('a leap year. Returns the given date object.');
+          console.log('a leap year. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCFullYear(year, d)');
           console.log('');
@@ -7827,9 +7978,10 @@ module.exports = (function() {
           console.log('setUTCHours:');
           console.log('');
           console.log('A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and');
-          console.log('a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in');
-          console.log('other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade');
-          console.log('of increments to other fields. Returns the given date object.');
+          console.log('a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change');
+          console.log('in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCHours(hours, d)');
           console.log('');
@@ -7839,10 +7991,12 @@ module.exports = (function() {
         case funkier.setUTCMilliseconds:
           console.log('setUTCMilliseconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
-          console.log('and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause');
-          console.log('a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This');
-          console.log('may in turn cause a cascade of increments to other fields. Returns the given date object.');
+          console.log('A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the');
+          console.log('milliseconds, and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid');
+          console.log('values will cause a change in other fields: if the value > 999, then the seconds will be incremented by');
+          console.log('milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given Date');
+          console.log('object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCMilliseconds(milliseconds, d)');
           console.log('');
@@ -7852,10 +8006,11 @@ module.exports = (function() {
         case funkier.setUTCMinutes:
           console.log('setUTCMinutes:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
-          console.log('object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in');
-          console.log('other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a');
-          console.log('cascade of increments to other fields. Returns the given date object.');
+          console.log('A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a');
+          console.log('Date object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change');
+          console.log('in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCMinutes(minutes, d)');
           console.log('');
@@ -7865,9 +8020,11 @@ module.exports = (function() {
         case funkier.setUTCMonth:
           console.log('setUTCMonth:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date');
-          console.log('object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other');
-          console.log('fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a');
+          console.log('Date object, and sets the month to the local equivalent of the given value. Invalid values will cause a change');
+          console.log('in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given Date');
+          console.log('object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCMonth(month, d)');
           console.log('');
@@ -7877,10 +8034,11 @@ module.exports = (function() {
         case funkier.setUTCSeconds:
           console.log('setUTCSeconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
-          console.log('object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in');
-          console.log('other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a');
-          console.log('cascade of increments to other fields. Returns the local equivalent of the given date object.');
+          console.log('A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a');
+          console.log('Date object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change');
+          console.log('in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause');
+          console.log('a cascade of increments to other fields. Returns the local equivalent of the given Date object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = setUTCSeconds(seconds, d)');
           console.log('');
@@ -7892,8 +8050,9 @@ module.exports = (function() {
           console.log('');
           console.log('Synonyms: second');
           console.log('');
-          console.log('Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if');
-          console.log('called with a non-pair value.');
+          console.log('Accessor function for Pair tuples. Returns the second value that was supplied to the Pair');
+          console.log('constructor. Throws if called with a non-pair value.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = snd(p)');
           console.log('');
@@ -7904,6 +8063,7 @@ module.exports = (function() {
           console.log('strictEquals:');
           console.log('');
           console.log('A wrapper around the strict equality (===) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = strictEquals(a, b)');
           console.log('');
@@ -7916,6 +8076,7 @@ module.exports = (function() {
           console.log('Synonyms: strictNotEquals, strictInequality');
           console.log('');
           console.log('A wrapper around the strict inequality (!==) operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = strictNotEqual(a, b)');
           console.log('');
@@ -7931,6 +8092,7 @@ module.exports = (function() {
           console.log('attempts to convert the string assuming it represents a number in the given base. Returns NaN if the string does');
           console.log('not represent a valid number in the given base.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = stringToInt(base, s)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#stringtoint');
@@ -7940,6 +8102,7 @@ module.exports = (function() {
           console.log('subtract:');
           console.log('');
           console.log('A wrapper around the subtraction operator.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = subtract(x, y)');
           console.log('');
@@ -7953,7 +8116,7 @@ module.exports = (function() {
           console.log('');
           console.log('A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string');
           console.log('representing the given number in the given base.');
-          console.log('of significant digits.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toBaseAndString(x, y)');
           console.log('');
@@ -7963,8 +8126,9 @@ module.exports = (function() {
         case funkier.toDateString:
           console.log('toDateString:');
           console.log('');
-          console.log('A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date');
+          console.log('A wrapper around Date.prototype.toDateString. Takes a Date object, and returns a string representing the date');
           console.log('portion of the object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toDateString(d)');
           console.log('');
@@ -7974,8 +8138,9 @@ module.exports = (function() {
         case funkier.toEpochMilliseconds:
           console.log('toEpochMilliseconds:');
           console.log('');
-          console.log('A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since');
-          console.log('midnight, January 1 1970.');
+          console.log('A wrapper around Date.prototype.getTime. Takes a Date object, and returns the number of milliseconds elapsed');
+          console.log('since midnight, January 1 1970.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toEpochMilliseconds(d)');
           console.log('');
@@ -7985,9 +8150,10 @@ module.exports = (function() {
         case funkier.toExponential:
           console.log('toExponential:');
           console.log('');
-          console.log('A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should');
-          console.log('be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the');
-          console.log('specified number of places after the decimal point.');
+          console.log('A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point');
+          console.log('(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,');
+          console.log('with the specified number of places after the decimal point.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toExponential(x, y)');
           console.log('');
@@ -7997,9 +8163,10 @@ module.exports = (function() {
         case funkier.toFixed:
           console.log('toFixed:');
           console.log('');
-          console.log('A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should');
-          console.log('be between 0 and 20), and a number. Returns a string representing the number but with the specified number of');
-          console.log('places after the decimal point.');
+          console.log('A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which');
+          console.log('should be between 0 and 20), and a number. Returns a string representing the number but with the specified number');
+          console.log('of places after the decimal point.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toFixed(x, y)');
           console.log('');
@@ -8009,8 +8176,9 @@ module.exports = (function() {
         case funkier.toISOString:
           console.log('toISOString:');
           console.log('');
-          console.log('A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date');
-          console.log('in ISO format.');
+          console.log('A wrapper around Date.prototype.toISOString. Takes a Date object, and returns a string representation of the');
+          console.log('date in ISO format.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toISOString(d)');
           console.log('');
@@ -8020,8 +8188,9 @@ module.exports = (function() {
         case funkier.toLocaleDateString:
           console.log('toLocaleDateString:');
           console.log('');
-          console.log('A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date');
+          console.log('A wrapper around Date.prototype.toLocaleDateString. Takes a Date object, and  a string representing the date');
           console.log('portion of the object, formatted according to locale conventions.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toLocaleDateString(d)');
           console.log('');
@@ -8035,6 +8204,7 @@ module.exports = (function() {
           console.log('should be between 1 and 21), and a number. Returns a string representing the number with the specified number');
           console.log('of significant digits.');
           console.log('');
+          console.log('');
           console.log('Usage: var x = toPrecision(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
@@ -8043,8 +8213,9 @@ module.exports = (function() {
         case funkier.toTimeString:
           console.log('toTimeString:');
           console.log('');
-          console.log('A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time');
+          console.log('A wrapper around Date.prototype.toTimeString. Takes a Date object, and returns a string representing the time');
           console.log('portion of the object.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toTimeString(d)');
           console.log('');
@@ -8054,8 +8225,9 @@ module.exports = (function() {
         case funkier.toUTCString:
           console.log('toUTCString:');
           console.log('');
-          console.log('A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the');
+          console.log('A wrapper around Date.prototype.toUTCString. Takes a Date object, and returns a string representation of the');
           console.log('equivalent date in UTC.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = toUTCString(d)');
           console.log('');
@@ -8066,6 +8238,7 @@ module.exports = (function() {
           console.log('xor:');
           console.log('');
           console.log('A wrapper around the logical xor operator. Returns the logical xor of the given arguments');
+          console.log('');
           console.log('');
           console.log('Usage: var x = xor(x, y)');
           console.log('');
@@ -8078,6 +8251,7 @@ module.exports = (function() {
           console.log('Takes two unary predicate functions, and returns a new unary function that, when called, will call the original');
           console.log('functions with the given argument, and logically xor their results, returning that value. Throws if either');
           console.log('argument is not a function of arity 1.');
+          console.log('');
           console.log('');
           console.log('Usage: var x = xorPred(f1, f2)');
           console.log('');

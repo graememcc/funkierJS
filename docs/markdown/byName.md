@@ -10,7 +10,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -26,7 +26,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -49,7 +49,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -61,7 +61,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -79,8 +79,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -98,8 +98,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -200,9 +200,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -405,7 +405,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -451,8 +451,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -479,8 +479,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -532,8 +532,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -609,7 +609,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -631,14 +631,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -826,7 +826,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -848,8 +848,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -870,7 +870,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -943,9 +943,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -1018,8 +1019,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -1038,8 +1039,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -1060,7 +1061,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -1116,8 +1117,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -1130,7 +1131,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -1143,8 +1144,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1160,7 +1161,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -1177,8 +1178,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -1193,8 +1194,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1210,8 +1211,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -1227,8 +1228,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -1243,7 +1244,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -1260,7 +1261,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -1277,7 +1278,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -1294,8 +1295,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -1311,9 +1312,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -1331,7 +1332,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -1349,7 +1350,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -1366,8 +1367,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -1380,7 +1381,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -1395,7 +1396,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -1408,7 +1409,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -1421,7 +1422,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -1434,7 +1435,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -1447,8 +1448,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -1460,7 +1461,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -1473,7 +1474,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -1486,7 +1487,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -1542,7 +1543,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -1561,7 +1562,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -1597,7 +1598,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -1649,7 +1650,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -1664,7 +1665,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -1679,7 +1680,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -1694,7 +1695,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -1709,7 +1710,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -1724,7 +1725,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -1754,7 +1755,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -1769,7 +1770,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -1784,7 +1785,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -1800,7 +1801,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -1834,7 +1835,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -1849,7 +1850,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -1864,7 +1865,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -1885,8 +1886,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -1898,7 +1899,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -1988,10 +1989,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -2005,11 +2006,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -2024,11 +2025,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -2044,11 +2045,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -2065,7 +2066,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -2095,11 +2096,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -2117,11 +2118,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -2135,11 +2136,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -2155,8 +2156,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -2185,11 +2186,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -2205,7 +2206,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -2229,8 +2230,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -2261,7 +2262,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -2281,13 +2282,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -2566,7 +2567,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -2672,9 +2674,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -2700,9 +2702,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -2732,14 +2734,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -2808,14 +2810,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -2831,11 +2833,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -2851,12 +2853,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2873,10 +2875,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2893,10 +2895,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2913,10 +2915,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2933,9 +2935,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2955,10 +2957,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2975,9 +2977,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -2994,10 +2996,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -3010,10 +3012,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -3026,10 +3028,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -3042,10 +3044,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -3058,10 +3061,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -3074,9 +3077,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -3089,10 +3093,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -3109,8 +3113,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -3211,9 +3215,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -3228,7 +3231,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -3245,8 +3248,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -3259,9 +3262,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -3277,9 +3280,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -3294,8 +3297,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -3311,7 +3314,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -3325,7 +3328,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -3342,7 +3345,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -3355,7 +3358,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -3412,7 +3415,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -3428,7 +3431,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -3451,7 +3454,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -3463,7 +3466,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -3481,8 +3484,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -3500,8 +3503,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -3602,9 +3605,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -3807,7 +3810,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -3853,8 +3856,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -3881,8 +3884,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -3934,8 +3937,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -4011,7 +4014,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -4033,14 +4036,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -4228,7 +4231,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -4250,8 +4253,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -4272,7 +4275,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -4345,9 +4348,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -4420,8 +4424,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -4440,8 +4444,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -4462,7 +4466,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -4518,8 +4522,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -4532,7 +4536,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -4545,8 +4549,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -4562,7 +4566,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -4579,8 +4583,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -4595,8 +4599,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -4612,8 +4616,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -4629,8 +4633,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -4645,7 +4649,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -4662,7 +4666,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -4679,7 +4683,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -4696,8 +4700,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -4713,9 +4717,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -4733,7 +4737,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -4751,7 +4755,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -4768,8 +4772,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -4782,7 +4786,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -4797,7 +4801,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -4810,7 +4814,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -4823,7 +4827,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -4836,7 +4840,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -4849,8 +4853,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -4862,7 +4866,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -4875,7 +4879,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -4888,7 +4892,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -4944,7 +4948,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -4963,7 +4967,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -4999,7 +5003,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -5051,7 +5055,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -5066,7 +5070,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -5081,7 +5085,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -5096,7 +5100,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -5111,7 +5115,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -5126,7 +5130,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -5156,7 +5160,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -5171,7 +5175,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -5186,7 +5190,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -5202,7 +5206,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -5236,7 +5240,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -5251,7 +5255,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -5266,7 +5270,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -5287,8 +5291,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -5300,7 +5304,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -5390,10 +5394,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -5407,11 +5411,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -5426,11 +5430,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -5446,11 +5450,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -5467,7 +5471,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -5497,11 +5501,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -5519,11 +5523,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -5537,11 +5541,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -5557,8 +5561,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -5587,11 +5591,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -5607,7 +5611,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -5631,8 +5635,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -5663,7 +5667,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -5683,13 +5687,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -5968,7 +5972,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -6074,9 +6079,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -6102,9 +6107,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -6134,14 +6139,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -6210,14 +6215,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -6233,11 +6238,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -6253,12 +6258,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6275,10 +6280,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6295,10 +6300,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6315,10 +6320,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6335,9 +6340,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6357,10 +6362,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6377,9 +6382,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6396,10 +6401,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -6412,10 +6417,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -6428,10 +6433,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -6444,10 +6449,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -6460,10 +6466,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -6476,9 +6482,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -6491,10 +6498,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -6511,8 +6518,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -6613,9 +6620,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -6630,7 +6636,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -6647,8 +6653,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -6661,9 +6667,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -6679,9 +6685,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -6696,8 +6702,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -6713,7 +6719,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -6727,7 +6733,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -6744,7 +6750,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -6757,7 +6763,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -6814,7 +6820,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -6830,7 +6836,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -6853,7 +6859,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -6865,7 +6871,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -6883,8 +6889,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -6902,8 +6908,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -7004,9 +7010,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -7209,7 +7215,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -7255,8 +7261,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -7283,8 +7289,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -7336,8 +7342,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -7413,7 +7419,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -7435,14 +7441,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -7630,7 +7636,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -7652,8 +7658,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -7674,7 +7680,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -7747,9 +7753,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -7822,8 +7829,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -7842,8 +7849,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -7864,7 +7871,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -7920,8 +7927,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -7934,7 +7941,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -7947,8 +7954,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -7964,7 +7971,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -7981,8 +7988,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -7997,8 +8004,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -8014,8 +8021,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -8031,8 +8038,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -8047,7 +8054,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -8064,7 +8071,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -8081,7 +8088,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -8098,8 +8105,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -8115,9 +8122,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -8135,7 +8142,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -8153,7 +8160,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -8170,8 +8177,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -8184,7 +8191,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -8199,7 +8206,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -8212,7 +8219,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -8225,7 +8232,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -8238,7 +8245,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -8251,8 +8258,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -8264,7 +8271,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -8277,7 +8284,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -8290,7 +8297,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -8346,7 +8353,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -8365,7 +8372,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -8401,7 +8408,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -8453,7 +8460,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -8468,7 +8475,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -8483,7 +8490,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -8498,7 +8505,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -8513,7 +8520,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -8528,7 +8535,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -8558,7 +8565,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -8573,7 +8580,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -8588,7 +8595,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -8604,7 +8611,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -8638,7 +8645,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -8653,7 +8660,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -8668,7 +8675,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -8689,8 +8696,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -8702,7 +8709,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -8792,10 +8799,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -8809,11 +8816,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -8828,11 +8835,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -8848,11 +8855,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -8869,7 +8876,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -8899,11 +8906,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -8921,11 +8928,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -8939,11 +8946,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -8959,8 +8966,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -8989,11 +8996,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -9009,7 +9016,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -9033,8 +9040,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -9065,7 +9072,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -9085,13 +9092,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -9370,7 +9377,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -9476,9 +9484,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -9504,9 +9512,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -9536,14 +9544,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -9612,14 +9620,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -9635,11 +9643,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -9655,12 +9663,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9677,10 +9685,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9697,10 +9705,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9717,10 +9725,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9737,9 +9745,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9759,10 +9767,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9779,9 +9787,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -9798,10 +9806,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -9814,10 +9822,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -9830,10 +9838,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -9846,10 +9854,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -9862,10 +9871,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -9878,9 +9887,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -9893,10 +9903,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -9913,8 +9923,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -10015,9 +10025,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -10032,7 +10041,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -10049,8 +10058,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -10063,9 +10072,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -10081,9 +10090,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -10098,8 +10107,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -10115,7 +10124,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -10129,7 +10138,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -10146,7 +10155,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -10159,7 +10168,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -10216,7 +10225,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -10232,7 +10241,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -10255,7 +10264,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -10267,7 +10276,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -10285,8 +10294,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -10304,8 +10313,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -10406,9 +10415,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -10611,7 +10620,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -10657,8 +10666,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -10685,8 +10694,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -10738,8 +10747,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -10815,7 +10824,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -10837,14 +10846,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -11032,7 +11041,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -11054,8 +11063,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -11076,7 +11085,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -11149,9 +11158,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -11224,8 +11234,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -11244,8 +11254,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -11266,7 +11276,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -11322,8 +11332,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -11336,7 +11346,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -11349,8 +11359,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -11366,7 +11376,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -11383,8 +11393,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -11399,8 +11409,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -11416,8 +11426,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -11433,8 +11443,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -11449,7 +11459,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -11466,7 +11476,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -11483,7 +11493,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -11500,8 +11510,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -11517,9 +11527,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -11537,7 +11547,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -11555,7 +11565,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -11572,8 +11582,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -11586,7 +11596,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -11601,7 +11611,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -11614,7 +11624,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -11627,7 +11637,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -11640,7 +11650,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -11653,8 +11663,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -11666,7 +11676,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -11679,7 +11689,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -11692,7 +11702,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -11748,7 +11758,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -11767,7 +11777,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -11803,7 +11813,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -11855,7 +11865,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -11870,7 +11880,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -11885,7 +11895,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -11900,7 +11910,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -11915,7 +11925,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -11930,7 +11940,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -11960,7 +11970,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -11975,7 +11985,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -11990,7 +12000,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -12006,7 +12016,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -12040,7 +12050,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -12055,7 +12065,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -12070,7 +12080,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -12091,8 +12101,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -12104,7 +12114,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -12194,10 +12204,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -12211,11 +12221,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -12230,11 +12240,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -12250,11 +12260,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -12271,7 +12281,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -12301,11 +12311,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -12323,11 +12333,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -12341,11 +12351,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -12361,8 +12371,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -12391,11 +12401,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -12411,7 +12421,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -12435,8 +12445,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -12467,7 +12477,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -12487,13 +12497,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -12772,7 +12782,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -12878,9 +12889,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -12906,9 +12917,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -12938,14 +12949,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -13014,14 +13025,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -13037,11 +13048,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -13057,12 +13068,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13079,10 +13090,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13099,10 +13110,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13119,10 +13130,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13139,9 +13150,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13161,10 +13172,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13181,9 +13192,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13200,10 +13211,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -13216,10 +13227,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -13232,10 +13243,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -13248,10 +13259,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -13264,10 +13276,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -13280,9 +13292,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -13295,10 +13308,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -13315,8 +13328,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -13417,9 +13430,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -13434,7 +13446,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -13451,8 +13463,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -13465,9 +13477,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -13483,9 +13495,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -13500,8 +13512,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -13517,7 +13529,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -13531,7 +13543,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -13548,7 +13560,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -13561,7 +13573,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -13618,7 +13630,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -13634,7 +13646,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -13657,7 +13669,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -13669,7 +13681,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -13687,8 +13699,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -13706,8 +13718,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -13808,9 +13820,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -14013,7 +14025,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -14059,8 +14071,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -14087,8 +14099,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -14140,8 +14152,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -14217,7 +14229,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -14239,14 +14251,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -14434,7 +14446,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -14456,8 +14468,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -14478,7 +14490,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -14551,9 +14563,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -14626,8 +14639,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -14646,8 +14659,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -14668,7 +14681,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -14724,8 +14737,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -14738,7 +14751,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -14751,8 +14764,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -14768,7 +14781,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -14785,8 +14798,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -14801,8 +14814,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -14818,8 +14831,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -14835,8 +14848,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -14851,7 +14864,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -14868,7 +14881,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -14885,7 +14898,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -14902,8 +14915,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -14919,9 +14932,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -14939,7 +14952,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -14957,7 +14970,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -14974,8 +14987,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -14988,7 +15001,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -15003,7 +15016,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -15016,7 +15029,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -15029,7 +15042,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -15042,7 +15055,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -15055,8 +15068,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -15068,7 +15081,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -15081,7 +15094,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -15094,7 +15107,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -15150,7 +15163,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -15169,7 +15182,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -15205,7 +15218,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -15257,7 +15270,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -15272,7 +15285,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -15287,7 +15300,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -15302,7 +15315,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -15317,7 +15330,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -15332,7 +15345,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -15362,7 +15375,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -15377,7 +15390,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -15392,7 +15405,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -15408,7 +15421,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -15442,7 +15455,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -15457,7 +15470,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -15472,7 +15485,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -15493,8 +15506,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -15506,7 +15519,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -15596,10 +15609,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -15613,11 +15626,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -15632,11 +15645,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -15652,11 +15665,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -15673,7 +15686,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -15703,11 +15716,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -15725,11 +15738,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -15743,11 +15756,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -15763,8 +15776,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -15793,11 +15806,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -15813,7 +15826,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -15837,8 +15850,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -15869,7 +15882,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -15889,13 +15902,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -16174,7 +16187,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -16280,9 +16294,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -16308,9 +16322,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -16340,14 +16354,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -16416,14 +16430,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -16439,11 +16453,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -16459,12 +16473,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16481,10 +16495,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16501,10 +16515,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16521,10 +16535,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16541,9 +16555,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16563,10 +16577,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16583,9 +16597,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16602,10 +16616,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -16618,10 +16632,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -16634,10 +16648,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -16650,10 +16664,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -16666,10 +16681,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -16682,9 +16697,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -16697,10 +16713,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -16717,8 +16733,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -16819,9 +16835,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -16836,7 +16851,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -16853,8 +16868,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -16867,9 +16882,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -16885,9 +16900,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -16902,8 +16917,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -16919,7 +16934,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -16933,7 +16948,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -16950,7 +16965,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -16963,7 +16978,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -17020,7 +17035,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -17036,7 +17051,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -17059,7 +17074,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -17071,7 +17086,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -17089,8 +17104,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -17108,8 +17123,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -17210,9 +17225,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -17415,7 +17430,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -17461,8 +17476,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -17489,8 +17504,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -17542,8 +17557,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -17619,7 +17634,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -17641,14 +17656,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -17836,7 +17851,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -17858,8 +17873,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -17880,7 +17895,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -17953,9 +17968,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -18028,8 +18044,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -18048,8 +18064,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -18070,7 +18086,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -18126,8 +18142,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -18140,7 +18156,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -18153,8 +18169,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -18170,7 +18186,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -18187,8 +18203,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -18203,8 +18219,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -18220,8 +18236,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -18237,8 +18253,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -18253,7 +18269,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -18270,7 +18286,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -18287,7 +18303,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -18304,8 +18320,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -18321,9 +18337,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -18341,7 +18357,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -18359,7 +18375,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -18376,8 +18392,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -18390,7 +18406,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -18405,7 +18421,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -18418,7 +18434,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -18431,7 +18447,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -18444,7 +18460,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -18457,8 +18473,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -18470,7 +18486,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -18483,7 +18499,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -18496,7 +18512,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -18552,7 +18568,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -18571,7 +18587,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -18607,7 +18623,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -18659,7 +18675,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -18674,7 +18690,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -18689,7 +18705,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -18704,7 +18720,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -18719,7 +18735,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -18734,7 +18750,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -18764,7 +18780,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -18779,7 +18795,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -18794,7 +18810,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -18810,7 +18826,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -18844,7 +18860,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -18859,7 +18875,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -18874,7 +18890,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -18895,8 +18911,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -18908,7 +18924,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -18998,10 +19014,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -19015,11 +19031,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -19034,11 +19050,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -19054,11 +19070,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -19075,7 +19091,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -19105,11 +19121,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -19127,11 +19143,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -19145,11 +19161,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -19165,8 +19181,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -19195,11 +19211,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -19215,7 +19231,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -19239,8 +19255,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -19271,7 +19287,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -19291,13 +19307,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -19576,7 +19592,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -19682,9 +19699,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -19710,9 +19727,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -19742,14 +19759,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -19818,14 +19835,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -19841,11 +19858,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -19861,12 +19878,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19883,10 +19900,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19903,10 +19920,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19923,10 +19940,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19943,9 +19960,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19965,10 +19982,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -19985,9 +20002,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -20004,10 +20021,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -20020,10 +20037,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -20036,10 +20053,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -20052,10 +20069,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -20068,10 +20086,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -20084,9 +20102,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -20099,10 +20118,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -20119,8 +20138,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -20221,9 +20240,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -20238,7 +20256,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -20255,8 +20273,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -20269,9 +20287,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -20287,9 +20305,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -20304,8 +20322,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -20321,7 +20339,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -20335,7 +20353,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -20352,7 +20370,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -20365,7 +20383,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
@@ -20422,7 +20440,7 @@ a `any`
 
 Returns: `Just`
 
-An Err is a type of Result representing a unsuccessful computation. The constructor is new-agnostic.
+An Err is a type of [`Result`](#Result) representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments
 
 #### Examples ####
@@ -20438,7 +20456,7 @@ a `any`
 
 Returns: `Just`
 
-A Just is a type of Maybe representing a successful computation. The constructor is new-agnostic.
+A Just is a type of [`Maybe`](#Maybe) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -20461,7 +20479,7 @@ It is an error to call Maybe.
 ### Nothing ###
 Category: DataTypes
 
-A Nothing is a type of Maybe representing an unsuccessful computation.
+A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computation.
 ***
 ### Ok ###
 Category: DataTypes
@@ -20473,7 +20491,7 @@ a `any`
 
 Returns: `Ok`
 
-An Ok is a type of Result representing a successful computation. The constructor is new-agnostic.
+An Ok is a type of [`Result`](#Result) representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.
 
 #### Examples ####
@@ -20491,8 +20509,8 @@ b `any`
 Returns: `Pair`
 
 A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
-new immutable tuple. The contents of the tuple can be accessed with the accessor functions fst and snd
-respectively. The constructor is new-agnostic.
+new immutable tuple. The contents of the tuple can be accessed with the accessor functions [`fst`](#fst) and
+[`snd`](#snd) respectively. The constructor is new-agnostic.
 
 The constructor is curried: when called with one argument, a function will be returned that expects a second
 argument; supplying this function with a value will yield a Pair. Note that the constructor is internally curried
@@ -20510,8 +20528,8 @@ Category: DataTypes
 
 **Usage:** `Result();`
 
-The Result type encapsulates the idea of functions throwing errors. It can be considered equivalent to the Either
-datatype from Haskell, or the Result type from Rust.
+The `Result` type encapsulates the idea of functions throwing errors. It can be considered equivalent to the
+`Either` datatype from Haskell, or the `Result` type from Rust.
 
 Result is the 'base class' of [`Ok`](#Ok) and [`Err`](#Err). It is provided only for the instanceof operator.
 
@@ -20612,9 +20630,9 @@ p `Pair`
 
 Returns: `array`
 
-Takes a pair, and returns a 2-element array containing the values contained in the given pair p. Specifically, if
-the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is
-not a pair.
+Takes a pair, and returns a 2-element array containing the values contained in the given [`Pair`](#Pair) p.
+Specifically, if the resulting array is named arr, then we have `arr[0] === fst(p)` and `arr[1] === snd(p)`.
+Throws a TypeError if p is not a pair.
 
 #### Examples ####
     funkierJS.asArray(funkierJS.Pair(7, 10)); // => [7, 10]',
@@ -20817,7 +20835,7 @@ prop `string`
 
 Returns: `function`
 
-A shorthand for callPropWithArity(prop, 0). Returns a new function that takes an object, and calls the specified
+A shorthand for `callPropWithArity(prop, 0)`. Returns a new function that takes an object, and calls the specified
 property on the given object.
 
 #### Examples ####
@@ -20863,8 +20881,8 @@ Returns: `objectLike`
 
 Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
-from Object.prototype, Array.prototype, will not be copied, but those prototypes will be in the prototype chain of
-the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
+from `Object.prototype`, `Array.prototype`, will not be copied, but those prototypes will be in the prototype chain
+of the clone if they are in the prototype chain of the original object. Functions are returned unchanged.
 Non-primitive values are copied by reference.
 
 Exercise caution when cloning properties that have get/set functions defined in the descriptor: the cloned object
@@ -20891,8 +20909,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
     var f1 = function(a) {return a + 1;};
@@ -20944,8 +20962,8 @@ real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
 If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned function
-will also be considered as having been curried that way, with the correct bound context.
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -21021,7 +21039,7 @@ Returns: `object`
 
 Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
-form accepted by Object.create, Object.defineProperties etc.
+form accepted by `Object.create`, `Object.defineProperties` etc.
 
 #### Examples ####
     var obj = {};
@@ -21043,14 +21061,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be not be modified if it already exists; in that case this method will throw.
+`o[prop] = value`. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
 successfully created when it already exists, but only in the prototype chain.
 
-Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above circumstances.
-Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing properties without
-creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or create the property as
-required.
+Alternatively, one can use [`safeCreateProp`](#safeCreateProp) for a version that will not throw in the above
+circumstances.  Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to modify existing
+properties without creating them, and [`set`](#set) and [`safeSet`](#safeSet) can be used to either modify or
+create the property as required.
 
 #### Examples ####
     var a = {foo: 1};
@@ -21238,7 +21256,7 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperties. Takes an object whose own properties map to property
+A curried wrapper around `Object.defineProperties`. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.
 
@@ -21260,8 +21278,8 @@ o `objectLike`
 
 Returns: `objectLike`
 
-A curried wrapper around Object.defineProperty. Takes a property name string, a property descriptor object and the
-object that the property hould be defined on. Returns the object o, after having defined the relevant property
+A curried wrapper around `Object.defineProperty`. Takes a property name string, a property descriptor object and
+the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.
 
 #### Examples ####
@@ -21282,7 +21300,7 @@ obj `objectLike`
 Returns: `objectLike`
 
 Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
-delete o[prop]. Throws when the property is not configurable, including when the object is frozen or sealed.
+`delete o[prop]`. Throws when the property is not configurable, including when the object is frozen or sealed.
 
 Alternatively, one can use [`safeDeleteProp`](#safeDeleteProp) that will return the appropriate Maybe value
 depending on the outcome of the operation.
@@ -21355,9 +21373,10 @@ r `Result`
 
 Returns: `function`
 
-Takes two functions of arity 1 or greater, and a Result. If the Result is an Ok value, the first function f1 will
-be called with the unwrapped value.  Otherwise, if the Result is an Err value, the second function is called
-with the unwrapped value. In either case, the result of of the called function is returned.
+Takes two functions of arity 1 or greater, and a [`Result`](#Result). If the [`Result`](#Result) is an [`Ok`](#Ok)
+value, the first function f1 will be called with the unwrapped value.  Otherwise, if the [`Result`](#Result) is an
+[`Err`](#Err) value, the second function is called with the unwrapped value. In either case, the result of of the
+called function is returned.
 
 Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.
@@ -21430,8 +21449,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
-properties are shallow-copied: in other words, if 'foo' is a property of source whose value is an object, then
-afterwards source.foo === dest.foo will be true.
+properties are shallow-copied: in other words, if `foo` is a property of source whose value is an object, then
+afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = {bar: 1};
@@ -21450,8 +21469,8 @@ Returns: `objectLike`
 
 Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source's prototype chain are not copied. Any extant properties with the same name are overwritten.
-Returns the modified dest object. All properties are shallow-copied: in other words, if 'foo' is a property of
-source whose value is an object, then afterwards source.foo === dest.foo will be true.
+Returns the modified dest object. All properties are shallow-copied: in other words, if `foo` is a property of
+source whose value is an object, then afterwards `source.foo === dest.foo` will be true.
 
 #### Examples ####
     var a = funkierJS.createObject({bar: 1});
@@ -21472,7 +21491,7 @@ obj `object`
 
 Returns: `any`
 
-Extracts the given property from the given object. Equivalent to evaluating obj[prop].
+Extracts the given property from the given object. Equivalent to evaluating `obj[prop]`.
 
 #### Examples ####
     funkierJS.extract('foo', {foo: 42}); // => 42
@@ -21528,8 +21547,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the first value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the first value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -21542,7 +21561,7 @@ Category: Date
 
 Returns: `string`
 
-A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+A wrapper around calling the Date constructor without the `new` operator. Returns a string representing the
 current date and time.
 ***
 ### getDayOfMonth ###
@@ -21555,8 +21574,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
-month (1-31) of the given date.
+A wrapper around `Date.prototype.getDate`. Takes a `Date` object, and returns an integer representing the day of
+the month (1-31) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -21572,7 +21591,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+A wrapper around `Date.prototype.getDay`. Takes a `Date` object, and returns an integer representing the day of the
 month (0-6) of the given date.
 
 #### Examples ####
@@ -21589,8 +21608,8 @@ e `Err`
 
 Returns: `any`
 
-Returns the value wrapped by the given Err instance e. Throws a TypeError if called with anything other than an
-Err.
+Returns the value wrapped by the given [`Err`](#Err) instance e. Throws a TypeError if called with anything other
+than an [`Err`](#Err).
 
 #### Examples ####
     funkierJS.getErrValue(funkierJS.Err(4)); // => 4',
@@ -21605,8 +21624,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
-year of the given date.
+A wrapper around `Date.prototype.getFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
+the year of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -21622,8 +21641,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
-(0-23) of the given date.
+A wrapper around `Date.prototype.getHours`. Takes a `Date` object, and returns a integer representing the hour
+field (0-23) of the given date.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -21639,8 +21658,8 @@ j `Just`
 
 Returns: `any`
 
-Returns the value wrapped by the given Just instance j. Throws a TypeError if called with anything other than a
-Just.
+Returns the value wrapped by the given [`Just`](#Just) instance j. Throws a TypeError if called with anything other
+than a [`Just`](#Just).
 
 #### Examples ####
     funkierJS.getJustValue(funkierJS.Just(3)); // => 3',
@@ -21655,7 +21674,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+A wrapper around `Date.prototype.getMilliseconds`. Takes a `Date` object, and returns a integer representing the
 milliseconds field (0-999) of the given date.
 
 #### Examples ####
@@ -21672,7 +21691,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+A wrapper around `Date.prototype.getMinutes`. Takes a `Date` object, and returns a integer representing the minutes
 field (0-59) of the given date.
 
 #### Examples ####
@@ -21689,7 +21708,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+A wrapper around `Date.prototype.getMonths`. Takes a `Date` object, and returns a integer representing the month
 field (0-11) of the given date.
 
 #### Examples ####
@@ -21706,8 +21725,8 @@ o `Ok`
 
 Returns: `any`
 
-Returns the value wrapped by the given Ok instance o. Throws a TypeError if called with anything other than an
-Ok.
+Returns the value wrapped by the given [`Ok`](#Ok) instance o. Throws a TypeError if called with anything other
+than an [`Ok`](#Ok).
 
 #### Examples ####
     funkierJS.getOkValue(funkierJS.Ok(3)); // => 3',
@@ -21723,9 +21742,9 @@ o `objectLike`
 
 Returns: `object`
 
-A curried wrapper around Object.getOwnPropertyDescriptor. Takes a property name and an object. If the object itself
-has the given property, then the object's property descriptor for the given object is returned, otherwise it returns
-undefined.
+A curried wrapper around `Object.getOwnPropertyDescriptor`. Takes a property name and an object. If the object
+itself has the given property, then the object's property descriptor for the given object is returned, otherwise
+it returns undefined.
 
 #### Examples ####
     var a = {foo: 42};',
@@ -21743,7 +21762,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.getOwnPropertyNames. Takes an object, and returns an array containing the names of the
+A wrapper around `Object.getOwnPropertyNames`. Takes an object, and returns an array containing the names of the
 object's own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
 the property names is not defined.
 
@@ -21761,7 +21780,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+A wrapper around `Date.prototype.getSeconds`. Takes a `Date` object, and returns a integer representing the seconds
 field (0-59) of the given date.
 
 #### Examples ####
@@ -21778,8 +21797,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
-the Javascript environment and UTC.
+A wrapper around `Date.prototype.getTimezoneOffset`. Takes a `Date` object, and returns the delta in minutes
+between the Javascript environment and UTC.
 ***
 ### getType ###
 Category: Types
@@ -21792,7 +21811,7 @@ a `any`
 Returns: `string`
 
 A functional wrapper around the typeof operator. Takes any Javascript value, and returns a string representing
-the object"s type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
+the object's type: the result will be one of "number", "string", "boolean", "function", "undefined", or "object".
 
 #### Examples ####
     funkierJS.getType({}); // => "object"
@@ -21807,7 +21826,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDate`. Takes a `Date` object, and returns an integer representing the day of
 the month (1-31) of the given date, adjusted for UTC.
 ***
 ### getUTCDayOfWeek ###
@@ -21820,7 +21839,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+A wrapper around `Date.prototype.getUTCDay`. Takes a `Date` object, and returns an integer representing the day of
 the week (0-6) of the given date, adjusted for UTC.
 ***
 ### getUTCFullYear ###
@@ -21833,7 +21852,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+A wrapper around `Date.prototype.getUTCFullYear`. Takes a `Date` object, and returns a 4-digit integer representing
 the year of the given date, adjusted for UTC.
 ***
 ### getUTCHours ###
@@ -21846,7 +21865,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+A wrapper around `Date.prototype.getUTCHours`. Takes a `Date` object, and returns an integer representing the hours
 field of the given date (0-23), adjusted for UTC.
 ***
 ### getUTCMilliseconds ###
@@ -21859,8 +21878,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
-milliseconds field of the given date (0-999), adjusted for UTC.
+A wrapper around `Date.prototype.getUTCMilliseconds`. Takes a `Date` object, and returns an integer representing
+the milliseconds field of the given date (0-999), adjusted for UTC.
 ***
 ### getUTCMinutes ###
 Category: Date
@@ -21872,7 +21891,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCMinutes`. Takes a `Date` object, and returns an integer representing the
 minutes field of the given date (0-59), adjusted for UTC.
 ***
 ### getUTCMonth ###
@@ -21885,7 +21904,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+A wrapper around `Date.prototype.getUTCMonth`. Takes a `Date` object, and returns an integer representing the month
 field of the given date (0-11), adjusted for UTC.
 ***
 ### getUTCSeconds ###
@@ -21898,7 +21917,7 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+A wrapper around `Date.prototype.getUTCSeconds`. Takes a `Date` object, and returns an integer representing the
 seconds field of the given date (0-59), adjusted for UTC.
 ***
 ### greaterThan ###
@@ -21954,7 +21973,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.hasOwnProperty. Takes a string representing a property name and an
+A curried wrapper around `Object.prototype.hasOwnProperty`. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
 property.
 
@@ -21973,7 +21992,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'in' operator. Takes a string representing a property name and an object, and
+A curried wrapper around the `in` operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.
 
 #### Examples ####
@@ -22009,7 +22028,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around the 'instanceof' operator. Takes a constructor function and an object, and returns true
+A curried wrapper around the `instanceof` operator. Takes a constructor function and an object, and returns true
 if the function's prototype property is in the prototype chain of the given object.
 
 #### Examples ####
@@ -22061,7 +22080,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "boolean", false otherwise.
+Returns true if typeof the given value equals `"boolean"`, false otherwise.
 
 #### Examples ####
     funkierJS.isBoolean(false); // => true
@@ -22076,7 +22095,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Err object, and false otherwise.
+Returns true when the given value is a [`Err`](#Err) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isErr(funkierJS.Err(4)); // => true
@@ -22091,7 +22110,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Just object, and false otherwise.
+Returns true if the given value is a [`Just`](#Just) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isJust(funkierJS.Just(42)); // => true
@@ -22106,7 +22125,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Maybe object, and false otherwise.
+Returns true when the given value is a [`Maybe`](#Maybe) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isMaybe(funkierJS.Nothing) && funkierJS.isMaybe(funkierJS.Just(42)); // => true
@@ -22121,7 +22140,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is the Nothing object, and false otherwise.
+Returns true if the given value is the [`Nothing`](#Nothing) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isNothing(funkierJS.Nothing); // => true
@@ -22136,7 +22155,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given object is null, false otherwise
+Returns true if the given object is `null`, false otherwise
 
 #### Examples ####
     funkierJS.isNull(null); // => true
@@ -22166,7 +22185,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "object", false otherwise.
+Returns true if typeof the given value equals `"object"`, false otherwise.
 
 #### Examples ####
     funkierJS.isObject(null); // => true
@@ -22181,7 +22200,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Ok object, and false otherwise.
+Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isOk(funkierJS.Ok('foo)); // => true
@@ -22196,7 +22215,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if the given value is a Pair, and false otherwise.
+Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 
 #### Examples ####
     funkierJS.isPair(funkierJS.Pair(2, 3)); // => True
@@ -22212,7 +22231,7 @@ obj `objectLike`
 
 Returns: `boolean`
 
-A curried wrapper around Object.prototype.isPrototypeOf. Takes two objects: the prototype object, and the object
+A curried wrapper around `Object.prototype.isPrototypeOf`. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.
 
 #### Examples ####
@@ -22246,7 +22265,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true when the given value is a Result object, and false otherwise.
+Returns true when the given value is a [`Result`](#Result) object, and false otherwise.
 
 #### Examples ####
     funkierJS.isResult(funkierJS.Ok(3)) && funkierJS.isResult(funkierJS.Err(false)); // => true
@@ -22261,7 +22280,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "string", false otherwise.
+Returns true if typeof the given value equals `"string"`, false otherwise.
 
 #### Examples ####
     funkierJS.isString('a'); // => true
@@ -22276,7 +22295,7 @@ a `any`
 
 Returns: `boolean`
 
-Returns true if typeof the given value equals "undefined", false otherwise.
+Returns true if typeof the given value equals `"undefined"`, false otherwise.
 
 #### Examples ####
     funkierJS.isUndefined(1); // => false
@@ -22297,8 +22316,8 @@ key-value pairs for the object's own properties. Returns an empty array for non-
 is not defined.
 
 #### Examples ####
-    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]] depending on
-                                           // native environment
+    funkierJS.keyValues({foo: 1, bar: 2}); // => returns [['foo', 1], ['bar', 2]] or [['bar', 2], ['foo', 1]]
+                                           // depending on native environment
 ***
 ### keys ###
 Category: Object
@@ -22310,7 +22329,7 @@ obj `objectLike`
 
 Returns: `array`
 
-A wrapper around Object.keys. Takes an object, and returns an array containing the names of the object's own
+A wrapper around `Object.keys`. Takes an object, and returns an array containing the names of the object's own
 properties. Returns an empty array for non-objects.
 
 #### Examples ####
@@ -22400,10 +22419,10 @@ Category: Date
 Parameters:  
 milliseconds `number`
 
-Returns: `date`
+Returns: `Date`
 
 A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
-non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+non-numeric argument. Returns a new `Date` object whose value represents the date which is that many elapsed
 milliseconds since the epoch.
 
 #### Examples ####
@@ -22417,11 +22436,11 @@ Category: Date
 Parameters:  
 dateString `string`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
-non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
-that given in the string.
+A wrapper around calling the `Date` constructor with a single string argument. Throws a TypeError when called with
+a non-string argument, or a string that cannot be parsed as a date. Returns a new `Date` object whose value
+represents that given in the string.
 
 #### Examples ####
     var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
@@ -22436,11 +22455,11 @@ year `number`
 month `number`  
 day `number`
 
-Returns: `date`
+Returns: `Date`
 
 A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
-validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
-are initialized to zero. Returns the new Date.
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date`
+are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
@@ -22456,11 +22475,11 @@ month `number`
 day `number`  
 hour `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+A curried wrapper around calling the `Date` constructor with four arguments: the year, the month, the day and the
 hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
-the Date are initialized to zero. Returns the new Date.
+the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
@@ -22477,7 +22496,7 @@ Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
 original. If the function f throws during execution, then the Nothing object is returned. Otherwise the result of
-the function is wrapped in a Just and returned.
+the function is wrapped in a [`Just`](#Just) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -22507,11 +22526,11 @@ minute `number`
 second `number`  
 millisecond `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
-the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
-the new Date.
+A curried wrapper around calling the `Date` constructor with seven arguments: the year, the month, the day, the
+hour, the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters.
+Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
@@ -22529,11 +22548,11 @@ day `number`
 hour `number`  
 minute `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+A curried wrapper around calling the `Date` constructor with five arguments: the year, the month, the day, the hour
 and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
-fields in the Date are initialized to zero. Returns the new Date.
+fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
@@ -22547,11 +22566,11 @@ Parameters:
 year `number`  
 month `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
-type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
-initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+A curried wrapper around calling the `Date` constructor with two arguments: the year and the month. No validation
+or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the `Date` are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
@@ -22567,8 +22586,8 @@ f `function`
 Returns: `function`
 
 Takes a function f. Returns a new function with the same arity as f. When called, the new function calls the
-original. If the function f throws during execution, then the exception will be caught, and an Err object
-wrapping the exception is returned. Otherwise the result of the function is wrapped in an Ok and returned.
+original. If the function f throws during execution, then the exception will be caught, and an [`Err`](#Err) object
+wrapping the exception is returned. Otherwise the result of the function is wrapped in an [`Ok`](#Ok) and returned.
 
 The function will be curried in the same style as the original, or using [`curry`](#curry) if the function was not
 curried.
@@ -22597,11 +22616,11 @@ hour `number`
 minute `number`  
 second `number`
 
-Returns: `date`
+Returns: `Date`
 
-A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+A curried wrapper around calling the `Date` constructor with six arguments: the year, the month, the day, the hour,
 the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
-All other fields in the Date are initialized to zero. Returns the new Date.
+All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 
 #### Examples ####
     var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
@@ -22617,7 +22636,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.max. Takes exactly two arguments.
+A curried wrapper around `Math.max`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 5;
@@ -22641,8 +22660,8 @@ obj `object`
 
 Returns: `Maybe`
 
-Extracts the given property from the given object, and wraps it in a Just value. When the property is not present,
-either in the object, or its prototype chain, then Nothing is returned.
+Extracts the given property from the given object, and wraps it in a [`Just`](#Just) value. When the property is
+not present, either in the object, or its prototype chain, then [`Nothing`](#Nothing) is returned.
 
 #### Examples ####
     funkierJS.maybeExtract('foo', {}); // => Nothing
@@ -22673,7 +22692,7 @@ y `number`
 
 Returns: `number`
 
-A curried wrapper around Math.min. Takes exactly two arguments.
+A curried wrapper around `Math.min`. Takes exactly two arguments.
 
 #### Examples ####
     funkierJS.min(5, 2); // => 2;
@@ -22693,13 +22712,13 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object.
-Equivalent to evaluating o[prop] = value. The property will not be created when it doesn't exist on the object.
+Equivalent to evaluating `o[prop] = value`. The property will not be created when it doesn't exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.
 
-Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above circumstances.
-Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
-where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants to ensure
-existing values will not be changed.
+Alternatively, one can use [`safeModify`](#safeModify) for a version that will not throw in the above
+circumstances.  Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties
+and create them where required, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -22978,7 +22997,8 @@ s `string`
 Returns: `number`
 
 A curried wrapper around parseInt when called with one argument. Takes a string and attempts to convert it
-assuming it represents a number in base 10. Returns NaN if the string does not represent a valid number in base 10.
+assuming it represents a number in base 10. Returns `NaN` if the string does not represent a valid number in base
+10.
 
 #### Examples ####
     funkierJS.parseInt(101); // => 101
@@ -23084,9 +23104,9 @@ obj `objectLike`
 
 Returns: `objectLike`
 
-Deletes the given property from the given the given object, returning the object wrapped as a Just value.
-Equivalent to evaluating delete o[prop]. When the property is not configurable (either due to the individual
-descriptor or the object being frozen or sealed) then Nothing will be returned.
+Deletes the given property from the given the given object, returning the object wrapped as a [`Just`](#Just)
+value. Equivalent to evaluating `delete o[prop]`. When the property is not configurable (either due to the
+individual descriptor or the object being frozen or sealed) then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`delete`](#delete) that will return not wrap the object, and throw on error.
 
@@ -23112,9 +23132,9 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, providing it exists, and returns the object,
-wrapped in a Just value when successful. Equivalent to evaluating o[prop] = value. The property will not be
-created when it doesn't exist on the object; nor will it be amended when the property is not writable, when it
-has no setter function, or when the object is frozen. In such cases, Nothing will be returned.
+wrapped in a [`Just`](#Just) value when successful. Equivalent to evaluating `o[prop] = value`. The property will
+not be created when it doesn't exist on the object; nor will it be amended when the property is not writable, when
+it has no setter function, or when the object is frozen. In such cases, [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`modify`](#modify) for a version that will throw in the above circumstances.
 Similarly, [`set`](#set) and [`safeSet`](#safeSet) can be used to both modify existing properties and create them
@@ -23144,14 +23164,14 @@ obj `objectLike`
 
 Returns: `Maybe`
 
-Sets the given property to the given value on the given object, returning the object wrapped in a Just value when
-successful. Equivalent to evaluating o[prop] = value. The property will be created if it doesn't exist on the
-object. If unable to modify or create the property, then Nothing will be returned.
+Sets the given property to the given value on the given object, returning the object wrapped in a [`Just`](#Just)
+value when successful. Equivalent to evaluating `o[prop] = value`. The property will be created if it doesn't exist
+on the object. If unable to modify or create the property, then [`Nothing`](#Nothing) will be returned.
 
 Alternatively, one can use [`set`](#set) for a version that will throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -23220,14 +23240,14 @@ obj `objectLike`
 Returns: `objectLike`
 
 Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
-o[prop] = value. The property will be created if it doesn't exist on the object. Throws when the property is
+`o[prop] = value`. The property will be created if it doesn't exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
 is not already present.
 
 Alternatively, one can use [`safeSet`](#safeSet) for a version that will not throw in the above circumstances.
 Similarly, [`modify`](#modify) and [`safeModify`](#safeModify) can be used to guarantee the property is not
-created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when one wants
-to ensure existing values will not be changed.
+created when it does not exist, or [`create`](#create) and [`safeCreateProp`](#safeCreateProp) can be used when
+one wants to ensure existing values will not be changed.
 
 #### Examples ####
     var a = {foo: 1};
@@ -23243,11 +23263,11 @@ Parameters:
 day `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
-in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+A wrapper around `Date.prototype.setDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day of
+the month to the given value. Invalid values will cause a change in other fields: for example, changing the day to
+31 in a month with 30 days will increment the month, which may in turn increment the year. Returns the given 'Date`
 object.
 
 #### Examples ####
@@ -23263,12 +23283,12 @@ Parameters:
 year `number`  
 d `Date`
 
-Returns: `date`
+Returns: `Date`
 
-A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+A wrapper around `Date.prototype.setFullYear`. Takes a value and a `Date` object, and sets the year to the given
 value. This may cause a change in other fields: for example, setting the year when the month and day represent
 February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
-Returns the given date object.
+Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23285,10 +23305,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
 value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23305,10 +23325,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+A wrapper around `Date.prototype.setMilliseconds`. Takes a value between 0 and 999 representing the milliseconds,
+and a `Date` object, and sets the milliseconds to the given value. Invalid values will cause a change in other
 fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
-a cascade of increments to other fields. Returns the given date object.
+a cascade of increments to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23325,10 +23345,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23345,9 +23365,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+A wrapper around `Date.prototype.setMonth`. Takes a value between 0 and 11 representing the month, and a `Date`
 object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
-value > 11, then the year will be incremented by month div 12. Returns the given date object.
+value > 11, then the year will be incremented by month div 12. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23367,10 +23387,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+A wrapper around `Date.prototype.setSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
 value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
-to other fields. Returns the given date object.
+to other fields. Returns the given `Date` object.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23387,9 +23407,9 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+A wrapper around `Date.prototype.setTime`. Takes a value representing the number of seconds since midnight,
 January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
-time that is that many seconds since the epoch. Returns the given date.
+time that is that many seconds since the epoch. Returns the given `Date`.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23406,10 +23426,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
-month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
-changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
-Returns the given date object.
+A wrapper around `Date.prototype.setUTCDate`. Takes a value between 1 and 31, and a `Date` object, and sets the day
+of the month to the local equivalent of the given value. Invalid values will cause a change in other fields: for
+example, changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the
+year. Returns the given `Date` object.
 ***
 ### setUTCFullYear ###
 Category: Date
@@ -23422,10 +23442,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+A wrapper around `Date.prototype.setUTCFullYear`. Takes a value and a `Date` object, and sets the year to the local
 equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
 month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
-a leap year. Returns the given date object.
+a leap year. Returns the given `Date` object.
 ***
 ### setUTCHours ###
 Category: Date
@@ -23438,10 +23458,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
-a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
-of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCHours`. Takes a value between 0 and 23 representing the hour of the day, and
+a `Date` object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMilliseconds ###
 Category: Date
@@ -23454,10 +23474,11 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
-and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
-a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
-may in turn cause a cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMilliseconds`. Takes a value between 0 and 999 representing the
+milliseconds, and a `Date` object, and sets the milliseconds to the local equivalent of the given value. Invalid
+values will cause a change in other fields: if the value > 999, then the seconds will be incremented by
+milliseconds div 1000. This may in turn cause a cascade of increments to other fields. Returns the given `Date`
+object.
 ***
 ### setUTCMinutes ###
 Category: Date
@@ -23470,10 +23491,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
-object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
-cascade of increments to other fields. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMinutes`. Takes a value between 0 and 59 representing the minutes, and a
+`Date` object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given `Date` object.
 ***
 ### setUTCMonth ###
 Category: Date
@@ -23486,9 +23507,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
-object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
-fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+A wrapper around `Date.prototype.setUTCMonth`. Takes a value between 0 and 11 representing the month, and a
+`Date` object, and sets the month to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 11, then the year will be incremented by month div 12. Returns the given `Date`
+object.
 ***
 ### setUTCSeconds ###
 Category: Date
@@ -23501,10 +23523,10 @@ d `Date`
 
 Returns: `date`
 
-A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
-object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
-other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
-cascade of increments to other fields. Returns the local equivalent of the given date object.
+A wrapper around `Date.prototype.setUTCSeconds`. Takes a value between 0 and 59 representing the seconds, and a
+`Date` object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change
+in other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause
+a cascade of increments to other fields. Returns the local equivalent of the given `Date` object.
 ***
 ### shallowClone ###
 See `clone`
@@ -23521,8 +23543,8 @@ p `Pair`
 
 Returns: `any`
 
-Accessor function for pair tuples. Returns the second value that was supplied to the pair constructor. Throws if
-called with a non-pair value.
+Accessor function for [`Pair`](#Pair) tuples. Returns the second value that was supplied to the [`Pair`](#Pair)
+constructor. Throws if called with a non-pair value.
 
 #### Examples ####
     var p = new funkierJS.Pair(2, 3);
@@ -23623,9 +23645,8 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toString. Takes a base between 2 and 36, and a number. Returns a string
+A curried wrapper around `Number.prototype.toString`. Takes a base between 2 and 36, and a number. Returns a string
 representing the given number in the given base.
-of significant digits.
 
 #### Examples ####
     funkierJS.toBaseAndString(2, 5); // => "101"
@@ -23640,7 +23661,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+A wrapper around `Date.prototype.toDateString`. Takes a `Date` object, and returns a string representing the date
 portion of the object.
 
 #### Examples ####
@@ -23657,8 +23678,8 @@ d `Date`
 
 Returns: `number`
 
-A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
-midnight, January 1 1970.
+A wrapper around `Date.prototype.getTime`. Takes a `Date` object, and returns the number of milliseconds elapsed
+since midnight, January 1 1970.
 ***
 ### toExponential ###
 Category: Maths
@@ -23671,9 +23692,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toExponential. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number in exponential notation, with the
-specified number of places after the decimal point.
+A curried wrapper around `Number.prototype.toExponential`. Takes the number of digits after the decimal point
+(which should be between 0 and 20), and a number. Returns a string representing the number in exponential notation,
+with the specified number of places after the decimal point.
 
 #### Examples ####
     funkierJS.toExponential(3, 1); // => "1.000e+0"
@@ -23689,9 +23710,9 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toFixed. Takes the number of digits after the decimal point (which should
-be between 0 and 20), and a number. Returns a string representing the number but with the specified number of
-places after the decimal point.
+A curried wrapper around `Number.prototype.toFixed`. Takes the number of digits after the decimal point (which
+should be between 0 and 20), and a number. Returns a string representing the number but with the specified number
+of places after the decimal point.
 
 #### Examples ####
     funkierJS.toFixed(2, 1); // => "1.00"
@@ -23706,8 +23727,8 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
-in ISO format.
+A wrapper around `Date.prototype.toISOString`. Takes a `Date` object, and returns a string representation of the
+date in ISO format.
 
 #### Examples ####
     var a = new Date(2000, 1, 15, 10, 11, 12, 13);
@@ -23723,7 +23744,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+A wrapper around `Date.prototype.toLocaleDateString`. Takes a `Date` object, and  a string representing the date
 portion of the object, formatted according to locale conventions.
 ***
 ### toPrecision ###
@@ -23737,7 +23758,7 @@ y `number`
 
 Returns: `string`
 
-A curried wrapper around Number.prototype.toPrecision. Takes the number of digits significant digits (which
+A curried wrapper around `Number.prototype.toPrecision`. Takes the number of digits significant digits (which
 should be between 1 and 21), and a number. Returns a string representing the number with the specified number
 of significant digits.
 
@@ -23754,7 +23775,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+A wrapper around `Date.prototype.toTimeString`. Takes a `Date` object, and returns a string representing the time
 portion of the object.
 ***
 ### toUTCString ###
@@ -23767,7 +23788,7 @@ d `Date`
 
 Returns: `string`
 
-A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
 ### xor ###
