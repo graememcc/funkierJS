@@ -1942,6 +1942,10 @@ module.exports = (function () {
   // Property that records the context with which the function was curried
   var contextProp = '_context';
 
+  // Indicator that a function has been object curried but not yet acquired a context
+  var objectCurryContext = {};
+
+
   /*
    * Ostensibly an internal helper function to detect whether or not a function is curried. It does however, have to
    * be installed as a property of arityOf, as some of the auto-generated tests require it.
@@ -1988,7 +1992,7 @@ module.exports = (function () {
         var callContext = context;
 
         // Acquire context if objectCurried
-        if (callContext === undefined) {
+        if (callContext === objectCurryContext) {
           if (this === undefined)
             throw new Error('Object curried function called without a context');
 
@@ -2005,24 +2009,31 @@ module.exports = (function () {
       var args = [].slice.call(arguments);
       var callContext = context;
 
-      // Throw if we expected arguments and didn't receive any
+      // Throw if we expected arguments and didn't receive any, unless the function was objectCurried, in which case
+      // we allow such a call to establish the execution context
       if (args.length === 0) {
+        if (callContext === objectCurryContext) {
+          if (this === undefined)
+            throw new Error('Object curried function called without a context');
+          return curryInternal(this, length, fn);
+        }
+
         var errText = length === 1 ? '1 argument' : ('1 - ' + length + ' arguments');
         throw new Error('This function requires ' + errText);
+      }
+
+      // Acquire context if object-curried
+      if (callContext === objectCurryContext) {
+        if (this === undefined)
+          throw new Error('Object curried function called without a context');
+
+        callContext = this;
       }
 
       // If we have more arguments than we need, drop the extra ones on the floor
       // (the function will be called when we fall through to the next conditional)
       if (args.length > length)
         args = args.slice(0, length);
-
-      // Acquire context if object-curried
-      if (callContext === undefined) {
-        if (this === undefined)
-          throw new Error('Object curried function called without a context');
-
-        callContext = this;
-      }
 
       // If we have enough arguments, call the underlying function
       if (args.length === length)
@@ -2351,7 +2362,9 @@ module.exports = (function () {
    * first arguments are supplied. This means that when partially applying the function, the resulting functions will
    * have their execution context permanently bound. This method of binding is designed for currying functions that
    * exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-   * Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+   * Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+   * non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+   * other function-manipulating function); however the partial applications of the result will throw if they
    * require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
    * function. The resulting function will throw if invoked with an undefined execution context.
    *
@@ -2414,10 +2427,11 @@ module.exports = (function () {
    * active when the first arguments are supplied. This means that when partially applying the function, the
    * resulting functions will have their execution context permanently bound. This method of binding is designed for
    * currying functions that exist on an object's prototype. The function will be only called when the specified number
-   * of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-   * applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-   * throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-   * will throw if invoked with an undefined execution context.
+   * of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+   * length, it may be called without any arguments for the purpose of establishing an execution context; however
+   * its partial applications throw if they require at least one argument, but are invoked without any.
+   * `objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+   * The resulting function will throw if invoked with an undefined execution context.
    *
    * The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
    * length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -2461,7 +2475,7 @@ module.exports = (function () {
   // TODO: Need better examples
   // TODO: Revisit examples in this file once object functions implemented (use funkierJS equivalents
   //       rather than Object.create, [].slice, etc...)
-  var objectCurryWithArity = curry(curryInternal.bind(null, undefined));
+  var objectCurryWithArity = curry(curryInternal.bind(null, objectCurryContext));
 
 
   /*
@@ -2512,8 +2526,8 @@ module.exports = (function () {
     var contexts = [pred1, pred2].map(function(p) { return isCurried(p) ? p[contextProp] : null; });
 
     var contextToApply;
-    if (contexts.indexOf(undefined) !== -1) {
-      contextToApply = undefined;
+    if (contexts.indexOf(objectCurryContext) !== -1) {
+      contextToApply = objectCurryContext;
     } else if (contexts[0] === contexts[1]) {
       contextToApply = contexts[0];
     } else {
@@ -9047,7 +9061,9 @@ module.exports = (function() {
           console.log('first arguments are supplied. This means that when partially applying the function, the resulting functions will');
           console.log('have their execution context permanently bound. This method of binding is designed for currying functions that');
           console.log('exist on an object\'s prototype. The function will be only called when sufficient arguments have been supplied.');
-          console.log('Superfluous arguments are discarded. The resulting function and its partial applications will throw if they');
+          console.log('Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has');
+          console.log('non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some');
+          console.log('other function-manipulating function); however the partial applications of the result will throw if they');
           console.log('require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a');
           console.log('function. The resulting function will throw if invoked with an undefined execution context.');
           console.log('');
@@ -9063,10 +9079,11 @@ module.exports = (function() {
           console.log('active when the first arguments are supplied. This means that when partially applying the function, the');
           console.log('resulting functions will have their execution context permanently bound. This method of binding is designed for');
           console.log('currying functions that exist on an object\'s prototype. The function will be only called when the specified number');
-          console.log('of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial');
-          console.log('applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`');
-          console.log('throws if the arity is not a natural number or if the second parameter is not a function. The resulting function');
-          console.log('will throw if invoked with an undefined execution context.');
+          console.log('of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero');
+          console.log('length, it may be called without any arguments for the purpose of establishing an execution context; however');
+          console.log('its partial applications throw if they require at least one argument, but are invoked without any.');
+          console.log('`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.');
+          console.log('The resulting function will throw if invoked with an undefined execution context.');
           console.log('');
           console.log('Usage: var x = objectCurryWithArity(n, f)');
           console.log('');
@@ -29343,21 +29360,21 @@ module.exports = (function() {
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (1)', function() {
+      it('Calling with curried function returns original (1)', function() {
         var f = objectCurry(function(a, b) {});
 
         expect(objectCurry(f)).to.equal(f);
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (2)', function() {
+      it('Calling with curried function returns original (2)', function() {
         var f = objectCurryWithArity(1, function(a, b) {});
 
         expect(objectCurry(f)).to.equal(f);
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (3)', function() {
+      it('Calling with curried function returns original (3)', function() {
         var f = objectCurry(function() {});
 
         expect(objectCurry(f)).to.equal(f);
@@ -29432,13 +29449,29 @@ module.exports = (function() {
       });
 
 
-      it('Calling a curried function awaiting further arguments without any arguments throws', function() {
-        var f = objectCurry(function(x) {return 42;});
+      it('Calling a curried function awaiting further arguments without any establishes execution context', function() {
+        var context = {};
+        var f = objectCurry(function(x) {context = this;});
+        var obj = {};
         var fn = function() {
-          f();
+          var g = f.apply(obj);
+          g(1);
         };
 
-        expect(f).to.throw();
+        expect(fn).to.not.throw();
+        expect(context).to.equal(obj);
+      });
+
+
+      it('Once execution context established, functions requiring arguments cannot be called without any', function() {
+        var context = {};
+        var f = objectCurry(function(x) {context = this;});
+        var g = f.apply({});
+        var fn = function() {
+          g();
+        };
+
+        expect(fn).to.throw();
       });
 
 
@@ -29766,13 +29799,29 @@ module.exports = (function() {
       });
 
 
-      it('Calling a curried function awaiting further arguments without any arguments throws', function() {
-        var f = objectCurryWithArity(1, function() {return 42;});
+      it('Calling a curried function awaiting further arguments without any establishes execution context', function() {
+        var context = {};
+        var f = objectCurryWithArity(1, function(x) {context = this;});
+        var obj = {};
         var fn = function() {
-          f();
+          var g = f.apply(obj);
+          g(1);
         };
 
-        expect(f).to.throw();
+        expect(fn).to.not.throw();
+        expect(context).to.equal(obj);
+      });
+
+
+      it('Once execution context established, functions requiring arguments cannot be called without any', function() {
+        var context = {};
+        var f = objectCurryWithArity(1, function(x) {context = this;});
+        var g = f.apply({});
+        var fn = function() {
+          g();
+        };
+
+        expect(fn).to.throw();
       });
 
 

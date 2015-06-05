@@ -2375,7 +2375,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -2427,10 +2429,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -5750,7 +5753,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -5802,10 +5807,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -9125,7 +9131,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -9177,10 +9185,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -12500,7 +12509,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -12552,10 +12563,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -15875,7 +15887,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -15927,10 +15941,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -19250,7 +19265,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -19302,10 +19319,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the
@@ -22625,7 +22643,9 @@ Given a function, returns a curried function which calls the underlying with the
 first arguments are supplied. This means that when partially applying the function, the resulting functions will
 have their execution context permanently bound. This method of binding is designed for currying functions that
 exist on an object's prototype. The function will be only called when sufficient arguments have been supplied.
-Superfluous arguments are discarded. The resulting function and its partial applications will throw if they
+Superfluous arguments are discarded. The resulting function may be called without any arguments even when it has
+non-zero arity, for the purposes of establishing an execution context (usually when passing the function to some
+other function-manipulating function); however the partial applications of the result will throw if they
 require at least one argument, but are invoked without any. `objectCurry` throws if its parameter is not a
 function. The resulting function will throw if invoked with an undefined execution context.
 
@@ -22677,10 +22697,11 @@ Given an arity and function, returns a curried function which calls the underlyi
 active when the first arguments are supplied. This means that when partially applying the function, the
 resulting functions will have their execution context permanently bound. This method of binding is designed for
 currying functions that exist on an object's prototype. The function will be only called when the specified number
-of arguments have been supplied. Superfluous arguments are discarded. The resulting function and its partial
-applications throw if they require at least one argument, but are invoked without any. `objectCurryWithArity`
-throws if the arity is not a natural number or if the second parameter is not a function. The resulting function
-will throw if invoked with an undefined execution context.
+of arguments have been supplied. Superfluous arguments are discarded. If the resulting function has non-zero
+length, it may be called without any arguments for the purpose of establishing an execution context; however
+its partial applications throw if they require at least one argument, but are invoked without any.
+`objectCurryWithArity` throws if the arity is not a natural number or if the second parameter is not a function.
+The resulting function will throw if invoked with an undefined execution context.
 
 The returned function will have a length of 1, unless an arity of 0 was requested, in which case this will be the
 length. The [`arityOf`](#arityOf) function can be used to determine how many arguments are required before the

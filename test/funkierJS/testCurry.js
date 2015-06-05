@@ -1680,21 +1680,21 @@
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (1)', function() {
+      it('Calling with curried function returns original (1)', function() {
         var f = objectCurry(function(a, b) {});
 
         expect(objectCurry(f)).to.equal(f);
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (2)', function() {
+      it('Calling with curried function returns original (2)', function() {
         var f = objectCurryWithArity(1, function(a, b) {});
 
         expect(objectCurry(f)).to.equal(f);
       });
 
 
-      it('Calling with curried function and function\'s arity returns original (3)', function() {
+      it('Calling with curried function returns original (3)', function() {
         var f = objectCurry(function() {});
 
         expect(objectCurry(f)).to.equal(f);
@@ -1769,13 +1769,29 @@
       });
 
 
-      it('Calling a curried function awaiting further arguments without any arguments throws', function() {
-        var f = objectCurry(function(x) {return 42;});
+      it('Calling a curried function awaiting further arguments without any establishes execution context', function() {
+        var context = {};
+        var f = objectCurry(function(x) {context = this;});
+        var obj = {};
         var fn = function() {
-          f();
+          var g = f.apply(obj);
+          g(1);
         };
 
-        expect(f).to.throw();
+        expect(fn).to.not.throw();
+        expect(context).to.equal(obj);
+      });
+
+
+      it('Once execution context established, functions requiring arguments cannot be called without any', function() {
+        var context = {};
+        var f = objectCurry(function(x) {context = this;});
+        var g = f.apply({});
+        var fn = function() {
+          g();
+        };
+
+        expect(fn).to.throw();
       });
 
 
@@ -2103,13 +2119,29 @@
       });
 
 
-      it('Calling a curried function awaiting further arguments without any arguments throws', function() {
-        var f = objectCurryWithArity(1, function() {return 42;});
+      it('Calling a curried function awaiting further arguments without any establishes execution context', function() {
+        var context = {};
+        var f = objectCurryWithArity(1, function(x) {context = this;});
+        var obj = {};
         var fn = function() {
-          f();
+          var g = f.apply(obj);
+          g(1);
         };
 
-        expect(f).to.throw();
+        expect(fn).to.not.throw();
+        expect(context).to.equal(obj);
+      });
+
+
+      it('Once execution context established, functions requiring arguments cannot be called without any', function() {
+        var context = {};
+        var f = objectCurryWithArity(1, function(x) {context = this;});
+        var g = f.apply({});
+        var fn = function() {
+          g();
+        };
+
+        expect(fn).to.throw();
       });
 
 
