@@ -9,8 +9,8 @@
 
   describe('internalUtilities', function() {
     checkModule('internalUtilities', internalUtilities, {
-                expectedFunctions: ['checkIntegral', 'checkObjectLike', 'checkPositiveIntegral', 'isArrayLike',
-                                    'valueStringifier']});
+                expectedFunctions: ['checkArrayLike', 'checkIntegral', 'checkObjectLike', 'checkPositiveIntegral',
+                                    'isArrayLike', 'valueStringifier']});
 
 
     /*
@@ -389,6 +389,113 @@
 
       it('Behaves correctly with string when noStrings parameter explicitly true', function() {
         expect(isArrayLike('a', true)).to.equal(false);
+      });
+    });
+
+
+    describe('checkArrayLike', function() {
+      var checkArrayLike = internalUtilities.checkArrayLike;
+
+
+      var shouldFail = arrayLikeTests.filter(function(test) {return test.result === false;});
+      var shouldPass = arrayLikeTests.filter(function(test) {return test.result === true;});
+
+      shouldFail.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Behaves correctly for ' + name, function() {
+          var fn = function() {
+            checkArrayLike(test.value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Returns correct exception for ' + name, function() {
+          var message = 'This was an error';
+          var fn = function() {
+            checkArrayLike(test.value, {message: message});
+          };
+
+          expect(fn).to.throw(message);
+        });
+      });
+
+
+      shouldPass.forEach(function(test) {
+        var name = test.name;
+
+
+        it('Doesn\'t throw for ' + name, function() {
+          var fn = function() {
+            checkArrayLike(test.value);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+
+
+        it('Behaves correctly when dontSlice in options ' + name, function() {
+          var v = checkArrayLike(test.value, {dontSlice: true});
+
+          expect(v).to.equal(test.value);
+        });
+
+
+        it('Behaves correctly when dontSlice explicitly false in options ' + name, function() {
+          var v = checkArrayLike(test.value, {dontSlice: false});
+
+          if (name === 'string') {
+            expect(v).to.equal(test.value);
+          } else {
+            expect(v).to.not.equal(test.value);
+            // Need to manually check deep equality due to arraylikes being transformed to arrays
+            for (var i = 0, l = test.value.length; i < l; i++)
+              expect(v[i]).to.equal(test.value[i]);
+          }
+        });
+
+
+        it('Behaves correctly when dontSlice not in options ' + name, function() {
+          var v = checkArrayLike(test.value);
+
+          if (name === 'string') {
+            expect(v).to.equal(test.value);
+          } else {
+            expect(v).to.not.equal(test.value);
+            // Need to manually check deep equality due to arraylikes being transformed to arrays
+            for (var i = 0, l = test.value.length; i < l; i++)
+              expect(v[i]).to.equal(test.value[i]);
+          }
+        });
+      });
+
+
+      it('Doesn\'t accept strings when relevant parameter passed in (1)', function() {
+        var fn = function() {
+          checkArrayLike('abc', {noStrings: true});
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      it('Doesn\'t accept strings when relevant parameter passed in (2)', function() {
+        var message = 'Noooo, no strings here!';
+        var fn = function() {
+          checkArrayLike('abc', {noStrings: true, message: message});
+        };
+
+        expect(fn).to.throw(message);
+      });
+
+
+      it('Accepts strings when relevant parameter explicitly passed in', function() {
+        var s = checkArrayLike('abc', {noStrings: false});
+
+        expect(s).to.equal('abc');
       });
     });
 

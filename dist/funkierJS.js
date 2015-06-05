@@ -8762,6 +8762,28 @@ module.exports = (function() {
   };
 
 
+  /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
+   *                 return a copy.
+   *
+   */
+
+  var checkArrayLike = function(v, options) {
+    options = options || {};
+    var message = options.message || 'Value is not a string or array';
+
+    if (!isArrayLike(v, options.noStrings))
+      throw new TypeError(message);
+
+    // We allow an optional 'dontSlice' option for arrays and arraylikes. For example,
+    // when implementing length, there is no need to copy the object, we can just read
+    // the property
+    if (typeof(v) === 'string' || ('dontSlice' in options && options.dontSlice))
+      return v;
+
+    return [].slice.call(v);
+  };
+
+
   /*
    * valueStringifier: Returns a string representation of the given value.
    *
@@ -8790,6 +8812,7 @@ module.exports = (function() {
 
 
   return {
+    checkArrayLike: checkArrayLike,
     checkIntegral: checkIntegral,
     checkObjectLike: checkObjectLike,
     checkPositiveIntegral: checkPositiveIntegral,
