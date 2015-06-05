@@ -121,6 +121,15 @@ module.exports = function(grunt) {
     },
 
 
+    uglify: {
+      build: {
+        files: {
+          'dist/funkierJS-min.js': ['dist/funkierJS.js']
+        }
+      }
+    },
+
+
     bump: {
       options: {
         files: ['package.json', 'docs/templates/*/categoryV*', 'docs/templates/*/nameV*'],
@@ -136,7 +145,7 @@ module.exports = function(grunt) {
 
 
     watch: {
-      lint: {
+      build: {
         files: filesToLint,
         tasks: ['newer:jshint', 'browserify']
       },
@@ -154,6 +163,11 @@ module.exports = function(grunt) {
         tasks: ['generation:docs']
       },
 
+      minification: {
+        files: ['dist/funkierJS.js'],
+        tasks: ['uglify']
+      },
+
       testGeneration: {
         files: ['automation/generateAPITests.js', 'Gruntfile.js', 'lib/**/*.js'],
         tasks: ['generation:autoTests']
@@ -162,7 +176,7 @@ module.exports = function(grunt) {
   });
 
 
-  var tasks = ['jshint', 'watch'];
+  var tasks = ['jshint', 'uglify', 'watch'];
   tasks.map(function(task) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
   });
