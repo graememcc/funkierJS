@@ -339,7 +339,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],2:[function(require,module,exports){
+},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],2:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -989,7 +989,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":14}],3:[function(require,module,exports){
+},{"../internalUtilities":15}],3:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2483,7 +2483,282 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2,"./object":7}],4:[function(require,module,exports){
+},{"./curry":2,"./object":8}],4:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var arityOf = curryModule.arityOf;
+  var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
+
+  var internalUtilities = require('../internalUtilities');
+  var checkArrayLike = internalUtilities.checkArrayLike;
+  var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
+  var checkObjectLike = internalUtilities.checkObjectLike;
+
+  var funcUtils = require('../funcUtils');
+  var checkFunction = funcUtils.checkFunction;
+
+
+  /*
+   * <apifunction>
+   *
+   * apply
+   *
+   * Category: function
+   *
+   * Parameter: args: array
+   * Parameter: f: function
+   * Returns: any
+   *
+   * Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+   * curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+   * not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+   * curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+   * given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+   * function.
+   *
+   * Examples:
+   *   funkierJS.apply([1], id); // 1
+   */
+
+  var apply = curry(function(args, f) {
+    f = checkFunction(f);
+    args = checkArrayLike(args, {noStrings: true, message: 'Function arguments not an array'});
+    f = curryWithConsistentStyle(f, f, arityOf(f));
+
+    return f.apply(null, args);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * permuteLeft
+   *
+   * Category: function
+   *
+   * Synonyms: rotateLeft
+   *
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+   * different position. The first parameter of the original function will be the last parameter of the new function,
+   * the second parameter of the original will be the first parameter of the new function and so on. This function is
+   * essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+   * functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+   *
+   * If f is already curried, the currying style of f will be preserved.
+   *
+   * Throws a TypeError if f is not a function.
+   *
+   * Examples:
+   *   f = function(x, y, z) {return x + y + z;};
+   *   g = permuteLeft(f);
+   *   g('a', 'b', 'c'); // => 'bca'
+   *
+   */
+
+  var permuteLeft = curry(function(f) {
+    var fLen = arityOf(f);
+    f = curryWithConsistentStyle(f, f, fLen);
+
+    if (fLen < 2)
+      return f;
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var newArgs = [args[fLen - 1]].concat(args.slice(0, fLen - 1));
+      return f.apply(this, newArgs);
+    }, fLen);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * permuteRight
+   *
+   * Category: function
+   *
+   * Synonyms: rotateRight
+   *
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+   * different position. The first parameter of the original function will be the second parameter of the new function,
+   * the second parameter of the original will be the third parameter of the new function and so on. This function is
+   * essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+   * functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+   *
+   * If f is already curried, the currying style of f will be preserved.
+   *
+   * Throws a TypeError if f is not a function.
+   *
+   * Examples:
+   *   f = function(x, y, z) {return x + y + z;};
+   *   g = permuteLeft(f);
+   *   g('a', 'b', 'c'); // => 'cab'
+   *
+   */
+
+  var permuteRight = curry(function(f) {
+    var fLen = arityOf(f);
+    f = curryWithConsistentStyle(f, f, fLen);
+
+    if (fLen < 2)
+      return f;
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var newArgs = args.slice(1).concat([args[0]]);
+      return f.apply(this, newArgs);
+    }, fLen);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * pre
+   *
+   * Category: function
+   *
+   * Parameter: wrappingFunction: function
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+   * and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+   * is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+   * containing all the arguments the function was called with. When wrappingFunction returns, its return value
+   * will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+   * new function was invoked with. The return value from f will be returned.
+   *
+   * Throws a TypeError if neither of the given values are functions.
+   *
+   * Examples:
+   *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
+   *   var loggedPlus = pre(logger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
+   *
+   */
+
+  var pre = curry(function(wrappingFunction, f) {
+    wrappingFunction = checkFunction(wrappingFunction, {message: 'Pre value must be a function'});
+    f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      wrappingFunction.call(this, args);
+      return f.apply(this, args);
+    }, arityOf(f));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * post
+   *
+   * Category: function
+   *
+   * Parameter: wrappingFunction: function
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+   * and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+   * is called, it will first call f with the same execution context and arguments that the new function was called
+   * with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+   * context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+   * wrappingFunction will be discarded, and f's return value will be returned.
+   *
+   * Throws a TypeError if either of the given values are not functions.
+   *
+   * Examples:
+   *   var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+   *   var loggedPlus = post(postLogger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+   *
+   */
+
+  var post = curry(function(wrappingFunction, f) {
+    wrappingFunction = checkFunction(wrappingFunction, {message: 'Post value must be a function'});
+    f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var result = f.apply(this, args);
+      wrappingFunction.call(this, args, result);
+      return result;
+    }, arityOf(f));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * wrap
+   *
+   * Category: function
+   *
+   * Parameter: before: function
+   * Parameter: after: function
+   * Parameter: f: function
+   *
+   * Returns: function
+   *
+   * Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+   * manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+   * when the returned function is invoked.
+   *
+   * Specifically, when the returned function is called, the following will happen in sequence:
+   *   -  before will be called with the execution context of the new function and one argument: an array containing
+   *      the arguments the new function was invoked with
+   *
+   *   -  f will be called with the execution context that the new function was called with, and the same arguments
+   *
+   *   -  after will be called with the original execution context and two arguments: an array containing the arguments
+   *      the new function was called with, and f's result
+   *
+   *   -  f's result will be returned
+   *
+   * Throws a TypeError if any argument is not a function.
+   *
+   * This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+   *
+   * Examples:
+   *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
+   *   var postLogger = function(args, result) {console.log('plus returned', result);};
+   *   var loggedPlus = wrap(logger, postLogger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
+   *
+   */
+
+  var wrap = curry(function(before, after, f) {
+    return post(after, pre(before, f));
+  });
+
+
+  return {
+    apply: apply,
+    permuteLeft: permuteLeft,
+    permuteRight: permuteRight,
+    pre: pre,
+    post: post,
+    rotateLeft: permuteLeft,
+    rotateRight: permuteRight,
+    wrap: wrap
+  };
+})();
+
+},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],5:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2759,7 +3034,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":11,"./curry":2}],5:[function(require,module,exports){
+},{"../funcUtils":12,"./curry":2}],6:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -3501,7 +3776,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":1,"./curry":2,"./object":7}],6:[function(require,module,exports){
+},{"./base":1,"./curry":2,"./object":8}],7:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3754,7 +4029,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],7:[function(require,module,exports){
+},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],8:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -4919,7 +5194,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":14,"./base":1,"./curry":2,"./maybe":6}],8:[function(require,module,exports){
+},{"../internalUtilities":15,"./base":1,"./curry":2,"./maybe":7}],9:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5128,7 +5403,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":14,"./curry":2}],9:[function(require,module,exports){
+},{"../internalUtilities":15,"./curry":2}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5465,7 +5740,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],10:[function(require,module,exports){
+},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5952,7 +6227,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2}],11:[function(require,module,exports){
+},{"./curry":2}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6013,7 +6288,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":2}],12:[function(require,module,exports){
+},{"./components/curry":2}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6025,6 +6300,7 @@ module.exports = (function() {
     base: require('./components/base'),
     curry: require('./components/curry'),
     date: require('./components/date'),
+    fn: require('./components/fn'),
     logical: require('./components/logical'),
     object: require('./components/object'),
     maths: require('./components/maths'),
@@ -6093,7 +6369,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":1,"./components/curry":2,"./components/date":3,"./components/logical":4,"./components/maths":5,"./components/maybe":6,"./components/object":7,"./components/pair":8,"./components/result":9,"./components/types":10,"./help":13}],13:[function(require,module,exports){
+},{"./components/base":1,"./components/curry":2,"./components/date":3,"./components/fn":4,"./components/logical":5,"./components/maths":6,"./components/maybe":7,"./components/object":8,"./components/pair":9,"./components/result":10,"./components/types":11,"./help":14}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6233,6 +6509,22 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#andpred');
           break;
 
+        case funkier.apply:
+          console.log('apply:');
+          console.log('');
+          console.log('Applies the given function f with the arguments given in the array args. If the function is not curried, it will be');
+          console.log('curried (using curry) and partially applied if necessary. If the function is object curried, and has');
+          console.log('not yet acquired an execution context, then it will be invoked with a null execution context (as apply is itself');
+          console.log('curried, and so will have no visibility into the execution context it was invoked with). The result of applying the');
+          console.log('given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a');
+          console.log('function.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = apply(args, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#apply');
+          break;
+
         case funkier.arityOf:
           console.log('arityOf:');
           console.log('');
@@ -6252,9 +6544,9 @@ module.exports = (function() {
         case funkier.asArray:
           console.log('asArray:');
           console.log('');
-          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given Pair p. Specifically, if');
-          console.log('the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is');
-          console.log('not a pair.');
+          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given Pair p.');
+          console.log('Specifically, if the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p).');
+          console.log('Throws a TypeError if p is not a pair.');
           console.log('');
           console.log('');
           console.log('Usage: var x = asArray(p)');
@@ -7700,6 +7992,72 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#parseint');
           break;
 
+        case funkier.permuteLeft:
+          console.log('permuteLeft:');
+          console.log('');
+          console.log('Synonyms: rotateLeft');
+          console.log('');
+          console.log('Takes a function, returns a curried function of the same arity which takes the same parameters, except in a');
+          console.log('different position. The first parameter of the original function will be the last parameter of the new function,');
+          console.log('the second parameter of the original will be the first parameter of the new function and so on. This function is');
+          console.log('essentially a no-op for curried functions of arity 0 and 1, equivalent to curry for uncurried');
+          console.log('functions of arities 0 and 1, and equivalent to flip for functions of arity 2.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = permuteLeft(f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#permuteleft');
+          break;
+
+        case funkier.permuteRight:
+          console.log('permuteRight:');
+          console.log('');
+          console.log('Synonyms: rotateRight');
+          console.log('');
+          console.log('Takes a function, returns a curried function of the same arity which takes the same parameters, except in a');
+          console.log('different position. The first parameter of the original function will be the second parameter of the new function,');
+          console.log('the second parameter of the original will be the third parameter of the new function and so on. This function is');
+          console.log('essentially a no-op for curried functions of arity 0 and 1, equivalent to curry for uncurried');
+          console.log('functions of arities 0 and 1, and equivalent to flip for functions of arity 2.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = permuteRight(f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#permuteright');
+          break;
+
+        case funkier.post:
+          console.log('post:');
+          console.log('');
+          console.log('Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,');
+          console.log('and curried in the same manner (or curried with curry if f was not curried). When this new function');
+          console.log('is called, it will first call f with the same execution context and arguments that the new function was called');
+          console.log('with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution');
+          console.log('context, and two arguments: an array containing the arguments to f, and f\'s return value. Anything returned from');
+          console.log('wrappingFunction will be discarded, and f\'s return value will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = post(wrappingFunction, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#post');
+          break;
+
+        case funkier.pre:
+          console.log('pre:');
+          console.log('');
+          console.log('Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,');
+          console.log('and curried in the same manner (or curried with curry if f was not curried). When this new function');
+          console.log('is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array');
+          console.log('containing all the arguments the function was called with. When wrappingFunction returns, its return value');
+          console.log('will be discarded, and f will be called with the same execution context and invoked with the same arguments as the');
+          console.log('new function was invoked with. The return value from f will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = pre(wrappingFunction, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#pre');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -8234,6 +8592,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
+        case funkier.wrap:
+          console.log('wrap:');
+          console.log('');
+          console.log('Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same');
+          console.log('manner (or curried using curry if f was not curried. The functions before, f, and after will be called');
+          console.log('when the returned function is invoked.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = wrap(before, after, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#wrap');
+          break;
+
         case funkier.xor:
           console.log('xor:');
           console.log('');
@@ -8267,7 +8638,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -8427,69 +8798,6 @@ module.exports = (function() {
     valueStringifier: valueStringifier
   };
 })();
-//(function() {
-//  // Double scope: we want this code to execute in a non-strict environment where this points to the global
-//  var global = this;
-//
-//
-//  return function() {
-//    "use strict";
-//
-//
-//    /*
-//     * A collection of internal utilities. Not exported to consumers.
-//     *
-//     */
-//
-//
-//    var makeModule = function(require, exports) {
-//      /* checkArrayLike: takes a value and throws if it is not array-like, otherwise
-//       *                 return a copy.
-//       *
-//       */
-//
-//      var checkArrayLike = function(v, options) {
-//        options = options || {};
-//        var message = options.message || 'Value is not a string or array';
-//
-//        if (!isArrayLike(v, options.noStrings))
-//          throw new TypeError(message);
-//
-//        // We allow an optional 'dontSlice' option for arrays and arraylikes. For example,
-//        // when implementing length, there is no need to copy the object, we can just read
-//        // the property
-//        if (typeof(v) === 'string' || ('dontSlice' in options && options.dontSlice))
-//          return v;
-//
-//        return [].slice.call(v);
-//      };
-//
-//
-//      var exported = {
-//        checkArrayLike: checkArrayLike,
-//        checkIntegral: checkIntegral,
-//        checkObjectLike: checkObjectLike,
-//        checkPositiveIntegral: checkPositiveIntegral,
-//        isArrayLike: isArrayLike,
-//        isObjectLike: isObjectLike,
-//        valueStringifier: valueStringifier
-//      };
-//
-//
-//      module.exports = exported;
-//    };
-//
-//
-//    // AMD/CommonJS foo
-//    if (typeof(define) === "function") {
-//      define(function(require, exports, module) {
-//        makeModule(require, exports, module);
-//      });
-//    } else {
-//      makeModule(require, exports, module);
-//    }
-//    }();
-//})();
 
-},{}]},{},[12])(12)
+},{}]},{},[13])(13)
 });

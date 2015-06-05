@@ -564,6 +564,9 @@ module.exports = (function() {
    *   - arity:   the arity of the function to supply to the manipulator
    *   - returns: the value to return from the function supplied to the manipulator
    *
+   * Note that this function does not provide tests showing that the result of the function manipulator passes on its
+   * execution context to any object-curried inputs. The client must define these manually.
+   *
    */
 
   var addCurryStyleTests = function(manipulator, options) {

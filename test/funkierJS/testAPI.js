@@ -262,6 +262,34 @@
     });
 
 
+    describe('apply', function() {
+      it('apply exists', function() {
+        expect(funkier).to.have.a.property('apply');
+      });
+
+
+      it('funkierJS\'s apply is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.apply).to.equal(module.apply);
+      });
+
+
+      it('apply is a function', function() {
+        expect(funkier.apply).to.be.a('function');
+      });
+
+
+      it('apply has documented arity', function() {
+        expect(funkier.arityOf(funkier.apply)).to.equal(2);
+      });
+
+
+      it('apply is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.apply)).to.equal(true);
+      });
+    });
+
+
     describe('arity', function() {
       it('arity exists', function() {
         expect(funkier).to.have.a.property('arity');
@@ -3750,6 +3778,62 @@
     });
 
 
+    describe('permuteLeft', function() {
+      it('permuteLeft exists', function() {
+        expect(funkier).to.have.a.property('permuteLeft');
+      });
+
+
+      it('funkierJS\'s permuteLeft is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.permuteLeft).to.equal(module.permuteLeft);
+      });
+
+
+      it('permuteLeft is a function', function() {
+        expect(funkier.permuteLeft).to.be.a('function');
+      });
+
+
+      it('permuteLeft has documented arity', function() {
+        expect(funkier.arityOf(funkier.permuteLeft)).to.equal(1);
+      });
+
+
+      it('permuteLeft is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.permuteLeft)).to.equal(true);
+      });
+    });
+
+
+    describe('permuteRight', function() {
+      it('permuteRight exists', function() {
+        expect(funkier).to.have.a.property('permuteRight');
+      });
+
+
+      it('funkierJS\'s permuteRight is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.permuteRight).to.equal(module.permuteRight);
+      });
+
+
+      it('permuteRight is a function', function() {
+        expect(funkier.permuteRight).to.be.a('function');
+      });
+
+
+      it('permuteRight has documented arity', function() {
+        expect(funkier.arityOf(funkier.permuteRight)).to.equal(1);
+      });
+
+
+      it('permuteRight is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.permuteRight)).to.equal(true);
+      });
+    });
+
+
     describe('plus', function() {
       it('plus exists', function() {
         expect(funkier).to.have.a.property('plus');
@@ -3762,6 +3846,34 @@
     });
 
 
+    describe('post', function() {
+      it('post exists', function() {
+        expect(funkier).to.have.a.property('post');
+      });
+
+
+      it('funkierJS\'s post is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.post).to.equal(module.post);
+      });
+
+
+      it('post is a function', function() {
+        expect(funkier.post).to.be.a('function');
+      });
+
+
+      it('post has documented arity', function() {
+        expect(funkier.arityOf(funkier.post)).to.equal(2);
+      });
+
+
+      it('post is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.post)).to.equal(true);
+      });
+    });
+
+
     describe('pow', function() {
       it('pow exists', function() {
         expect(funkier).to.have.a.property('pow');
@@ -3770,6 +3882,34 @@
 
       it('pow is a synonym for exp', function() {
         expect(funkier.pow).to.equal(funkier.exp);
+      });
+    });
+
+
+    describe('pre', function() {
+      it('pre exists', function() {
+        expect(funkier).to.have.a.property('pre');
+      });
+
+
+      it('funkierJS\'s pre is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.pre).to.equal(module.pre);
+      });
+
+
+      it('pre is a function', function() {
+        expect(funkier.pre).to.be.a('function');
+      });
+
+
+      it('pre has documented arity', function() {
+        expect(funkier.arityOf(funkier.pre)).to.equal(2);
+      });
+
+
+      it('pre is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.pre)).to.equal(true);
       });
     });
 
@@ -3854,6 +3994,30 @@
 
       it('rightShiftZero is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.rightShiftZero)).to.equal(true);
+      });
+    });
+
+
+    describe('rotateLeft', function() {
+      it('rotateLeft exists', function() {
+        expect(funkier).to.have.a.property('rotateLeft');
+      });
+
+
+      it('rotateLeft is a synonym for permuteLeft', function() {
+        expect(funkier.rotateLeft).to.equal(funkier.permuteLeft);
+      });
+    });
+
+
+    describe('rotateRight', function() {
+      it('rotateRight exists', function() {
+        expect(funkier).to.have.a.property('rotateRight');
+      });
+
+
+      it('rotateRight is a synonym for permuteRight', function() {
+        expect(funkier.rotateRight).to.equal(funkier.permuteRight);
       });
     });
 
@@ -5026,6 +5190,34 @@
     });
 
 
+    describe('wrap', function() {
+      it('wrap exists', function() {
+        expect(funkier).to.have.a.property('wrap');
+      });
+
+
+      it('funkierJS\'s wrap is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.wrap).to.equal(module.wrap);
+      });
+
+
+      it('wrap is a function', function() {
+        expect(funkier.wrap).to.be.a('function');
+      });
+
+
+      it('wrap has documented arity', function() {
+        expect(funkier.arityOf(funkier.wrap)).to.equal(3);
+      });
+
+
+      it('wrap is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.wrap)).to.equal(true);
+      });
+    });
+
+
     describe('xor', function() {
       it('xor exists', function() {
         expect(funkier).to.have.a.property('xor');
@@ -5089,7 +5281,7 @@
 
     beforeEach(function() {
       documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'and', 'andPred',
-         'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
+         'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
          'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp', 'callPropWithArity', 'clone', 'compose', 'composeMany',
          'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
          'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
@@ -5107,14 +5299,15 @@
          'makeResultReturner', 'makeSecondDate', 'max', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
          'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'modify', 'modifyProp', 'multiply', 'not',
          'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt',
-         'parseIntInBase', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp',
-         'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
-         'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
-         'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
-         'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix',
-         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
-         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'xor', 'xorPred'];
+         'parseIntInBase', 'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'rem', 'rightShift',
+         'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp', 'safeExtract',
+         'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight',
+         'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setProp',
+         'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
+         'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals', 'strictInequality',
+         'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString',
+         'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString', 'toLocaleDateString',
+         'toPrecision', 'toTimeString', 'toUTCString', 'wrap', 'xor', 'xorPred'];
     });
 
 

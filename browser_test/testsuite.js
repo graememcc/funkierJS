@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":32,"../test/docgen/testAPIFunction":33,"../test/docgen/testAPIObject":34,"../test/docgen/testAPIPrototype":35,"../test/docgen/testCPTestDataHelper":36,"../test/docgen/testCollator":37,"../test/docgen/testCommentProcessor":38,"../test/docgen/testLineProcessor":39,"../test/docgen/testMarkdownCreator":40,"../test/docgen/testMarkdownRenderer":41,"../test/funkierJS/testAPI":42,"../test/funkierJS/testArray":43,"../test/funkierJS/testBase":44,"../test/funkierJS/testCurry":45,"../test/funkierJS/testDate":46,"../test/funkierJS/testFn":47,"../test/funkierJS/testFuncUtils":48,"../test/funkierJS/testFunkier":49,"../test/funkierJS/testInternalUtilities":50,"../test/funkierJS/testLogical":51,"../test/funkierJS/testMaths":52,"../test/funkierJS/testMaybe":53,"../test/funkierJS/testObject":54,"../test/funkierJS/testPair":55,"../test/funkierJS/testResult":56,"../test/funkierJS/testString":57,"../test/funkierJS/testTypes":58,"../test/funkierJS/testingUtilities":59}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":33,"../test/docgen/testAPIFunction":34,"../test/docgen/testAPIObject":35,"../test/docgen/testAPIPrototype":36,"../test/docgen/testCPTestDataHelper":37,"../test/docgen/testCollator":38,"../test/docgen/testCommentProcessor":39,"../test/docgen/testLineProcessor":40,"../test/docgen/testMarkdownCreator":41,"../test/docgen/testMarkdownRenderer":42,"../test/funkierJS/testAPI":43,"../test/funkierJS/testArray":44,"../test/funkierJS/testBase":45,"../test/funkierJS/testCurry":46,"../test/funkierJS/testDate":47,"../test/funkierJS/testFn":48,"../test/funkierJS/testFuncUtils":49,"../test/funkierJS/testFunkier":50,"../test/funkierJS/testInternalUtilities":51,"../test/funkierJS/testLogical":52,"../test/funkierJS/testMaths":53,"../test/funkierJS/testMaybe":54,"../test/funkierJS/testObject":55,"../test/funkierJS/testPair":56,"../test/funkierJS/testResult":57,"../test/funkierJS/testString":58,"../test/funkierJS/testTypes":59,"../test/funkierJS/testingUtilities":60}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1586,7 +1586,7 @@ module.exports = (function() {
   return makeMarkdownRenderer;
 })();
 
-},{"marked":31}],10:[function(require,module,exports){
+},{"marked":32}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1927,7 +1927,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],11:[function(require,module,exports){
+},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],11:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -2577,7 +2577,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":23}],12:[function(require,module,exports){
+},{"../internalUtilities":24}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4071,7 +4071,282 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11,"./object":16}],13:[function(require,module,exports){
+},{"./curry":11,"./object":17}],13:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var arityOf = curryModule.arityOf;
+  var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
+
+  var internalUtilities = require('../internalUtilities');
+  var checkArrayLike = internalUtilities.checkArrayLike;
+  var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
+  var checkObjectLike = internalUtilities.checkObjectLike;
+
+  var funcUtils = require('../funcUtils');
+  var checkFunction = funcUtils.checkFunction;
+
+
+  /*
+   * <apifunction>
+   *
+   * apply
+   *
+   * Category: function
+   *
+   * Parameter: args: array
+   * Parameter: f: function
+   * Returns: any
+   *
+   * Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+   * curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+   * not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+   * curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+   * given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+   * function.
+   *
+   * Examples:
+   *   funkierJS.apply([1], id); // 1
+   */
+
+  var apply = curry(function(args, f) {
+    f = checkFunction(f);
+    args = checkArrayLike(args, {noStrings: true, message: 'Function arguments not an array'});
+    f = curryWithConsistentStyle(f, f, arityOf(f));
+
+    return f.apply(null, args);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * permuteLeft
+   *
+   * Category: function
+   *
+   * Synonyms: rotateLeft
+   *
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+   * different position. The first parameter of the original function will be the last parameter of the new function,
+   * the second parameter of the original will be the first parameter of the new function and so on. This function is
+   * essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+   * functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+   *
+   * If f is already curried, the currying style of f will be preserved.
+   *
+   * Throws a TypeError if f is not a function.
+   *
+   * Examples:
+   *   f = function(x, y, z) {return x + y + z;};
+   *   g = permuteLeft(f);
+   *   g('a', 'b', 'c'); // => 'bca'
+   *
+   */
+
+  var permuteLeft = curry(function(f) {
+    var fLen = arityOf(f);
+    f = curryWithConsistentStyle(f, f, fLen);
+
+    if (fLen < 2)
+      return f;
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var newArgs = [args[fLen - 1]].concat(args.slice(0, fLen - 1));
+      return f.apply(this, newArgs);
+    }, fLen);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * permuteRight
+   *
+   * Category: function
+   *
+   * Synonyms: rotateRight
+   *
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+   * different position. The first parameter of the original function will be the second parameter of the new function,
+   * the second parameter of the original will be the third parameter of the new function and so on. This function is
+   * essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+   * functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+   *
+   * If f is already curried, the currying style of f will be preserved.
+   *
+   * Throws a TypeError if f is not a function.
+   *
+   * Examples:
+   *   f = function(x, y, z) {return x + y + z;};
+   *   g = permuteLeft(f);
+   *   g('a', 'b', 'c'); // => 'cab'
+   *
+   */
+
+  var permuteRight = curry(function(f) {
+    var fLen = arityOf(f);
+    f = curryWithConsistentStyle(f, f, fLen);
+
+    if (fLen < 2)
+      return f;
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var newArgs = args.slice(1).concat([args[0]]);
+      return f.apply(this, newArgs);
+    }, fLen);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * pre
+   *
+   * Category: function
+   *
+   * Parameter: wrappingFunction: function
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+   * and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+   * is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+   * containing all the arguments the function was called with. When wrappingFunction returns, its return value
+   * will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+   * new function was invoked with. The return value from f will be returned.
+   *
+   * Throws a TypeError if neither of the given values are functions.
+   *
+   * Examples:
+   *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
+   *   var loggedPlus = pre(logger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
+   *
+   */
+
+  var pre = curry(function(wrappingFunction, f) {
+    wrappingFunction = checkFunction(wrappingFunction, {message: 'Pre value must be a function'});
+    f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      wrappingFunction.call(this, args);
+      return f.apply(this, args);
+    }, arityOf(f));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * post
+   *
+   * Category: function
+   *
+   * Parameter: wrappingFunction: function
+   * Parameter: f: function
+   * Returns: function
+   *
+   * Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+   * and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+   * is called, it will first call f with the same execution context and arguments that the new function was called
+   * with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+   * context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+   * wrappingFunction will be discarded, and f's return value will be returned.
+   *
+   * Throws a TypeError if either of the given values are not functions.
+   *
+   * Examples:
+   *   var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+   *   var loggedPlus = post(postLogger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+   *
+   */
+
+  var post = curry(function(wrappingFunction, f) {
+    wrappingFunction = checkFunction(wrappingFunction, {message: 'Post value must be a function'});
+    f = checkFunction(f, {message: 'Value to be wrapped must be a function'});
+
+    return curryWithConsistentStyle(f, function() {
+      var args = [].slice.call(arguments);
+      var result = f.apply(this, args);
+      wrappingFunction.call(this, args, result);
+      return result;
+    }, arityOf(f));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * wrap
+   *
+   * Category: function
+   *
+   * Parameter: before: function
+   * Parameter: after: function
+   * Parameter: f: function
+   *
+   * Returns: function
+   *
+   * Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+   * manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+   * when the returned function is invoked.
+   *
+   * Specifically, when the returned function is called, the following will happen in sequence:
+   *   -  before will be called with the execution context of the new function and one argument: an array containing
+   *      the arguments the new function was invoked with
+   *
+   *   -  f will be called with the execution context that the new function was called with, and the same arguments
+   *
+   *   -  after will be called with the original execution context and two arguments: an array containing the arguments
+   *      the new function was called with, and f's result
+   *
+   *   -  f's result will be returned
+   *
+   * Throws a TypeError if any argument is not a function.
+   *
+   * This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+   *
+   * Examples:
+   *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
+   *   var postLogger = function(args, result) {console.log('plus returned', result);};
+   *   var loggedPlus = wrap(logger, postLogger, plus);
+   *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
+   *
+   */
+
+  var wrap = curry(function(before, after, f) {
+    return post(after, pre(before, f));
+  });
+
+
+  return {
+    apply: apply,
+    permuteLeft: permuteLeft,
+    permuteRight: permuteRight,
+    pre: pre,
+    post: post,
+    rotateLeft: permuteLeft,
+    rotateRight: permuteRight,
+    wrap: wrap
+  };
+})();
+
+},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4347,7 +4622,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":20,"./curry":11}],14:[function(require,module,exports){
+},{"../funcUtils":21,"./curry":11}],15:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -5089,7 +5364,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":10,"./curry":11,"./object":16}],15:[function(require,module,exports){
+},{"./base":10,"./curry":11,"./object":17}],16:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5342,7 +5617,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],16:[function(require,module,exports){
+},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],17:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -6507,7 +6782,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":23,"./base":10,"./curry":11,"./maybe":15}],17:[function(require,module,exports){
+},{"../internalUtilities":24,"./base":10,"./curry":11,"./maybe":16}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6716,7 +6991,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":23,"./curry":11}],18:[function(require,module,exports){
+},{"../internalUtilities":24,"./curry":11}],19:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7053,7 +7328,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],19:[function(require,module,exports){
+},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],20:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7540,7 +7815,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11}],20:[function(require,module,exports){
+},{"./curry":11}],21:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7601,7 +7876,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":11}],21:[function(require,module,exports){
+},{"./components/curry":11}],22:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7613,6 +7888,7 @@ module.exports = (function() {
     base: require('./components/base'),
     curry: require('./components/curry'),
     date: require('./components/date'),
+    fn: require('./components/fn'),
     logical: require('./components/logical'),
     object: require('./components/object'),
     maths: require('./components/maths'),
@@ -7681,7 +7957,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":10,"./components/curry":11,"./components/date":12,"./components/logical":13,"./components/maths":14,"./components/maybe":15,"./components/object":16,"./components/pair":17,"./components/result":18,"./components/types":19,"./help":22}],22:[function(require,module,exports){
+},{"./components/base":10,"./components/curry":11,"./components/date":12,"./components/fn":13,"./components/logical":14,"./components/maths":15,"./components/maybe":16,"./components/object":17,"./components/pair":18,"./components/result":19,"./components/types":20,"./help":23}],23:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7821,6 +8097,22 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#andpred');
           break;
 
+        case funkier.apply:
+          console.log('apply:');
+          console.log('');
+          console.log('Applies the given function f with the arguments given in the array args. If the function is not curried, it will be');
+          console.log('curried (using curry) and partially applied if necessary. If the function is object curried, and has');
+          console.log('not yet acquired an execution context, then it will be invoked with a null execution context (as apply is itself');
+          console.log('curried, and so will have no visibility into the execution context it was invoked with). The result of applying the');
+          console.log('given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a');
+          console.log('function.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = apply(args, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#apply');
+          break;
+
         case funkier.arityOf:
           console.log('arityOf:');
           console.log('');
@@ -7840,9 +8132,9 @@ module.exports = (function() {
         case funkier.asArray:
           console.log('asArray:');
           console.log('');
-          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given Pair p. Specifically, if');
-          console.log('the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p). Throws a TypeError if p is');
-          console.log('not a pair.');
+          console.log('Takes a pair, and returns a 2-element array containing the values contained in the given Pair p.');
+          console.log('Specifically, if the resulting array is named arr, then we have arr[0] === fst(p) and arr[1] === snd(p).');
+          console.log('Throws a TypeError if p is not a pair.');
           console.log('');
           console.log('');
           console.log('Usage: var x = asArray(p)');
@@ -9288,6 +9580,72 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#parseint');
           break;
 
+        case funkier.permuteLeft:
+          console.log('permuteLeft:');
+          console.log('');
+          console.log('Synonyms: rotateLeft');
+          console.log('');
+          console.log('Takes a function, returns a curried function of the same arity which takes the same parameters, except in a');
+          console.log('different position. The first parameter of the original function will be the last parameter of the new function,');
+          console.log('the second parameter of the original will be the first parameter of the new function and so on. This function is');
+          console.log('essentially a no-op for curried functions of arity 0 and 1, equivalent to curry for uncurried');
+          console.log('functions of arities 0 and 1, and equivalent to flip for functions of arity 2.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = permuteLeft(f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#permuteleft');
+          break;
+
+        case funkier.permuteRight:
+          console.log('permuteRight:');
+          console.log('');
+          console.log('Synonyms: rotateRight');
+          console.log('');
+          console.log('Takes a function, returns a curried function of the same arity which takes the same parameters, except in a');
+          console.log('different position. The first parameter of the original function will be the second parameter of the new function,');
+          console.log('the second parameter of the original will be the third parameter of the new function and so on. This function is');
+          console.log('essentially a no-op for curried functions of arity 0 and 1, equivalent to curry for uncurried');
+          console.log('functions of arities 0 and 1, and equivalent to flip for functions of arity 2.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = permuteRight(f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#permuteright');
+          break;
+
+        case funkier.post:
+          console.log('post:');
+          console.log('');
+          console.log('Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,');
+          console.log('and curried in the same manner (or curried with curry if f was not curried). When this new function');
+          console.log('is called, it will first call f with the same execution context and arguments that the new function was called');
+          console.log('with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution');
+          console.log('context, and two arguments: an array containing the arguments to f, and f\'s return value. Anything returned from');
+          console.log('wrappingFunction will be discarded, and f\'s return value will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = post(wrappingFunction, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#post');
+          break;
+
+        case funkier.pre:
+          console.log('pre:');
+          console.log('');
+          console.log('Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,');
+          console.log('and curried in the same manner (or curried with curry if f was not curried). When this new function');
+          console.log('is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array');
+          console.log('containing all the arguments the function was called with. When wrappingFunction returns, its return value');
+          console.log('will be discarded, and f will be called with the same execution context and invoked with the same arguments as the');
+          console.log('new function was invoked with. The return value from f will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = pre(wrappingFunction, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#pre');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -9822,6 +10180,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
+        case funkier.wrap:
+          console.log('wrap:');
+          console.log('');
+          console.log('Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same');
+          console.log('manner (or curried using curry if f was not curried. The functions before, f, and after will be called');
+          console.log('when the returned function is invoked.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = wrap(before, after, f)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#wrap');
+          break;
+
         case funkier.xor:
           console.log('xor:');
           console.log('');
@@ -9855,7 +10226,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10175,7 +10546,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":25,"./lib/keys.js":26}],25:[function(require,module,exports){
+},{"./lib/is_arguments.js":26,"./lib/keys.js":27}],26:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -10197,7 +10568,7 @@ function unsupported(object){
     false;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -10208,7 +10579,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -11624,7 +11995,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":28,"ieee754":29,"is-array":30}],28:[function(require,module,exports){
+},{"base64-js":29,"ieee754":30,"is-array":31}],29:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -11750,7 +12121,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -11836,7 +12207,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 
 /**
  * isArray
@@ -11871,7 +12242,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -13147,7 +13518,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -13410,7 +13781,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13823,7 +14194,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":60}],34:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":61}],35:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14038,7 +14409,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":60}],35:[function(require,module,exports){
+},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":61}],36:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14292,7 +14663,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIPrototype":4,"chai":60}],36:[function(require,module,exports){
+},{"../../docgen/APIPrototype":4,"chai":61}],37:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15407,7 +15778,7 @@ module.exports = (function() {
   });
 })();
 
-},{"./CPTestDataHelper":32,"chai":60}],37:[function(require,module,exports){
+},{"./CPTestDataHelper":33,"chai":61}],38:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15657,7 +16028,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":60}],38:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":61}],39:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -16879,7 +17250,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":32,"chai":60}],39:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":33,"chai":61}],40:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17136,7 +17507,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/lineProcessor":7,"chai":60}],40:[function(require,module,exports){
+},{"../../docgen/lineProcessor":7,"chai":61}],41:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17398,7 +17769,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":60}],41:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":61}],42:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17688,7 +18059,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/markdownRenderer":9,"chai":60,"marked":31}],42:[function(require,module,exports){
+},{"../../docgen/markdownRenderer":9,"chai":61,"marked":32}],43:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17949,6 +18320,34 @@ module.exports = (function() {
 
       it('andPred is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.andPred)).to.equal(true);
+      });
+    });
+
+
+    describe('apply', function() {
+      it('apply exists', function() {
+        expect(funkier).to.have.a.property('apply');
+      });
+
+
+      it('funkierJS\'s apply is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.apply).to.equal(module.apply);
+      });
+
+
+      it('apply is a function', function() {
+        expect(funkier.apply).to.be.a('function');
+      });
+
+
+      it('apply has documented arity', function() {
+        expect(funkier.arityOf(funkier.apply)).to.equal(2);
+      });
+
+
+      it('apply is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.apply)).to.equal(true);
       });
     });
 
@@ -21441,6 +21840,62 @@ module.exports = (function() {
     });
 
 
+    describe('permuteLeft', function() {
+      it('permuteLeft exists', function() {
+        expect(funkier).to.have.a.property('permuteLeft');
+      });
+
+
+      it('funkierJS\'s permuteLeft is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.permuteLeft).to.equal(module.permuteLeft);
+      });
+
+
+      it('permuteLeft is a function', function() {
+        expect(funkier.permuteLeft).to.be.a('function');
+      });
+
+
+      it('permuteLeft has documented arity', function() {
+        expect(funkier.arityOf(funkier.permuteLeft)).to.equal(1);
+      });
+
+
+      it('permuteLeft is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.permuteLeft)).to.equal(true);
+      });
+    });
+
+
+    describe('permuteRight', function() {
+      it('permuteRight exists', function() {
+        expect(funkier).to.have.a.property('permuteRight');
+      });
+
+
+      it('funkierJS\'s permuteRight is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.permuteRight).to.equal(module.permuteRight);
+      });
+
+
+      it('permuteRight is a function', function() {
+        expect(funkier.permuteRight).to.be.a('function');
+      });
+
+
+      it('permuteRight has documented arity', function() {
+        expect(funkier.arityOf(funkier.permuteRight)).to.equal(1);
+      });
+
+
+      it('permuteRight is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.permuteRight)).to.equal(true);
+      });
+    });
+
+
     describe('plus', function() {
       it('plus exists', function() {
         expect(funkier).to.have.a.property('plus');
@@ -21453,6 +21908,34 @@ module.exports = (function() {
     });
 
 
+    describe('post', function() {
+      it('post exists', function() {
+        expect(funkier).to.have.a.property('post');
+      });
+
+
+      it('funkierJS\'s post is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.post).to.equal(module.post);
+      });
+
+
+      it('post is a function', function() {
+        expect(funkier.post).to.be.a('function');
+      });
+
+
+      it('post has documented arity', function() {
+        expect(funkier.arityOf(funkier.post)).to.equal(2);
+      });
+
+
+      it('post is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.post)).to.equal(true);
+      });
+    });
+
+
     describe('pow', function() {
       it('pow exists', function() {
         expect(funkier).to.have.a.property('pow');
@@ -21461,6 +21944,34 @@ module.exports = (function() {
 
       it('pow is a synonym for exp', function() {
         expect(funkier.pow).to.equal(funkier.exp);
+      });
+    });
+
+
+    describe('pre', function() {
+      it('pre exists', function() {
+        expect(funkier).to.have.a.property('pre');
+      });
+
+
+      it('funkierJS\'s pre is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.pre).to.equal(module.pre);
+      });
+
+
+      it('pre is a function', function() {
+        expect(funkier.pre).to.be.a('function');
+      });
+
+
+      it('pre has documented arity', function() {
+        expect(funkier.arityOf(funkier.pre)).to.equal(2);
+      });
+
+
+      it('pre is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.pre)).to.equal(true);
       });
     });
 
@@ -21545,6 +22056,30 @@ module.exports = (function() {
 
       it('rightShiftZero is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.rightShiftZero)).to.equal(true);
+      });
+    });
+
+
+    describe('rotateLeft', function() {
+      it('rotateLeft exists', function() {
+        expect(funkier).to.have.a.property('rotateLeft');
+      });
+
+
+      it('rotateLeft is a synonym for permuteLeft', function() {
+        expect(funkier.rotateLeft).to.equal(funkier.permuteLeft);
+      });
+    });
+
+
+    describe('rotateRight', function() {
+      it('rotateRight exists', function() {
+        expect(funkier).to.have.a.property('rotateRight');
+      });
+
+
+      it('rotateRight is a synonym for permuteRight', function() {
+        expect(funkier.rotateRight).to.equal(funkier.permuteRight);
       });
     });
 
@@ -22717,6 +23252,34 @@ module.exports = (function() {
     });
 
 
+    describe('wrap', function() {
+      it('wrap exists', function() {
+        expect(funkier).to.have.a.property('wrap');
+      });
+
+
+      it('funkierJS\'s wrap is indeed the documented value', function() {
+        var module = require('../../lib/components/fn');
+        expect(funkier.wrap).to.equal(module.wrap);
+      });
+
+
+      it('wrap is a function', function() {
+        expect(funkier.wrap).to.be.a('function');
+      });
+
+
+      it('wrap has documented arity', function() {
+        expect(funkier.arityOf(funkier.wrap)).to.equal(3);
+      });
+
+
+      it('wrap is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.wrap)).to.equal(true);
+      });
+    });
+
+
     describe('xor', function() {
       it('xor exists', function() {
         expect(funkier).to.have.a.property('xor');
@@ -22780,7 +23343,7 @@ module.exports = (function() {
 
     beforeEach(function() {
       documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'and', 'andPred',
-         'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
+         'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
          'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp', 'callPropWithArity', 'clone', 'compose', 'composeMany',
          'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
          'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
@@ -22798,14 +23361,15 @@ module.exports = (function() {
          'makeResultReturner', 'makeSecondDate', 'max', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
          'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'modify', 'modifyProp', 'multiply', 'not',
          'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt',
-         'parseIntInBase', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp',
-         'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
-         'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
-         'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
-         'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals',
-         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix',
-         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
-         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'xor', 'xorPred'];
+         'parseIntInBase', 'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'rem', 'rightShift',
+         'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp', 'safeExtract',
+         'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight',
+         'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setProp',
+         'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
+         'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals', 'strictInequality',
+         'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString',
+         'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString', 'toLocaleDateString',
+         'toPrecision', 'toTimeString', 'toUTCString', 'wrap', 'xor', 'xorPred'];
     });
 
 
@@ -22822,7 +23386,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/date":12,"../../lib/components/logical":13,"../../lib/components/maths":14,"../../lib/components/maybe":15,"../../lib/components/object":16,"../../lib/components/pair":17,"../../lib/components/result":18,"../../lib/components/types":19,"../../lib/funkier":21,"chai":60}],43:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/date":12,"../../lib/components/fn":13,"../../lib/components/logical":14,"../../lib/components/maths":15,"../../lib/components/maybe":16,"../../lib/components/object":17,"../../lib/components/pair":18,"../../lib/components/result":19,"../../lib/components/types":20,"../../lib/funkier":22,"chai":61}],44:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -27049,7 +27613,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -27875,7 +28439,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":59,"chai":60}],45:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":60,"chai":61}],46:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -30233,7 +30797,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"./testingUtilities":59,"chai":60}],46:[function(require,module,exports){
+},{"../../lib/components/curry":11,"./testingUtilities":60,"chai":61}],47:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -30637,887 +31201,629 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/date":12,"./testingUtilities":59,"chai":60}],47:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var fn = require('../../fn');
-//
-//    var curryModule = require('../../curry');
-//    var curry = curryModule.curry;
-//    var curryWithArity = curryModule.curryWithArity;
-//    var getRealArity = curryModule.getRealArity;
-//
-//    var base = require('../../base');
-//    var id = base.id;
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//    var makeArrayLike = testUtils.makeArrayLike;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['apply', 'applyWithContext', 'bindWithContext', 'bindWithContextAndArity', 'permuteLeft',
-//                             'rotateLeft', 'permuteRight', 'rotateRight', 'pre', 'post', 'wrap', 'callWithContext'];
-//    describeModule('fn', fn, expectedObjects, expectedFunctions);
-//
-//
-//    var applySpec = {
-//      name: 'apply',
-//      arity: 2,
-//      restrictions: [['strictarraylike'], ['function']],
-//      validArguments: [[[1, 2], makeArrayLike([1, 2])], [function(x) {}]]
-//    };
-//
-//
-//    describeFunction(applySpec, fn.apply, function(apply) {
-//      it('Calls f', function() {
-//        var called = false;
-//        var f = function() {called = true;};
-//        apply([], f);
-//
-//        expect(called).to.equal(true);
-//      });
-//
-//
-//      it('Calls f with null execution context', function() {
-//        var context;
-//        var f = function() {context = this;};
-//        apply([], f);
-//
-//        expect(context).to.equal(null);
-//      });
-//
-//
-//      it('Calls f with given arguments (1)', function() {
-//        var args = null;
-//        var f = function(x) {args = [].slice.call(arguments);};
-//        var fArgs = [1];
-//        apply(fArgs, f);
-//
-//        expect(args).to.deep.equal(fArgs);
-//      });
-//
-//
-//      it('Calls f with given arguments (2)', function() {
-//        var args = null;
-//        var f = function(x, y) {args = [].slice.call(arguments);};
-//        var fArgs = ['foo', 42];
-//        apply(fArgs, f);
-//
-//        expect(args).to.deep.equal(fArgs);
-//      });
-//
-//
-//      it('Returns value of f when applied to given arguments (1)', function() {
-//        var f = function(x) {return x + 1;};
-//        var arg = 1;
-//        var result = apply([arg], f);
-//
-//        expect(result).to.deep.equal(f(arg));
-//      });
-//
-//
-//      it('Returns value of f when applied to given arguments (2)', function() {
-//        var f = function(x, y) {return x * y;};
-//        var arg1 = 2;
-//        var arg2 = 42;
-//        var result = apply([arg1, arg2], f);
-//
-//        expect(result).to.deep.equal(f(arg1, arg2));
-//      });
-//
-//
-//      it('Curries f if necessary', function() {
-//        var f = function(x, y) {return x + y;};
-//        var arg = 42;
-//        var result = apply([arg], f);
-//
-//        expect(result).to.be.a('function');
-//        expect(result.length).to.equal(1);
-//        expect(result(10)).to.equal(f(arg, 10));
-//      });
-//
-//
-//      testCurriedFunction(apply, [[42], id]);
-//    });
-//
-//
-//    var applyWithContextSpec = {
-//      name: 'applyWithContext',
-//      arity: 3,
-//      restrictions: [['strictarraylike'], [], ['function']],
-//      validArguments: [[[1, 2], makeArrayLike([1, 2])], [{}], [function(x) {}]]
-//    };
-//
-//
-//    describeFunction(applyWithContextSpec, fn.applyWithContext, function(applyWithContext) {
-//      it('Calls f', function() {
-//        var called = false;
-//        var f = function() {called = true;};
-//        applyWithContext([], {}, f);
-//
-//        expect(called).to.equal(true);
-//      });
-//
-//
-//      it('Calls f with correct execution context', function() {
-//        var context;
-//        var o = {};
-//        var f = function() {context = this;};
-//        applyWithContext([], o, f);
-//
-//        expect(context).to.equal(o);
-//      });
-//
-//
-//      it('Calls f with given arguments (1)', function() {
-//        var args = null;
-//        var f = function(x) {args = [].slice.call(arguments);};
-//        var fArgs = [1];
-//        applyWithContext(fArgs, {}, f);
-//
-//        expect(args).to.deep.equal(fArgs);
-//      });
-//
-//
-//      it('Calls f with given arguments (2)', function() {
-//        var args = null;
-//        var f = function(x, y) {args = [].slice.call(arguments);};
-//        var fArgs = ['foo', 42];
-//        applyWithContext(fArgs, {}, f);
-//
-//        expect(args).to.deep.equal(fArgs);
-//      });
-//
-//
-//      it('Returns value of f when applied to given arguments (1)', function() {
-//        var o = {foo: 41};
-//        var f = function(x) {return x + this.foo;};
-//        var arg = 1;
-//        var result = applyWithContext([arg], o, f);
-//
-//        expect(result).to.deep.equal(f.call(o, arg));
-//      });
-//
-//
-//      it('Returns value of f applied to given arguments (2)', function() {
-//        var o = {bar: 10};
-//        var f = function(x, y) {return x * y * this.bar;};
-//        var arg1 = 2;
-//        var arg2 = 42;
-//        var result = applyWithContext([arg1, arg2], o, f);
-//
-//        expect(result).to.deep.equal(f.call(o, arg1, arg2));
-//      });
-//
-//
-//      it('Curries f if necessary', function() {
-//        var f = function(x, y) {return x + y;};
-//        var arg = 42;
-//        var result = applyWithContext([arg], {}, f);
-//
-//        expect(result).to.be.a('function');
-//        expect(result.length).to.equal(1);
-//        expect(result(10)).to.equal(f(arg, 10));
-//      });
-//
-//
-//      testCurriedFunction(applyWithContext, [[42], {}, id]);
-//    });
-//
-//
-//    var addCommonPermuteTests = function(fnUnderTest) {
-//      // Generate the same arity tests
-//      var fns = [function() {}, function(a) {}, function(a, b) {}, function(a, b, c) {}, function(a, b, c, d) {}];
-//
-//      var addSameArityTest = function(f, i) {
-//        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i, function() {
-//          var permuted = fnUnderTest(f);
-//
-//          expect(getRealArity(permuted)).to.equal(getRealArity(f));
-//        });
-//      };
-//
-//
-//      var addCurriedSameArityTest = function(f, i) {
-//        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i, function() {
-//          f = curry(f);
-//          var permuted = fnUnderTest(f);
-//
-//          expect(getRealArity(permuted)).to.equal(getRealArity(f));
-//        });
-//      };
-//
-//
-//      fns.forEach(function(f, i) {
-//        addSameArityTest(f, i);
-//        addCurriedSameArityTest(f, i);
-//      });
-//
-//
-//      it('Returns original function if original is curried with arity 0', function() {
-//        var f = curry(function() {});
-//        var g = fnUnderTest(f);
-//
-//        expect(g).to.equal(f);
-//      });
-//
-//
-//      it('Returns curried original function if original is not curried and has arity 0', function() {
-//        var f = function() {return [].slice.call(arguments);};
-//        var g = fnUnderTest(f);
-//
-//        expect(g).to.not.equal(f);
-//        // The curried function should ignore superfluous arguments
-//        expect(g(1, 2, 3)).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns original function if original is curried with arity 1', function() {
-//        var f = curry(function(x) {});
-//        var g = fnUnderTest(f);
-//
-//        expect(g).to.equal(f);
-//      });
-//
-//
-//      it('Returns curried original function if original is not curried and has arity 1', function() {
-//        var f = function(x) {return [].slice.call(arguments);};
-//        var g = fnUnderTest(f);
-//
-//        expect(g).to.not.equal(f);
-//        // The curried function should ignore superfluous arguments
-//        expect(g(1, 2, 3)).to.deep.equal([1]);
-//      });
-//
-//
-//      it('New function returns same result as original when called with uncurried function of arity 2', function() {
-//        var f = function(x, y) {return x - y;};
-//        var permuted = fnUnderTest(f);
-//
-//        expect(permuted(1, 2)).to.equal(f(2, 1));
-//      });
-//
-//
-//      it('New function returns same result as original when called with curried function of arity 2', function() {
-//        var f = curry(function(x, y) {return x - y;});
-//        var permuted = fnUnderTest(f);
-//
-//        expect(permuted(1, 2)).to.equal(f(2, 1));
-//      });
-//
-//
-//      it('Equivalent to flip when called with an uncurried function of arity 2', function() {
-//        var f = function(x, y) {return x - y;};
-//        var flipped = base.flip(f);
-//        var permuted = fnUnderTest(f);
-//
-//        expect(permuted(1, 2)).to.equal(flipped(1, 2));
-//      });
-//
-//
-//      it('Equivalent to flip when called with an curried function of arity 2', function() {
-//        var f = curry(function(x, y) {return x - y;});
-//        var flipped = base.flip(f);
-//        var permuted = fnUnderTest(f);
-//
-//        expect(permuted(1, 2)).to.equal(flipped(1, 2));
-//      });
-//
-//
-//      var f = function(a, b) {return a - b;};
-//      testCurriedFunction(fnUnderTest(f), [1, 2], {message: 'Uncurried arity 2 function curries'});
-//      var g = curry(function(a, b) {return a - b;});
-//      testCurriedFunction(fnUnderTest(g), [1, 2], {message: 'Curried arity 2 function'});
-//    };
-//
-//
-//    var permuteLeftSpec = {
-//      name: 'permuteLeft',
-//      arity: 1,
-//      restrictions: [['function']],
-//      validArguments: [[function() {}]]
-//    };
-//
-//
-//    describeFunction(permuteLeftSpec, fn.permuteLeft, function(permuteLeft) {
-//      addCommonPermuteTests(permuteLeft);
-//
-//
-//      // For higher arities, we will generate a series of tests for arities 3 and 4
-//      var params = [1, 'a', undefined, true];
-//      var baseFunc = function() {return [].slice.call(arguments);};
-//
-//
-//      var addCallsOriginalTest = function(i) {
-//        it('Calls original function for function of arity ' + i, function() {
-//          var called = false;
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, function() {called = true;});
-//          var permuted = permuteLeft(fn);
-//          // Lack of assignment is deliberate: we only care about the side-effect
-//          permuted.apply(null, args);
-//
-//          expect(called).to.equal(true);
-//        });
-//      };
-//
-//
-//      var addPermutesArgsTest = function(i) {
-//        it('Correctly permutes arguments for function of arity ' + i, function() {
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, baseFunc);
-//          var permuted = permuteLeft(fn);
-//          var result = permuted.apply(null, args);
-//          var expected = [args[i - 1]].concat(args.slice(0, i - 1));
-//
-//          expect(result).to.deep.equal(expected);
-//        });
-//      };
-//
-//
-//      var addSameResultTest = function(i) {
-//        it('Returns same result as original for function of arity ' + i, function() {
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
-//          var permuted = permuteLeft(fn);
-//          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
-//          var result = permuted.apply(null, args);
-//
-//          expect(result).to.deep.equal(originalResult);
-//        });
-//      };
-//
-//
-//      for (var i = 3; i < 5; i++) {
-//        addCallsOriginalTest(i);
-//        addPermutesArgsTest(i);
-//        addSameResultTest(i);
-//
-//        // And, of course, the permuted function should be curried
-//        var curried = curryWithArity(i, baseFunc);
-//        testCurriedFunction(permuteLeft(curried), params.slice(0, i), {message: 'Permuted function of arity ' + i});
-//      }
-//    });
-//
-//
-//    describe('rotateLeft', function() {
-//      it('Is a synonym for permuteLeft', function() {
-//        expect(fn.rotateLeft === fn.permuteLeft).to.equal(true);
-//      });
-//    });
-//
-//
-//    var permuteRightSpec = {
-//      name: 'permuteRight',
-//      arity: 1,
-//      restrictions: [['function']],
-//      validArguments: [[function() {}]]
-//    };
-//
-//
-//    describeFunction(permuteRightSpec, fn.permuteRight, function(permuteRight) {
-//      addCommonPermuteTests(permuteRight);
-//
-//
-//      // For higher arities, we will generate a series of tests for arities 3 and 4
-//      var params = [1, 'a', undefined, true];
-//      var baseFunc = function() {return [].slice.call(arguments);};
-//
-//
-//      var addCallsOriginalTest = function(i) {
-//        it('Calls original function for function of arity ' + i, function() {
-//          var called = false;
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, function() {called = true;});
-//          var permuted = permuteRight(fn);
-//          // Lack of assignment is deliberate: we only care about the side-effect
-//          permuted.apply(null, args);
-//
-//          expect(called).to.equal(true);
-//        });
-//      };
-//
-//
-//      var addPermutesArgsTest = function(i) {
-//        it('Correctly permutes arguments for function of arity ' + i, function() {
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, baseFunc);
-//          var permuted = permuteRight(fn);
-//          var result = permuted.apply(null, args);
-//          var expected = args.slice(1).concat([args[0]]);
-//
-//          expect(result).to.deep.equal(expected);
-//        });
-//      };
-//
-//
-//      var addSameResultTest = function(i) {
-//        it('Returns same result as original for function of arity ' + i, function() {
-//          var args = params.slice(0, i);
-//          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
-//          var permuted = permuteRight(fn);
-//          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
-//          var result = permuted.apply(null, args);
-//
-//          expect(result).to.deep.equal(originalResult);
-//        });
-//      };
-//
-//
-//      for (var i = 3; i < 5; i++) {
-//        addCallsOriginalTest(i);
-//        addPermutesArgsTest(i);
-//        addSameResultTest(i);
-//
-//        // And, of course, the permuted function should be curried
-//        var curried = curryWithArity(i, baseFunc);
-//        testCurriedFunction(permuteRight(curried), params.slice(0, i), {message: 'Permuted function of arity ' + i});
-//      }
-//    });
-//
-//
-//    describe('rotateRight', function() {
-//      it('Is a synonym for permuteRight', function() {
-//        expect(fn.rotateRight === fn.permuteRight).to.equal(true);
-//      });
-//    });
-//
-//
-//    var addReturnsFunctionTest = function(fnUnderTest, args) {
-//      it('Returns a function', function() {
-//        var result = fnUnderTest.apply(null, args);
-//
-//        expect(result).to.be.a('function');
-//      });
-//    };
-//
-//
-//    var bindWithContextSpec = {
-//      name: 'bindWithContext',
-//      arity: 2,
-//      restrictions: [['objectlike'], ['function']],
-//      validArguments: [[{}], [function() {}]]
-//    };
-//
-//
-//    describeFunction(bindWithContextSpec, fn.bindWithContext, function(bindWithContext) {
-//      addReturnsFunctionTest(bindWithContext, [{}, function() {}]);
-//
-//
-//      var addCorrectArityTest = function(message, f) {
-//        it('Returned function has correct arity ' + message, function() {
-//          var obj = {};
-//          var result = bindWithContext(obj, f);
-//
-//          expect(getRealArity(result)).to.equal(f.length);
-//        });
-//      };
-//
-//
-//      addCorrectArityTest('(1)', function() {});
-//      addCorrectArityTest('(2)', function(x) {});
-//      addCorrectArityTest('(3)', function(x, y) {});
-//
-//
-//      it('Binds to context', function() {
-//        var f = function() {return this;};
-//        var obj = {};
-//        var result = bindWithContext(obj, f)();
-//
-//        expect(result).to.equal(obj);
-//      });
-//
-//
-//      // If necessary, the returned function should be curried
-//      var f1 = function(x, y) {return x + y + this.foo;};
-//      var obj1 = {foo: 6};
-//      var result = bindWithContext(obj1, f1);
-//      testCurriedFunction(result, [1, 2], {message: 'bindWithContext bound function'});
-//
-//
-//      // bindWithContext should be curried
-//      var f2 = function(x) {return x + this.foo;};
-//      var obj2 = {foo: 5};
-//      testCurriedFunction(bindWithContext, {firstArgs: [obj2, f2], thenArgs: [2]});
-//    });
-//
-//
-//    var addCommonWrapTests = function(fnUnderTest, isWrap) {
-//      isWrap = isWrap || false;
-//
-//
-//      addReturnsFunctionTest(fnUnderTest, isWrap ? [function() {}, function() {}, function() {}] :
-//                                                   [function() {}, function() {}]);
-//
-//
-//      var addCorrectArityTest = function(message, g, f) {
-//        it('Returned function has correct arity ' + message, function() {
-//          var result = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
-//
-//          expect(getRealArity(result)).to.equal(f.length);
-//        });
-//      };
-//
-//
-//      addCorrectArityTest('(1)', function() {}, function() {});
-//      addCorrectArityTest('(2)', function() {}, function(x) {});
-//      addCorrectArityTest('(3)', function(x) {}, function(x, y) {});
-//
-//
-//      var addCallsOriginalWithArgsTest = function(message, args) {
-//        it('Calls the original function with the given arguments ' + message, function() {
-//          var fArgs = null;
-//          var f = args.length === 2 ? function(x, y) {fArgs = [].slice.call(arguments);} :
-//                                      function(x) {fArgs = [].slice.call(arguments);};
-//          var g = function() {};
-//          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
-//          newFn.apply(null, args);
-//
-//          expect(fArgs).to.deep.equal(args);
-//        });
-//      };
-//
-//
-//      addCallsOriginalWithArgsTest('(1)', [1, 2]);
-//      addCallsOriginalWithArgsTest('(2)', ['funkier']);
-//
-//
-//      it('Calls the original function with preserved execution context', function() {
-//        var exc;
-//        var f = function(x, y) {exc = this;};
-//        var g = function() {};
-//        var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
-//        var args = ['a', 'b'];
-//        var obj = {};
-//        newFn.apply(obj, args);
-//
-//        expect(exc).to.equal(obj);
-//      });
-//
-//
-//      var addReturnsOriginalsValueTest = function(message, f, args) {
-//        it('Returns the original function\'s return value ' + message, function() {
-//          var g = function() {};
-//          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
-//          var result = newFn.apply(null, args);
-//
-//          expect(result).to.equal(f.apply(null, args));
-//        });
-//      };
-//
-//
-//      addReturnsOriginalsValueTest('(1)', function(x, y) {return x + y;}, [1, 2]);
-//      addReturnsOriginalsValueTest('(2)', function(x, y) {return 42;}, [1, 2]);
-//    };
-//
-//
-//    var addCommonPreTests = function(fnUnderTest, isWrap) {
-//      isWrap = isWrap || false;
-//
-//
-//      var addCallsPreWithArgsTest = function(message, f, args) {
-//        it('Calls the pre function with the given arguments ' + message, function() {
-//          var preArgs = null;
-//          var pre = function(args) {preArgs = args;};
-//          var post = function() {};
-//          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
-//          newFn.apply(null, args);
-//
-//          expect(preArgs).to.deep.equal(args);
-//        });
-//      };
-//
-//
-//      addCallsPreWithArgsTest('(1)', function(x, y) {}, [1, 2]);
-//      addCallsPreWithArgsTest('(2)', function(x) {}, ['funkier']);
-//
-//
-//      it('Calls the pre function with preserved execution context', function() {
-//        var preExc;
-//        var pre = function() {preExc = this;};
-//        var post = function() {};
-//        var f = function() {};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
-//        var args = ['a', 'b'];
-//        var obj = {};
-//        newFn.apply(obj, args);
-//
-//        expect(preExc).to.equal(obj);
-//      });
-//
-//
-//      it('Calls the pre function before the original function', function() {
-//        var origCalled = false;
-//        var preCalledBefore = false;
-//
-//        var f = function() {origCalled = true;};
-//        var pre = function() {preCalledBefore = !origCalled;};
-//        var post = function() {};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
-//        var args = ['funkier'];
-//        newFn.apply(null, args);
-//
-//        expect(preCalledBefore).to.equal(true);
-//      });
-//
-//
-//      it('Disregards the fnUnderTest function\'s return value', function() {
-//        var f = function(x, y) {return x + y;};
-//        var pre = function() {return 42;};
-//        var post = function() {};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
-//        var args = [1, 2];
-//        var result = newFn.apply(null, args);
-//
-//        expect(result).to.not.equal(pre.apply(null, args));
-//        expect(result).to.equal(f.apply(null, args));
-//      });
-//    };
-//
-//
-//    var preSpec = {
-//      name: 'pre',
-//      arity: 2,
-//      restrictions: [['function'], ['function']],
-//      validArguments: [[function() {}], [function() {}]]
-//    };
-//
-//
-//    describeFunction(preSpec, fn.pre, function(pre) {
-//      addCommonWrapTests(pre);
-//      addCommonPreTests(pre);
-//
-//
-//      var g = function() {};
-//      var f = function(x) {return x;};
-//      testCurriedFunction(pre, {firstArgs: [g, f], thenArgs: [1]});
-//    });
-//
-//
-//    var addCommonPostTests = function(fnUnderTest, isWrap) {
-//      isWrap = isWrap || false;
-//
-//
-//      it('Calls the post function with preserved execution context', function() {
-//        var postExc;
-//        var post = function() {postExc = this;};
-//        var f = function() {};
-//        var pre = function() {};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
-//        var args = ['a', 'b'];
-//        var obj = {};
-//        newFn.apply(obj, args);
-//
-//        expect(postExc).to.equal(obj);
-//      });
-//
-//
-//      it('Calls the post function after the original function', function() {
-//        var origCalled = false;
-//        var postCalledAfter = false;
-//
-//        var f = function() {origCalled = true;};
-//        var pre = function() {};
-//        var post = function() {postCalledAfter = origCalled;};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
-//        var args = ['funkier'];
-//        newFn.apply(null, args);
-//
-//        expect(postCalledAfter).to.equal(true);
-//      });
-//
-//
-//      var addCallsPostWithArgsAndResultTest = function(message, f, args) {
-//        it('Calls the pre function with the given arguments ' + message, function() {
-//          var postArgs = null;
-//          var postResult = null;
-//          var post = function(args, result) {postArgs = args; postResult = result;};
-//          var pre = function() {};
-//          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
-//          newFn.apply(null, args);
-//
-//          expect(postArgs).to.deep.equal(args);
-//          expect(postResult).to.deep.equal(f.apply(null, args));
-//        });
-//      };
-//
-//
-//      addCallsPostWithArgsAndResultTest('(1)', function(x, y) {return x + y;}, [1, 2]);
-//      addCallsPostWithArgsAndResultTest('(2)', id, ['funkier']);
-//
-//
-//      it('Disregards the post function\'s return value', function() {
-//        var f = function(x, y) {return x + y;};
-//        var pre = function() {};
-//        var post = function() {return 42;};
-//        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
-//        var args = [1, 2];
-//        var result = newFn.apply(null, args);
-//
-//        expect(result).to.not.equal(post.apply(null, [args, f.apply(null, args)]));
-//        expect(result).to.equal(f.apply(null, args));
-//      });
-//    };
-//
-//
-//    var postSpec = {
-//      name: 'post',
-//      arity: 2,
-//      restrictions: [['function'], ['function']],
-//      validArguments: [[function() {}], [function() {}]]
-//    };
-//
-//
-//    describeFunction(postSpec, fn.post, function(post) {
-//      addCommonWrapTests(post);
-//      addCommonPostTests(post);
-//
-//
-//      var g = function() {};
-//      testCurriedFunction(post, {firstArgs: [g, id], thenArgs: [1]});
-//    });
-//
-//
-//    var wrapSpec = {
-//      name: 'wrap',
-//      arity: 3,
-//      restrictions: [['function'], ['function'], ['function']],
-//      validArguments: [[function() {}], [function() {}], [function() {}]]
-//    };
-//
-//
-//    describeFunction(wrapSpec, fn.wrap, function(wrap) {
-//      addCommonWrapTests(wrap, true);
-//      addCommonPreTests(wrap, true);
-//      addCommonPostTests(wrap, true);
-//
-//
-//      var pre = function() {};
-//      var post = function() {};
-//      var f = function(x) {return x;};
-//      testCurriedFunction(wrap, {firstArgs: [pre, post, f], thenArgs: [1]});
-//    });
-//
-//
-//    var callWithContextSpec = {
-//      name: 'callWithContext',
-//      arity: 3,
-//      restrictions: [['objectlike'], ['strictarraylike'], ['function']],
-//      validArguments: [[{}], [[], makeArrayLike()], [function() {}]]
-//    };
-//
-//
-//    describeFunction(callWithContextSpec, fn.callWithContext, function(callWithContext) {
-//      it('Calls function with correct context', function() {
-//        var fContext = null;
-//        var f = function() {fContext = this;};
-//        var context = {};
-//        callWithContext(context, [], f);
-//
-//        expect(fContext).to.equal(context);
-//      });
-//
-//
-//      var addCallsWithArgsTest = function(message, args) {
-//        it('Calls function with correct arguments ' + message, function() {
-//          var fArgs = null;
-//          var f = args.length === 0 ? function() {fArgs = [].slice.call(arguments);} :
-//                                      function(a, b, c) {fArgs = [].slice.call(arguments);};
-//          var context = {};
-//          callWithContext(context, args, f);
-//
-//          expect(fArgs).to.deep.equal(args);
-//        });
-//      };
-//
-//
-//      addCallsWithArgsTest('(1)', [1, true, []]);
-//      addCallsWithArgsTest('(2)', []);
-//
-//
-//      it('Returns result of function (1)', function() {
-//        var expected = {};
-//        var f = function() {return expected;};
-//        var context = {};
-//        var result = callWithContext(context, [], f);
-//
-//        expect(result).to.equal(expected);
-//      });
-//
-//
-//      it('Returns result of function (2)', function() {
-//        var f = function(x) {return this.foo + x;};
-//        var context = {foo: 15};
-//        var result = callWithContext(context, [1], f);
-//
-//        expect(result).to.equal(context.foo + 1);
-//      });
-//
-//
-//      it('Curries function if necessary (1)', function() {
-//        var f = function(x, y) {return this.foo + x + y;};
-//        var x = 2;
-//        var y = 3;
-//        var context = {foo: 5};
-//        var result = callWithContext(context, [x], f);
-//
-//        expect(result).to.be.a('function');
-//        expect(getRealArity(result)).to.equal(1);
-//        expect(result(y)).to.equal(context.foo + x + y);
-//      });
-//
-//
-//      it('Curries function if necessary (2)', function() {
-//        var f = function(x, y, z) {return this.foo + x + y + z;};
-//        var x = 2;
-//        var y = 3;
-//        var z = 7;
-//        var context = {foo: 9};
-//        var result = callWithContext(context, [x], f);
-//
-//        expect(result).to.be.a('function');
-//        expect(getRealArity(result)).to.equal(2);
-//        expect(result(y, z)).to.equal(context.foo + x + y + z);
-//      });
-//
-//
-//      it('Doesn\'t permanently affect context', function() {
-//        var f = function() {return this;};
-//        var context = {};
-//        callWithContext(context, [], f);
-//        var result = f();
-//
-//        expect(result).to.not.equal(context);
-//      });
-//
-//
-//      var f = function() {return this.foo;};
-//      testCurriedFunction(callWithContext, [{foo: 42}, [], f]);
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+},{"../../lib/components/date":12,"./testingUtilities":60,"chai":61}],48:[function(require,module,exports){
+(function() {
+  "use strict";
 
-},{}],48:[function(require,module,exports){
+
+  var expect = require('chai').expect;
+
+
+  var fn = require('../../lib/components/fn');
+
+
+  var curryModule = require('../../lib/components/curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var bind = curryModule.bind;
+  var objectCurry = curryModule.objectCurry;
+  var arityOf = curryModule.arityOf;
+
+
+  var base = require('../../lib/components/base');
+  var id = base.id;
+
+
+  var testingUtilities = require('./testingUtilities');
+  var checkModule = testingUtilities.checkModule;
+  var checkFunction = testingUtilities.checkFunction;
+  var makeArrayLike = testingUtilities.makeArrayLike;
+  var addCurryStyleTests = testingUtilities.addCurryStyleTests;
+
+
+  describe('fn', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['apply', 'permuteLeft', 'permuteRight', 'post', 'pre', 'wrap'];
+    checkModule('fn', fn, expectedObjects, expectedFunctions);
+
+
+    var applySpec = {
+      name: 'apply',
+      restrictions: [['strictarraylike'], ['function']],
+      validArguments: [[[1, 2], makeArrayLike([1, 2])], [function(x) {}]]
+    };
+
+
+    checkFunction(applySpec, fn.apply, function(apply) {
+      it('Calls f', function() {
+        var called = false;
+        var f = function() {called = true;};
+        apply([], f);
+
+        expect(called).to.equal(true);
+      });
+
+
+      it('Calls uncurried f with null execution context (1)', function() {
+        var context;
+        var f = function() {context = this;};
+        apply([], f);
+
+        expect(context).to.equal(null);
+      });
+
+
+      it('Calls object curried f with extant execution context (2)', function() {
+        var context;
+        var f = objectCurry(function() {context = this;});
+        apply([], f);
+
+        expect(context).to.equal(null);
+      });
+
+
+      it('Calls f with given arguments (1)', function() {
+        var args = null;
+        var f = function(x) {args = [].slice.call(arguments);};
+        var fArgs = [1];
+        apply(fArgs, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Calls f with given arguments (2)', function() {
+        var args = null;
+        var f = function(x, y) {args = [].slice.call(arguments);};
+        var fArgs = ['foo', 42];
+        apply(fArgs, f);
+
+        expect(args).to.deep.equal(fArgs);
+      });
+
+
+      it('Returns value of f when applied to given arguments (1)', function() {
+        var f = function(x) {return x + 1;};
+        var arg = 1;
+        var result = apply([arg], f);
+
+        expect(result).to.deep.equal(f(arg));
+      });
+
+
+      it('Returns value of f when applied to given arguments (2)', function() {
+        var f = function(x, y) {return x * y;};
+        var arg1 = 2;
+        var arg2 = 42;
+        var result = apply([arg1, arg2], f);
+
+        expect(result).to.deep.equal(f(arg1, arg2));
+      });
+
+
+      it('Curries f if necessary', function() {
+        var f = function(x, y) {return x + y;};
+        var arg = 42;
+        var result = apply([arg], f);
+
+        expect(result).to.be.a('function');
+        expect(result.length).to.equal(1);
+        expect(result(10)).to.equal(f(arg, 10));
+      });
+
+
+      it('Curries f using curry necessary', function() {
+        var f = function(x, y) {return x + y;};
+        var arg = 42;
+        var result = apply([arg], f);
+
+        expect(result).to.be.a('function');
+        expect(curry(result)).to.equal(result);
+      });
+    });
+
+
+    var addCommonPermuteTests = function(fnUnderTest) {
+      // Generate the same arity tests
+      var fns = [function() {}, function(a) {}, function(a, b) {}, function(a, b, c) {}, function(a, b, c, d) {}];
+
+      var addSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with uncurried function of arity ' + i, function() {
+          var permuted = fnUnderTest(f);
+
+          expect(arityOf(permuted)).to.equal(arityOf(f));
+        });
+      };
+
+
+      var addCurriedSameArityTest = function(f, i) {
+        it('Returns function with correct \'real\' arity if called with curried function of arity ' + i, function() {
+          f = curry(f);
+          var permuted = fnUnderTest(f);
+
+          expect(arityOf(permuted)).to.equal(arityOf(f));
+        });
+      };
+
+
+      fns.forEach(function(f, i) {
+        addSameArityTest(f, i);
+        addCurriedSameArityTest(f, i);
+      });
+
+
+      it('Returns original function if original is curried with arity 0', function() {
+        var f = curry(function() {});
+        var g = fnUnderTest(f);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Returns curried original function if original is not curried and has arity 0', function() {
+        var f = function() {return [].slice.call(arguments);};
+        var g = fnUnderTest(f);
+
+        expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
+        expect(g(1, 2, 3)).to.deep.equal([]);
+      });
+
+
+      it('Returns original function if original is curried with arity 1', function() {
+        var f = curry(function(x) {});
+        var g = fnUnderTest(f);
+
+        expect(g).to.equal(f);
+      });
+
+
+      it('Returns curried original function if original is not curried and has arity 1', function() {
+        var f = function(x) {return [].slice.call(arguments);};
+        var g = fnUnderTest(f);
+
+        expect(g).to.not.equal(f);
+        // The curried function should ignore superfluous arguments
+        expect(g(1, 2, 3)).to.deep.equal([1]);
+      });
+
+
+      it('New function returns same result as original when called with uncurried function of arity 2', function() {
+        var f = function(x, y) {return x - y;};
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(f(2, 1));
+      });
+
+
+      it('New function returns same result as original when called with curried function of arity 2', function() {
+        var f = curry(function(x, y) {return x - y;});
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(f(2, 1));
+      });
+
+
+      it('Equivalent to flip when called with an uncurried function of arity 2', function() {
+        var f = function(x, y) {return x - y;};
+        var flipped = base.flip(f);
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(flipped(1, 2));
+      });
+
+
+      it('Equivalent to flip when called with an curried function of arity 2', function() {
+        var f = curry(function(x, y) {return x - y;});
+        var flipped = base.flip(f);
+        var permuted = fnUnderTest(f);
+
+        expect(permuted(1, 2)).to.equal(flipped(1, 2));
+      });
+
+
+      addCurryStyleTests(function(f) { return fnUnderTest(f); });
+
+
+      it('Execution context supplied to any objectCurried inputs', function() {
+        var context;
+        var f = objectCurry(function() { context = this; });
+        var g = fnUnderTest(f);
+        var obj = {};
+        g.apply(obj);
+
+        expect(context).to.equal(obj);
+      });
+    };
+
+
+    var permuteLeftSpec = {
+      name: 'permuteLeft',
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    checkFunction(permuteLeftSpec, fn.permuteLeft, function(permuteLeft) {
+      addCommonPermuteTests(permuteLeft);
+
+
+      // To test higher arities, we will generate a series of tests for arities 3 and 4
+      var params = [1, 'a', undefined, true];
+      var baseFunc = function() {return [].slice.call(arguments);};
+
+
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
+          var called = false;
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {called = true;});
+          var permuted = permuteLeft(fn);
+          permuted.apply(null, args);
+
+          expect(called).to.equal(true);
+        });
+      };
+
+
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, baseFunc);
+          var permuted = permuteLeft(fn);
+          var result = permuted.apply(null, args);
+          var expected = [args[i - 1]].concat(args.slice(0, i - 1));
+
+          expect(result).to.deep.equal(expected);
+        });
+      };
+
+
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
+          var permuted = permuteLeft(fn);
+          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
+          var result = permuted.apply(null, args);
+
+          expect(result).to.deep.equal(originalResult);
+        });
+      };
+
+
+      for (var i = 3; i < 5; i++) {
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
+      }
+    });
+
+
+    var permuteRightSpec = {
+      name: 'permuteRight',
+      restrictions: [['function']],
+      validArguments: [[function() {}]]
+    };
+
+
+    checkFunction(permuteRightSpec, fn.permuteRight, function(permuteRight) {
+      addCommonPermuteTests(permuteRight);
+
+
+      // For higher arities, we will generate a series of tests for arities 3 and 4
+      var params = [1, 'a', undefined, true];
+      var baseFunc = function() {return [].slice.call(arguments);};
+
+
+      var addCallsOriginalTest = function(i) {
+        it('Calls original function for function of arity ' + i, function() {
+          var called = false;
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {called = true;});
+          var permuted = permuteRight(fn);
+          // Lack of assignment is deliberate: we only care about the side-effect
+          permuted.apply(null, args);
+
+          expect(called).to.equal(true);
+        });
+      };
+
+
+      var addPermutesArgsTest = function(i) {
+        it('Correctly permutes arguments for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, baseFunc);
+          var permuted = permuteRight(fn);
+          var result = permuted.apply(null, args);
+          var expected = args.slice(1).concat([args[0]]);
+
+          expect(result).to.deep.equal(expected);
+        });
+      };
+
+
+      var addSameResultTest = function(i) {
+        it('Returns same result as original for function of arity ' + i, function() {
+          var args = params.slice(0, i);
+          var fn = curryWithArity(i, function() {return [].slice.call(arguments).sort();});
+          var permuted = permuteRight(fn);
+          var originalResult = fn.apply(null, args.slice(1).concat([args[0]]));
+          var result = permuted.apply(null, args);
+
+          expect(result).to.deep.equal(originalResult);
+        });
+      };
+
+
+      for (var i = 3; i < 5; i++) {
+        addCallsOriginalTest(i);
+        addPermutesArgsTest(i);
+        addSameResultTest(i);
+      }
+    });
+
+
+    var addReturnsFunctionTest = function(fnUnderTest, args) {
+      it('Returns a function', function() {
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.be.a('function');
+      });
+    };
+
+
+    var addCommonWrapTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      addReturnsFunctionTest(fnUnderTest, isWrap ? [function() {}, function() {}, function() {}] :
+                                                   [function() {}, function() {}]);
+
+
+      var addCorrectArityTest = function(message, g, f) {
+        it('Returned function has correct arity ' + message, function() {
+          var result = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+
+          expect(arityOf(result)).to.equal(f.length);
+        });
+      };
+
+
+      addCorrectArityTest('(1)', function() {}, function() {});
+      addCorrectArityTest('(2)', function() {}, function(x) {});
+      addCorrectArityTest('(3)', function(x) {}, function(x, y) {});
+
+
+      var addCallsOriginalWithArgsTest = function(message, args) {
+        it('Calls the original function with the given arguments ' + message, function() {
+          var fArgs = null;
+          var f = args.length === 2 ? function(x, y) {fArgs = [].slice.call(arguments);} :
+                                      function(x) {fArgs = [].slice.call(arguments);};
+          var g = function() {};
+          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+          newFn.apply(null, args);
+
+          expect(fArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsOriginalWithArgsTest('(1)', [1, 2]);
+      addCallsOriginalWithArgsTest('(2)', ['funkier']);
+
+
+      it('Calls the original function with preserved execution context', function() {
+        var exc;
+        var f = objectCurry(function(x, y) {exc = this;});
+        var g = function() {};
+        var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(exc).to.equal(obj);
+      });
+
+
+      var addReturnsOriginalsValueTest = function(message, f, args) {
+        it('Returns the original function\'s return value ' + message, function() {
+          var g = function() {};
+          var newFn = isWrap ? fnUnderTest(g, g, f) : fnUnderTest(g, f);
+          var result = newFn.apply(null, args);
+
+          expect(result).to.equal(f.apply(null, args));
+        });
+      };
+
+
+      addReturnsOriginalsValueTest('(1)', function(x, y) {return x + y;}, [1, 2]);
+      addReturnsOriginalsValueTest('(2)', function(x, y) {return 42;}, [1, 2]);
+    };
+
+
+    var addCommonPreTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      var addCallsPreWithArgsTest = function(message, f, args) {
+        it('Calls the pre function with the given arguments ' + message, function() {
+          var preArgs = null;
+          var pre = function(args) {preArgs = args;};
+          var post = function() {};
+          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+          newFn.apply(null, args);
+
+          expect(preArgs).to.deep.equal(args);
+        });
+      };
+
+
+      addCallsPreWithArgsTest('(1)', function(x, y) {}, [1, 2]);
+      addCallsPreWithArgsTest('(2)', function(x) {}, ['funkier']);
+
+
+      it('Calls the pre function with preserved execution context', function() {
+        var preExc;
+        var pre = function() {preExc = this;};
+        var post = function() {};
+        var f = objectCurry(function() {});
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(preExc).to.equal(obj);
+      });
+
+
+      it('Calls the pre function before the original function', function() {
+        var origCalled = false;
+        var preCalledBefore = false;
+
+        var f = function() {origCalled = true;};
+        var pre = function() {preCalledBefore = !origCalled;};
+        var post = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = ['funkier'];
+        newFn.apply(null, args);
+
+        expect(preCalledBefore).to.equal(true);
+      });
+
+
+      it('Disregards the fnUnderTest function\'s return value', function() {
+        var f = function(x, y) {return x + y;};
+        var pre = function() {return 42;};
+        var post = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(pre, f);
+        var args = [1, 2];
+        var result = newFn.apply(null, args);
+
+        expect(result).to.not.equal(pre.apply(null, args));
+        expect(result).to.equal(f.apply(null, args));
+      });
+    };
+
+
+    var preSpec = {
+      name: 'pre',
+      restrictions: [['function'], ['function']],
+      validArguments: [[function() {}], [function() {}]]
+    };
+
+
+    checkFunction(preSpec, fn.pre, function(pre) {
+      addCommonWrapTests(pre);
+      addCommonPreTests(pre);
+    });
+
+
+    var addCommonPostTests = function(fnUnderTest, isWrap) {
+      isWrap = isWrap || false;
+
+
+      it('Calls the post function with preserved execution context', function() {
+        var postExc;
+        var post = function() {postExc = this;};
+        var f = objectCurry(function() {});
+        var pre = function() {};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = ['a', 'b'];
+        var obj = {};
+        newFn.apply(obj, args);
+
+        expect(postExc).to.equal(obj);
+      });
+
+
+      it('Calls the post function after the original function', function() {
+        var origCalled = false;
+        var postCalledAfter = false;
+
+        var f = function() {origCalled = true;};
+        var pre = function() {};
+        var post = function() {postCalledAfter = origCalled;};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = ['funkier'];
+        newFn.apply(null, args);
+
+        expect(postCalledAfter).to.equal(true);
+      });
+
+
+      var addCallsPostWithArgsAndResultTest = function(message, f, args) {
+        it('Calls the pre function with the given arguments ' + message, function() {
+          var postArgs = null;
+          var postResult = null;
+          var post = function(args, result) {postArgs = args; postResult = result;};
+          var pre = function() {};
+          var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+          newFn.apply(null, args);
+
+          expect(postArgs).to.deep.equal(args);
+          expect(postResult).to.deep.equal(f.apply(null, args));
+        });
+      };
+
+
+      addCallsPostWithArgsAndResultTest('(1)', function(x, y) {return x + y;}, [1, 2]);
+      addCallsPostWithArgsAndResultTest('(2)', id, ['funkier']);
+
+
+      it('Disregards the post function\'s return value', function() {
+        var f = function(x, y) {return x + y;};
+        var pre = function() {};
+        var post = function() {return 42;};
+        var newFn = isWrap ? fnUnderTest(pre, post, f) : fnUnderTest(post, f);
+        var args = [1, 2];
+        var result = newFn.apply(null, args);
+
+        expect(result).to.not.equal(post.apply(null, [args, f.apply(null, args)]));
+        expect(result).to.equal(f.apply(null, args));
+      });
+    };
+
+
+    var postSpec = {
+      name: 'post',
+      restrictions: [['function'], ['function']],
+      validArguments: [[function() {}], [function() {}]]
+    };
+
+
+    checkFunction(postSpec, fn.post, function(post) {
+      addCommonWrapTests(post);
+      addCommonPostTests(post);
+    });
+
+
+    var wrapSpec = {
+      name: 'wrap',
+      restrictions: [['function'], ['function'], ['function']],
+      validArguments: [[function() {}], [function() {}], [function() {}]]
+    };
+
+
+    checkFunction(wrapSpec, fn.wrap, function(wrap) {
+      addCommonWrapTests(wrap, true);
+      addCommonPreTests(wrap, true);
+      addCommonPostTests(wrap, true);
+    });
+  });
+})();
+
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/fn":13,"./testingUtilities":60,"chai":61}],49:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31695,7 +32001,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":20,"./testingUtilities":59,"chai":60}],49:[function(require,module,exports){
+},{"../../lib/funcUtils":21,"./testingUtilities":60,"chai":61}],50:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -31785,7 +32091,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32215,7 +32521,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],51:[function(require,module,exports){
+},{"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],52:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32420,7 +32726,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/logical":13,"./testingUtilities":59,"chai":60}],52:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/logical":14,"./testingUtilities":60,"chai":61}],53:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32711,7 +33017,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/maths":14,"./testingUtilities":59,"chai":60}],53:[function(require,module,exports){
+},{"../../lib/components/maths":15,"./testingUtilities":60,"chai":61}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -33165,7 +33471,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":15,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],54:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/maybe":16,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],55:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -35384,7 +35690,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":15,"../../lib/components/object":16,"./testingUtilities":59,"chai":60,"deep-equal":24}],55:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/maybe":16,"../../lib/components/object":17,"./testingUtilities":60,"chai":61,"deep-equal":25}],56:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -35794,7 +36100,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/pair":17,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],56:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/pair":18,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],57:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36367,7 +36673,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":18,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],57:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":19,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],58:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -37431,7 +37737,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37848,7 +38154,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/types":19,"./testingUtilities":59,"chai":60}],59:[function(require,module,exports){
+},{"../../lib/components/types":20,"./testingUtilities":60,"chai":61}],60:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -38415,6 +38721,9 @@ module.exports = (function() {
    *   - arity:   the arity of the function to supply to the manipulator
    *   - returns: the value to return from the function supplied to the manipulator
    *
+   * Note that this function does not provide tests showing that the result of the function manipulator passes on its
+   * execution context to any object-curried inputs. The client must define these manually.
+   *
    */
 
   var addCurryStyleTests = function(manipulator, options) {
@@ -38852,10 +39161,10 @@ module.exports = (function() {
   return toExport;
 })();
 
-},{"../../lib/components/curry":11,"chai":60}],60:[function(require,module,exports){
+},{"../../lib/components/curry":11,"chai":61}],61:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":61}],61:[function(require,module,exports){
+},{"./lib/chai":62}],62:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38944,7 +39253,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":62,"./chai/config":63,"./chai/core/assertions":64,"./chai/interface/assert":65,"./chai/interface/expect":66,"./chai/interface/should":67,"./chai/utils":78,"assertion-error":87}],62:[function(require,module,exports){
+},{"./chai/assertion":63,"./chai/config":64,"./chai/core/assertions":65,"./chai/interface/assert":66,"./chai/interface/expect":67,"./chai/interface/should":68,"./chai/utils":79,"assertion-error":88}],63:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -39076,7 +39385,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":63}],63:[function(require,module,exports){
+},{"./config":64}],64:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -39128,7 +39437,7 @@ module.exports = {
 
 };
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -40444,7 +40753,7 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41502,7 +41811,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41516,7 +41825,7 @@ module.exports = function (chai, util) {
 };
 
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41596,7 +41905,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41709,7 +42018,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":63,"./flag":71,"./transferFlags":85}],69:[function(require,module,exports){
+},{"../config":64,"./flag":72,"./transferFlags":86}],70:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41754,7 +42063,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":63,"./flag":71}],70:[function(require,module,exports){
+},{"../config":64,"./flag":72}],71:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41796,7 +42105,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41830,7 +42139,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41850,7 +42159,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41877,7 +42186,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41928,7 +42237,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":71,"./getActual":72,"./inspect":79,"./objDisplay":80}],75:[function(require,module,exports){
+},{"./flag":72,"./getActual":73,"./inspect":80,"./objDisplay":81}],76:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41950,7 +42259,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42054,7 +42363,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42091,7 +42400,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -42207,7 +42516,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":68,"./addMethod":69,"./addProperty":70,"./flag":71,"./getActual":72,"./getMessage":74,"./getName":75,"./getPathValue":76,"./inspect":79,"./objDisplay":80,"./overwriteChainableMethod":81,"./overwriteMethod":82,"./overwriteProperty":83,"./test":84,"./transferFlags":85,"./type":86,"deep-eql":88}],79:[function(require,module,exports){
+},{"./addChainableMethod":69,"./addMethod":70,"./addProperty":71,"./flag":72,"./getActual":73,"./getMessage":75,"./getName":76,"./getPathValue":77,"./inspect":80,"./objDisplay":81,"./overwriteChainableMethod":82,"./overwriteMethod":83,"./overwriteProperty":84,"./test":85,"./transferFlags":86,"./type":87,"deep-eql":89}],80:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -42529,7 +42838,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":73,"./getName":75,"./getProperties":77}],80:[function(require,module,exports){
+},{"./getEnumerableProperties":74,"./getName":76,"./getProperties":78}],81:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42580,7 +42889,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":63,"./inspect":79}],81:[function(require,module,exports){
+},{"../config":64,"./inspect":80}],82:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42635,7 +42944,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42688,7 +42997,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42744,7 +43053,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42772,7 +43081,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":71}],85:[function(require,module,exports){
+},{"./flag":72}],86:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42818,7 +43127,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42865,7 +43174,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -42977,10 +43286,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":89}],89:[function(require,module,exports){
+},{"./lib/eql":90}],90:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -43239,10 +43548,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":27,"type-detect":90}],90:[function(require,module,exports){
+},{"buffer":28,"type-detect":91}],91:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":91}],91:[function(require,module,exports){
+},{"./lib/type":92}],92:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>

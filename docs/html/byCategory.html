@@ -819,6 +819,21 @@ equivalent date in UTC.</p>
 </section>
 <section class="categoryRef" id="Function">
 <h2 class="categoryName">Function</h2>
+<section class="functionRef" id="apply">
+<h3 class="functionName">apply</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = apply(args, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">args: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using <a href="#curry"><code>curry</code></a>) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as <code>apply</code> is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.apply([1], id); // 1
+</code></pre></section>
+</section>
 <section class="functionRef" id="arity">
 <h3 class="functionName">arity</h3>
 <p class="see">See <a class="synonymLink" href="#arityOf"><code class="synonymCode">arityOf</code></a></p>
@@ -1214,6 +1229,88 @@ var err = obj1.foo;
 err(1, 2);  // =&gt; throws
 </code></pre></section>
 </section>
+<section class="functionRef" id="permuteLeft">
+<h3 class="functionName">permuteLeft</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">rotateLeft</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = permuteLeft(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to <a href="#curry"><code>curry</code></a> for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</p>
+<p>If f is already curried, the currying style of f will be preserved.</p>
+<p>Throws a TypeError if f is not a function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>f = function(x, y, z) {return x + y + z;};
+g = permuteLeft(f);
+g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="permuteRight">
+<h3 class="functionName">permuteRight</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">rotateRight</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = permuteRight(f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to <a href="#curry"><code>curry</code></a> for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</p>
+<p>If f is already curried, the currying style of f will be preserved.</p>
+<p>Throws a TypeError if f is not a function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>f = function(x, y, z) {return x + y + z;};
+g = permuteLeft(f);
+g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="post">
+<h3 class="functionName">post</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = post(wrappingFunction, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">wrappingFunction: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with <a href="#curry"><code>curry</code></a> if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f&#39;s return value. Anything returned from
+wrappingFunction will be discarded, and f&#39;s return value will be returned.</p>
+<p>Throws a TypeError if either of the given values are not functions.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
+var loggedPlus = post(postLogger, plus);
+loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
+</code></pre></section>
+</section>
+<section class="functionRef" id="pre">
+<h3 class="functionName">pre</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = pre(wrappingFunction, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">wrappingFunction: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with <a href="#curry"><code>curry</code></a> if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.</p>
+<p>Throws a TypeError if neither of the given values are functions.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
+var loggedPlus = pre(logger, plus);
+loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
+</code></pre></section>
+</section>
+<section class="functionRef" id="rotateLeft">
+<h3 class="functionName">rotateLeft</h3>
+<p class="see">See <a class="synonymLink" href="#permuteLeft"><code class="synonymCode">permuteLeft</code></a></p>
+</section>
+<section class="functionRef" id="rotateRight">
+<h3 class="functionName">rotateRight</h3>
+<p class="see">See <a class="synonymLink" href="#permuteRight"><code class="synonymCode">permuteRight</code></a></p>
+</section>
 <section class="functionRef" id="sectionLeft">
 <h3 class="functionName">sectionLeft</h3>
 <p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sectionLeft(f, x);</code></p>
@@ -1237,6 +1334,36 @@ to f. The given function f will be curried if necessary. Throws if f is not a bi
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1
+</code></pre></section>
+</section>
+<section class="functionRef" id="wrap">
+<h3 class="functionName">wrap</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = wrap(before, after, f);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">before: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">after: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
+<p>Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using <a href="#curry"><code>curry</code></a> if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.</p>
+<p>Specifically, when the returned function is called, the following will happen in sequence:</p>
+<ul>
+<li><p>before will be called with the execution context of the new function and one argument: an array containing
+the arguments the new function was invoked with</p>
+</li>
+<li><p>f will be called with the execution context that the new function was called with, and the same arguments</p>
+</li>
+<li><p>after will be called with the original execution context and two arguments: an array containing the arguments
+the new function was called with, and f&#39;s result</p>
+</li>
+<li><p>f&#39;s result will be returned</p>
+</li>
+</ul>
+<p>Throws a TypeError if any argument is not a function.</p>
+<p>This function is equivalent to calling <a href="#post"><code>post</code></a> and <a href="#pre"><code>pre</code></a> on some function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
+var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
+var loggedPlus = wrap(logger, postLogger, plus);
+loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
 <section class="categoryRef" id="Logical">

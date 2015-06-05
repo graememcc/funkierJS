@@ -167,6 +167,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -2576,11 +2597,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -2629,6 +2754,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -3360,6 +3491,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -3572,6 +3740,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -5981,11 +6170,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -6034,6 +6327,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -6765,6 +7064,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -6977,6 +7313,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -9386,11 +9743,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -9439,6 +9900,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -10170,6 +10637,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -10382,6 +10886,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -12791,11 +13316,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -12844,6 +13473,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -13575,6 +14210,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -13787,6 +14459,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -16196,11 +16889,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -16249,6 +17046,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -16980,6 +17783,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -17192,6 +18032,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -19601,11 +20462,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -19654,6 +20619,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -20385,6 +21356,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
@@ -20597,6 +21605,27 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.andPred(c, d);',
     f("foo"); // => false',
 ***
+### apply ###
+Category: Function
+
+**Usage:** `var result = apply(args, f);`
+
+Parameters:  
+args `array`  
+f `function`
+
+Returns: `any`
+
+Applies the given function f with the arguments given in the array args. If the function is not curried, it will be
+curried (using [`curry`](#curry)) and partially applied if necessary. If the function is object curried, and has
+not yet acquired an execution context, then it will be invoked with a null execution context (as `apply` is itself
+curried, and so will have no visibility into the execution context it was invoked with). The result of applying the
+given arguments to the function is returned.  Throws a TypeError if args is not an array, or if f is not a
+function.
+
+#### Examples ####
+    funkierJS.apply([1], id); // 1
+***
 ### arity ###
 See `arityOf`
 ***
@@ -23006,11 +24035,115 @@ assuming it represents a number in base 10. Returns `NaN` if the string does not
 ### parseIntInBase ###
 See `stringToInt`
 ***
+### permuteLeft ###
+Category: Function
+
+*Synonyms:* `rotateLeft`
+
+**Usage:** `var result = permuteLeft(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the last parameter of the new function,
+the second parameter of the original will be the first parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'bca'
+***
+### permuteRight ###
+Category: Function
+
+*Synonyms:* `rotateRight`
+
+**Usage:** `var result = permuteRight(f);`
+
+Parameters:  
+f `function`
+
+Returns: `function`
+
+Takes a function, returns a curried function of the same arity which takes the same parameters, except in a
+different position. The first parameter of the original function will be the second parameter of the new function,
+the second parameter of the original will be the third parameter of the new function and so on. This function is
+essentially a no-op for curried functions of arity 0 and 1, equivalent to [`curry`](#curry) for uncurried
+functions of arities 0 and 1, and equivalent to flip for functions of arity 2.
+
+If f is already curried, the currying style of f will be preserved.
+
+Throws a TypeError if f is not a function.
+
+#### Examples ####
+    f = function(x, y, z) {return x + y + z;};
+    g = permuteLeft(f);
+    g('a', 'b', 'c'); // => 'cab'
+***
 ### plus ###
 See `add`
 ***
+### post ###
+Category: Function
+
+**Usage:** `var result = post(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call f with the same execution context and arguments that the new function was called
+with. Its return value will be saved. Next, wrappingFunction will be called, again with the same execution
+context, and two arguments: an array containing the arguments to f, and f's return value. Anything returned from
+wrappingFunction will be discarded, and f's return value will be returned.
+
+Throws a TypeError if either of the given values are not functions.
+
+#### Examples ####
+    var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
+    var loggedPlus = post(postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
+***
 ### pow ###
 See `exp`
+***
+### pre ###
+Category: Function
+
+**Usage:** `var result = pre(wrappingFunction, f);`
+
+Parameters:  
+wrappingFunction `function`  
+f `function`
+
+Returns: `function`
+
+Takes two functions wrappingFunction, and f, and returns a new function with the same arity as the function f,
+and curried in the same manner (or curried with [`curry`](#curry) if f was not curried). When this new function
+is called, it will first call wrappingFunction, with the same execution context, and a single argument: an array
+containing all the arguments the function was called with. When wrappingFunction returns, its return value
+will be discarded, and f will be called with the same execution context and invoked with the same arguments as the
+new function was invoked with. The return value from f will be returned.
+
+Throws a TypeError if neither of the given values are functions.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var loggedPlus = pre(logger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
 ***
 ### rem ###
 Category: Maths
@@ -23059,6 +24192,12 @@ A wrapper around the left shift (>>>) operator.
 
 #### Examples ####
     funkierJS.rightShiftZero(-4, 2); // => 1073741823;
+***
+### rotateLeft ###
+See `permuteLeft`
+***
+### rotateRight ###
+See `permuteRight`
 ***
 ### safeCreateProp ###
 Category: Object
@@ -23790,6 +24929,43 @@ Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
+***
+### wrap ###
+Category: Function
+
+**Usage:** `var result = wrap(before, after, f);`
+
+Parameters:  
+before `function`  
+after `function`  
+f `function`
+
+Returns: `function`
+
+Takes 3 functions, before, after and f. Returns a new function with the same arity as f, and curried in the same
+manner (or curried using [`curry`](#curry) if f was not curried. The functions before, f, and after will be called
+when the returned function is invoked.
+
+Specifically, when the returned function is called, the following will happen in sequence:
+  -  before will be called with the execution context of the new function and one argument: an array containing
+     the arguments the new function was invoked with
+
+  -  f will be called with the execution context that the new function was called with, and the same arguments
+
+  -  after will be called with the original execution context and two arguments: an array containing the arguments
+     the new function was called with, and f's result
+
+  -  f's result will be returned
+
+Throws a TypeError if any argument is not a function.
+
+This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some function.
+
+#### Examples ####
+    var logger = function(args) {console.log('plus called with ', args.join(', '));};
+    var postLogger = function(args, result) {console.log('plus returned', result);};
+    var loggedPlus = wrap(logger, postLogger, plus);
+    loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
 ### xor ###
 Category: Logical
