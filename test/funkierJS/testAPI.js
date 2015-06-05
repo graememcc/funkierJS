@@ -1414,6 +1414,90 @@
     });
 
 
+    describe('getCurrentTimeString', function() {
+      it('getCurrentTimeString exists', function() {
+        expect(funkier).to.have.a.property('getCurrentTimeString');
+      });
+
+
+      it('funkierJS\'s getCurrentTimeString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getCurrentTimeString).to.equal(module.getCurrentTimeString);
+      });
+
+
+      it('getCurrentTimeString is a function', function() {
+        expect(funkier.getCurrentTimeString).to.be.a('function');
+      });
+
+
+      it('getCurrentTimeString has documented arity', function() {
+        expect(funkier.arityOf(funkier.getCurrentTimeString)).to.equal(0);
+      });
+
+
+      it('getCurrentTimeString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getCurrentTimeString)).to.equal(true);
+      });
+    });
+
+
+    describe('getDayOfMonth', function() {
+      it('getDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('getDayOfMonth');
+      });
+
+
+      it('funkierJS\'s getDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getDayOfMonth).to.equal(module.getDayOfMonth);
+      });
+
+
+      it('getDayOfMonth is a function', function() {
+        expect(funkier.getDayOfMonth).to.be.a('function');
+      });
+
+
+      it('getDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getDayOfMonth)).to.equal(1);
+      });
+
+
+      it('getDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getDayOfWeek', function() {
+      it('getDayOfWeek exists', function() {
+        expect(funkier).to.have.a.property('getDayOfWeek');
+      });
+
+
+      it('funkierJS\'s getDayOfWeek is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getDayOfWeek).to.equal(module.getDayOfWeek);
+      });
+
+
+      it('getDayOfWeek is a function', function() {
+        expect(funkier.getDayOfWeek).to.be.a('function');
+      });
+
+
+      it('getDayOfWeek has documented arity', function() {
+        expect(funkier.arityOf(funkier.getDayOfWeek)).to.equal(1);
+      });
+
+
+      it('getDayOfWeek is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getDayOfWeek)).to.equal(true);
+      });
+    });
+
+
     describe('getErrValue', function() {
       it('getErrValue exists', function() {
         expect(funkier).to.have.a.property('getErrValue');
@@ -1442,6 +1526,62 @@
     });
 
 
+    describe('getFullYear', function() {
+      it('getFullYear exists', function() {
+        expect(funkier).to.have.a.property('getFullYear');
+      });
+
+
+      it('funkierJS\'s getFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getFullYear).to.equal(module.getFullYear);
+      });
+
+
+      it('getFullYear is a function', function() {
+        expect(funkier.getFullYear).to.be.a('function');
+      });
+
+
+      it('getFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.getFullYear)).to.equal(1);
+      });
+
+
+      it('getFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('getHours', function() {
+      it('getHours exists', function() {
+        expect(funkier).to.have.a.property('getHours');
+      });
+
+
+      it('funkierJS\'s getHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getHours).to.equal(module.getHours);
+      });
+
+
+      it('getHours is a function', function() {
+        expect(funkier.getHours).to.be.a('function');
+      });
+
+
+      it('getHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.getHours)).to.equal(1);
+      });
+
+
+      it('getHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getHours)).to.equal(true);
+      });
+    });
+
+
     describe('getJustValue', function() {
       it('getJustValue exists', function() {
         expect(funkier).to.have.a.property('getJustValue');
@@ -1466,6 +1606,90 @@
 
       it('getJustValue is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.getJustValue)).to.equal(true);
+      });
+    });
+
+
+    describe('getMilliseconds', function() {
+      it('getMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('getMilliseconds');
+      });
+
+
+      it('funkierJS\'s getMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMilliseconds).to.equal(module.getMilliseconds);
+      });
+
+
+      it('getMilliseconds is a function', function() {
+        expect(funkier.getMilliseconds).to.be.a('function');
+      });
+
+
+      it('getMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMilliseconds)).to.equal(1);
+      });
+
+
+      it('getMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getMinutes', function() {
+      it('getMinutes exists', function() {
+        expect(funkier).to.have.a.property('getMinutes');
+      });
+
+
+      it('funkierJS\'s getMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMinutes).to.equal(module.getMinutes);
+      });
+
+
+      it('getMinutes is a function', function() {
+        expect(funkier.getMinutes).to.be.a('function');
+      });
+
+
+      it('getMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMinutes)).to.equal(1);
+      });
+
+
+      it('getMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('getMonth', function() {
+      it('getMonth exists', function() {
+        expect(funkier).to.have.a.property('getMonth');
+      });
+
+
+      it('funkierJS\'s getMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMonth).to.equal(module.getMonth);
+      });
+
+
+      it('getMonth is a function', function() {
+        expect(funkier.getMonth).to.be.a('function');
+      });
+
+
+      it('getMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMonth)).to.equal(1);
+      });
+
+
+      it('getMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMonth)).to.equal(true);
       });
     });
 
@@ -1554,6 +1778,62 @@
     });
 
 
+    describe('getSeconds', function() {
+      it('getSeconds exists', function() {
+        expect(funkier).to.have.a.property('getSeconds');
+      });
+
+
+      it('funkierJS\'s getSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getSeconds).to.equal(module.getSeconds);
+      });
+
+
+      it('getSeconds is a function', function() {
+        expect(funkier.getSeconds).to.be.a('function');
+      });
+
+
+      it('getSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getSeconds)).to.equal(1);
+      });
+
+
+      it('getSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getSeconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getTimezoneOffset', function() {
+      it('getTimezoneOffset exists', function() {
+        expect(funkier).to.have.a.property('getTimezoneOffset');
+      });
+
+
+      it('funkierJS\'s getTimezoneOffset is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getTimezoneOffset).to.equal(module.getTimezoneOffset);
+      });
+
+
+      it('getTimezoneOffset is a function', function() {
+        expect(funkier.getTimezoneOffset).to.be.a('function');
+      });
+
+
+      it('getTimezoneOffset has documented arity', function() {
+        expect(funkier.arityOf(funkier.getTimezoneOffset)).to.equal(1);
+      });
+
+
+      it('getTimezoneOffset is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getTimezoneOffset)).to.equal(true);
+      });
+    });
+
+
     describe('getType', function() {
       it('getType exists', function() {
         expect(funkier).to.have.a.property('getType');
@@ -1578,6 +1858,230 @@
 
       it('getType is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.getType)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCDayOfMonth', function() {
+      it('getUTCDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('getUTCDayOfMonth');
+      });
+
+
+      it('funkierJS\'s getUTCDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCDayOfMonth).to.equal(module.getUTCDayOfMonth);
+      });
+
+
+      it('getUTCDayOfMonth is a function', function() {
+        expect(funkier.getUTCDayOfMonth).to.be.a('function');
+      });
+
+
+      it('getUTCDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCDayOfMonth)).to.equal(1);
+      });
+
+
+      it('getUTCDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCDayOfWeek', function() {
+      it('getUTCDayOfWeek exists', function() {
+        expect(funkier).to.have.a.property('getUTCDayOfWeek');
+      });
+
+
+      it('funkierJS\'s getUTCDayOfWeek is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCDayOfWeek).to.equal(module.getUTCDayOfWeek);
+      });
+
+
+      it('getUTCDayOfWeek is a function', function() {
+        expect(funkier.getUTCDayOfWeek).to.be.a('function');
+      });
+
+
+      it('getUTCDayOfWeek has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCDayOfWeek)).to.equal(1);
+      });
+
+
+      it('getUTCDayOfWeek is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCDayOfWeek)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCFullYear', function() {
+      it('getUTCFullYear exists', function() {
+        expect(funkier).to.have.a.property('getUTCFullYear');
+      });
+
+
+      it('funkierJS\'s getUTCFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCFullYear).to.equal(module.getUTCFullYear);
+      });
+
+
+      it('getUTCFullYear is a function', function() {
+        expect(funkier.getUTCFullYear).to.be.a('function');
+      });
+
+
+      it('getUTCFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCFullYear)).to.equal(1);
+      });
+
+
+      it('getUTCFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCHours', function() {
+      it('getUTCHours exists', function() {
+        expect(funkier).to.have.a.property('getUTCHours');
+      });
+
+
+      it('funkierJS\'s getUTCHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCHours).to.equal(module.getUTCHours);
+      });
+
+
+      it('getUTCHours is a function', function() {
+        expect(funkier.getUTCHours).to.be.a('function');
+      });
+
+
+      it('getUTCHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCHours)).to.equal(1);
+      });
+
+
+      it('getUTCHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCHours)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMilliseconds', function() {
+      it('getUTCMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('getUTCMilliseconds');
+      });
+
+
+      it('funkierJS\'s getUTCMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMilliseconds).to.equal(module.getUTCMilliseconds);
+      });
+
+
+      it('getUTCMilliseconds is a function', function() {
+        expect(funkier.getUTCMilliseconds).to.be.a('function');
+      });
+
+
+      it('getUTCMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMilliseconds)).to.equal(1);
+      });
+
+
+      it('getUTCMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMinutes', function() {
+      it('getUTCMinutes exists', function() {
+        expect(funkier).to.have.a.property('getUTCMinutes');
+      });
+
+
+      it('funkierJS\'s getUTCMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMinutes).to.equal(module.getUTCMinutes);
+      });
+
+
+      it('getUTCMinutes is a function', function() {
+        expect(funkier.getUTCMinutes).to.be.a('function');
+      });
+
+
+      it('getUTCMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMinutes)).to.equal(1);
+      });
+
+
+      it('getUTCMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMonth', function() {
+      it('getUTCMonth exists', function() {
+        expect(funkier).to.have.a.property('getUTCMonth');
+      });
+
+
+      it('funkierJS\'s getUTCMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMonth).to.equal(module.getUTCMonth);
+      });
+
+
+      it('getUTCMonth is a function', function() {
+        expect(funkier.getUTCMonth).to.be.a('function');
+      });
+
+
+      it('getUTCMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMonth)).to.equal(1);
+      });
+
+
+      it('getUTCMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCSeconds', function() {
+      it('getUTCSeconds exists', function() {
+        expect(funkier).to.have.a.property('getUTCSeconds');
+      });
+
+
+      it('funkierJS\'s getUTCSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCSeconds).to.equal(module.getUTCSeconds);
+      });
+
+
+      it('getUTCSeconds is a function', function() {
+        expect(funkier.getUTCSeconds).to.be.a('function');
+      });
+
+
+      it('getUTCSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCSeconds)).to.equal(1);
+      });
+
+
+      it('getUTCSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCSeconds)).to.equal(true);
       });
     });
 
@@ -2454,6 +2958,118 @@
     });
 
 
+    describe('makeDateFromMilliseconds', function() {
+      it('makeDateFromMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('makeDateFromMilliseconds');
+      });
+
+
+      it('funkierJS\'s makeDateFromMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDateFromMilliseconds).to.equal(module.makeDateFromMilliseconds);
+      });
+
+
+      it('makeDateFromMilliseconds is a function', function() {
+        expect(funkier.makeDateFromMilliseconds).to.be.a('function');
+      });
+
+
+      it('makeDateFromMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDateFromMilliseconds)).to.equal(1);
+      });
+
+
+      it('makeDateFromMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDateFromMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('makeDateFromString', function() {
+      it('makeDateFromString exists', function() {
+        expect(funkier).to.have.a.property('makeDateFromString');
+      });
+
+
+      it('funkierJS\'s makeDateFromString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDateFromString).to.equal(module.makeDateFromString);
+      });
+
+
+      it('makeDateFromString is a function', function() {
+        expect(funkier.makeDateFromString).to.be.a('function');
+      });
+
+
+      it('makeDateFromString has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDateFromString)).to.equal(1);
+      });
+
+
+      it('makeDateFromString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDateFromString)).to.equal(true);
+      });
+    });
+
+
+    describe('makeDayDate', function() {
+      it('makeDayDate exists', function() {
+        expect(funkier).to.have.a.property('makeDayDate');
+      });
+
+
+      it('funkierJS\'s makeDayDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDayDate).to.equal(module.makeDayDate);
+      });
+
+
+      it('makeDayDate is a function', function() {
+        expect(funkier.makeDayDate).to.be.a('function');
+      });
+
+
+      it('makeDayDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDayDate)).to.equal(3);
+      });
+
+
+      it('makeDayDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDayDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeHourDate', function() {
+      it('makeHourDate exists', function() {
+        expect(funkier).to.have.a.property('makeHourDate');
+      });
+
+
+      it('funkierJS\'s makeHourDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeHourDate).to.equal(module.makeHourDate);
+      });
+
+
+      it('makeHourDate is a function', function() {
+        expect(funkier.makeHourDate).to.be.a('function');
+      });
+
+
+      it('makeHourDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeHourDate)).to.equal(4);
+      });
+
+
+      it('makeHourDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeHourDate)).to.equal(true);
+      });
+    });
+
+
     describe('makeMaybeReturner', function() {
       it('makeMaybeReturner exists', function() {
         expect(funkier).to.have.a.property('makeMaybeReturner');
@@ -2482,6 +3098,90 @@
     });
 
 
+    describe('makeMillisecondDate', function() {
+      it('makeMillisecondDate exists', function() {
+        expect(funkier).to.have.a.property('makeMillisecondDate');
+      });
+
+
+      it('funkierJS\'s makeMillisecondDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMillisecondDate).to.equal(module.makeMillisecondDate);
+      });
+
+
+      it('makeMillisecondDate is a function', function() {
+        expect(funkier.makeMillisecondDate).to.be.a('function');
+      });
+
+
+      it('makeMillisecondDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMillisecondDate)).to.equal(7);
+      });
+
+
+      it('makeMillisecondDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMillisecondDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeMinuteDate', function() {
+      it('makeMinuteDate exists', function() {
+        expect(funkier).to.have.a.property('makeMinuteDate');
+      });
+
+
+      it('funkierJS\'s makeMinuteDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMinuteDate).to.equal(module.makeMinuteDate);
+      });
+
+
+      it('makeMinuteDate is a function', function() {
+        expect(funkier.makeMinuteDate).to.be.a('function');
+      });
+
+
+      it('makeMinuteDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMinuteDate)).to.equal(5);
+      });
+
+
+      it('makeMinuteDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMinuteDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeMonthDate', function() {
+      it('makeMonthDate exists', function() {
+        expect(funkier).to.have.a.property('makeMonthDate');
+      });
+
+
+      it('funkierJS\'s makeMonthDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMonthDate).to.equal(module.makeMonthDate);
+      });
+
+
+      it('makeMonthDate is a function', function() {
+        expect(funkier.makeMonthDate).to.be.a('function');
+      });
+
+
+      it('makeMonthDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMonthDate)).to.equal(2);
+      });
+
+
+      it('makeMonthDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMonthDate)).to.equal(true);
+      });
+    });
+
+
     describe('makeResultReturner', function() {
       it('makeResultReturner exists', function() {
         expect(funkier).to.have.a.property('makeResultReturner');
@@ -2506,6 +3206,34 @@
 
       it('makeResultReturner is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.makeResultReturner)).to.equal(true);
+      });
+    });
+
+
+    describe('makeSecondDate', function() {
+      it('makeSecondDate exists', function() {
+        expect(funkier).to.have.a.property('makeSecondDate');
+      });
+
+
+      it('funkierJS\'s makeSecondDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeSecondDate).to.equal(module.makeSecondDate);
+      });
+
+
+      it('makeSecondDate is a function', function() {
+        expect(funkier.makeSecondDate).to.be.a('function');
+      });
+
+
+      it('makeSecondDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeSecondDate)).to.equal(6);
+      });
+
+
+      it('makeSecondDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeSecondDate)).to.equal(true);
       });
     });
 
@@ -3386,6 +4114,174 @@
     });
 
 
+    describe('setDayOfMonth', function() {
+      it('setDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('setDayOfMonth');
+      });
+
+
+      it('funkierJS\'s setDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setDayOfMonth).to.equal(module.setDayOfMonth);
+      });
+
+
+      it('setDayOfMonth is a function', function() {
+        expect(funkier.setDayOfMonth).to.be.a('function');
+      });
+
+
+      it('setDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setDayOfMonth)).to.equal(2);
+      });
+
+
+      it('setDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setFullYear', function() {
+      it('setFullYear exists', function() {
+        expect(funkier).to.have.a.property('setFullYear');
+      });
+
+
+      it('funkierJS\'s setFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setFullYear).to.equal(module.setFullYear);
+      });
+
+
+      it('setFullYear is a function', function() {
+        expect(funkier.setFullYear).to.be.a('function');
+      });
+
+
+      it('setFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.setFullYear)).to.equal(2);
+      });
+
+
+      it('setFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('setHours', function() {
+      it('setHours exists', function() {
+        expect(funkier).to.have.a.property('setHours');
+      });
+
+
+      it('funkierJS\'s setHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setHours).to.equal(module.setHours);
+      });
+
+
+      it('setHours is a function', function() {
+        expect(funkier.setHours).to.be.a('function');
+      });
+
+
+      it('setHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.setHours)).to.equal(2);
+      });
+
+
+      it('setHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setHours)).to.equal(true);
+      });
+    });
+
+
+    describe('setMilliseconds', function() {
+      it('setMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('setMilliseconds');
+      });
+
+
+      it('funkierJS\'s setMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMilliseconds).to.equal(module.setMilliseconds);
+      });
+
+
+      it('setMilliseconds is a function', function() {
+        expect(funkier.setMilliseconds).to.be.a('function');
+      });
+
+
+      it('setMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMilliseconds)).to.equal(2);
+      });
+
+
+      it('setMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setMinutes', function() {
+      it('setMinutes exists', function() {
+        expect(funkier).to.have.a.property('setMinutes');
+      });
+
+
+      it('funkierJS\'s setMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMinutes).to.equal(module.setMinutes);
+      });
+
+
+      it('setMinutes is a function', function() {
+        expect(funkier.setMinutes).to.be.a('function');
+      });
+
+
+      it('setMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMinutes)).to.equal(2);
+      });
+
+
+      it('setMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('setMonth', function() {
+      it('setMonth exists', function() {
+        expect(funkier).to.have.a.property('setMonth');
+      });
+
+
+      it('funkierJS\'s setMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMonth).to.equal(module.setMonth);
+      });
+
+
+      it('setMonth is a function', function() {
+        expect(funkier.setMonth).to.be.a('function');
+      });
+
+
+      it('setMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMonth)).to.equal(2);
+      });
+
+
+      it('setMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMonth)).to.equal(true);
+      });
+    });
+
+
     describe('setProp', function() {
       it('setProp exists', function() {
         expect(funkier).to.have.a.property('setProp');
@@ -3394,6 +4290,258 @@
 
       it('setProp is a synonym for set', function() {
         expect(funkier.setProp).to.equal(funkier.set);
+      });
+    });
+
+
+    describe('setSeconds', function() {
+      it('setSeconds exists', function() {
+        expect(funkier).to.have.a.property('setSeconds');
+      });
+
+
+      it('funkierJS\'s setSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setSeconds).to.equal(module.setSeconds);
+      });
+
+
+      it('setSeconds is a function', function() {
+        expect(funkier.setSeconds).to.be.a('function');
+      });
+
+
+      it('setSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setSeconds)).to.equal(2);
+      });
+
+
+      it('setSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setSeconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setTimeSinceEpoch', function() {
+      it('setTimeSinceEpoch exists', function() {
+        expect(funkier).to.have.a.property('setTimeSinceEpoch');
+      });
+
+
+      it('funkierJS\'s setTimeSinceEpoch is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setTimeSinceEpoch).to.equal(module.setTimeSinceEpoch);
+      });
+
+
+      it('setTimeSinceEpoch is a function', function() {
+        expect(funkier.setTimeSinceEpoch).to.be.a('function');
+      });
+
+
+      it('setTimeSinceEpoch has documented arity', function() {
+        expect(funkier.arityOf(funkier.setTimeSinceEpoch)).to.equal(2);
+      });
+
+
+      it('setTimeSinceEpoch is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setTimeSinceEpoch)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCDayOfMonth', function() {
+      it('setUTCDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('setUTCDayOfMonth');
+      });
+
+
+      it('funkierJS\'s setUTCDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCDayOfMonth).to.equal(module.setUTCDayOfMonth);
+      });
+
+
+      it('setUTCDayOfMonth is a function', function() {
+        expect(funkier.setUTCDayOfMonth).to.be.a('function');
+      });
+
+
+      it('setUTCDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCDayOfMonth)).to.equal(2);
+      });
+
+
+      it('setUTCDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCFullYear', function() {
+      it('setUTCFullYear exists', function() {
+        expect(funkier).to.have.a.property('setUTCFullYear');
+      });
+
+
+      it('funkierJS\'s setUTCFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCFullYear).to.equal(module.setUTCFullYear);
+      });
+
+
+      it('setUTCFullYear is a function', function() {
+        expect(funkier.setUTCFullYear).to.be.a('function');
+      });
+
+
+      it('setUTCFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCFullYear)).to.equal(2);
+      });
+
+
+      it('setUTCFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCHours', function() {
+      it('setUTCHours exists', function() {
+        expect(funkier).to.have.a.property('setUTCHours');
+      });
+
+
+      it('funkierJS\'s setUTCHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCHours).to.equal(module.setUTCHours);
+      });
+
+
+      it('setUTCHours is a function', function() {
+        expect(funkier.setUTCHours).to.be.a('function');
+      });
+
+
+      it('setUTCHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCHours)).to.equal(2);
+      });
+
+
+      it('setUTCHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCHours)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMilliseconds', function() {
+      it('setUTCMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('setUTCMilliseconds');
+      });
+
+
+      it('funkierJS\'s setUTCMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMilliseconds).to.equal(module.setUTCMilliseconds);
+      });
+
+
+      it('setUTCMilliseconds is a function', function() {
+        expect(funkier.setUTCMilliseconds).to.be.a('function');
+      });
+
+
+      it('setUTCMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMilliseconds)).to.equal(2);
+      });
+
+
+      it('setUTCMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMinutes', function() {
+      it('setUTCMinutes exists', function() {
+        expect(funkier).to.have.a.property('setUTCMinutes');
+      });
+
+
+      it('funkierJS\'s setUTCMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMinutes).to.equal(module.setUTCMinutes);
+      });
+
+
+      it('setUTCMinutes is a function', function() {
+        expect(funkier.setUTCMinutes).to.be.a('function');
+      });
+
+
+      it('setUTCMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMinutes)).to.equal(2);
+      });
+
+
+      it('setUTCMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMonth', function() {
+      it('setUTCMonth exists', function() {
+        expect(funkier).to.have.a.property('setUTCMonth');
+      });
+
+
+      it('funkierJS\'s setUTCMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMonth).to.equal(module.setUTCMonth);
+      });
+
+
+      it('setUTCMonth is a function', function() {
+        expect(funkier.setUTCMonth).to.be.a('function');
+      });
+
+
+      it('setUTCMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMonth)).to.equal(2);
+      });
+
+
+      it('setUTCMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCSeconds', function() {
+      it('setUTCSeconds exists', function() {
+        expect(funkier).to.have.a.property('setUTCSeconds');
+      });
+
+
+      it('funkierJS\'s setUTCSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCSeconds).to.equal(module.setUTCSeconds);
+      });
+
+
+      it('setUTCSeconds is a function', function() {
+        expect(funkier.setUTCSeconds).to.be.a('function');
+      });
+
+
+      it('setUTCSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCSeconds)).to.equal(2);
+      });
+
+
+      it('setUTCSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCSeconds)).to.equal(true);
       });
     });
 
@@ -3626,6 +4774,62 @@
     });
 
 
+    describe('toDateString', function() {
+      it('toDateString exists', function() {
+        expect(funkier).to.have.a.property('toDateString');
+      });
+
+
+      it('funkierJS\'s toDateString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toDateString).to.equal(module.toDateString);
+      });
+
+
+      it('toDateString is a function', function() {
+        expect(funkier.toDateString).to.be.a('function');
+      });
+
+
+      it('toDateString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toDateString)).to.equal(1);
+      });
+
+
+      it('toDateString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toDateString)).to.equal(true);
+      });
+    });
+
+
+    describe('toEpochMilliseconds', function() {
+      it('toEpochMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('toEpochMilliseconds');
+      });
+
+
+      it('funkierJS\'s toEpochMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toEpochMilliseconds).to.equal(module.toEpochMilliseconds);
+      });
+
+
+      it('toEpochMilliseconds is a function', function() {
+        expect(funkier.toEpochMilliseconds).to.be.a('function');
+      });
+
+
+      it('toEpochMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.toEpochMilliseconds)).to.equal(1);
+      });
+
+
+      it('toEpochMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toEpochMilliseconds)).to.equal(true);
+      });
+    });
+
+
     describe('toExponential', function() {
       it('toExponential exists', function() {
         expect(funkier).to.have.a.property('toExponential');
@@ -3682,6 +4886,62 @@
     });
 
 
+    describe('toISOString', function() {
+      it('toISOString exists', function() {
+        expect(funkier).to.have.a.property('toISOString');
+      });
+
+
+      it('funkierJS\'s toISOString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toISOString).to.equal(module.toISOString);
+      });
+
+
+      it('toISOString is a function', function() {
+        expect(funkier.toISOString).to.be.a('function');
+      });
+
+
+      it('toISOString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toISOString)).to.equal(1);
+      });
+
+
+      it('toISOString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toISOString)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleDateString', function() {
+      it('toLocaleDateString exists', function() {
+        expect(funkier).to.have.a.property('toLocaleDateString');
+      });
+
+
+      it('funkierJS\'s toLocaleDateString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toLocaleDateString).to.equal(module.toLocaleDateString);
+      });
+
+
+      it('toLocaleDateString is a function', function() {
+        expect(funkier.toLocaleDateString).to.be.a('function');
+      });
+
+
+      it('toLocaleDateString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleDateString)).to.equal(1);
+      });
+
+
+      it('toLocaleDateString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleDateString)).to.equal(true);
+      });
+    });
+
+
     describe('toPrecision', function() {
       it('toPrecision exists', function() {
         expect(funkier).to.have.a.property('toPrecision');
@@ -3706,6 +4966,62 @@
 
       it('toPrecision is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
+      });
+    });
+
+
+    describe('toTimeString', function() {
+      it('toTimeString exists', function() {
+        expect(funkier).to.have.a.property('toTimeString');
+      });
+
+
+      it('funkierJS\'s toTimeString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toTimeString).to.equal(module.toTimeString);
+      });
+
+
+      it('toTimeString is a function', function() {
+        expect(funkier.toTimeString).to.be.a('function');
+      });
+
+
+      it('toTimeString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toTimeString)).to.equal(1);
+      });
+
+
+      it('toTimeString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toTimeString)).to.equal(true);
+      });
+    });
+
+
+    describe('toUTCString', function() {
+      it('toUTCString exists', function() {
+        expect(funkier).to.have.a.property('toUTCString');
+      });
+
+
+      it('funkierJS\'s toUTCString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toUTCString).to.equal(module.toUTCString);
+      });
+
+
+      it('toUTCString is a function', function() {
+        expect(funkier.toUTCString).to.be.a('function');
+      });
+
+
+      it('toUTCString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toUTCString)).to.equal(1);
+      });
+
+
+      it('toUTCString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toUTCString)).to.equal(true);
       });
     });
 
@@ -3778,20 +5094,27 @@
          'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
          'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
          'deleteProp', 'descriptors', 'div', 'divide', 'either', 'equals', 'even', 'exp', 'extend', 'extendOwn',
-         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getErrValue', 'getJustValue', 'getOkValue',
-         'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte',
-         'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean', 'isErr',
-         'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf',
-         'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift', 'lessThan',
-         'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'makeResultReturner', 'max', 'maybeCreate',
-         'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
-         'min', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase', 'plus', 'pow', 'rem',
-         'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify',
-         'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set',
-         'setProp', 'shallowClone', 'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
-         'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString', 'toExponential', 'toFixed',
-         'toPrecision', 'xor', 'xorPred'];
+         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getCurrentTimeString', 'getDayOfMonth',
+         'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getJustValue', 'getMilliseconds', 'getMinutes',
+         'getMonth', 'getOkValue', 'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getSeconds',
+         'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
+         'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'greaterThan', 'greaterThanEqual',
+         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean',
+         'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair',
+         'isPrototypeOf', 'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift',
+         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString',
+         'makeDayDate', 'makeHourDate', 'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate',
+         'makeResultReturner', 'makeSecondDate', 'max', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
+         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'modify', 'modifyProp', 'multiply', 'not',
+         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt',
+         'parseIntInBase', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp',
+         'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
+         'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
+         'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
+         'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix',
+         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
+         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'xor', 'xorPred'];
     });
 
 

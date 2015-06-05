@@ -13,6 +13,7 @@
 <h2 class="categoryListHeader">Categories</h2>
 <ul class="categoryList">
 <li class="categoryListItem"><a href="#DataTypes">DataTypes</a></li>
+<li class="categoryListItem"><a href="#Date">Date</a></li>
 <li class="categoryListItem"><a href="#Function">Function</a></li>
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
 <li class="categoryListItem"><a href="#Maths">Maths</a></li>
@@ -303,6 +304,515 @@ called with a non-pair value.</p>
 <pre><code>var p = new funkierJS.Pair(2, 3);
 funkierJS.cnd(p); // =&gt; 3&#39;,
 </code></pre></section>
+</section>
+<section class="categoryRef" id="Date">
+<h2 class="categoryName">Date</h2>
+<section class="functionRef" id="getCurrentTimeString">
+<h3 class="functionName">getCurrentTimeString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getCurrentTimeString();</code></p>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around calling the Date constructor without the &#39;new&#39; operator. Returns a string representing the
+current date and time.</p>
+</section>
+<section class="functionRef" id="getDayOfMonth">
+<h3 class="functionName">getDayOfMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getDayOfMonth(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
+month (1-31) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getDayOfMonth(a); // =&gt; 15
+</code></pre></section>
+</section>
+<section class="functionRef" id="getDayOfWeek">
+<h3 class="functionName">getDayOfWeek</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getDayOfWeek(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+month (0-6) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getDayOfWeek(a); // =&gt; 2
+</code></pre></section>
+</section>
+<section class="functionRef" id="getFullYear">
+<h3 class="functionName">getFullYear</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getFullYear(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
+year of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getFullYear(a); // =&gt; 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="getHours">
+<h3 class="functionName">getHours</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getHours(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
+(0-23) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getHours(a); // =&gt; 10
+</code></pre></section>
+</section>
+<section class="functionRef" id="getMilliseconds">
+<h3 class="functionName">getMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMilliseconds(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+milliseconds field (0-999) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getMilliseconds(a); // =&gt; 13
+</code></pre></section>
+</section>
+<section class="functionRef" id="getMinutes">
+<h3 class="functionName">getMinutes</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMinutes(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+field (0-59) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getMinutes(a); // =&gt; 11
+</code></pre></section>
+</section>
+<section class="functionRef" id="getMonth">
+<h3 class="functionName">getMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getMonth(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+field (0-11) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getMonth(a); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="getSeconds">
+<h3 class="functionName">getSeconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getSeconds(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+field (0-59) of the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.getSeconds(a); // =&gt; 12
+</code></pre></section>
+</section>
+<section class="functionRef" id="getTimezoneOffset">
+<h3 class="functionName">getTimezoneOffset</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getTimezoneOffset(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
+the Javascript environment and UTC.</p>
+</section>
+<section class="functionRef" id="getUTCDayOfMonth">
+<h3 class="functionName">getUTCDayOfMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCDayOfMonth(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+the month (1-31) of the given date, adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCDayOfWeek">
+<h3 class="functionName">getUTCDayOfWeek</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCDayOfWeek(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+the week (0-6) of the given date, adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCFullYear">
+<h3 class="functionName">getUTCFullYear</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCFullYear(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+the year of the given date, adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCHours">
+<h3 class="functionName">getUTCHours</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCHours(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+field of the given date (0-23), adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCMilliseconds">
+<h3 class="functionName">getUTCMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMilliseconds(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
+milliseconds field of the given date (0-999), adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCMinutes">
+<h3 class="functionName">getUTCMinutes</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMinutes(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+minutes field of the given date (0-59), adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCMonth">
+<h3 class="functionName">getUTCMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCMonth(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+field of the given date (0-11), adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="getUTCSeconds">
+<h3 class="functionName">getUTCSeconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getUTCSeconds(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+seconds field of the given date (0-59), adjusted for UTC.</p>
+</section>
+<section class="functionRef" id="makeDateFromMilliseconds">
+<h3 class="functionName">makeDateFromMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDateFromMilliseconds(milliseconds);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
+non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+milliseconds since the epoch.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeDateFromMilliseconds(1400161244101);
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeDateFromString">
+<h3 class="functionName">makeDateFromString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDateFromString(dateString);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">dateString: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
+non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
+that given in the string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeDateFromString(&#39;2000-01-01T10:00:01:000Z&#39;);
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeDayDate">
+<h3 class="functionName">makeDayDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeDayDate(year, month, day);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
+are initialized to zero. Returns the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeDayDate(2000, 0, 2); // =&gt; A date representing January 2 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeHourDate">
+<h3 class="functionName">makeHourDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeHourDate(year, month, day, hour);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
+the Date are initialized to zero. Returns the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeHourDate(2000, 0, 2, 10); // =&gt; A date representing 10am, January 2 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeMillisecondDate">
+<h3 class="functionName">makeMillisecondDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMillisecondDate(year, month, day, hour, minute, second, millisecond);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">second: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">millisecond: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
+the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
+the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // =&gt; A date representing 10:15:30:012,
+                                                                   //    January 2 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeMinuteDate">
+<h3 class="functionName">makeMinuteDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMinuteDate(year, month, day, hour, minute);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
+fields in the Date are initialized to zero. Returns the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // =&gt; A date representing 10:15:00, January 2 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeMonthDate">
+<h3 class="functionName">makeMonthDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeMonthDate(year, month);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
+type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeMonthDate(2000, 0); // =&gt; A date representing January 1 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="makeSecondDate">
+<h3 class="functionName">makeSecondDate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = makeSecondDate(year, month, day, hour, minute, second);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">hour: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">minute: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">second: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
+All other fields in the Date are initialized to zero. Returns the new Date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // =&gt; A date representing 10:15:30, January 2 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="setDayOfMonth">
+<h3 class="functionName">setDayOfMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setDayOfMonth(day, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
+in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setDayOfMonth(1, a); // =&gt; a now refers to Feb 1 2000
+</code></pre></section>
+</section>
+<section class="functionRef" id="setFullYear">
+<h3 class="functionName">setFullYear</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setFullYear(year, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+value. This may cause a change in other fields: for example, setting the year when the month and day represent
+February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
+Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setFullYear(2001, a); // =&gt; a now refers to Feb 15 2001
+</code></pre></section>
+</section>
+<section class="functionRef" id="setHours">
+<h3 class="functionName">setHours</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setHours(hours, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">hours: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
+a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+value &gt; 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setHours(11, a); // =&gt; a now refers to 11:11:12:013
+</code></pre></section>
+</section>
+<section class="functionRef" id="setMilliseconds">
+<h3 class="functionName">setMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMilliseconds(milliseconds, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+fields: if the value &gt; 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
+a cascade of increments to other fields. Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setMilliseconds(20, a); // =&gt; a now refers to 10:11:12:020
+</code></pre></section>
+</section>
+<section class="functionRef" id="setMinutes">
+<h3 class="functionName">setMinutes</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMinutes(minutes, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">minutes: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+value &gt; 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setMinutes(59, a); // =&gt; a now refers to 10:59:12:013
+</code></pre></section>
+</section>
+<section class="functionRef" id="setMonth">
+<h3 class="functionName">setMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setMonth(month, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
+value &gt; 11, then the year will be incremented by month div 12. Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setMonth(2, a); // =&gt; a now refers to 15 March 2001
+</code></pre></section>
+</section>
+<section class="functionRef" id="setSeconds">
+<h3 class="functionName">setSeconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setSeconds(seconds, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">seconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+value &gt; 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setSeconds(50, a); // =&gt; a now refers to 10:11:50:013
+</code></pre></section>
+</section>
+<section class="functionRef" id="setTimeSinceEpoch">
+<h3 class="functionName">setTimeSinceEpoch</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setTimeSinceEpoch(milliseconds, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
+time that is that many seconds since the epoch. Returns the given date.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.setTimeSinceEpoch(1340122101412, a); // =&gt; a now refers to 19th July 2012, 16:08:21:041
+</code></pre></section>
+</section>
+<section class="functionRef" id="setUTCDayOfMonth">
+<h3 class="functionName">setUTCDayOfMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCDayOfMonth(day, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">day: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
+changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
+Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCFullYear">
+<h3 class="functionName">setUTCFullYear</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCFullYear(year, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">year: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
+month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
+a leap year. Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCHours">
+<h3 class="functionName">setUTCHours</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCHours(hours, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">hours: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
+a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value &gt; 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
+of increments to other fields. Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCMilliseconds">
+<h3 class="functionName">setUTCMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMilliseconds(milliseconds, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">milliseconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
+a change in other fields: if the value &gt; 999, then the seconds will be incremented by milliseconds div 1000. This
+may in turn cause a cascade of increments to other fields. Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCMinutes">
+<h3 class="functionName">setUTCMinutes</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMinutes(minutes, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">minutes: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value &gt; 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCMonth">
+<h3 class="functionName">setUTCMonth</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCMonth(month, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">month: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
+object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
+fields: if the value &gt; 11, then the year will be incremented by month div 12. Returns the given date object.</p>
+</section>
+<section class="functionRef" id="setUTCSeconds">
+<h3 class="functionName">setUTCSeconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = setUTCSeconds(seconds, d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">seconds: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">date</code></li></ul></div>
+<p>A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value &gt; 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
+cascade of increments to other fields. Returns the local equivalent of the given date object.</p>
+</section>
+<section class="functionRef" id="toDateString">
+<h3 class="functionName">toDateString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toDateString(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+portion of the object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.toDateString(a); // =&gt; &quot;Tue Feb 15 2000&quot; or similar
+</code></pre></section>
+</section>
+<section class="functionRef" id="toEpochMilliseconds">
+<h3 class="functionName">toEpochMilliseconds</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toEpochMilliseconds(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
+midnight, January 1 1970.</p>
+</section>
+<section class="functionRef" id="toISOString">
+<h3 class="functionName">toISOString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toISOString(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
+in ISO format.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+funkierJS.toISOString(a); // &quot;2000-02-15T10:11:12.013Z&quot; or similar&#39;,
+</code></pre></section>
+</section>
+<section class="functionRef" id="toLocaleDateString">
+<h3 class="functionName">toLocaleDateString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toLocaleDateString(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+portion of the object, formatted according to locale conventions.</p>
+</section>
+<section class="functionRef" id="toTimeString">
+<h3 class="functionName">toTimeString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toTimeString(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+portion of the object.</p>
+</section>
+<section class="functionRef" id="toUTCString">
+<h3 class="functionName">toUTCString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toUTCString(d);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">d: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Date</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+equivalent date in UTC.</p>
 </section>
 <section class="categoryRef" id="Function">
 <h2 class="categoryName">Function</h2>

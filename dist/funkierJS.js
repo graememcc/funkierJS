@@ -339,7 +339,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],2:[function(require,module,exports){
+},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],2:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -951,7 +951,1499 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":13}],3:[function(require,module,exports){
+},{"../internalUtilities":14}],3:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+
+  var object = require('./object');
+  var callProp = object.callProp;
+
+  // TODO Consistency of the safe operations e.g. changing month to a 30 day month...
+  // TODO Could use some synonyms for these functions
+
+  /*
+   * <apifunction>
+   *
+   * getDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
+   * month (1-31) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getDayOfMonth(a); // => 15
+   *
+   */
+
+  var getDayOfMonth = callProp('getDate');
+
+
+  /*
+   * <apifunction>
+   *
+   * getDayOfWeek
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+   * month (0-6) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getDayOfWeek(a); // => 2
+   *
+   */
+
+  var getDayOfWeek = callProp('getDay');
+
+
+  /*
+   * <apifunction>
+   *
+   * getFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
+   * year of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getFullYear(a); // => 2000
+   *
+   */
+
+  var getFullYear = callProp('getFullYear');
+
+
+  /*
+   * <apifunction>
+   *
+   * getHours
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
+   * (0-23) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getHours(a); // => 10
+   *
+   */
+
+  var getHours = callProp('getHours');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+   * milliseconds field (0-999) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMilliseconds(a); // => 13
+   *
+   */
+
+  var getMilliseconds = callProp('getMilliseconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+   * field (0-59) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMinutes(a); // => 11
+   *
+   */
+
+  var getMinutes = callProp('getMinutes');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+   * field (0-11) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMonth(a); // => 1
+   *
+   */
+
+  var getMonth = callProp('getMonth');
+
+
+  /*
+   * <apifunction>
+   *
+   * getSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+   * field (0-59) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getSeconds(a); // => 12
+   *
+   */
+
+  var getSeconds = callProp('getSeconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * toEpochMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
+   * midnight, January 1 1970.
+   *
+   */
+
+  var toEpochMilliseconds = callProp('getTime');
+
+
+  /*
+   * <apifunction>
+   *
+   * getTimezoneOffset
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
+   * the Javascript environment and UTC.
+   *
+   */
+
+  var getTimezoneOffset = callProp('getTimezoneOffset');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+   * the month (1-31) of the given date, adjusted for UTC.
+   *
+   */
+
+  var getUTCDayOfMonth = callProp('getUTCDate');
+
+  /*
+   * <apifunction>
+   *
+   * getUTCDayOfWeek
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+   * the week (0-6) of the given date, adjusted for UTC.
+   *
+   */
+
+
+  var getUTCDayOfWeek = callProp('getUTCDay');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+   * the year of the given date, adjusted for UTC.
+   *
+   */
+
+  var getUTCFullYear = callProp('getUTCFullYear');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCHours
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+   * field of the given date (0-23), adjusted for UTC.
+   *
+   */
+
+  var getUTCHours = callProp('getUTCHours');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
+   * milliseconds field of the given date (0-999), adjusted for UTC.
+   *
+   */
+
+  var getUTCMilliseconds = callProp('getUTCMilliseconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+   * minutes field of the given date (0-59), adjusted for UTC.
+   *
+   */
+
+  var getUTCMinutes = callProp('getUTCMinutes');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+   * field of the given date (0-11), adjusted for UTC.
+   *
+   */
+
+  var getUTCMonth = callProp('getUTCMonth');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+   * seconds field of the given date (0-59), adjusted for UTC.
+   *
+   */
+
+  var getUTCSeconds = callProp('getUTCSeconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * toLocaleDateString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+   * portion of the object, formatted according to locale conventions.
+   *
+   */
+
+  var toLocaleDateString = callProp('toLocaleDateString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toDateString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+   * portion of the object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.toDateString(a); // => "Tue Feb 15 2000" or similar
+   *
+   */
+
+  var toDateString = callProp('toDateString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toTimeString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+   * portion of the object.
+   *
+   */
+
+  var toTimeString = callProp('toTimeString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toISOString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
+   * in ISO format.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.toISOString(a); // "2000-02-15T10:11:12.013Z" or similar',
+   *
+   */
+
+  var toISOString = callProp('toISOString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toUTCString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+   * equivalent date in UTC.
+   *
+   */
+
+  var toUTCString = callProp('toUTCString');
+
+
+  // We cannot use callProp for the setters due to the need to return the given date
+
+  /*
+   * <apifunction>
+   *
+   * setDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: day: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+   * month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
+   * in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+   * object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setDayOfMonth(1, a); // => a now refers to Feb 1 2000
+   *
+   */
+
+  var setDayOfMonth = curry(function(val, d) {
+    d.setDate(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+   * value. This may cause a change in other fields: for example, setting the year when the month and day represent
+   * February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
+   * Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setFullYear(2001, a); // => a now refers to Feb 15 2001
+   *
+   */
+
+  var setFullYear = curry(function(val, d) {
+    d.setFullYear(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setHours
+   *
+   * Category: Date
+   *
+   * Parameter: hours: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
+   * a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+   * value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setHours(11, a); // => a now refers to 11:11:12:013
+   *
+   */
+
+  var setHours = curry(function(val, d) {
+    d.setHours(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+   * and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+   * fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
+   * a cascade of increments to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMilliseconds(20, a); // => a now refers to 10:11:12:020
+   *
+   */
+
+  var setMilliseconds = curry(function(val, d) {
+    d.setMilliseconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: minutes: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+   * object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+   * value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMinutes(59, a); // => a now refers to 10:59:12:013
+   *
+   */
+
+  var setMinutes = curry(function(val, d) {
+    d.setMinutes(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMonth
+   *
+   * Category: Date
+   *
+   * Parameter: month: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+   * object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
+   * value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMonth(2, a); // => a now refers to 15 March 2001
+   *
+   */
+
+  var setMonth = curry(function(val, d) {
+    d.setMonth(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: seconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+   * object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+   * value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setSeconds(50, a); // => a now refers to 10:11:50:013
+   *
+   */
+
+  var setSeconds = curry(function(val, d) {
+    d.setSeconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setTimeSinceEpoch
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+   * January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
+   * time that is that many seconds since the epoch. Returns the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setTimeSinceEpoch(1340122101412, a); // => a now refers to 19th July 2012, 16:08:21:041
+   *
+   */
+
+  var setTimeSinceEpoch = curry(function(val, d) {
+    d.setTime(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: day: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+   * month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
+   * changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
+   * Returns the given date object.
+   *
+   */
+
+  var setUTCDayOfMonth = curry(function(val, d) {
+    d.setUTCDate(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+   * equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
+   * month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
+   * a leap year. Returns the given date object.
+   *
+   */
+
+  var setUTCFullYear = curry(function(val, d) {
+    d.setUTCFullYear(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCHours
+   *
+   * Category: Date
+   *
+   * Parameter: hours: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
+   * a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
+   * of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCHours = curry(function(val, d) {
+    d.setUTCHours(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+   * and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
+   * a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
+   * may in turn cause a cascade of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCMilliseconds = curry(function(val, d) {
+    d.setUTCMilliseconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: minutes: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+   * object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+   * cascade of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCMinutes = curry(function(val, d) {
+    d.setUTCMinutes(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMonth
+   *
+   * Category: Date
+   *
+   * Parameter: month: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
+   * object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
+   * fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   *
+   */
+
+  var setUTCMonth = curry(function(val, d) {
+    d.setUTCMonth(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: seconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+   * object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
+   * cascade of increments to other fields. Returns the local equivalent of the given date object.
+   *
+   */
+
+  var setUTCSeconds = curry(function(val, d) {
+    d.setUTCSeconds(val);
+    return d;
+  });
+
+
+/* TODO
+  var safeSetDayOfMonth = defineValue(
+    'name: safeSetDayOfMonth',
+    'signature: day: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and',
+    'a Date object, and sets the day of the month to the given value. Throws if the',
+    'value is outside this range, or if the month contains fewer days than the given',
+    'value.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetDayOfMonth(30, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 31)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      var month = getMonth(d);
+      if (val === 31 && [1, 3, 5, 8, 10].indexOf(month) !== -1)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      if (month === 2) {
+        if (val === 30)
+          throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+        if (val === 29) {
+          var year = getFullYear(d);
+          var notLeapYear = (year % 4 !== 0) || (year % 100 === 0 && year % 400 !== 0);
+
+          if (notLeapYear)
+            throw new TypeError('Attempt to set day with invalid value: '+ val);
+        }
+      }
+
+      d.setDate(val);
+      return d;
+    })
+  );
+
+
+  var safeSetHours = defineValue(
+    'name: safeSetHours',
+    'signature: hours: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setHours. Takes a value between 0-23',
+    'representing the hour of the day, and sets the hour to the given value.',
+    '',
+    'Throws a TypeError for values outwith the range 0-23.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetHours(33, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 23)
+        throw new TypeError('Attempt to set hour with invalid value: '+ val);
+
+      d.setHours(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMilliseconds = defineValue(
+    'name: safeSetMilliseconds',
+    'signature: milliseconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMilliseconds. Takes a value between 0-999',
+    'representing the milliseconds, and sets the milliseconds to the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMilliseconds(1002, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 999)
+        throw new TypeError('Attempt to set milliseconds with invalid value: '+ val);
+
+      d.setMilliseconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMinutes = defineValue(
+    'name: safeSetMinutes',
+    'signature: minutes: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMinutes. Takes a value between 0-59',
+    'representing the minutes, and sets the given date\'s minutes to that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(61, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set minutes with invalid value: '+ val);
+
+      d.setMinutes(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMonth = defineValue(
+    'name: safeSetMonth',
+    'signature: m: month, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMonth. Takes a value between 0-11',
+    'representing the month, and sets the given date\'s month to that value.',
+    '  ',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(13, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 11)
+        throw new TypeError('Attempt to set month with invalid value: '+ val);
+
+      d.setMonth(val);
+      return d;
+    })
+  );
+
+
+  var safeSetSeconds = defineValue(
+    'name: safeSetSeconds',
+    'signature: seconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setSeconds. Takes a value between 0-59',
+    'representing the seconds, and sets the given date\'s seconds to that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(61, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set seconds with invalid value: '+ val);
+
+      d.setSeconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCDayOfMonth = defineValue(
+    'name: safeSetUTCDayOfMonth',
+    'signature: day: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a',
+    'Date object and sets the day of the month to the local equivalent of the given',
+    'value.',
+    '',
+    'Throws a TypeError if the value is outside this range, or if the month contains',
+    'fewer days than the given value.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 31)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      var month = getUTCMonth(d);
+      if (val === 31 && [1, 3, 5, 8, 10].indexOf(month) !== -1)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      if (month === 2) {
+        if (val === 30)
+          throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+        if (val === 29) {
+          var year = getUTCFullYear(d);
+          var notLeapYear = (year % 4 !== 0) || (year % 100 === 0 && year % 400 !== 0);
+
+          if (notLeapYear)
+            throw new TypeError('Attempt to set day with invalid value: '+ val);
+        }
+      }
+
+      d.setUTCDate(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCHours = defineValue(
+    'name: safeSetUTCHours',
+    'signature: hours: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCHours. Takes a value between 0-23',
+    'representing the hour of the day, and sets the hour to the local equivalent of',
+    'the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 23)
+        throw new TypeError('Attempt to set hour with invalid value: '+ val);
+
+      d.setUTCHours(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMilliseconds = defineValue(
+    'name: safeSetUTCMilliseconds',
+    'signature: milliseconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0-999',
+    'representing the milliseconds, and sets the milliseconds to the local equivalent',
+    'of the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 999)
+        throw new TypeError('Attempt to set milliseconds with invalid value: '+ val);
+
+      d.setUTCMilliseconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMinutes = defineValue(
+    'name: safeSetUTCMinutes',
+    'signature: minutes: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0-59',
+    'representing the minutes, and sets the given date\'s minutes to the local',
+    'equivalent of that value.',
+    '',
+    'Throws a TypeError values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set minutes with invalid value: '+ val);
+
+      d.setUTCMinutes(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMonth = defineValue(
+    'name: safeSetUTCMonth',
+    'signature: month: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMonth. Takes a value between 0-11',
+    'representing the month, and sets the given date\'s month to the local equivalent',
+    'of that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 11)
+        throw new TypeError('Attempt to set month with invalid value: '+ val);
+
+      d.setUTCMonth(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCSeconds = defineValue(
+    'name: safeSetUTCSeconds',
+    'signature: seconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0-59',
+    'representing the seconds, and sets the given date\'s seconds to the local',
+    'equivalent of that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set seconds with invalid value: '+ val);
+
+      d.setUTCSeconds(val);
+      return d;
+    })
+  );
+*/
+
+
+  // Now we delve into the madness that is the Date constructor...
+  // TODO Need better synonyms for these
+
+
+  /*
+   * <apifunction>
+   *
+   * getCurrentTimeString
+   *
+   * Category: Date
+   *
+   * Returns: string
+   *
+   * A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+   * current date and time.
+   *
+   */
+
+  var getCurrentTimeString = curry(function() {
+    return Date();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDateFromString
+   *
+   * Category: Date
+   *
+   * Parameter: dateString: string
+   * Returns: date
+   *
+   * A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
+   * non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
+   * that given in the string.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
+   *
+   */
+
+  var makeDateFromString = curry(function(s) {
+    if (typeof(s) !== 'string')
+      throw new TypeError('Attempt to make Date from string with incorrect type');
+
+    var d = new Date(s);
+
+    // If the string is not parsable, Date will still create a date!
+    if (isNaN(d.getHours()))
+      throw new TypeError('Attempt to make Date from unparsable string');
+
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDateFromMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Returns: date
+   *
+   * A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
+   * non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+   * milliseconds since the epoch.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDateFromMilliseconds(1400161244101);
+   *
+   */
+
+  var makeDateFromMilliseconds = curry(function(n) {
+    if (typeof(n) !== 'number')
+      throw new TypeError('Attempt to make Date from milliseconds with incorrect type');
+
+    var d = new Date(n);
+
+    // If the number isn't valid, a date will still be created!
+    if (isNaN(d.getHours()))
+      throw new TypeError('Attempt to make Date from invalid value');
+
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMonthDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
+   * type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
+   * initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
+   *
+   */
+
+  var makeMonthDate = curry(function(y, m) {
+    return new Date(y, m);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDayDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
+   * validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
+   * are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
+   *
+   */
+
+  var makeDayDate = curry(function(y, m, d) {
+    return new Date(y, m, d);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeHourDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+   * hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
+   * the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
+   *
+   */
+
+  var makeHourDate = curry(function(y, m, d, h) {
+    return new Date(y, m, d, h);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMinuteDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+   * and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
+   * fields in the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
+   *
+   */
+
+  var makeMinuteDate = curry(function(y, m, d, h, min) {
+    return new Date(y, m, d, h, min);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeSecondDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Parameter: second: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+   * the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
+   * All other fields in the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
+   *
+   */
+
+  var makeSecondDate = curry(function(y, m, d, h, min, s) {
+    return new Date(y, m, d, h, min, s);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMillisecondDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Parameter: second: number
+   * Parameter: millisecond: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
+   * the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
+   * the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
+   *                                                                      //    January 2 2000
+   *
+   */
+
+  var makeMillisecondDate = curry(function(y, m, d, h, min, s, ms) {
+    return new Date(y, m, d, h, min, s, ms);
+  });
+
+
+  return {
+    getCurrentTimeString: getCurrentTimeString,
+    getDayOfMonth: getDayOfMonth,
+    getDayOfWeek: getDayOfWeek,
+    getFullYear: getFullYear,
+    getHours: getHours,
+    getMilliseconds: getMilliseconds,
+    getMinutes: getMinutes,
+    getMonth: getMonth,
+    getSeconds: getSeconds,
+    getTimezoneOffset: getTimezoneOffset,
+    getUTCDayOfMonth: getUTCDayOfMonth,
+    getUTCDayOfWeek: getUTCDayOfWeek,
+    getUTCFullYear: getUTCFullYear,
+    getUTCHours: getUTCHours,
+    getUTCMilliseconds: getUTCMilliseconds,
+    getUTCMinutes: getUTCMinutes,
+    getUTCMonth: getUTCMonth,
+    getUTCSeconds: getUTCSeconds,
+    makeDateFromMilliseconds: makeDateFromMilliseconds,
+    makeDateFromString: makeDateFromString,
+    makeDayDate: makeDayDate,
+    makeHourDate: makeHourDate,
+    makeMinuteDate: makeMinuteDate,
+    makeMillisecondDate: makeMillisecondDate,
+    makeMonthDate: makeMonthDate,
+    makeSecondDate: makeSecondDate,
+/* TBC
+    safeSetDayOfMonth: safeSetDayOfMonth,
+    safeSetHours: safeSetHours,
+    safeSetMilliseconds: safeSetMilliseconds,
+    safeSetMinutes: safeSetMinutes,
+    safeSetMonth: safeSetMonth,
+    safeSetSeconds: safeSetSeconds,
+    safeSetUTCDayOfMonth: safeSetUTCDayOfMonth,
+    safeSetUTCHours: safeSetUTCHours,
+    safeSetUTCMilliseconds: safeSetUTCMilliseconds,
+    safeSetUTCMinutes: safeSetUTCMinutes,
+    safeSetUTCMonth: safeSetUTCMonth,
+    safeSetUTCSeconds: safeSetUTCSeconds,
+*/
+    setDayOfMonth: setDayOfMonth,
+    setFullYear: setFullYear,
+    setHours: setHours,
+    setMilliseconds: setMilliseconds,
+    setMinutes: setMinutes,
+    setMonth: setMonth,
+    setSeconds: setSeconds,
+    setTimeSinceEpoch: setTimeSinceEpoch,
+    setUTCDayOfMonth: setUTCDayOfMonth,
+    setUTCFullYear: setUTCFullYear,
+    setUTCHours: setUTCHours,
+    setUTCMilliseconds: setUTCMilliseconds,
+    setUTCMinutes: setUTCMinutes,
+    setUTCMonth: setUTCMonth,
+    setUTCSeconds: setUTCSeconds,
+    toDateString: toDateString,
+    toEpochMilliseconds: toEpochMilliseconds,
+    toISOString: toISOString,
+    toLocaleDateString: toLocaleDateString,
+    toTimeString: toTimeString,
+    toUTCString: toUTCString
+  };
+})();
+
+},{"./curry":2,"./object":7}],4:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1227,7 +2719,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":10,"./curry":2}],4:[function(require,module,exports){
+},{"../funcUtils":11,"./curry":2}],5:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -1969,7 +3461,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":1,"./curry":2,"./object":6}],5:[function(require,module,exports){
+},{"./base":1,"./curry":2,"./object":7}],6:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2222,7 +3714,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],6:[function(require,module,exports){
+},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],7:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -3387,7 +4879,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":13,"./base":1,"./curry":2,"./maybe":5}],7:[function(require,module,exports){
+},{"../internalUtilities":14,"./base":1,"./curry":2,"./maybe":6}],8:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3596,7 +5088,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":13,"./curry":2}],8:[function(require,module,exports){
+},{"../internalUtilities":14,"./curry":2}],9:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3932,7 +5424,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":10,"../internalUtilities":13,"./curry":2}],9:[function(require,module,exports){
+},{"../funcUtils":11,"../internalUtilities":14,"./curry":2}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4419,7 +5911,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2}],10:[function(require,module,exports){
+},{"./curry":2}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4480,7 +5972,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":2}],11:[function(require,module,exports){
+},{"./components/curry":2}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4491,6 +5983,7 @@ module.exports = (function() {
   var imports = {
     base: require('./components/base'),
     curry: require('./components/curry'),
+    date: require('./components/date'),
     logical: require('./components/logical'),
     object: require('./components/object'),
     maths: require('./components/maths'),
@@ -4559,7 +6052,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":1,"./components/curry":2,"./components/logical":3,"./components/maths":4,"./components/maybe":5,"./components/object":6,"./components/pair":7,"./components/result":8,"./components/types":9,"./help":12}],12:[function(require,module,exports){
+},{"./components/base":1,"./components/curry":2,"./components/date":3,"./components/logical":4,"./components/maths":5,"./components/maybe":6,"./components/object":7,"./components/pair":8,"./components/result":9,"./components/types":10,"./help":13}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5170,6 +6663,39 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#fst');
           break;
 
+        case funkier.getCurrentTimeString:
+          console.log('getCurrentTimeString:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor without the \'new\' operator. Returns a string representing the');
+          console.log('current date and time.');
+          console.log('');
+          console.log('Usage: var x = getCurrentTimeString()');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getcurrenttimestring');
+          break;
+
+        case funkier.getDayOfMonth:
+          console.log('getDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the');
+          console.log('month (1-31) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getDayOfMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getdayofmonth');
+          break;
+
+        case funkier.getDayOfWeek:
+          console.log('getDayOfWeek:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the');
+          console.log('month (0-6) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getDayOfWeek(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getdayofweek');
+          break;
+
         case funkier.getErrValue:
           console.log('getErrValue:');
           console.log('');
@@ -5181,6 +6707,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#geterrvalue');
           break;
 
+        case funkier.getFullYear:
+          console.log('getFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the');
+          console.log('year of the given date.');
+          console.log('');
+          console.log('Usage: var x = getFullYear(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getfullyear');
+          break;
+
+        case funkier.getHours:
+          console.log('getHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field');
+          console.log('(0-23) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getHours(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gethours');
+          break;
+
         case funkier.getJustValue:
           console.log('getJustValue:');
           console.log('');
@@ -5190,6 +6738,39 @@ module.exports = (function() {
           console.log('Usage: var x = getJustValue(j)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getjustvalue');
+          break;
+
+        case funkier.getMilliseconds:
+          console.log('getMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the');
+          console.log('milliseconds field (0-999) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getmilliseconds');
+          break;
+
+        case funkier.getMinutes:
+          console.log('getMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes');
+          console.log('field (0-59) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMinutes(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getminutes');
+          break;
+
+        case funkier.getMonth:
+          console.log('getMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month');
+          console.log('field (0-11) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getmonth');
           break;
 
         case funkier.getOkValue:
@@ -5227,6 +6808,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertynames');
           break;
 
+        case funkier.getSeconds:
+          console.log('getSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds');
+          console.log('field (0-59) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getSeconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getseconds');
+          break;
+
+        case funkier.getTimezoneOffset:
+          console.log('getTimezoneOffset:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between');
+          console.log('the Javascript environment and UTC.');
+          console.log('');
+          console.log('Usage: var x = getTimezoneOffset(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gettimezoneoffset');
+          break;
+
         case funkier.getType:
           console.log('getType:');
           console.log('');
@@ -5236,6 +6839,94 @@ module.exports = (function() {
           console.log('Usage: var x = getType(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gettype');
+          break;
+
+        case funkier.getUTCDayOfMonth:
+          console.log('getUTCDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of');
+          console.log('the month (1-31) of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCDayOfMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcdayofmonth');
+          break;
+
+        case funkier.getUTCDayOfWeek:
+          console.log('getUTCDayOfWeek:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of');
+          console.log('the week (0-6) of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCDayOfWeek(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcdayofweek');
+          break;
+
+        case funkier.getUTCFullYear:
+          console.log('getUTCFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing');
+          console.log('the year of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCFullYear(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcfullyear');
+          break;
+
+        case funkier.getUTCHours:
+          console.log('getUTCHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours');
+          console.log('field of the given date (0-23), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCHours(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutchours');
+          break;
+
+        case funkier.getUTCMilliseconds:
+          console.log('getUTCMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the');
+          console.log('milliseconds field of the given date (0-999), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcmilliseconds');
+          break;
+
+        case funkier.getUTCMinutes:
+          console.log('getUTCMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the');
+          console.log('minutes field of the given date (0-59), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMinutes(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcminutes');
+          break;
+
+        case funkier.getUTCMonth:
+          console.log('getUTCMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month');
+          console.log('field of the given date (0-11), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcmonth');
+          break;
+
+        case funkier.getUTCSeconds:
+          console.log('getUTCSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the');
+          console.log('seconds field of the given date (0-59), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCSeconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcseconds');
           break;
 
         case funkier.greaterThan:
@@ -5550,6 +7241,54 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#log');
           break;
 
+        case funkier.makeDateFromMilliseconds:
+          console.log('makeDateFromMilliseconds:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a');
+          console.log('non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed');
+          console.log('milliseconds since the epoch.');
+          console.log('');
+          console.log('Usage: var x = makeDateFromMilliseconds(milliseconds)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedatefrommilliseconds');
+          break;
+
+        case funkier.makeDateFromString:
+          console.log('makeDateFromString:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a');
+          console.log('non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents');
+          console.log('that given in the string.');
+          console.log('');
+          console.log('Usage: var x = makeDateFromString(dateString)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedatefromstring');
+          break;
+
+        case funkier.makeDayDate:
+          console.log('makeDayDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No');
+          console.log('validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date');
+          console.log('are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeDayDate(year, month, day)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedaydate');
+          break;
+
+        case funkier.makeHourDate:
+          console.log('makeHourDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the');
+          console.log('hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in');
+          console.log('the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeHourDate(year, month, day, hour)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makehourdate');
+          break;
+
         case funkier.makeMaybeReturner:
           console.log('makeMaybeReturner:');
           console.log('');
@@ -5562,6 +7301,42 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemaybereturner');
           break;
 
+        case funkier.makeMillisecondDate:
+          console.log('makeMillisecondDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,');
+          console.log('the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns');
+          console.log('the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMillisecondDate(year, month, day, hour, minute, second, millisecond)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemilliseconddate');
+          break;
+
+        case funkier.makeMinuteDate:
+          console.log('makeMinuteDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour');
+          console.log('and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other');
+          console.log('fields in the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMinuteDate(year, month, day, hour, minute)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeminutedate');
+          break;
+
+        case funkier.makeMonthDate:
+          console.log('makeMonthDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or');
+          console.log('type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are');
+          console.log('initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMonthDate(year, month)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemonthdate');
+          break;
+
         case funkier.makeResultReturner:
           console.log('makeResultReturner:');
           console.log('');
@@ -5572,6 +7347,18 @@ module.exports = (function() {
           console.log('Usage: var x = makeResultReturner(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeresultreturner');
+          break;
+
+        case funkier.makeSecondDate:
+          console.log('makeSecondDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,');
+          console.log('the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.');
+          console.log('All other fields in the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeSecondDate(year, month, day, hour, minute, second)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeseconddate');
           break;
 
         case funkier.max:
@@ -5867,6 +7654,198 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#set');
           break;
 
+        case funkier.setDayOfMonth:
+          console.log('setDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
+          console.log('month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31');
+          console.log('in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date');
+          console.log('object.');
+          console.log('');
+          console.log('Usage: var x = setDayOfMonth(day, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setdayofmonth');
+          break;
+
+        case funkier.setFullYear:
+          console.log('setFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given');
+          console.log('value. This may cause a change in other fields: for example, setting the year when the month and day represent');
+          console.log('February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.');
+          console.log('Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setFullYear(year, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setfullyear');
+          break;
+
+        case funkier.setHours:
+          console.log('setHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and');
+          console.log('a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setHours(hours, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sethours');
+          break;
+
+        case funkier.setMilliseconds:
+          console.log('setMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
+          console.log('and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other');
+          console.log('fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause');
+          console.log('a cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMilliseconds(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setmilliseconds');
+          break;
+
+        case funkier.setMinutes:
+          console.log('setMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
+          console.log('object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMinutes(minutes, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setminutes');
+          break;
+
+        case funkier.setMonth:
+          console.log('setMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date');
+          console.log('object, and sets the month to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMonth(month, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setmonth');
+          break;
+
+        case funkier.setSeconds:
+          console.log('setSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
+          console.log('object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setSeconds(seconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setseconds');
+          break;
+
+        case funkier.setTimeSinceEpoch:
+          console.log('setTimeSinceEpoch:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,');
+          console.log('January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and');
+          console.log('time that is that many seconds since the epoch. Returns the given date.');
+          console.log('');
+          console.log('Usage: var x = setTimeSinceEpoch(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#settimesinceepoch');
+          break;
+
+        case funkier.setUTCDayOfMonth:
+          console.log('setUTCDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
+          console.log('month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,');
+          console.log('changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.');
+          console.log('Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCDayOfMonth(day, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcdayofmonth');
+          break;
+
+        case funkier.setUTCFullYear:
+          console.log('setUTCFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local');
+          console.log('equivalent of the given value. This may cause a change in other fields: for example, setting the year when the');
+          console.log('month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not');
+          console.log('a leap year. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCFullYear(year, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcfullyear');
+          break;
+
+        case funkier.setUTCHours:
+          console.log('setUTCHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and');
+          console.log('a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade');
+          console.log('of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCHours(hours, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutchours');
+          break;
+
+        case funkier.setUTCMilliseconds:
+          console.log('setUTCMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
+          console.log('and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause');
+          console.log('a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This');
+          console.log('may in turn cause a cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMilliseconds(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcmilliseconds');
+          break;
+
+        case funkier.setUTCMinutes:
+          console.log('setUTCMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
+          console.log('object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMinutes(minutes, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcminutes');
+          break;
+
+        case funkier.setUTCMonth:
+          console.log('setUTCMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date');
+          console.log('object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other');
+          console.log('fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMonth(month, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcmonth');
+          break;
+
+        case funkier.setUTCSeconds:
+          console.log('setUTCSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
+          console.log('object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the local equivalent of the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCSeconds(seconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcseconds');
+          break;
+
         case funkier.snd:
           console.log('snd:');
           console.log('');
@@ -5940,6 +7919,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tobaseandstring');
           break;
 
+        case funkier.toDateString:
+          console.log('toDateString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date');
+          console.log('portion of the object.');
+          console.log('');
+          console.log('Usage: var x = toDateString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#todatestring');
+          break;
+
+        case funkier.toEpochMilliseconds:
+          console.log('toEpochMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since');
+          console.log('midnight, January 1 1970.');
+          console.log('');
+          console.log('Usage: var x = toEpochMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toepochmilliseconds');
+          break;
+
         case funkier.toExponential:
           console.log('toExponential:');
           console.log('');
@@ -5964,6 +7965,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tofixed');
           break;
 
+        case funkier.toISOString:
+          console.log('toISOString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date');
+          console.log('in ISO format.');
+          console.log('');
+          console.log('Usage: var x = toISOString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toisostring');
+          break;
+
+        case funkier.toLocaleDateString:
+          console.log('toLocaleDateString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date');
+          console.log('portion of the object, formatted according to locale conventions.');
+          console.log('');
+          console.log('Usage: var x = toLocaleDateString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocaledatestring');
+          break;
+
         case funkier.toPrecision:
           console.log('toPrecision:');
           console.log('');
@@ -5974,6 +7997,28 @@ module.exports = (function() {
           console.log('Usage: var x = toPrecision(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
+          break;
+
+        case funkier.toTimeString:
+          console.log('toTimeString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time');
+          console.log('portion of the object.');
+          console.log('');
+          console.log('Usage: var x = toTimeString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#totimestring');
+          break;
+
+        case funkier.toUTCString:
+          console.log('toUTCString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the');
+          console.log('equivalent date in UTC.');
+          console.log('');
+          console.log('Usage: var x = toUTCString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
         case funkier.xor:
@@ -6007,7 +8052,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6231,5 +8276,5 @@ module.exports = (function() {
 //    }();
 //})();
 
-},{}]},{},[11])(11)
+},{}]},{},[12])(12)
 });

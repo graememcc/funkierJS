@@ -354,6 +354,689 @@ called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.cnd(p); // => 3',
 ***
+## Date##
+### getCurrentTimeString ###
+**Usage:** `var result = getCurrentTimeString();`
+
+Returns: `string`
+
+A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+current date and time.
+***
+### getDayOfMonth ###
+**Usage:** `var result = getDayOfMonth(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
+month (1-31) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getDayOfMonth(a); // => 15
+***
+### getDayOfWeek ###
+**Usage:** `var result = getDayOfWeek(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+month (0-6) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getDayOfWeek(a); // => 2
+***
+### getFullYear ###
+**Usage:** `var result = getFullYear(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
+year of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getFullYear(a); // => 2000
+***
+### getHours ###
+**Usage:** `var result = getHours(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
+(0-23) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getHours(a); // => 10
+***
+### getMilliseconds ###
+**Usage:** `var result = getMilliseconds(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+milliseconds field (0-999) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getMilliseconds(a); // => 13
+***
+### getMinutes ###
+**Usage:** `var result = getMinutes(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+field (0-59) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getMinutes(a); // => 11
+***
+### getMonth ###
+**Usage:** `var result = getMonth(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+field (0-11) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getMonth(a); // => 1
+***
+### getSeconds ###
+**Usage:** `var result = getSeconds(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+field (0-59) of the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.getSeconds(a); // => 12
+***
+### getTimezoneOffset ###
+**Usage:** `var result = getTimezoneOffset(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
+the Javascript environment and UTC.
+***
+### getUTCDayOfMonth ###
+**Usage:** `var result = getUTCDayOfMonth(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+the month (1-31) of the given date, adjusted for UTC.
+***
+### getUTCDayOfWeek ###
+**Usage:** `var result = getUTCDayOfWeek(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+the week (0-6) of the given date, adjusted for UTC.
+***
+### getUTCFullYear ###
+**Usage:** `var result = getUTCFullYear(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+the year of the given date, adjusted for UTC.
+***
+### getUTCHours ###
+**Usage:** `var result = getUTCHours(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+field of the given date (0-23), adjusted for UTC.
+***
+### getUTCMilliseconds ###
+**Usage:** `var result = getUTCMilliseconds(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
+milliseconds field of the given date (0-999), adjusted for UTC.
+***
+### getUTCMinutes ###
+**Usage:** `var result = getUTCMinutes(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+minutes field of the given date (0-59), adjusted for UTC.
+***
+### getUTCMonth ###
+**Usage:** `var result = getUTCMonth(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+field of the given date (0-11), adjusted for UTC.
+***
+### getUTCSeconds ###
+**Usage:** `var result = getUTCSeconds(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+seconds field of the given date (0-59), adjusted for UTC.
+***
+### makeDateFromMilliseconds ###
+**Usage:** `var result = makeDateFromMilliseconds(milliseconds);`
+
+Parameters:  
+milliseconds `number`
+
+Returns: `date`
+
+A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
+non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+milliseconds since the epoch.
+
+#### Examples ####
+    var d = funkierJS.makeDateFromMilliseconds(1400161244101);
+***
+### makeDateFromString ###
+**Usage:** `var result = makeDateFromString(dateString);`
+
+Parameters:  
+dateString `string`
+
+Returns: `date`
+
+A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
+non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
+that given in the string.
+
+#### Examples ####
+    var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
+***
+### makeDayDate ###
+**Usage:** `var result = makeDayDate(year, month, day);`
+
+Parameters:  
+year `number`  
+month `number`  
+day `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
+validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
+are initialized to zero. Returns the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
+***
+### makeHourDate ###
+**Usage:** `var result = makeHourDate(year, month, day, hour);`
+
+Parameters:  
+year `number`  
+month `number`  
+day `number`  
+hour `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
+the Date are initialized to zero. Returns the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
+***
+### makeMillisecondDate ###
+**Usage:** `var result = makeMillisecondDate(year, month, day, hour, minute, second, millisecond);`
+
+Parameters:  
+year `number`  
+month `number`  
+day `number`  
+hour `number`  
+minute `number`  
+second `number`  
+millisecond `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
+the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
+the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
+                                                                       //    January 2 2000
+***
+### makeMinuteDate ###
+**Usage:** `var result = makeMinuteDate(year, month, day, hour, minute);`
+
+Parameters:  
+year `number`  
+month `number`  
+day `number`  
+hour `number`  
+minute `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
+fields in the Date are initialized to zero. Returns the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
+***
+### makeMonthDate ###
+**Usage:** `var result = makeMonthDate(year, month);`
+
+Parameters:  
+year `number`  
+month `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
+type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
+initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
+***
+### makeSecondDate ###
+**Usage:** `var result = makeSecondDate(year, month, day, hour, minute, second);`
+
+Parameters:  
+year `number`  
+month `number`  
+day `number`  
+hour `number`  
+minute `number`  
+second `number`
+
+Returns: `date`
+
+A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
+All other fields in the Date are initialized to zero. Returns the new Date.
+
+#### Examples ####
+    var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
+***
+### setDayOfMonth ###
+**Usage:** `var result = setDayOfMonth(day, d);`
+
+Parameters:  
+day `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
+in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setDayOfMonth(1, a); // => a now refers to Feb 1 2000
+***
+### setFullYear ###
+**Usage:** `var result = setFullYear(year, d);`
+
+Parameters:  
+year `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+value. This may cause a change in other fields: for example, setting the year when the month and day represent
+February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
+Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setFullYear(2001, a); // => a now refers to Feb 15 2001
+***
+### setHours ###
+**Usage:** `var result = setHours(hours, d);`
+
+Parameters:  
+hours `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
+a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setHours(11, a); // => a now refers to 11:11:12:013
+***
+### setMilliseconds ###
+**Usage:** `var result = setMilliseconds(milliseconds, d);`
+
+Parameters:  
+milliseconds `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
+a cascade of increments to other fields. Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setMilliseconds(20, a); // => a now refers to 10:11:12:020
+***
+### setMinutes ###
+**Usage:** `var result = setMinutes(minutes, d);`
+
+Parameters:  
+minutes `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setMinutes(59, a); // => a now refers to 10:59:12:013
+***
+### setMonth ###
+**Usage:** `var result = setMonth(month, d);`
+
+Parameters:  
+month `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
+value > 11, then the year will be incremented by month div 12. Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setMonth(2, a); // => a now refers to 15 March 2001
+***
+### setSeconds ###
+**Usage:** `var result = setSeconds(seconds, d);`
+
+Parameters:  
+seconds `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
+to other fields. Returns the given date object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setSeconds(50, a); // => a now refers to 10:11:50:013
+***
+### setTimeSinceEpoch ###
+**Usage:** `var result = setTimeSinceEpoch(milliseconds, d);`
+
+Parameters:  
+milliseconds `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
+time that is that many seconds since the epoch. Returns the given date.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.setTimeSinceEpoch(1340122101412, a); // => a now refers to 19th July 2012, 16:08:21:041
+***
+### setUTCDayOfMonth ###
+**Usage:** `var result = setUTCDayOfMonth(day, d);`
+
+Parameters:  
+day `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
+changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
+Returns the given date object.
+***
+### setUTCFullYear ###
+**Usage:** `var result = setUTCFullYear(year, d);`
+
+Parameters:  
+year `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
+month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
+a leap year. Returns the given date object.
+***
+### setUTCHours ###
+**Usage:** `var result = setUTCHours(hours, d);`
+
+Parameters:  
+hours `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
+a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
+of increments to other fields. Returns the given date object.
+***
+### setUTCMilliseconds ###
+**Usage:** `var result = setUTCMilliseconds(milliseconds, d);`
+
+Parameters:  
+milliseconds `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
+a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
+may in turn cause a cascade of increments to other fields. Returns the given date object.
+***
+### setUTCMinutes ###
+**Usage:** `var result = setUTCMinutes(minutes, d);`
+
+Parameters:  
+minutes `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+cascade of increments to other fields. Returns the given date object.
+***
+### setUTCMonth ###
+**Usage:** `var result = setUTCMonth(month, d);`
+
+Parameters:  
+month `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
+object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
+fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+***
+### setUTCSeconds ###
+**Usage:** `var result = setUTCSeconds(seconds, d);`
+
+Parameters:  
+seconds `number`  
+d `Date`
+
+Returns: `date`
+
+A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
+other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
+cascade of increments to other fields. Returns the local equivalent of the given date object.
+***
+### toDateString ###
+**Usage:** `var result = toDateString(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `string`
+
+A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+portion of the object.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.toDateString(a); // => "Tue Feb 15 2000" or similar
+***
+### toEpochMilliseconds ###
+**Usage:** `var result = toEpochMilliseconds(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `number`
+
+A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
+midnight, January 1 1970.
+***
+### toISOString ###
+**Usage:** `var result = toISOString(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `string`
+
+A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
+in ISO format.
+
+#### Examples ####
+    var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+    funkierJS.toISOString(a); // "2000-02-15T10:11:12.013Z" or similar',
+***
+### toLocaleDateString ###
+**Usage:** `var result = toLocaleDateString(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `string`
+
+A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+portion of the object, formatted according to locale conventions.
+***
+### toTimeString ###
+**Usage:** `var result = toTimeString(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `string`
+
+A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+portion of the object.
+***
+### toUTCString ###
+**Usage:** `var result = toUTCString(d);`
+
+Parameters:  
+d `Date`
+
+Returns: `string`
+
+A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+equivalent date in UTC.
+***
 ## Function##
 ### arity ###
 See `arityOf`

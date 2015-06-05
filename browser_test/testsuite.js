@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":31,"../test/docgen/testAPIFunction":32,"../test/docgen/testAPIObject":33,"../test/docgen/testAPIPrototype":34,"../test/docgen/testCPTestDataHelper":35,"../test/docgen/testCollator":36,"../test/docgen/testCommentProcessor":37,"../test/docgen/testLineProcessor":38,"../test/docgen/testMarkdownCreator":39,"../test/docgen/testMarkdownRenderer":40,"../test/funkierJS/testAPI":41,"../test/funkierJS/testArray":42,"../test/funkierJS/testBase":43,"../test/funkierJS/testCurry":44,"../test/funkierJS/testDate":45,"../test/funkierJS/testFn":46,"../test/funkierJS/testFuncUtils":47,"../test/funkierJS/testFunkier":48,"../test/funkierJS/testInternalUtilities":49,"../test/funkierJS/testLogical":50,"../test/funkierJS/testMaths":51,"../test/funkierJS/testMaybe":52,"../test/funkierJS/testObject":53,"../test/funkierJS/testPair":54,"../test/funkierJS/testResult":55,"../test/funkierJS/testString":56,"../test/funkierJS/testTypes":57,"../test/funkierJS/testingUtilities":58}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":32,"../test/docgen/testAPIFunction":33,"../test/docgen/testAPIObject":34,"../test/docgen/testAPIPrototype":35,"../test/docgen/testCPTestDataHelper":36,"../test/docgen/testCollator":37,"../test/docgen/testCommentProcessor":38,"../test/docgen/testLineProcessor":39,"../test/docgen/testMarkdownCreator":40,"../test/docgen/testMarkdownRenderer":41,"../test/funkierJS/testAPI":42,"../test/funkierJS/testArray":43,"../test/funkierJS/testBase":44,"../test/funkierJS/testCurry":45,"../test/funkierJS/testDate":46,"../test/funkierJS/testFn":47,"../test/funkierJS/testFuncUtils":48,"../test/funkierJS/testFunkier":49,"../test/funkierJS/testInternalUtilities":50,"../test/funkierJS/testLogical":51,"../test/funkierJS/testMaths":52,"../test/funkierJS/testMaybe":53,"../test/funkierJS/testObject":54,"../test/funkierJS/testPair":55,"../test/funkierJS/testResult":56,"../test/funkierJS/testString":57,"../test/funkierJS/testTypes":58,"../test/funkierJS/testingUtilities":59}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1586,7 +1586,7 @@ module.exports = (function() {
   return makeMarkdownRenderer;
 })();
 
-},{"marked":30}],10:[function(require,module,exports){
+},{"marked":31}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1927,7 +1927,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],11:[function(require,module,exports){
+},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],11:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -2539,7 +2539,1499 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":22}],12:[function(require,module,exports){
+},{"../internalUtilities":23}],12:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+
+  var object = require('./object');
+  var callProp = object.callProp;
+
+  // TODO Consistency of the safe operations e.g. changing month to a 30 day month...
+  // TODO Could use some synonyms for these functions
+
+  /*
+   * <apifunction>
+   *
+   * getDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the
+   * month (1-31) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getDayOfMonth(a); // => 15
+   *
+   */
+
+  var getDayOfMonth = callProp('getDate');
+
+
+  /*
+   * <apifunction>
+   *
+   * getDayOfWeek
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the
+   * month (0-6) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getDayOfWeek(a); // => 2
+   *
+   */
+
+  var getDayOfWeek = callProp('getDay');
+
+
+  /*
+   * <apifunction>
+   *
+   * getFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the
+   * year of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getFullYear(a); // => 2000
+   *
+   */
+
+  var getFullYear = callProp('getFullYear');
+
+
+  /*
+   * <apifunction>
+   *
+   * getHours
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field
+   * (0-23) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getHours(a); // => 10
+   *
+   */
+
+  var getHours = callProp('getHours');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the
+   * milliseconds field (0-999) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMilliseconds(a); // => 13
+   *
+   */
+
+  var getMilliseconds = callProp('getMilliseconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes
+   * field (0-59) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMinutes(a); // => 11
+   *
+   */
+
+  var getMinutes = callProp('getMinutes');
+
+
+  /*
+   * <apifunction>
+   *
+   * getMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month
+   * field (0-11) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getMonth(a); // => 1
+   *
+   */
+
+  var getMonth = callProp('getMonth');
+
+
+  /*
+   * <apifunction>
+   *
+   * getSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds
+   * field (0-59) of the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.getSeconds(a); // => 12
+   *
+   */
+
+  var getSeconds = callProp('getSeconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * toEpochMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since
+   * midnight, January 1 1970.
+   *
+   */
+
+  var toEpochMilliseconds = callProp('getTime');
+
+
+  /*
+   * <apifunction>
+   *
+   * getTimezoneOffset
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between
+   * the Javascript environment and UTC.
+   *
+   */
+
+  var getTimezoneOffset = callProp('getTimezoneOffset');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of
+   * the month (1-31) of the given date, adjusted for UTC.
+   *
+   */
+
+  var getUTCDayOfMonth = callProp('getUTCDate');
+
+  /*
+   * <apifunction>
+   *
+   * getUTCDayOfWeek
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of
+   * the week (0-6) of the given date, adjusted for UTC.
+   *
+   */
+
+
+  var getUTCDayOfWeek = callProp('getUTCDay');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing
+   * the year of the given date, adjusted for UTC.
+   *
+   */
+
+  var getUTCFullYear = callProp('getUTCFullYear');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCHours
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours
+   * field of the given date (0-23), adjusted for UTC.
+   *
+   */
+
+  var getUTCHours = callProp('getUTCHours');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the
+   * milliseconds field of the given date (0-999), adjusted for UTC.
+   *
+   */
+
+  var getUTCMilliseconds = callProp('getUTCMilliseconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the
+   * minutes field of the given date (0-59), adjusted for UTC.
+   *
+   */
+
+  var getUTCMinutes = callProp('getUTCMinutes');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCMonth
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month
+   * field of the given date (0-11), adjusted for UTC.
+   *
+   */
+
+  var getUTCMonth = callProp('getUTCMonth');
+
+
+  /*
+   * <apifunction>
+   *
+   * getUTCSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: number
+   *
+   * A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the
+   * seconds field of the given date (0-59), adjusted for UTC.
+   *
+   */
+
+  var getUTCSeconds = callProp('getUTCSeconds');
+
+
+  /*
+   * <apifunction>
+   *
+   * toLocaleDateString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date
+   * portion of the object, formatted according to locale conventions.
+   *
+   */
+
+  var toLocaleDateString = callProp('toLocaleDateString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toDateString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date
+   * portion of the object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.toDateString(a); // => "Tue Feb 15 2000" or similar
+   *
+   */
+
+  var toDateString = callProp('toDateString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toTimeString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time
+   * portion of the object.
+   *
+   */
+
+  var toTimeString = callProp('toTimeString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toISOString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date
+   * in ISO format.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.toISOString(a); // "2000-02-15T10:11:12.013Z" or similar',
+   *
+   */
+
+  var toISOString = callProp('toISOString');
+
+
+  /*
+   * <apifunction>
+   *
+   * toUTCString
+   *
+   * Category: Date
+   *
+   * Parameter: d: Date
+   * Returns: string
+   *
+   * A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the
+   * equivalent date in UTC.
+   *
+   */
+
+  var toUTCString = callProp('toUTCString');
+
+
+  // We cannot use callProp for the setters due to the need to return the given date
+
+  /*
+   * <apifunction>
+   *
+   * setDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: day: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+   * month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31
+   * in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date
+   * object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setDayOfMonth(1, a); // => a now refers to Feb 1 2000
+   *
+   */
+
+  var setDayOfMonth = curry(function(val, d) {
+    d.setDate(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given
+   * value. This may cause a change in other fields: for example, setting the year when the month and day represent
+   * February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.
+   * Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setFullYear(2001, a); // => a now refers to Feb 15 2001
+   *
+   */
+
+  var setFullYear = curry(function(val, d) {
+    d.setFullYear(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setHours
+   *
+   * Category: Date
+   *
+   * Parameter: hours: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and
+   * a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the
+   * value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setHours(11, a); // => a now refers to 11:11:12:013
+   *
+   */
+
+  var setHours = curry(function(val, d) {
+    d.setHours(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+   * and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other
+   * fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause
+   * a cascade of increments to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMilliseconds(20, a); // => a now refers to 10:11:12:020
+   *
+   */
+
+  var setMilliseconds = curry(function(val, d) {
+    d.setMilliseconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: minutes: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+   * object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the
+   * value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMinutes(59, a); // => a now refers to 10:59:12:013
+   *
+   */
+
+  var setMinutes = curry(function(val, d) {
+    d.setMinutes(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setMonth
+   *
+   * Category: Date
+   *
+   * Parameter: month: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date
+   * object, and sets the month to the given value. Invalid values will cause a change in other fields: if the
+   * value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setMonth(2, a); // => a now refers to 15 March 2001
+   *
+   */
+
+  var setMonth = curry(function(val, d) {
+    d.setMonth(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: seconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+   * object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the
+   * value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments
+   * to other fields. Returns the given date object.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setSeconds(50, a); // => a now refers to 10:11:50:013
+   *
+   */
+
+  var setSeconds = curry(function(val, d) {
+    d.setSeconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setTimeSinceEpoch
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,
+   * January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and
+   * time that is that many seconds since the epoch. Returns the given date.
+   *
+   * Examples:
+   *   var a = new Date(2000, 1, 15, 10, 11, 12, 13);
+   *   funkierJS.setTimeSinceEpoch(1340122101412, a); // => a now refers to 19th July 2012, 16:08:21:041
+   *
+   */
+
+  var setTimeSinceEpoch = curry(function(val, d) {
+    d.setTime(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCDayOfMonth
+   *
+   * Category: Date
+   *
+   * Parameter: day: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the
+   * month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,
+   * changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.
+   * Returns the given date object.
+   *
+   */
+
+  var setUTCDayOfMonth = curry(function(val, d) {
+    d.setUTCDate(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCFullYear
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local
+   * equivalent of the given value. This may cause a change in other fields: for example, setting the year when the
+   * month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not
+   * a leap year. Returns the given date object.
+   *
+   */
+
+  var setUTCFullYear = curry(function(val, d) {
+    d.setUTCFullYear(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCHours
+   *
+   * Category: Date
+   *
+   * Parameter: hours: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and
+   * a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade
+   * of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCHours = curry(function(val, d) {
+    d.setUTCHours(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,
+   * and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause
+   * a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This
+   * may in turn cause a cascade of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCMilliseconds = curry(function(val, d) {
+    d.setUTCMilliseconds(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMinutes
+   *
+   * Category: Date
+   *
+   * Parameter: minutes: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date
+   * object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a
+   * cascade of increments to other fields. Returns the given date object.
+   *
+   */
+
+  var setUTCMinutes = curry(function(val, d) {
+    d.setUTCMinutes(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCMonth
+   *
+   * Category: Date
+   *
+   * Parameter: month: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date
+   * object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other
+   * fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.
+   *
+   */
+
+  var setUTCMonth = curry(function(val, d) {
+    d.setUTCMonth(val);
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * setUTCSeconds
+   *
+   * Category: Date
+   *
+   * Parameter: seconds: number
+   * Parameter: d: Date
+   * Returns: date
+   *
+   * A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date
+   * object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in
+   * other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a
+   * cascade of increments to other fields. Returns the local equivalent of the given date object.
+   *
+   */
+
+  var setUTCSeconds = curry(function(val, d) {
+    d.setUTCSeconds(val);
+    return d;
+  });
+
+
+/* TODO
+  var safeSetDayOfMonth = defineValue(
+    'name: safeSetDayOfMonth',
+    'signature: day: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and',
+    'a Date object, and sets the day of the month to the given value. Throws if the',
+    'value is outside this range, or if the month contains fewer days than the given',
+    'value.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetDayOfMonth(30, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 31)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      var month = getMonth(d);
+      if (val === 31 && [1, 3, 5, 8, 10].indexOf(month) !== -1)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      if (month === 2) {
+        if (val === 30)
+          throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+        if (val === 29) {
+          var year = getFullYear(d);
+          var notLeapYear = (year % 4 !== 0) || (year % 100 === 0 && year % 400 !== 0);
+
+          if (notLeapYear)
+            throw new TypeError('Attempt to set day with invalid value: '+ val);
+        }
+      }
+
+      d.setDate(val);
+      return d;
+    })
+  );
+
+
+  var safeSetHours = defineValue(
+    'name: safeSetHours',
+    'signature: hours: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setHours. Takes a value between 0-23',
+    'representing the hour of the day, and sets the hour to the given value.',
+    '',
+    'Throws a TypeError for values outwith the range 0-23.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetHours(33, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 23)
+        throw new TypeError('Attempt to set hour with invalid value: '+ val);
+
+      d.setHours(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMilliseconds = defineValue(
+    'name: safeSetMilliseconds',
+    'signature: milliseconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMilliseconds. Takes a value between 0-999',
+    'representing the milliseconds, and sets the milliseconds to the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMilliseconds(1002, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 999)
+        throw new TypeError('Attempt to set milliseconds with invalid value: '+ val);
+
+      d.setMilliseconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMinutes = defineValue(
+    'name: safeSetMinutes',
+    'signature: minutes: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMinutes. Takes a value between 0-59',
+    'representing the minutes, and sets the given date\'s minutes to that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(61, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set minutes with invalid value: '+ val);
+
+      d.setMinutes(val);
+      return d;
+    })
+  );
+
+
+  var safeSetMonth = defineValue(
+    'name: safeSetMonth',
+    'signature: m: month, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setMonth. Takes a value between 0-11',
+    'representing the month, and sets the given date\'s month to that value.',
+    '  ',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(13, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 11)
+        throw new TypeError('Attempt to set month with invalid value: '+ val);
+
+      d.setMonth(val);
+      return d;
+    })
+  );
+
+
+  var safeSetSeconds = defineValue(
+    'name: safeSetSeconds',
+    'signature: seconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setSeconds. Takes a value between 0-59',
+    'representing the seconds, and sets the given date\'s seconds to that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    '--',
+    'var a = new Date(2000, 1, 15, 10, 11, 12, 13);',
+    'safeSetMinutes(61, a); // Throws',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set seconds with invalid value: '+ val);
+
+      d.setSeconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCDayOfMonth = defineValue(
+    'name: safeSetUTCDayOfMonth',
+    'signature: day: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a',
+    'Date object and sets the day of the month to the local equivalent of the given',
+    'value.',
+    '',
+    'Throws a TypeError if the value is outside this range, or if the month contains',
+    'fewer days than the given value.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 31)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      var month = getUTCMonth(d);
+      if (val === 31 && [1, 3, 5, 8, 10].indexOf(month) !== -1)
+        throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+      if (month === 2) {
+        if (val === 30)
+          throw new TypeError('Attempt to set day with invalid value: '+ val);
+
+        if (val === 29) {
+          var year = getUTCFullYear(d);
+          var notLeapYear = (year % 4 !== 0) || (year % 100 === 0 && year % 400 !== 0);
+
+          if (notLeapYear)
+            throw new TypeError('Attempt to set day with invalid value: '+ val);
+        }
+      }
+
+      d.setUTCDate(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCHours = defineValue(
+    'name: safeSetUTCHours',
+    'signature: hours: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCHours. Takes a value between 0-23',
+    'representing the hour of the day, and sets the hour to the local equivalent of',
+    'the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 23)
+        throw new TypeError('Attempt to set hour with invalid value: '+ val);
+
+      d.setUTCHours(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMilliseconds = defineValue(
+    'name: safeSetUTCMilliseconds',
+    'signature: milliseconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0-999',
+    'representing the milliseconds, and sets the milliseconds to the local equivalent',
+    'of the given value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 999)
+        throw new TypeError('Attempt to set milliseconds with invalid value: '+ val);
+
+      d.setUTCMilliseconds(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMinutes = defineValue(
+    'name: safeSetUTCMinutes',
+    'signature: minutes: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0-59',
+    'representing the minutes, and sets the given date\'s minutes to the local',
+    'equivalent of that value.',
+    '',
+    'Throws a TypeError values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set minutes with invalid value: '+ val);
+
+      d.setUTCMinutes(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCMonth = defineValue(
+    'name: safeSetUTCMonth',
+    'signature: month: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCMonth. Takes a value between 0-11',
+    'representing the month, and sets the given date\'s month to the local equivalent',
+    'of that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 11)
+        throw new TypeError('Attempt to set month with invalid value: '+ val);
+
+      d.setUTCMonth(val);
+      return d;
+    })
+  );
+
+
+  var safeSetUTCSeconds = defineValue(
+    'name: safeSetUTCSeconds',
+    'signature: seconds: number, d: date',
+    'classification: date',
+    '',
+    'A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0-59',
+    'representing the seconds, and sets the given date\'s seconds to the local',
+    'equivalent of that value.',
+    '',
+    'Throws a TypeError for values outside this range.',
+    '',
+    'Returns the given date.',
+    curry(function(val, d) {
+      if (val < 0 || val > 59)
+        throw new TypeError('Attempt to set seconds with invalid value: '+ val);
+
+      d.setUTCSeconds(val);
+      return d;
+    })
+  );
+*/
+
+
+  // Now we delve into the madness that is the Date constructor...
+  // TODO Need better synonyms for these
+
+
+  /*
+   * <apifunction>
+   *
+   * getCurrentTimeString
+   *
+   * Category: Date
+   *
+   * Returns: string
+   *
+   * A wrapper around calling the Date constructor without the 'new' operator. Returns a string representing the
+   * current date and time.
+   *
+   */
+
+  var getCurrentTimeString = curry(function() {
+    return Date();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDateFromString
+   *
+   * Category: Date
+   *
+   * Parameter: dateString: string
+   * Returns: date
+   *
+   * A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a
+   * non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents
+   * that given in the string.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDateFromString('2000-01-01T10:00:01:000Z');
+   *
+   */
+
+  var makeDateFromString = curry(function(s) {
+    if (typeof(s) !== 'string')
+      throw new TypeError('Attempt to make Date from string with incorrect type');
+
+    var d = new Date(s);
+
+    // If the string is not parsable, Date will still create a date!
+    if (isNaN(d.getHours()))
+      throw new TypeError('Attempt to make Date from unparsable string');
+
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDateFromMilliseconds
+   *
+   * Category: Date
+   *
+   * Parameter: milliseconds: number
+   * Returns: date
+   *
+   * A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a
+   * non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed
+   * milliseconds since the epoch.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDateFromMilliseconds(1400161244101);
+   *
+   */
+
+  var makeDateFromMilliseconds = curry(function(n) {
+    if (typeof(n) !== 'number')
+      throw new TypeError('Attempt to make Date from milliseconds with incorrect type');
+
+    var d = new Date(n);
+
+    // If the number isn't valid, a date will still be created!
+    if (isNaN(d.getHours()))
+      throw new TypeError('Attempt to make Date from invalid value');
+
+    return d;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMonthDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or
+   * type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are
+   * initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMonthDate(2000, 0); // => A date representing January 1 2000
+   *
+   */
+
+  var makeMonthDate = curry(function(y, m) {
+    return new Date(y, m);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeDayDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No
+   * validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date
+   * are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeDayDate(2000, 0, 2); // => A date representing January 2 2000
+   *
+   */
+
+  var makeDayDate = curry(function(y, m, d) {
+    return new Date(y, m, d);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeHourDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the
+   * hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in
+   * the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeHourDate(2000, 0, 2, 10); // => A date representing 10am, January 2 2000
+   *
+   */
+
+  var makeHourDate = curry(function(y, m, d, h) {
+    return new Date(y, m, d, h);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMinuteDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour
+   * and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other
+   * fields in the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMinuteDate(2000, 0, 2, 10, 15); // => A date representing 10:15:00, January 2 2000
+   *
+   */
+
+  var makeMinuteDate = curry(function(y, m, d, h, min) {
+    return new Date(y, m, d, h, min);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeSecondDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Parameter: second: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,
+   * the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.
+   * All other fields in the Date are initialized to zero. Returns the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeSecondDate(2000, 0, 2, 10, 15, 30); // => A date representing 10:15:30, January 2 2000
+   *
+   */
+
+  var makeSecondDate = curry(function(y, m, d, h, min, s) {
+    return new Date(y, m, d, h, min, s);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * makeMillisecondDate
+   *
+   * Category: Date
+   *
+   * Parameter: year: number
+   * Parameter: month: number
+   * Parameter: day: number
+   * Parameter: hour: number
+   * Parameter: minute: number
+   * Parameter: second: number
+   * Parameter: millisecond: number
+   * Returns: date
+   *
+   * A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,
+   * the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns
+   * the new Date.
+   *
+   * Examples:
+   *   var d = funkierJS.makeMillisecondDate(2000, 0, 2, 10, 15, 30, 12); // => A date representing 10:15:30:012,
+   *                                                                      //    January 2 2000
+   *
+   */
+
+  var makeMillisecondDate = curry(function(y, m, d, h, min, s, ms) {
+    return new Date(y, m, d, h, min, s, ms);
+  });
+
+
+  return {
+    getCurrentTimeString: getCurrentTimeString,
+    getDayOfMonth: getDayOfMonth,
+    getDayOfWeek: getDayOfWeek,
+    getFullYear: getFullYear,
+    getHours: getHours,
+    getMilliseconds: getMilliseconds,
+    getMinutes: getMinutes,
+    getMonth: getMonth,
+    getSeconds: getSeconds,
+    getTimezoneOffset: getTimezoneOffset,
+    getUTCDayOfMonth: getUTCDayOfMonth,
+    getUTCDayOfWeek: getUTCDayOfWeek,
+    getUTCFullYear: getUTCFullYear,
+    getUTCHours: getUTCHours,
+    getUTCMilliseconds: getUTCMilliseconds,
+    getUTCMinutes: getUTCMinutes,
+    getUTCMonth: getUTCMonth,
+    getUTCSeconds: getUTCSeconds,
+    makeDateFromMilliseconds: makeDateFromMilliseconds,
+    makeDateFromString: makeDateFromString,
+    makeDayDate: makeDayDate,
+    makeHourDate: makeHourDate,
+    makeMinuteDate: makeMinuteDate,
+    makeMillisecondDate: makeMillisecondDate,
+    makeMonthDate: makeMonthDate,
+    makeSecondDate: makeSecondDate,
+/* TBC
+    safeSetDayOfMonth: safeSetDayOfMonth,
+    safeSetHours: safeSetHours,
+    safeSetMilliseconds: safeSetMilliseconds,
+    safeSetMinutes: safeSetMinutes,
+    safeSetMonth: safeSetMonth,
+    safeSetSeconds: safeSetSeconds,
+    safeSetUTCDayOfMonth: safeSetUTCDayOfMonth,
+    safeSetUTCHours: safeSetUTCHours,
+    safeSetUTCMilliseconds: safeSetUTCMilliseconds,
+    safeSetUTCMinutes: safeSetUTCMinutes,
+    safeSetUTCMonth: safeSetUTCMonth,
+    safeSetUTCSeconds: safeSetUTCSeconds,
+*/
+    setDayOfMonth: setDayOfMonth,
+    setFullYear: setFullYear,
+    setHours: setHours,
+    setMilliseconds: setMilliseconds,
+    setMinutes: setMinutes,
+    setMonth: setMonth,
+    setSeconds: setSeconds,
+    setTimeSinceEpoch: setTimeSinceEpoch,
+    setUTCDayOfMonth: setUTCDayOfMonth,
+    setUTCFullYear: setUTCFullYear,
+    setUTCHours: setUTCHours,
+    setUTCMilliseconds: setUTCMilliseconds,
+    setUTCMinutes: setUTCMinutes,
+    setUTCMonth: setUTCMonth,
+    setUTCSeconds: setUTCSeconds,
+    toDateString: toDateString,
+    toEpochMilliseconds: toEpochMilliseconds,
+    toISOString: toISOString,
+    toLocaleDateString: toLocaleDateString,
+    toTimeString: toTimeString,
+    toUTCString: toUTCString
+  };
+})();
+
+},{"./curry":11,"./object":16}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2815,7 +4307,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":19,"./curry":11}],13:[function(require,module,exports){
+},{"../funcUtils":20,"./curry":11}],14:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -3557,7 +5049,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":10,"./curry":11,"./object":15}],14:[function(require,module,exports){
+},{"./base":10,"./curry":11,"./object":16}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3810,7 +5302,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],15:[function(require,module,exports){
+},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],16:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -4975,7 +6467,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":22,"./base":10,"./curry":11,"./maybe":14}],16:[function(require,module,exports){
+},{"../internalUtilities":23,"./base":10,"./curry":11,"./maybe":15}],17:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5184,7 +6676,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":22,"./curry":11}],17:[function(require,module,exports){
+},{"../internalUtilities":23,"./curry":11}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5520,7 +7012,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":19,"../internalUtilities":22,"./curry":11}],18:[function(require,module,exports){
+},{"../funcUtils":20,"../internalUtilities":23,"./curry":11}],19:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6007,7 +7499,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11}],19:[function(require,module,exports){
+},{"./curry":11}],20:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6068,7 +7560,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":11}],20:[function(require,module,exports){
+},{"./components/curry":11}],21:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6079,6 +7571,7 @@ module.exports = (function() {
   var imports = {
     base: require('./components/base'),
     curry: require('./components/curry'),
+    date: require('./components/date'),
     logical: require('./components/logical'),
     object: require('./components/object'),
     maths: require('./components/maths'),
@@ -6147,7 +7640,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":10,"./components/curry":11,"./components/logical":12,"./components/maths":13,"./components/maybe":14,"./components/object":15,"./components/pair":16,"./components/result":17,"./components/types":18,"./help":21}],21:[function(require,module,exports){
+},{"./components/base":10,"./components/curry":11,"./components/date":12,"./components/logical":13,"./components/maths":14,"./components/maybe":15,"./components/object":16,"./components/pair":17,"./components/result":18,"./components/types":19,"./help":22}],22:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6758,6 +8251,39 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#fst');
           break;
 
+        case funkier.getCurrentTimeString:
+          console.log('getCurrentTimeString:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor without the \'new\' operator. Returns a string representing the');
+          console.log('current date and time.');
+          console.log('');
+          console.log('Usage: var x = getCurrentTimeString()');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getcurrenttimestring');
+          break;
+
+        case funkier.getDayOfMonth:
+          console.log('getDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getDate. Takes a date object, and returns an integer representing the day of the');
+          console.log('month (1-31) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getDayOfMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getdayofmonth');
+          break;
+
+        case funkier.getDayOfWeek:
+          console.log('getDayOfWeek:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getDay. Takes a date object, and returns an integer representing the day of the');
+          console.log('month (0-6) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getDayOfWeek(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getdayofweek');
+          break;
+
         case funkier.getErrValue:
           console.log('getErrValue:');
           console.log('');
@@ -6769,6 +8295,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#geterrvalue');
           break;
 
+        case funkier.getFullYear:
+          console.log('getFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getFullYear. Takes a date object, and returns a 4-digit integer representing the');
+          console.log('year of the given date.');
+          console.log('');
+          console.log('Usage: var x = getFullYear(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getfullyear');
+          break;
+
+        case funkier.getHours:
+          console.log('getHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getHours. Takes a date object, and returns a integer representing the hour field');
+          console.log('(0-23) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getHours(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gethours');
+          break;
+
         case funkier.getJustValue:
           console.log('getJustValue:');
           console.log('');
@@ -6778,6 +8326,39 @@ module.exports = (function() {
           console.log('Usage: var x = getJustValue(j)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getjustvalue');
+          break;
+
+        case funkier.getMilliseconds:
+          console.log('getMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMilliseconds. Takes a date object, and returns a integer representing the');
+          console.log('milliseconds field (0-999) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getmilliseconds');
+          break;
+
+        case funkier.getMinutes:
+          console.log('getMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMinutes. Takes a date object, and returns a integer representing the minutes');
+          console.log('field (0-59) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMinutes(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getminutes');
+          break;
+
+        case funkier.getMonth:
+          console.log('getMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getMonths. Takes a date object, and returns a integer representing the month');
+          console.log('field (0-11) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getmonth');
           break;
 
         case funkier.getOkValue:
@@ -6815,6 +8396,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getownpropertynames');
           break;
 
+        case funkier.getSeconds:
+          console.log('getSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getSeconds. Takes a date object, and returns a integer representing the seconds');
+          console.log('field (0-59) of the given date.');
+          console.log('');
+          console.log('Usage: var x = getSeconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getseconds');
+          break;
+
+        case funkier.getTimezoneOffset:
+          console.log('getTimezoneOffset:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getTimezoneOffset. Takes a date object, and returns the delta in minutes between');
+          console.log('the Javascript environment and UTC.');
+          console.log('');
+          console.log('Usage: var x = getTimezoneOffset(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gettimezoneoffset');
+          break;
+
         case funkier.getType:
           console.log('getType:');
           console.log('');
@@ -6824,6 +8427,94 @@ module.exports = (function() {
           console.log('Usage: var x = getType(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gettype');
+          break;
+
+        case funkier.getUTCDayOfMonth:
+          console.log('getUTCDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCDate. Takes a date object, and returns an integer representing the day of');
+          console.log('the month (1-31) of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCDayOfMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcdayofmonth');
+          break;
+
+        case funkier.getUTCDayOfWeek:
+          console.log('getUTCDayOfWeek:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCDay. Takes a date object, and returns an integer representing the day of');
+          console.log('the week (0-6) of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCDayOfWeek(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcdayofweek');
+          break;
+
+        case funkier.getUTCFullYear:
+          console.log('getUTCFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCFullYear. Takes a date object, and returns a 4-digit integer representing');
+          console.log('the year of the given date, adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCFullYear(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcfullyear');
+          break;
+
+        case funkier.getUTCHours:
+          console.log('getUTCHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCHours. Takes a date object, and returns an integer representing the hours');
+          console.log('field of the given date (0-23), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCHours(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutchours');
+          break;
+
+        case funkier.getUTCMilliseconds:
+          console.log('getUTCMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMilliseconds. Takes a date object, and returns an integer representing the');
+          console.log('milliseconds field of the given date (0-999), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcmilliseconds');
+          break;
+
+        case funkier.getUTCMinutes:
+          console.log('getUTCMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMinutes. Takes a date object, and returns an integer representing the');
+          console.log('minutes field of the given date (0-59), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMinutes(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcminutes');
+          break;
+
+        case funkier.getUTCMonth:
+          console.log('getUTCMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCMonth. Takes a date object, and returns an integer representing the month');
+          console.log('field of the given date (0-11), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCMonth(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcmonth');
+          break;
+
+        case funkier.getUTCSeconds:
+          console.log('getUTCSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getUTCSeconds. Takes a date object, and returns an integer representing the');
+          console.log('seconds field of the given date (0-59), adjusted for UTC.');
+          console.log('');
+          console.log('Usage: var x = getUTCSeconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getutcseconds');
           break;
 
         case funkier.greaterThan:
@@ -7138,6 +8829,54 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#log');
           break;
 
+        case funkier.makeDateFromMilliseconds:
+          console.log('makeDateFromMilliseconds:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor with a single numeric argument. Throws a TypeError when called with a');
+          console.log('non-numeric argument. Returns a new Date object whose value represents the Date which is that many elapsed');
+          console.log('milliseconds since the epoch.');
+          console.log('');
+          console.log('Usage: var x = makeDateFromMilliseconds(milliseconds)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedatefrommilliseconds');
+          break;
+
+        case funkier.makeDateFromString:
+          console.log('makeDateFromString:');
+          console.log('');
+          console.log('A wrapper around calling the Date constructor with a single string argument. Throws a TypeError when called with a');
+          console.log('non-string argument, or a string that cannot be parsed as a date. Returns a new Date object whose value represents');
+          console.log('that given in the string.');
+          console.log('');
+          console.log('Usage: var x = makeDateFromString(dateString)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedatefromstring');
+          break;
+
+        case funkier.makeDayDate:
+          console.log('makeDayDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with three arguments: the year, the month and the day. No');
+          console.log('validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date');
+          console.log('are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeDayDate(year, month, day)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makedaydate');
+          break;
+
+        case funkier.makeHourDate:
+          console.log('makeHourDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with four arguments: the year, the month, the day and the');
+          console.log('hour. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other fields in');
+          console.log('the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeHourDate(year, month, day, hour)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makehourdate');
+          break;
+
         case funkier.makeMaybeReturner:
           console.log('makeMaybeReturner:');
           console.log('');
@@ -7150,6 +8889,42 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemaybereturner');
           break;
 
+        case funkier.makeMillisecondDate:
+          console.log('makeMillisecondDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with seven arguments: the year, the month, the day, the hour,');
+          console.log('the minute, the seconds, and the milliseconds. No validation or type-checking occurs on the parameters. Returns');
+          console.log('the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMillisecondDate(year, month, day, hour, minute, second, millisecond)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemilliseconddate');
+          break;
+
+        case funkier.makeMinuteDate:
+          console.log('makeMinuteDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with five arguments: the year, the month, the day, the hour');
+          console.log('and the minute. No validation or type-checking occurs on the parameters. Excess arguments are ignored. All other');
+          console.log('fields in the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMinuteDate(year, month, day, hour, minute)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeminutedate');
+          break;
+
+        case funkier.makeMonthDate:
+          console.log('makeMonthDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with two arguments: the year and the month. No validation or');
+          console.log('type-checking occurs on the parameters. Excess arguments are ignored. All other fields in the Date are');
+          console.log('initialized to zero, with the exception of the day, which is initialized to 1. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeMonthDate(year, month)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makemonthdate');
+          break;
+
         case funkier.makeResultReturner:
           console.log('makeResultReturner:');
           console.log('');
@@ -7160,6 +8935,18 @@ module.exports = (function() {
           console.log('Usage: var x = makeResultReturner(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeresultreturner');
+          break;
+
+        case funkier.makeSecondDate:
+          console.log('makeSecondDate:');
+          console.log('');
+          console.log('A curried wrapper around calling the Date constructor with six arguments: the year, the month, the day, the hour,');
+          console.log('the minute, and the seconds. No validation or type-checking occurs on the parameters. Excess arguments are ignored.');
+          console.log('All other fields in the Date are initialized to zero. Returns the new Date.');
+          console.log('');
+          console.log('Usage: var x = makeSecondDate(year, month, day, hour, minute, second)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeseconddate');
           break;
 
         case funkier.max:
@@ -7455,6 +9242,198 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#set');
           break;
 
+        case funkier.setDayOfMonth:
+          console.log('setDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
+          console.log('month to the given value. Invalid values will cause a change in other fields: for example, changing the day to 31');
+          console.log('in a month with 30 days will increment the month, which may in turn increment the year. Returns the given date');
+          console.log('object.');
+          console.log('');
+          console.log('Usage: var x = setDayOfMonth(day, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setdayofmonth');
+          break;
+
+        case funkier.setFullYear:
+          console.log('setFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setFullYear. Takes a value and a Date object, and sets the year to the given');
+          console.log('value. This may cause a change in other fields: for example, setting the year when the month and day represent');
+          console.log('February 29 respectively may cause those values to change to March 1 if the new year is not a leap year.');
+          console.log('Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setFullYear(year, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setfullyear');
+          break;
+
+        case funkier.setHours:
+          console.log('setHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setHours. Takes a value between 0 and 23 representing the hour of the day, and');
+          console.log('a Date object, and sets the hour to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setHours(hours, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sethours');
+          break;
+
+        case funkier.setMilliseconds:
+          console.log('setMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
+          console.log('and a Date object, and sets the milliseconds to the given value. Invalid values will cause a change in other');
+          console.log('fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This may in turn cause');
+          console.log('a cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMilliseconds(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setmilliseconds');
+          break;
+
+        case funkier.setMinutes:
+          console.log('setMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
+          console.log('object, and sets the minutes to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMinutes(minutes, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setminutes');
+          break;
+
+        case funkier.setMonth:
+          console.log('setMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setMonth. Takes a value between 0 and 11 representing the month, and a Date');
+          console.log('object, and sets the month to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setMonth(month, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setmonth');
+          break;
+
+        case funkier.setSeconds:
+          console.log('setSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
+          console.log('object, and sets the seconds to the given value. Invalid values will cause a change in other fields: if the');
+          console.log('value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a cascade of increments');
+          console.log('to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setSeconds(seconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setseconds');
+          break;
+
+        case funkier.setTimeSinceEpoch:
+          console.log('setTimeSinceEpoch:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setTime. Takes a value representing the number of seconds since midnight,');
+          console.log('January 1, 1970 and a date. Simultaneously sets all of the fields of the given date to represent the date and');
+          console.log('time that is that many seconds since the epoch. Returns the given date.');
+          console.log('');
+          console.log('Usage: var x = setTimeSinceEpoch(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#settimesinceepoch');
+          break;
+
+        case funkier.setUTCDayOfMonth:
+          console.log('setUTCDayOfMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCDate. Takes a value between 1 and 31, and a Date object, and sets the day of the');
+          console.log('month to the local equivalent of the given value. Invalid values will cause a change in other fields: for example,');
+          console.log('changing the day to 31 in a month with 30 days will increment the month, which may in turn increment the year.');
+          console.log('Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCDayOfMonth(day, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcdayofmonth');
+          break;
+
+        case funkier.setUTCFullYear:
+          console.log('setUTCFullYear:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCFullYear. Takes a value and a Date object, and sets the year to the local');
+          console.log('equivalent of the given value. This may cause a change in other fields: for example, setting the year when the');
+          console.log('month and day represent February 29 respectively may cause those values to change to March 1 if the new year is not');
+          console.log('a leap year. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCFullYear(year, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcfullyear');
+          break;
+
+        case funkier.setUTCHours:
+          console.log('setUTCHours:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCHours. Takes a value between 0 and 23 representing the hour of the day, and');
+          console.log('a Date object, and sets the hour to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 23, then the day will be incremented by hours div 24. This may in turn cause a cascade');
+          console.log('of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCHours(hours, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutchours');
+          break;
+
+        case funkier.setUTCMilliseconds:
+          console.log('setUTCMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMilliseconds. Takes a value between 0 and 999 representing the milliseconds,');
+          console.log('and a Date object, and sets the milliseconds to the local equivalent of the given value. Invalid values will cause');
+          console.log('a change in other fields: if the value > 999, then the seconds will be incremented by milliseconds div 1000. This');
+          console.log('may in turn cause a cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMilliseconds(milliseconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcmilliseconds');
+          break;
+
+        case funkier.setUTCMinutes:
+          console.log('setUTCMinutes:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMinutes. Takes a value between 0 and 59 representing the minutes, and a Date');
+          console.log('object, and sets the minutes to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 59, then the hours will be incremented by minutes div 60. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMinutes(minutes, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcminutes');
+          break;
+
+        case funkier.setUTCMonth:
+          console.log('setUTCMonth:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCMonth. Takes a value between 0 and 11 representing the month, and a Date');
+          console.log('object, and sets the month to the local equivalent of the given value. Invalid values will cause a change in other');
+          console.log('fields: if the value > 11, then the year will be incremented by month div 12. Returns the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCMonth(month, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcmonth');
+          break;
+
+        case funkier.setUTCSeconds:
+          console.log('setUTCSeconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.setUTCSeconds. Takes a value between 0 and 59 representing the seconds, and a Date');
+          console.log('object, and sets the seconds to the local equivalent of the given value. Invalid values will cause a change in');
+          console.log('other fields: if the value > 59, then the minutes will be incremented by seconds div 60. This may in turn cause a');
+          console.log('cascade of increments to other fields. Returns the local equivalent of the given date object.');
+          console.log('');
+          console.log('Usage: var x = setUTCSeconds(seconds, d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcseconds');
+          break;
+
         case funkier.snd:
           console.log('snd:');
           console.log('');
@@ -7528,6 +9507,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tobaseandstring');
           break;
 
+        case funkier.toDateString:
+          console.log('toDateString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toDateString. Takes a date object, and returns a string representing the date');
+          console.log('portion of the object.');
+          console.log('');
+          console.log('Usage: var x = toDateString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#todatestring');
+          break;
+
+        case funkier.toEpochMilliseconds:
+          console.log('toEpochMilliseconds:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.getTime. Takes a date object, and returns the number of milliseconds elapsed since');
+          console.log('midnight, January 1 1970.');
+          console.log('');
+          console.log('Usage: var x = toEpochMilliseconds(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toepochmilliseconds');
+          break;
+
         case funkier.toExponential:
           console.log('toExponential:');
           console.log('');
@@ -7552,6 +9553,28 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tofixed');
           break;
 
+        case funkier.toISOString:
+          console.log('toISOString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toISOString. Takes a date object, and returns a string representation of the date');
+          console.log('in ISO format.');
+          console.log('');
+          console.log('Usage: var x = toISOString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toisostring');
+          break;
+
+        case funkier.toLocaleDateString:
+          console.log('toLocaleDateString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toLocaleDateString. Takes a date object, and  a string representing the date');
+          console.log('portion of the object, formatted according to locale conventions.');
+          console.log('');
+          console.log('Usage: var x = toLocaleDateString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocaledatestring');
+          break;
+
         case funkier.toPrecision:
           console.log('toPrecision:');
           console.log('');
@@ -7562,6 +9585,28 @@ module.exports = (function() {
           console.log('Usage: var x = toPrecision(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
+          break;
+
+        case funkier.toTimeString:
+          console.log('toTimeString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toTimeString. Takes a date object, and returns a string representing the time');
+          console.log('portion of the object.');
+          console.log('');
+          console.log('Usage: var x = toTimeString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#totimestring');
+          break;
+
+        case funkier.toUTCString:
+          console.log('toUTCString:');
+          console.log('');
+          console.log('A wrapper around Date.prototype.toUTCString. Takes a date object, and returns a string representation of the');
+          console.log('equivalent date in UTC.');
+          console.log('');
+          console.log('Usage: var x = toUTCString(d)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
         case funkier.xor:
@@ -7595,7 +9640,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7819,7 +9864,7 @@ module.exports = (function() {
 //    }();
 //})();
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -7915,7 +9960,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":24,"./lib/keys.js":25}],24:[function(require,module,exports){
+},{"./lib/is_arguments.js":25,"./lib/keys.js":26}],25:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -7937,7 +9982,7 @@ function unsupported(object){
     false;
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -7948,7 +9993,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -9364,7 +11409,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":27,"ieee754":28,"is-array":29}],27:[function(require,module,exports){
+},{"base64-js":28,"ieee754":29,"is-array":30}],28:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -9490,7 +11535,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -9576,7 +11621,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 /**
  * isArray
@@ -9611,7 +11656,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -10887,7 +12932,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -11150,7 +13195,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -11563,7 +13608,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":59}],33:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":60}],34:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -11778,7 +13823,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":59}],34:[function(require,module,exports){
+},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":60}],35:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -12032,7 +14077,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIPrototype":4,"chai":59}],35:[function(require,module,exports){
+},{"../../docgen/APIPrototype":4,"chai":60}],36:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13147,7 +15192,7 @@ module.exports = (function() {
   });
 })();
 
-},{"./CPTestDataHelper":31,"chai":59}],36:[function(require,module,exports){
+},{"./CPTestDataHelper":32,"chai":60}],37:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -13397,7 +15442,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":59}],37:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":60}],38:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14619,7 +16664,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":31,"chai":59}],38:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":32,"chai":60}],39:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14876,7 +16921,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/lineProcessor":7,"chai":59}],39:[function(require,module,exports){
+},{"../../docgen/lineProcessor":7,"chai":60}],40:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15138,7 +17183,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":59}],40:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":60}],41:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15428,7 +17473,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/markdownRenderer":9,"chai":59,"marked":30}],41:[function(require,module,exports){
+},{"../../docgen/markdownRenderer":9,"chai":60,"marked":31}],42:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -16845,6 +18890,90 @@ module.exports = (function() {
     });
 
 
+    describe('getCurrentTimeString', function() {
+      it('getCurrentTimeString exists', function() {
+        expect(funkier).to.have.a.property('getCurrentTimeString');
+      });
+
+
+      it('funkierJS\'s getCurrentTimeString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getCurrentTimeString).to.equal(module.getCurrentTimeString);
+      });
+
+
+      it('getCurrentTimeString is a function', function() {
+        expect(funkier.getCurrentTimeString).to.be.a('function');
+      });
+
+
+      it('getCurrentTimeString has documented arity', function() {
+        expect(funkier.arityOf(funkier.getCurrentTimeString)).to.equal(0);
+      });
+
+
+      it('getCurrentTimeString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getCurrentTimeString)).to.equal(true);
+      });
+    });
+
+
+    describe('getDayOfMonth', function() {
+      it('getDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('getDayOfMonth');
+      });
+
+
+      it('funkierJS\'s getDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getDayOfMonth).to.equal(module.getDayOfMonth);
+      });
+
+
+      it('getDayOfMonth is a function', function() {
+        expect(funkier.getDayOfMonth).to.be.a('function');
+      });
+
+
+      it('getDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getDayOfMonth)).to.equal(1);
+      });
+
+
+      it('getDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getDayOfWeek', function() {
+      it('getDayOfWeek exists', function() {
+        expect(funkier).to.have.a.property('getDayOfWeek');
+      });
+
+
+      it('funkierJS\'s getDayOfWeek is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getDayOfWeek).to.equal(module.getDayOfWeek);
+      });
+
+
+      it('getDayOfWeek is a function', function() {
+        expect(funkier.getDayOfWeek).to.be.a('function');
+      });
+
+
+      it('getDayOfWeek has documented arity', function() {
+        expect(funkier.arityOf(funkier.getDayOfWeek)).to.equal(1);
+      });
+
+
+      it('getDayOfWeek is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getDayOfWeek)).to.equal(true);
+      });
+    });
+
+
     describe('getErrValue', function() {
       it('getErrValue exists', function() {
         expect(funkier).to.have.a.property('getErrValue');
@@ -16873,6 +19002,62 @@ module.exports = (function() {
     });
 
 
+    describe('getFullYear', function() {
+      it('getFullYear exists', function() {
+        expect(funkier).to.have.a.property('getFullYear');
+      });
+
+
+      it('funkierJS\'s getFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getFullYear).to.equal(module.getFullYear);
+      });
+
+
+      it('getFullYear is a function', function() {
+        expect(funkier.getFullYear).to.be.a('function');
+      });
+
+
+      it('getFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.getFullYear)).to.equal(1);
+      });
+
+
+      it('getFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('getHours', function() {
+      it('getHours exists', function() {
+        expect(funkier).to.have.a.property('getHours');
+      });
+
+
+      it('funkierJS\'s getHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getHours).to.equal(module.getHours);
+      });
+
+
+      it('getHours is a function', function() {
+        expect(funkier.getHours).to.be.a('function');
+      });
+
+
+      it('getHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.getHours)).to.equal(1);
+      });
+
+
+      it('getHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getHours)).to.equal(true);
+      });
+    });
+
+
     describe('getJustValue', function() {
       it('getJustValue exists', function() {
         expect(funkier).to.have.a.property('getJustValue');
@@ -16897,6 +19082,90 @@ module.exports = (function() {
 
       it('getJustValue is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.getJustValue)).to.equal(true);
+      });
+    });
+
+
+    describe('getMilliseconds', function() {
+      it('getMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('getMilliseconds');
+      });
+
+
+      it('funkierJS\'s getMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMilliseconds).to.equal(module.getMilliseconds);
+      });
+
+
+      it('getMilliseconds is a function', function() {
+        expect(funkier.getMilliseconds).to.be.a('function');
+      });
+
+
+      it('getMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMilliseconds)).to.equal(1);
+      });
+
+
+      it('getMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getMinutes', function() {
+      it('getMinutes exists', function() {
+        expect(funkier).to.have.a.property('getMinutes');
+      });
+
+
+      it('funkierJS\'s getMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMinutes).to.equal(module.getMinutes);
+      });
+
+
+      it('getMinutes is a function', function() {
+        expect(funkier.getMinutes).to.be.a('function');
+      });
+
+
+      it('getMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMinutes)).to.equal(1);
+      });
+
+
+      it('getMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('getMonth', function() {
+      it('getMonth exists', function() {
+        expect(funkier).to.have.a.property('getMonth');
+      });
+
+
+      it('funkierJS\'s getMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getMonth).to.equal(module.getMonth);
+      });
+
+
+      it('getMonth is a function', function() {
+        expect(funkier.getMonth).to.be.a('function');
+      });
+
+
+      it('getMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getMonth)).to.equal(1);
+      });
+
+
+      it('getMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getMonth)).to.equal(true);
       });
     });
 
@@ -16985,6 +19254,62 @@ module.exports = (function() {
     });
 
 
+    describe('getSeconds', function() {
+      it('getSeconds exists', function() {
+        expect(funkier).to.have.a.property('getSeconds');
+      });
+
+
+      it('funkierJS\'s getSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getSeconds).to.equal(module.getSeconds);
+      });
+
+
+      it('getSeconds is a function', function() {
+        expect(funkier.getSeconds).to.be.a('function');
+      });
+
+
+      it('getSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getSeconds)).to.equal(1);
+      });
+
+
+      it('getSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getSeconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getTimezoneOffset', function() {
+      it('getTimezoneOffset exists', function() {
+        expect(funkier).to.have.a.property('getTimezoneOffset');
+      });
+
+
+      it('funkierJS\'s getTimezoneOffset is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getTimezoneOffset).to.equal(module.getTimezoneOffset);
+      });
+
+
+      it('getTimezoneOffset is a function', function() {
+        expect(funkier.getTimezoneOffset).to.be.a('function');
+      });
+
+
+      it('getTimezoneOffset has documented arity', function() {
+        expect(funkier.arityOf(funkier.getTimezoneOffset)).to.equal(1);
+      });
+
+
+      it('getTimezoneOffset is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getTimezoneOffset)).to.equal(true);
+      });
+    });
+
+
     describe('getType', function() {
       it('getType exists', function() {
         expect(funkier).to.have.a.property('getType');
@@ -17009,6 +19334,230 @@ module.exports = (function() {
 
       it('getType is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.getType)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCDayOfMonth', function() {
+      it('getUTCDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('getUTCDayOfMonth');
+      });
+
+
+      it('funkierJS\'s getUTCDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCDayOfMonth).to.equal(module.getUTCDayOfMonth);
+      });
+
+
+      it('getUTCDayOfMonth is a function', function() {
+        expect(funkier.getUTCDayOfMonth).to.be.a('function');
+      });
+
+
+      it('getUTCDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCDayOfMonth)).to.equal(1);
+      });
+
+
+      it('getUTCDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCDayOfWeek', function() {
+      it('getUTCDayOfWeek exists', function() {
+        expect(funkier).to.have.a.property('getUTCDayOfWeek');
+      });
+
+
+      it('funkierJS\'s getUTCDayOfWeek is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCDayOfWeek).to.equal(module.getUTCDayOfWeek);
+      });
+
+
+      it('getUTCDayOfWeek is a function', function() {
+        expect(funkier.getUTCDayOfWeek).to.be.a('function');
+      });
+
+
+      it('getUTCDayOfWeek has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCDayOfWeek)).to.equal(1);
+      });
+
+
+      it('getUTCDayOfWeek is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCDayOfWeek)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCFullYear', function() {
+      it('getUTCFullYear exists', function() {
+        expect(funkier).to.have.a.property('getUTCFullYear');
+      });
+
+
+      it('funkierJS\'s getUTCFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCFullYear).to.equal(module.getUTCFullYear);
+      });
+
+
+      it('getUTCFullYear is a function', function() {
+        expect(funkier.getUTCFullYear).to.be.a('function');
+      });
+
+
+      it('getUTCFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCFullYear)).to.equal(1);
+      });
+
+
+      it('getUTCFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCHours', function() {
+      it('getUTCHours exists', function() {
+        expect(funkier).to.have.a.property('getUTCHours');
+      });
+
+
+      it('funkierJS\'s getUTCHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCHours).to.equal(module.getUTCHours);
+      });
+
+
+      it('getUTCHours is a function', function() {
+        expect(funkier.getUTCHours).to.be.a('function');
+      });
+
+
+      it('getUTCHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCHours)).to.equal(1);
+      });
+
+
+      it('getUTCHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCHours)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMilliseconds', function() {
+      it('getUTCMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('getUTCMilliseconds');
+      });
+
+
+      it('funkierJS\'s getUTCMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMilliseconds).to.equal(module.getUTCMilliseconds);
+      });
+
+
+      it('getUTCMilliseconds is a function', function() {
+        expect(funkier.getUTCMilliseconds).to.be.a('function');
+      });
+
+
+      it('getUTCMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMilliseconds)).to.equal(1);
+      });
+
+
+      it('getUTCMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMinutes', function() {
+      it('getUTCMinutes exists', function() {
+        expect(funkier).to.have.a.property('getUTCMinutes');
+      });
+
+
+      it('funkierJS\'s getUTCMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMinutes).to.equal(module.getUTCMinutes);
+      });
+
+
+      it('getUTCMinutes is a function', function() {
+        expect(funkier.getUTCMinutes).to.be.a('function');
+      });
+
+
+      it('getUTCMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMinutes)).to.equal(1);
+      });
+
+
+      it('getUTCMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCMonth', function() {
+      it('getUTCMonth exists', function() {
+        expect(funkier).to.have.a.property('getUTCMonth');
+      });
+
+
+      it('funkierJS\'s getUTCMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCMonth).to.equal(module.getUTCMonth);
+      });
+
+
+      it('getUTCMonth is a function', function() {
+        expect(funkier.getUTCMonth).to.be.a('function');
+      });
+
+
+      it('getUTCMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCMonth)).to.equal(1);
+      });
+
+
+      it('getUTCMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('getUTCSeconds', function() {
+      it('getUTCSeconds exists', function() {
+        expect(funkier).to.have.a.property('getUTCSeconds');
+      });
+
+
+      it('funkierJS\'s getUTCSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.getUTCSeconds).to.equal(module.getUTCSeconds);
+      });
+
+
+      it('getUTCSeconds is a function', function() {
+        expect(funkier.getUTCSeconds).to.be.a('function');
+      });
+
+
+      it('getUTCSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.getUTCSeconds)).to.equal(1);
+      });
+
+
+      it('getUTCSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getUTCSeconds)).to.equal(true);
       });
     });
 
@@ -17885,6 +20434,118 @@ module.exports = (function() {
     });
 
 
+    describe('makeDateFromMilliseconds', function() {
+      it('makeDateFromMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('makeDateFromMilliseconds');
+      });
+
+
+      it('funkierJS\'s makeDateFromMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDateFromMilliseconds).to.equal(module.makeDateFromMilliseconds);
+      });
+
+
+      it('makeDateFromMilliseconds is a function', function() {
+        expect(funkier.makeDateFromMilliseconds).to.be.a('function');
+      });
+
+
+      it('makeDateFromMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDateFromMilliseconds)).to.equal(1);
+      });
+
+
+      it('makeDateFromMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDateFromMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('makeDateFromString', function() {
+      it('makeDateFromString exists', function() {
+        expect(funkier).to.have.a.property('makeDateFromString');
+      });
+
+
+      it('funkierJS\'s makeDateFromString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDateFromString).to.equal(module.makeDateFromString);
+      });
+
+
+      it('makeDateFromString is a function', function() {
+        expect(funkier.makeDateFromString).to.be.a('function');
+      });
+
+
+      it('makeDateFromString has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDateFromString)).to.equal(1);
+      });
+
+
+      it('makeDateFromString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDateFromString)).to.equal(true);
+      });
+    });
+
+
+    describe('makeDayDate', function() {
+      it('makeDayDate exists', function() {
+        expect(funkier).to.have.a.property('makeDayDate');
+      });
+
+
+      it('funkierJS\'s makeDayDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeDayDate).to.equal(module.makeDayDate);
+      });
+
+
+      it('makeDayDate is a function', function() {
+        expect(funkier.makeDayDate).to.be.a('function');
+      });
+
+
+      it('makeDayDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeDayDate)).to.equal(3);
+      });
+
+
+      it('makeDayDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeDayDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeHourDate', function() {
+      it('makeHourDate exists', function() {
+        expect(funkier).to.have.a.property('makeHourDate');
+      });
+
+
+      it('funkierJS\'s makeHourDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeHourDate).to.equal(module.makeHourDate);
+      });
+
+
+      it('makeHourDate is a function', function() {
+        expect(funkier.makeHourDate).to.be.a('function');
+      });
+
+
+      it('makeHourDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeHourDate)).to.equal(4);
+      });
+
+
+      it('makeHourDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeHourDate)).to.equal(true);
+      });
+    });
+
+
     describe('makeMaybeReturner', function() {
       it('makeMaybeReturner exists', function() {
         expect(funkier).to.have.a.property('makeMaybeReturner');
@@ -17913,6 +20574,90 @@ module.exports = (function() {
     });
 
 
+    describe('makeMillisecondDate', function() {
+      it('makeMillisecondDate exists', function() {
+        expect(funkier).to.have.a.property('makeMillisecondDate');
+      });
+
+
+      it('funkierJS\'s makeMillisecondDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMillisecondDate).to.equal(module.makeMillisecondDate);
+      });
+
+
+      it('makeMillisecondDate is a function', function() {
+        expect(funkier.makeMillisecondDate).to.be.a('function');
+      });
+
+
+      it('makeMillisecondDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMillisecondDate)).to.equal(7);
+      });
+
+
+      it('makeMillisecondDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMillisecondDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeMinuteDate', function() {
+      it('makeMinuteDate exists', function() {
+        expect(funkier).to.have.a.property('makeMinuteDate');
+      });
+
+
+      it('funkierJS\'s makeMinuteDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMinuteDate).to.equal(module.makeMinuteDate);
+      });
+
+
+      it('makeMinuteDate is a function', function() {
+        expect(funkier.makeMinuteDate).to.be.a('function');
+      });
+
+
+      it('makeMinuteDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMinuteDate)).to.equal(5);
+      });
+
+
+      it('makeMinuteDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMinuteDate)).to.equal(true);
+      });
+    });
+
+
+    describe('makeMonthDate', function() {
+      it('makeMonthDate exists', function() {
+        expect(funkier).to.have.a.property('makeMonthDate');
+      });
+
+
+      it('funkierJS\'s makeMonthDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeMonthDate).to.equal(module.makeMonthDate);
+      });
+
+
+      it('makeMonthDate is a function', function() {
+        expect(funkier.makeMonthDate).to.be.a('function');
+      });
+
+
+      it('makeMonthDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeMonthDate)).to.equal(2);
+      });
+
+
+      it('makeMonthDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeMonthDate)).to.equal(true);
+      });
+    });
+
+
     describe('makeResultReturner', function() {
       it('makeResultReturner exists', function() {
         expect(funkier).to.have.a.property('makeResultReturner');
@@ -17937,6 +20682,34 @@ module.exports = (function() {
 
       it('makeResultReturner is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.makeResultReturner)).to.equal(true);
+      });
+    });
+
+
+    describe('makeSecondDate', function() {
+      it('makeSecondDate exists', function() {
+        expect(funkier).to.have.a.property('makeSecondDate');
+      });
+
+
+      it('funkierJS\'s makeSecondDate is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.makeSecondDate).to.equal(module.makeSecondDate);
+      });
+
+
+      it('makeSecondDate is a function', function() {
+        expect(funkier.makeSecondDate).to.be.a('function');
+      });
+
+
+      it('makeSecondDate has documented arity', function() {
+        expect(funkier.arityOf(funkier.makeSecondDate)).to.equal(6);
+      });
+
+
+      it('makeSecondDate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.makeSecondDate)).to.equal(true);
       });
     });
 
@@ -18817,6 +21590,174 @@ module.exports = (function() {
     });
 
 
+    describe('setDayOfMonth', function() {
+      it('setDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('setDayOfMonth');
+      });
+
+
+      it('funkierJS\'s setDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setDayOfMonth).to.equal(module.setDayOfMonth);
+      });
+
+
+      it('setDayOfMonth is a function', function() {
+        expect(funkier.setDayOfMonth).to.be.a('function');
+      });
+
+
+      it('setDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setDayOfMonth)).to.equal(2);
+      });
+
+
+      it('setDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setFullYear', function() {
+      it('setFullYear exists', function() {
+        expect(funkier).to.have.a.property('setFullYear');
+      });
+
+
+      it('funkierJS\'s setFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setFullYear).to.equal(module.setFullYear);
+      });
+
+
+      it('setFullYear is a function', function() {
+        expect(funkier.setFullYear).to.be.a('function');
+      });
+
+
+      it('setFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.setFullYear)).to.equal(2);
+      });
+
+
+      it('setFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('setHours', function() {
+      it('setHours exists', function() {
+        expect(funkier).to.have.a.property('setHours');
+      });
+
+
+      it('funkierJS\'s setHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setHours).to.equal(module.setHours);
+      });
+
+
+      it('setHours is a function', function() {
+        expect(funkier.setHours).to.be.a('function');
+      });
+
+
+      it('setHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.setHours)).to.equal(2);
+      });
+
+
+      it('setHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setHours)).to.equal(true);
+      });
+    });
+
+
+    describe('setMilliseconds', function() {
+      it('setMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('setMilliseconds');
+      });
+
+
+      it('funkierJS\'s setMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMilliseconds).to.equal(module.setMilliseconds);
+      });
+
+
+      it('setMilliseconds is a function', function() {
+        expect(funkier.setMilliseconds).to.be.a('function');
+      });
+
+
+      it('setMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMilliseconds)).to.equal(2);
+      });
+
+
+      it('setMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setMinutes', function() {
+      it('setMinutes exists', function() {
+        expect(funkier).to.have.a.property('setMinutes');
+      });
+
+
+      it('funkierJS\'s setMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMinutes).to.equal(module.setMinutes);
+      });
+
+
+      it('setMinutes is a function', function() {
+        expect(funkier.setMinutes).to.be.a('function');
+      });
+
+
+      it('setMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMinutes)).to.equal(2);
+      });
+
+
+      it('setMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('setMonth', function() {
+      it('setMonth exists', function() {
+        expect(funkier).to.have.a.property('setMonth');
+      });
+
+
+      it('funkierJS\'s setMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setMonth).to.equal(module.setMonth);
+      });
+
+
+      it('setMonth is a function', function() {
+        expect(funkier.setMonth).to.be.a('function');
+      });
+
+
+      it('setMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setMonth)).to.equal(2);
+      });
+
+
+      it('setMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setMonth)).to.equal(true);
+      });
+    });
+
+
     describe('setProp', function() {
       it('setProp exists', function() {
         expect(funkier).to.have.a.property('setProp');
@@ -18825,6 +21766,258 @@ module.exports = (function() {
 
       it('setProp is a synonym for set', function() {
         expect(funkier.setProp).to.equal(funkier.set);
+      });
+    });
+
+
+    describe('setSeconds', function() {
+      it('setSeconds exists', function() {
+        expect(funkier).to.have.a.property('setSeconds');
+      });
+
+
+      it('funkierJS\'s setSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setSeconds).to.equal(module.setSeconds);
+      });
+
+
+      it('setSeconds is a function', function() {
+        expect(funkier.setSeconds).to.be.a('function');
+      });
+
+
+      it('setSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setSeconds)).to.equal(2);
+      });
+
+
+      it('setSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setSeconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setTimeSinceEpoch', function() {
+      it('setTimeSinceEpoch exists', function() {
+        expect(funkier).to.have.a.property('setTimeSinceEpoch');
+      });
+
+
+      it('funkierJS\'s setTimeSinceEpoch is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setTimeSinceEpoch).to.equal(module.setTimeSinceEpoch);
+      });
+
+
+      it('setTimeSinceEpoch is a function', function() {
+        expect(funkier.setTimeSinceEpoch).to.be.a('function');
+      });
+
+
+      it('setTimeSinceEpoch has documented arity', function() {
+        expect(funkier.arityOf(funkier.setTimeSinceEpoch)).to.equal(2);
+      });
+
+
+      it('setTimeSinceEpoch is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setTimeSinceEpoch)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCDayOfMonth', function() {
+      it('setUTCDayOfMonth exists', function() {
+        expect(funkier).to.have.a.property('setUTCDayOfMonth');
+      });
+
+
+      it('funkierJS\'s setUTCDayOfMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCDayOfMonth).to.equal(module.setUTCDayOfMonth);
+      });
+
+
+      it('setUTCDayOfMonth is a function', function() {
+        expect(funkier.setUTCDayOfMonth).to.be.a('function');
+      });
+
+
+      it('setUTCDayOfMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCDayOfMonth)).to.equal(2);
+      });
+
+
+      it('setUTCDayOfMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCDayOfMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCFullYear', function() {
+      it('setUTCFullYear exists', function() {
+        expect(funkier).to.have.a.property('setUTCFullYear');
+      });
+
+
+      it('funkierJS\'s setUTCFullYear is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCFullYear).to.equal(module.setUTCFullYear);
+      });
+
+
+      it('setUTCFullYear is a function', function() {
+        expect(funkier.setUTCFullYear).to.be.a('function');
+      });
+
+
+      it('setUTCFullYear has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCFullYear)).to.equal(2);
+      });
+
+
+      it('setUTCFullYear is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCFullYear)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCHours', function() {
+      it('setUTCHours exists', function() {
+        expect(funkier).to.have.a.property('setUTCHours');
+      });
+
+
+      it('funkierJS\'s setUTCHours is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCHours).to.equal(module.setUTCHours);
+      });
+
+
+      it('setUTCHours is a function', function() {
+        expect(funkier.setUTCHours).to.be.a('function');
+      });
+
+
+      it('setUTCHours has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCHours)).to.equal(2);
+      });
+
+
+      it('setUTCHours is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCHours)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMilliseconds', function() {
+      it('setUTCMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('setUTCMilliseconds');
+      });
+
+
+      it('funkierJS\'s setUTCMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMilliseconds).to.equal(module.setUTCMilliseconds);
+      });
+
+
+      it('setUTCMilliseconds is a function', function() {
+        expect(funkier.setUTCMilliseconds).to.be.a('function');
+      });
+
+
+      it('setUTCMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMilliseconds)).to.equal(2);
+      });
+
+
+      it('setUTCMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMilliseconds)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMinutes', function() {
+      it('setUTCMinutes exists', function() {
+        expect(funkier).to.have.a.property('setUTCMinutes');
+      });
+
+
+      it('funkierJS\'s setUTCMinutes is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMinutes).to.equal(module.setUTCMinutes);
+      });
+
+
+      it('setUTCMinutes is a function', function() {
+        expect(funkier.setUTCMinutes).to.be.a('function');
+      });
+
+
+      it('setUTCMinutes has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMinutes)).to.equal(2);
+      });
+
+
+      it('setUTCMinutes is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMinutes)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCMonth', function() {
+      it('setUTCMonth exists', function() {
+        expect(funkier).to.have.a.property('setUTCMonth');
+      });
+
+
+      it('funkierJS\'s setUTCMonth is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCMonth).to.equal(module.setUTCMonth);
+      });
+
+
+      it('setUTCMonth is a function', function() {
+        expect(funkier.setUTCMonth).to.be.a('function');
+      });
+
+
+      it('setUTCMonth has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCMonth)).to.equal(2);
+      });
+
+
+      it('setUTCMonth is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCMonth)).to.equal(true);
+      });
+    });
+
+
+    describe('setUTCSeconds', function() {
+      it('setUTCSeconds exists', function() {
+        expect(funkier).to.have.a.property('setUTCSeconds');
+      });
+
+
+      it('funkierJS\'s setUTCSeconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.setUTCSeconds).to.equal(module.setUTCSeconds);
+      });
+
+
+      it('setUTCSeconds is a function', function() {
+        expect(funkier.setUTCSeconds).to.be.a('function');
+      });
+
+
+      it('setUTCSeconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.setUTCSeconds)).to.equal(2);
+      });
+
+
+      it('setUTCSeconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.setUTCSeconds)).to.equal(true);
       });
     });
 
@@ -19057,6 +22250,62 @@ module.exports = (function() {
     });
 
 
+    describe('toDateString', function() {
+      it('toDateString exists', function() {
+        expect(funkier).to.have.a.property('toDateString');
+      });
+
+
+      it('funkierJS\'s toDateString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toDateString).to.equal(module.toDateString);
+      });
+
+
+      it('toDateString is a function', function() {
+        expect(funkier.toDateString).to.be.a('function');
+      });
+
+
+      it('toDateString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toDateString)).to.equal(1);
+      });
+
+
+      it('toDateString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toDateString)).to.equal(true);
+      });
+    });
+
+
+    describe('toEpochMilliseconds', function() {
+      it('toEpochMilliseconds exists', function() {
+        expect(funkier).to.have.a.property('toEpochMilliseconds');
+      });
+
+
+      it('funkierJS\'s toEpochMilliseconds is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toEpochMilliseconds).to.equal(module.toEpochMilliseconds);
+      });
+
+
+      it('toEpochMilliseconds is a function', function() {
+        expect(funkier.toEpochMilliseconds).to.be.a('function');
+      });
+
+
+      it('toEpochMilliseconds has documented arity', function() {
+        expect(funkier.arityOf(funkier.toEpochMilliseconds)).to.equal(1);
+      });
+
+
+      it('toEpochMilliseconds is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toEpochMilliseconds)).to.equal(true);
+      });
+    });
+
+
     describe('toExponential', function() {
       it('toExponential exists', function() {
         expect(funkier).to.have.a.property('toExponential');
@@ -19113,6 +22362,62 @@ module.exports = (function() {
     });
 
 
+    describe('toISOString', function() {
+      it('toISOString exists', function() {
+        expect(funkier).to.have.a.property('toISOString');
+      });
+
+
+      it('funkierJS\'s toISOString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toISOString).to.equal(module.toISOString);
+      });
+
+
+      it('toISOString is a function', function() {
+        expect(funkier.toISOString).to.be.a('function');
+      });
+
+
+      it('toISOString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toISOString)).to.equal(1);
+      });
+
+
+      it('toISOString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toISOString)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleDateString', function() {
+      it('toLocaleDateString exists', function() {
+        expect(funkier).to.have.a.property('toLocaleDateString');
+      });
+
+
+      it('funkierJS\'s toLocaleDateString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toLocaleDateString).to.equal(module.toLocaleDateString);
+      });
+
+
+      it('toLocaleDateString is a function', function() {
+        expect(funkier.toLocaleDateString).to.be.a('function');
+      });
+
+
+      it('toLocaleDateString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleDateString)).to.equal(1);
+      });
+
+
+      it('toLocaleDateString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleDateString)).to.equal(true);
+      });
+    });
+
+
     describe('toPrecision', function() {
       it('toPrecision exists', function() {
         expect(funkier).to.have.a.property('toPrecision');
@@ -19137,6 +22442,62 @@ module.exports = (function() {
 
       it('toPrecision is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
+      });
+    });
+
+
+    describe('toTimeString', function() {
+      it('toTimeString exists', function() {
+        expect(funkier).to.have.a.property('toTimeString');
+      });
+
+
+      it('funkierJS\'s toTimeString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toTimeString).to.equal(module.toTimeString);
+      });
+
+
+      it('toTimeString is a function', function() {
+        expect(funkier.toTimeString).to.be.a('function');
+      });
+
+
+      it('toTimeString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toTimeString)).to.equal(1);
+      });
+
+
+      it('toTimeString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toTimeString)).to.equal(true);
+      });
+    });
+
+
+    describe('toUTCString', function() {
+      it('toUTCString exists', function() {
+        expect(funkier).to.have.a.property('toUTCString');
+      });
+
+
+      it('funkierJS\'s toUTCString is indeed the documented value', function() {
+        var module = require('../../lib/components/date');
+        expect(funkier.toUTCString).to.equal(module.toUTCString);
+      });
+
+
+      it('toUTCString is a function', function() {
+        expect(funkier.toUTCString).to.be.a('function');
+      });
+
+
+      it('toUTCString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toUTCString)).to.equal(1);
+      });
+
+
+      it('toUTCString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toUTCString)).to.equal(true);
       });
     });
 
@@ -19209,20 +22570,27 @@ module.exports = (function() {
          'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
          'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
          'deleteProp', 'descriptors', 'div', 'divide', 'either', 'equals', 'even', 'exp', 'extend', 'extendOwn',
-         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getErrValue', 'getJustValue', 'getOkValue',
-         'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getType', 'greaterThan', 'greaterThanEqual', 'gt', 'gte',
-         'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean', 'isErr',
-         'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf',
-         'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift', 'lessThan',
-         'lessThanEqual', 'log', 'lt', 'lte', 'makeMaybeReturner', 'makeResultReturner', 'max', 'maybeCreate',
-         'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
-         'min', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'objectCurry',
-         'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase', 'plus', 'pow', 'rem',
-         'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp', 'safeExtract', 'safeModify',
-         'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight', 'set',
-         'setProp', 'shallowClone', 'snd', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals',
-         'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString', 'toExponential', 'toFixed',
-         'toPrecision', 'xor', 'xorPred'];
+         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getCurrentTimeString', 'getDayOfMonth',
+         'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getJustValue', 'getMilliseconds', 'getMinutes',
+         'getMonth', 'getOkValue', 'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getSeconds',
+         'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
+         'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'greaterThan', 'greaterThanEqual',
+         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean',
+         'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair',
+         'isPrototypeOf', 'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift',
+         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString',
+         'makeDayDate', 'makeHourDate', 'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate',
+         'makeResultReturner', 'makeSecondDate', 'max', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
+         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'modify', 'modifyProp', 'multiply', 'not',
+         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt',
+         'parseIntInBase', 'plus', 'pow', 'rem', 'rightShift', 'rightShiftZero', 'safeCreateProp', 'safeDeleteProp',
+         'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
+         'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
+         'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
+         'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix',
+         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
+         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'xor', 'xorPred'];
     });
 
 
@@ -19239,7 +22607,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/logical":12,"../../lib/components/maths":13,"../../lib/components/maybe":14,"../../lib/components/object":15,"../../lib/components/pair":16,"../../lib/components/result":17,"../../lib/components/types":18,"../../lib/funkier":20,"chai":59}],42:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/date":12,"../../lib/components/logical":13,"../../lib/components/maths":14,"../../lib/components/maybe":15,"../../lib/components/object":16,"../../lib/components/pair":17,"../../lib/components/result":18,"../../lib/components/types":19,"../../lib/funkier":21,"chai":60}],43:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -23466,7 +26834,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -24292,7 +27660,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":58,"chai":59}],44:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":59,"chai":60}],45:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -26522,431 +29890,411 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"./testingUtilities":58,"chai":59}],45:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var date = require('../../date');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//    var testTypeRestrictions = testUtils.testTypeRestrictions;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
-//                             'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds',
-//                             'toEpochMilliseconds', 'getTimezoneOffset', 'getUTCDayOfMonth',
-//                             'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds',
-//                             'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'toLocaleDateString',
-//                             'toDateString', 'toTimeString', 'toISOString', 'toUTCString', 'setDayOfMonth',
-//                             'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setSeconds',
-//                             'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
-//                             'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'safeSetHours',
-//                             'safeSetMilliseconds', 'safeSetMinutes', 'safeSetMonth', 'safeSetSeconds',
-//                             'safeSetUTCHours', 'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth',
-//                             'safeSetUTCSeconds', 'safeSetDayOfMonth', 'safeSetUTCDayOfMonth', 'getCurrentTimeString',
-//                             'makeDateFromString', 'makeDateFromMilliseconds', 'makeMonthDate', 'makeDayDate',
-//                             'makeHourDate', 'makeMinuteDate', 'makeSecondDate', 'makeMillisecondDate'];
-//
-//    describeModule('date', date, expectedObjects, expectedFunctions);
-//
-//
-//    var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 1,
-//        restrictions: [[Date]],
-//        validArguments: [[new Date()]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var addOne = function(message, date) {
-//          it('Works correctly ' + message, function() {
-//            var result = fnUnderTest(date);
-//
-//            expect(result).to.equal(date[verifier]());
-//          });
-//        };
-//
-//
-//        addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
-//        addOne('(2)', new Date());
-//      });
-//    };
-//
-//
-//    makeUnaryDateTest('getDayOfMonth', date.getDayOfMonth, 'getDate');
-//    makeUnaryDateTest('getDayOfWeek', date.getDayOfWeek, 'getDay');
-//    makeUnaryDateTest('getFullYear', date.getFullYear, 'getFullYear');
-//    makeUnaryDateTest('getHours', date.getHours, 'getHours');
-//    makeUnaryDateTest('getMilliseconds', date.getMilliseconds, 'getMilliseconds');
-//    makeUnaryDateTest('getMinutes', date.getMinutes, 'getMinutes');
-//    makeUnaryDateTest('getMonth', date.getMonth, 'getMonth');
-//    makeUnaryDateTest('getSeconds', date.getSeconds, 'getSeconds');
-//    makeUnaryDateTest('toEpochMilliseconds', date.toEpochMilliseconds, 'getTime');
-//    makeUnaryDateTest('getTimezoneOffset', date.getTimezoneOffset, 'getTimezoneOffset');
-//    makeUnaryDateTest('getUTCDayOfMonth', date.getUTCDayOfMonth, 'getUTCDate');
-//    makeUnaryDateTest('getUTCDayOfWeek', date.getUTCDayOfWeek, 'getUTCDay');
-//    makeUnaryDateTest('getUTCFullYear', date.getUTCFullYear, 'getUTCFullYear');
-//    makeUnaryDateTest('getUTCHours', date.getUTCHours, 'getUTCHours');
-//    makeUnaryDateTest('getUTCMilliseconds', date.getUTCMilliseconds, 'getUTCMilliseconds');
-//    makeUnaryDateTest('getUTCMinutes', date.getUTCMinutes, 'getUTCMinutes');
-//    makeUnaryDateTest('getUTCMonth', date.getUTCMonth, 'getUTCMonth');
-//    makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, 'getUTCSeconds');
-//    makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, 'toLocaleDateString');
-//    makeUnaryDateTest('toDateString', date.toDateString, 'toDateString');
-//    makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
-//    makeUnaryDateTest('toISOString', date.toISOString, 'toISOString');
-//    makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
-//
-//
-//    var makeBasicSetterTests = function(fnUnderTest, verifier) {
-//      it('Returns the date', function() {
-//        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-//        var result = fnUnderTest(2, testDate);
-//
-//        expect(result).to.equal(testDate);
-//      });
-//
-//
-//      var addOne = function(message, date) {
-//        it('Works correctly ' + message, function() {
-//          var current = verifier(date);
-//          var newVal = current > 1 ? current - 1 : current + 1;
-//          var result = fnUnderTest(newVal, date);
-//
-//          expect(verifier(result)).to.equal(newVal);
-//        });
-//      };
-//
-//
-//      addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
-//
-//
-//      // fnUnderTest should have arity 2, so should be curried
-//      var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0);};
-//      testCurriedFunction(fnUnderTest, [2, {reset: makeDate}]);
-//    };
-//
-//
-//    var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [[], [Date]],
-//        validArguments: [[2], [new Date()]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        makeBasicSetterTests(fnUnderTest, verifier);
-//      });
-//    };
-//
-//
-//    makeDateSetterTests('setDayOfMonth', date.setDayOfMonth, date.getDayOfMonth);
-//    makeDateSetterTests('setFullYear', date.setFullYear, date.getFullYear);
-//    makeDateSetterTests('setHours', date.setHours, date.getHours);
-//    makeDateSetterTests('setMilliseconds', date.setMilliseconds, date.getMilliseconds);
-//    makeDateSetterTests('setMinutes', date.setMinutes, date.getMinutes);
-//    makeDateSetterTests('setMonth', date.setMonth, date.getMonth);
-//    makeDateSetterTests('setSeconds', date.setSeconds, date.getSeconds);
-//    makeDateSetterTests('setTimeSinceEpoch', date.setTimeSinceEpoch, date.toEpochMilliseconds);
-//    makeDateSetterTests('setUTCDayOfMonth', date.setUTCDayOfMonth, date.getUTCDayOfMonth);
-//    makeDateSetterTests('setUTCFullYear', date.setUTCFullYear, date.getUTCFullYear);
-//    makeDateSetterTests('setUTCHours', date.setUTCHours, date.getUTCHours);
-//    makeDateSetterTests('setUTCMilliseconds', date.setUTCMilliseconds, date.getUTCMilliseconds);
-//    makeDateSetterTests('setUTCMinutes', date.setUTCMinutes, date.getUTCMinutes);
-//    makeDateSetterTests('setUTCMonth', date.setUTCMonth, date.getUTCMonth);
-//    makeDateSetterTests('setUTCSeconds', date.setUTCSeconds, date.getUTCSeconds);
-//
-//
-//    var makeDateSafeSetterTests = function(desc, fnUnderTest, verifier, bounds) {
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [[], [Date]],
-//        validArguments: [[2], [new Date()]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        makeBasicSetterTests(fnUnderTest, verifier);
-//
-//
-//        bounds.forEach(function(bound, i) {
-//          it('Throws for invalid values (' + (i + 1) + ')', function() {
-//            var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-//            var fn = function() {
-//              fnUnderTest(bound, testDate);
-//            };
-//
-//            expect(fn).to.throw(TypeError);
-//          });
-//        });
-//      });
-//    };
-//
-//
-//    makeDateSafeSetterTests('safeSetHours', date.safeSetHours, date.getHours, [-1, 60]);
-//    makeDateSafeSetterTests('safeSetMilliseconds', date.safeSetMilliseconds, date.getMilliseconds, [-1, 1000]);
-//    makeDateSafeSetterTests('safeSetMinutes', date.safeSetMinutes, date.getMinutes, [-1, 60]);
-//    makeDateSafeSetterTests('safeSetSeconds', date.safeSetSeconds, date.getSeconds, [-1, 60]);
-//    makeDateSafeSetterTests('safeSetUTCHours', date.safeSetUTCHours, date.getUTCHours, [-1, 60]);
-//    makeDateSafeSetterTests('safeSetUTCMilliseconds', date.safeSetUTCMilliseconds, date.getUTCMilliseconds, [-1, 1000]);
-//    makeDateSafeSetterTests('safeSetUTCMinutes', date.safeSetUTCMinutes, date.getUTCMinutes, [-1, 60]);
-//    makeDateSafeSetterTests('safeSetUTCSeconds', date.safeSetUTCSeconds, date.getUTCSeconds, [-1, 60]);
-//
-//
-//    // day of month is trickier, so we break it out separately
-//    var makeSafeDayOfMonthTests = function(desc, fnUnderTest, monthSetter, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [[], [Date]],
-//        validArguments: [[2], [new Date()]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        makeBasicSetterTests(fnUnderTest, verifier);
-//
-//
-//        // Tackle some obvious invalid values first
-//        it('Throws for invalid values (1)', function() {
-//          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-//          var fn = function() {
-//            fnUnderTest(-1, testDate);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        it('Throws for invalid values (2)', function() {
-//          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-//          var fn = function() {
-//            fnUnderTest(32, testDate);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        // Set day to 31 in a 30 day month
-//        it('Throws for invalid values (3)', function() {
-//          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
-//          monthSetter(3, testDate);
-//          var fn = function() {
-//            fnUnderTest(31, testDate);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        // Set day to 29 in a non leap-year...
-//        it('Throws for invalid values (4)', function() {
-//          var testDate = new Date(2014, 0, 1, 0, 0, 0, 0);
-//          monthSetter(2, testDate);
-//          var fn = function() {
-//            fnUnderTest(29, testDate);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        // ... and a real leap year
-//        it('Throws for invalid values (5)', function() {
-//          var testDate = new Date(2012, 0, 1, 0, 0, 0, 0);
-//          monthSetter(2, testDate);
-//          var fn = function() {
-//            fnUnderTest(29, testDate);
-//          };
-//
-//          expect(fn).to.not.throw(TypeError);
-//        });
-//      });
-//    };
-//
-//
-//    makeSafeDayOfMonthTests('safeSetDayOfMonth', date.safeSetDayOfMonth,
-//      date.safeSetMonth, date.getDayOfMonth);
-//    makeSafeDayOfMonthTests('safeSetUTCDayOfMonth', date.safeSetUTCDayOfMonth,
-//      date.safeSetUTCMonth, date.getUTCDayOfMonth);
-//
-//
-//    // Can't really write meaningful tests for this
-//    var gctsSpec = {name: 'getCurrentTimeString', arity: 0};
-//    describeFunction(gctsSpec, date.getCurrentTimeString, function() {});
-//
-//
-//    var addDateMakerTests = function(fnUnderTest, sourceFields) {
-//      var addOne = function(message, field, date) {
-//        it('Works correctly ' + message, function() {
-//          var result = fnUnderTest(date[field]());
-//
-//          expect(result).to.be.an.instanceOf(Date);
-//          expect(result).to.deep.equal(date);
-//        });
-//      };
-//
-//      sourceFields.forEach(function(field, i) {
-//        // Hack to allow deep equal checks: Dates created with toString have ms at 0
-//        var d = new Date();
-//        d.setMilliseconds(0);
-//
-//        [new Date(2000, 0, 1, 0, 0, 0, 0), d].forEach(function(date, j) {
-//          addOne('(' + (2 * i + j + 1) + ')', field, date);
-//        });
-//      });
-//    };
-//
-//
-//    var mdfsSpec = {
-//      name: 'makeDateFromString',
-//      arity: 1,
-//      restrictions: [['string']],
-//      validArguments: [[new Date().toUTCString()]]
-//    };
-//
-//
-//    describeFunction(mdfsSpec, date.makeDateFromString, function(makeDateFromString) {
-//      addDateMakerTests(makeDateFromString, ['toString', 'toISOString']);
-//
-//
-//      it('Throws for unparsable string', function() {
-//        var fn = function() {
-//          makeDateFromString('a');
-//        };
-//
-//        expect(fn).to.throw(TypeError);
-//      });
-//    });
-//
-//
-//    var mdfnSpec = {
-//      name: 'makeDateFromMilliseconds',
-//      arity: 1,
-//      restrictions: [['number']],
-//      validArguments: [[1000]]
-//    };
-//
-//
-//    describeFunction(mdfnSpec, date.makeDateFromMilliseconds, function(makeDateFromMilliseconds) {
-//      addDateMakerTests(makeDateFromMilliseconds, ['getTime']);
-//
-//
-//      it('Throws for invalid value', function() {
-//        var fn = function() {
-//          makeDateFromMilliseconds(Number.POSITIVE_INFINITY);
-//        };
-//
-//        expect(fn).to.throw(TypeError);
-//      });
-//    });
-//
-//
-//    var testDates = [[2000, 0, 1, 0, 0, 0, 0], [2014, 11, 31, 23, 59, 59, 999]];
-//    var fields = ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'];
-//    var verifiers = [date.getFullYear, date.getMonth, date.getDayOfMonth, date.getHours,
-//                     date.getMinutes, date.getSeconds, date.getMilliseconds];
-//
-//    var makeDateConstructorTests = function(desc, fnUnderTest, arity) {
-//      var spec = {
-//        name: desc,
-//        arity: arity
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        testDates.forEach(function(testDate, i) {
-//          var message = ' (' + (i + 1) + ')';
-//          var args = testDate.slice(0, arity);
-//
-//
-//          it('Returns a date' + message, function() {
-//            var result = fnUnderTest.apply(null, args);
-//
-//            expect(result).to.be.an.instanceOf(Date);
-//          });
-//
-//
-//          verifiers.forEach(function(verifier, i) {
-//            it('Returned Date has correct ' + fields[i] + message, function() {
-//              var expected = i < arity ? args[i] : i === 2 ? 1 : 0;
-//              var result = fnUnderTest.apply(null, args);
-//
-//              expect(verifier(result)).to.equal(expected);
-//            });
-//          });
-//
-//
-//          var makeDiscardTest = function(i) {
-//            return function() {
-//              var args = testDate.slice(0, i);
-//              var d = fnUnderTest.apply(null, args);
-//              var result = verifiers.every(function(v, j) {
-//                // We're not concerned about the values that aren't ignored here
-//                if (j < arity) return true;
-//
-//                // If the arity is 2, the day will default to 1
-//                if (j === 2)
-//                  return v(d) === 1;
-//
-//                // If the argument was ignored, the field should be zero
-//                return v(d) === 0;
-//              });
-//
-//              expect(result).to.equal(true);
-//            };
-//          };
-//
-//
-//          for (var k = arity; k < fields.length; k++) {
-//            var m = ' (' + (k - arity + 1) + ')';
-//            it('Ignores superfluous arguments' + message + m,
-//                makeDiscardTest(k));
-//          }
-//        });
-//
-//
-//        // The constructor function should be curried
-//        testCurriedFunction(fnUnderTest, testDates[0].slice(0, arity));
-//      });
-//    };
-//
-//
-//    var dateConstructors = ['makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
-//                            'makeSecondDate', 'makeMillisecondDate'];
-//    dateConstructors.forEach(function(c, i) {
-//      makeDateConstructorTests(c, date[c], i + 2);
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+},{"../../lib/components/curry":11,"./testingUtilities":59,"chai":60}],46:[function(require,module,exports){
+(function() {
+  "use strict";
 
-},{}],46:[function(require,module,exports){
+
+  var expect = require('chai').expect;
+
+  var date = require('../../lib/components/date');
+
+  // Import utility functions
+  var testingUtilities = require('./testingUtilities');
+  var checkModule = testingUtilities.checkModule;
+  var checkFunction = testingUtilities.checkFunction;
+
+
+  describe('date', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek', 'getFullYear', 'getHours',
+                             'getMilliseconds', 'getMinutes', 'getMonth', 'getSeconds', 'getTimezoneOffset',
+                             'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
+                             'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds',
+                             'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate', 'makeHourDate',
+                             'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate', 'makeSecondDate',
+/* TODO: I'm not yet convinced these functions are sufficiently testes
+                             'safeSetDayOfMonth', 'safeSetHours', 'safeSetMilliseconds', 'safeSetMinutes',
+                             'safeSetMonth', 'safeSetSeconds', 'safeSetUTCDayOfMonth', 'safeSetUTCHours',
+                             'safeSetUTCMilliseconds', 'safeSetUTCMinutes', 'safeSetUTCMonth', 'safeSetUTCSeconds',
+*/
+                             'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth',
+                             'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
+                             'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'toDateString',
+                             'toEpochMilliseconds', 'toISOString', 'toLocaleDateString', 'toTimeString', 'toUTCString'];
+
+    checkModule('date', date, expectedObjects, expectedFunctions);
+
+
+    var makeUnaryDateTest = function(desc, fnUnderTest, verifier) {
+      var spec = {
+        name: desc,
+        restrictions: [[Date]],
+        validArguments: [[new Date()]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var addOne = function(message, date) {
+          it('Works correctly ' + message, function() {
+            var result = fnUnderTest(date);
+
+            expect(result).to.equal(date[verifier]());
+          });
+        };
+
+
+        addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
+        addOne('(2)', new Date());
+      });
+    };
+
+
+    makeUnaryDateTest('getDayOfMonth', date.getDayOfMonth, 'getDate');
+    makeUnaryDateTest('getDayOfWeek', date.getDayOfWeek, 'getDay');
+    makeUnaryDateTest('getFullYear', date.getFullYear, 'getFullYear');
+    makeUnaryDateTest('getHours', date.getHours, 'getHours');
+    makeUnaryDateTest('getMilliseconds', date.getMilliseconds, 'getMilliseconds');
+    makeUnaryDateTest('getMinutes', date.getMinutes, 'getMinutes');
+    makeUnaryDateTest('getMonth', date.getMonth, 'getMonth');
+    makeUnaryDateTest('getSeconds', date.getSeconds, 'getSeconds');
+    makeUnaryDateTest('toEpochMilliseconds', date.toEpochMilliseconds, 'getTime');
+    makeUnaryDateTest('getTimezoneOffset', date.getTimezoneOffset, 'getTimezoneOffset');
+    makeUnaryDateTest('getUTCDayOfMonth', date.getUTCDayOfMonth, 'getUTCDate');
+    makeUnaryDateTest('getUTCDayOfWeek', date.getUTCDayOfWeek, 'getUTCDay');
+    makeUnaryDateTest('getUTCFullYear', date.getUTCFullYear, 'getUTCFullYear');
+    makeUnaryDateTest('getUTCHours', date.getUTCHours, 'getUTCHours');
+    makeUnaryDateTest('getUTCMilliseconds', date.getUTCMilliseconds, 'getUTCMilliseconds');
+    makeUnaryDateTest('getUTCMinutes', date.getUTCMinutes, 'getUTCMinutes');
+    makeUnaryDateTest('getUTCMonth', date.getUTCMonth, 'getUTCMonth');
+    makeUnaryDateTest('getUTCSeconds', date.getUTCSeconds, 'getUTCSeconds');
+    makeUnaryDateTest('toLocaleDateString', date.toLocaleDateString, 'toLocaleDateString');
+    makeUnaryDateTest('toDateString', date.toDateString, 'toDateString');
+    makeUnaryDateTest('toTimeString', date.toTimeString, 'toTimeString');
+    makeUnaryDateTest('toISOString', date.toISOString, 'toISOString');
+    makeUnaryDateTest('toUTCString', date.toUTCString, 'toUTCString');
+
+
+    var makeBasicSetterTests = function(fnUnderTest, verifier) {
+      it('Returns the date', function() {
+        var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+        var result = fnUnderTest(2, testDate);
+
+        expect(result).to.equal(testDate);
+      });
+
+
+      var addOne = function(message, date) {
+        it('Works correctly ' + message, function() {
+          var current = verifier(date);
+          var newVal = current > 1 ? current - 1 : current + 1;
+          var result = fnUnderTest(newVal, date);
+
+          expect(verifier(result)).to.equal(newVal);
+        });
+      };
+
+
+      addOne('(1)', new Date(2000, 0, 1, 0, 0, 0, 0));
+
+
+      // fnUnderTest should have arity 2, so should be curried
+      var makeDate = function() {return new Date(2000, 0, 1, 0, 0, 0);};
+    };
+
+
+    var makeDateSetterTests = function(desc, fnUnderTest, verifier) {
+      var spec = {
+        name: desc,
+        arity: 2,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        makeBasicSetterTests(fnUnderTest, verifier);
+      });
+    };
+
+
+    makeDateSetterTests('setDayOfMonth', date.setDayOfMonth, date.getDayOfMonth);
+    makeDateSetterTests('setFullYear', date.setFullYear, date.getFullYear);
+    makeDateSetterTests('setHours', date.setHours, date.getHours);
+    makeDateSetterTests('setMilliseconds', date.setMilliseconds, date.getMilliseconds);
+    makeDateSetterTests('setMinutes', date.setMinutes, date.getMinutes);
+    makeDateSetterTests('setMonth', date.setMonth, date.getMonth);
+    makeDateSetterTests('setSeconds', date.setSeconds, date.getSeconds);
+    makeDateSetterTests('setTimeSinceEpoch', date.setTimeSinceEpoch, date.toEpochMilliseconds);
+    makeDateSetterTests('setUTCDayOfMonth', date.setUTCDayOfMonth, date.getUTCDayOfMonth);
+    makeDateSetterTests('setUTCFullYear', date.setUTCFullYear, date.getUTCFullYear);
+    makeDateSetterTests('setUTCHours', date.setUTCHours, date.getUTCHours);
+    makeDateSetterTests('setUTCMilliseconds', date.setUTCMilliseconds, date.getUTCMilliseconds);
+    makeDateSetterTests('setUTCMinutes', date.setUTCMinutes, date.getUTCMinutes);
+    makeDateSetterTests('setUTCMonth', date.setUTCMonth, date.getUTCMonth);
+    makeDateSetterTests('setUTCSeconds', date.setUTCSeconds, date.getUTCSeconds);
+
+
+/*
+    var makeDateSafeSetterTests = function(desc, fnUnderTest, verifier, bounds) {
+      var spec = {
+        name: desc,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        makeBasicSetterTests(fnUnderTest, verifier);
+
+
+        bounds.forEach(function(bound, i) {
+          it('Throws for invalid values (' + (i + 1) + ')', function() {
+            var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+            var fn = function() {
+              fnUnderTest(bound, testDate);
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        });
+      });
+    };
+
+
+    makeDateSafeSetterTests('safeSetHours', date.safeSetHours, date.getHours, [-1, 60]);
+    makeDateSafeSetterTests('safeSetMilliseconds', date.safeSetMilliseconds, date.getMilliseconds, [-1, 1000]);
+    makeDateSafeSetterTests('safeSetMinutes', date.safeSetMinutes, date.getMinutes, [-1, 60]);
+    makeDateSafeSetterTests('safeSetSeconds', date.safeSetSeconds, date.getSeconds, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCHours', date.safeSetUTCHours, date.getUTCHours, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCMilliseconds', date.safeSetUTCMilliseconds, date.getUTCMilliseconds, [-1, 1000]);
+    makeDateSafeSetterTests('safeSetUTCMinutes', date.safeSetUTCMinutes, date.getUTCMinutes, [-1, 60]);
+    makeDateSafeSetterTests('safeSetUTCSeconds', date.safeSetUTCSeconds, date.getUTCSeconds, [-1, 60]);
+
+
+    // day of month is trickier, so we break it out separately
+    var makeSafeDayOfMonthTests = function(desc, fnUnderTest, monthSetter, verifier) {
+      var spec = {
+        name: desc,
+        restrictions: [[], [Date]],
+        validArguments: [[2], [new Date()]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        makeBasicSetterTests(fnUnderTest, verifier);
+
+
+        // Tackle some obvious invalid values first
+        it('Throws for invalid values (1)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var fn = function() {
+            fnUnderTest(-1, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        it('Throws for invalid values (2)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          var fn = function() {
+            fnUnderTest(32, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // Set day to 31 in a 30 day month
+        it('Throws for invalid values (3)', function() {
+          var testDate = new Date(2000, 0, 1, 0, 0, 0, 0);
+          monthSetter(3, testDate);
+          var fn = function() {
+            fnUnderTest(31, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // Set day to 29 in a non leap-year...
+        it('Throws for invalid values (4)', function() {
+          var testDate = new Date(2014, 0, 1, 0, 0, 0, 0);
+          monthSetter(2, testDate);
+          var fn = function() {
+            fnUnderTest(29, testDate);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        // ... and a real leap year
+        it('Throws for invalid values (5)', function() {
+          var testDate = new Date(2012, 0, 1, 0, 0, 0, 0);
+          monthSetter(2, testDate);
+          var fn = function() {
+            fnUnderTest(29, testDate);
+          };
+
+          expect(fn).to.not.throw(TypeError);
+        });
+      });
+    };
+
+
+    makeSafeDayOfMonthTests('safeSetDayOfMonth', date.safeSetDayOfMonth,
+      date.safeSetMonth, date.getDayOfMonth);
+    makeSafeDayOfMonthTests('safeSetUTCDayOfMonth', date.safeSetUTCDayOfMonth,
+      date.safeSetUTCMonth, date.getUTCDayOfMonth);
+*/
+
+
+    // Can't really write meaningful tests for this
+    var gctsSpec = {name: 'getCurrentTimeString', arity: 0};
+    checkFunction(gctsSpec, date.getCurrentTimeString, function() {});
+
+
+    var addDateMakerTests = function(fnUnderTest, sourceFields) {
+      var addOne = function(message, field, date) {
+        it('Works correctly ' + message, function() {
+          var result = fnUnderTest(date[field]());
+
+          expect(result).to.be.an.instanceOf(Date);
+          expect(result).to.deep.equal(date);
+        });
+      };
+
+      sourceFields.forEach(function(field, i) {
+        // Hack to allow deep equal checks: Dates created with toString have ms at 0
+        var d = new Date();
+        d.setMilliseconds(0);
+
+        [new Date(2000, 0, 1, 0, 0, 0, 0), d].forEach(function(date, j) {
+          addOne('(' + (2 * i + j + 1) + ')', field, date);
+        });
+      });
+    };
+
+
+    var mdfsSpec = {
+      name: 'makeDateFromString',
+      restrictions: [['string']],
+      validArguments: [[new Date().toUTCString()]]
+    };
+
+
+    checkFunction(mdfsSpec, date.makeDateFromString, function(makeDateFromString) {
+      addDateMakerTests(makeDateFromString, ['toString', 'toISOString']);
+
+
+      it('Throws for unparsable string', function() {
+        var fn = function() {
+          makeDateFromString('a');
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    });
+
+
+    var mdfnSpec = {
+      name: 'makeDateFromMilliseconds',
+      restrictions: [['number']],
+      validArguments: [[1000]]
+    };
+
+
+    checkFunction(mdfnSpec, date.makeDateFromMilliseconds, function(makeDateFromMilliseconds) {
+      addDateMakerTests(makeDateFromMilliseconds, ['getTime']);
+
+
+      it('Throws for invalid value', function() {
+        var fn = function() {
+          makeDateFromMilliseconds(Number.POSITIVE_INFINITY);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    });
+
+
+    var testDates = [[2000, 0, 1, 0, 0, 0, 0], [2014, 11, 31, 23, 59, 59, 999]];
+    var fields = ['year', 'month', 'day', 'hours', 'minutes', 'seconds', 'milliseconds'];
+    var verifiers = [date.getFullYear, date.getMonth, date.getDayOfMonth, date.getHours,
+                     date.getMinutes, date.getSeconds, date.getMilliseconds];
+
+    var makeDateConstructorTests = function(desc, fnUnderTest, arity) {
+      var spec = {
+        name: desc,
+        arity: arity
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        testDates.forEach(function(testDate, i) {
+          var message = ' (' + (i + 1) + ')';
+          var args = testDate.slice(0, arity);
+
+
+          it('Returns a date' + message, function() {
+            var result = fnUnderTest.apply(null, args);
+
+            expect(result).to.be.an.instanceOf(Date);
+          });
+
+
+          verifiers.forEach(function(verifier, i) {
+            it('Returned Date has correct ' + fields[i] + message, function() {
+              var expected = i < arity ? args[i] : i === 2 ? 1 : 0;
+              var result = fnUnderTest.apply(null, args);
+
+              expect(verifier(result)).to.equal(expected);
+            });
+          });
+
+
+          var makeDiscardTest = function(i) {
+            return function() {
+              var args = testDate.slice(0, i);
+              var d = fnUnderTest.apply(null, args);
+              var result = verifiers.every(function(v, j) {
+                // We're not concerned about the values that aren't ignored here
+                if (j < arity) return true;
+
+                // If the arity is 2, the day will default to 1
+                if (j === 2)
+                  return v(d) === 1;
+
+                // If the argument was ignored, the field should be zero
+                return v(d) === 0;
+              });
+
+              expect(result).to.equal(true);
+            };
+          };
+
+
+          for (var k = arity; k < fields.length; k++) {
+            var m = ' (' + (k - arity + 1) + ')';
+            it('Ignores superfluous arguments' + message + m,
+                makeDiscardTest(k));
+          }
+        });
+      });
+    };
+
+
+    var dateConstructors = ['makeMonthDate', 'makeDayDate', 'makeHourDate', 'makeMinuteDate',
+                            'makeSecondDate', 'makeMillisecondDate'];
+    dateConstructors.forEach(function(c, i) {
+      makeDateConstructorTests(c, date[c], i + 2);
+    });
+  });
+})();
+
+},{"../../lib/components/date":12,"./testingUtilities":59,"chai":60}],47:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -27826,7 +31174,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -28004,7 +31352,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":19,"./testingUtilities":58,"chai":59}],48:[function(require,module,exports){
+},{"../../lib/funcUtils":20,"./testingUtilities":59,"chai":60}],49:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -28094,7 +31442,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -28524,7 +31872,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],50:[function(require,module,exports){
+},{"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],51:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -28729,7 +32077,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/logical":12,"./testingUtilities":58,"chai":59}],51:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/logical":13,"./testingUtilities":59,"chai":60}],52:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -29020,7 +32368,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/maths":13,"./testingUtilities":58,"chai":59}],52:[function(require,module,exports){
+},{"../../lib/components/maths":14,"./testingUtilities":59,"chai":60}],53:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -29474,7 +32822,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":14,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],53:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/maybe":15,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31693,7 +35041,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":14,"../../lib/components/object":15,"./testingUtilities":58,"chai":59,"deep-equal":23}],54:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/maybe":15,"../../lib/components/object":16,"./testingUtilities":59,"chai":60,"deep-equal":24}],55:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32103,7 +35451,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/pair":16,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],55:[function(require,module,exports){
+},{"../../lib/components/curry":11,"../../lib/components/pair":17,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],56:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32676,7 +36024,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":17,"../../lib/internalUtilities":22,"./testingUtilities":58,"chai":59}],56:[function(require,module,exports){
+},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":18,"../../lib/internalUtilities":23,"./testingUtilities":59,"chai":60}],57:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -33740,7 +37088,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],57:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -34157,7 +37505,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/types":18,"./testingUtilities":58,"chai":59}],58:[function(require,module,exports){
+},{"../../lib/components/types":19,"./testingUtilities":59,"chai":60}],59:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -35161,10 +38509,10 @@ module.exports = (function() {
   return toExport;
 })();
 
-},{"../../lib/components/curry":11,"chai":59}],59:[function(require,module,exports){
+},{"../../lib/components/curry":11,"chai":60}],60:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":60}],60:[function(require,module,exports){
+},{"./lib/chai":61}],61:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -35253,7 +38601,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":61,"./chai/config":62,"./chai/core/assertions":63,"./chai/interface/assert":64,"./chai/interface/expect":65,"./chai/interface/should":66,"./chai/utils":77,"assertion-error":86}],61:[function(require,module,exports){
+},{"./chai/assertion":62,"./chai/config":63,"./chai/core/assertions":64,"./chai/interface/assert":65,"./chai/interface/expect":66,"./chai/interface/should":67,"./chai/utils":78,"assertion-error":87}],62:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -35385,7 +38733,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":62}],62:[function(require,module,exports){
+},{"./config":63}],63:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -35437,7 +38785,7 @@ module.exports = {
 
 };
 
-},{}],63:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -36753,7 +40101,7 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],64:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -37811,7 +41159,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -37825,7 +41173,7 @@ module.exports = function (chai, util) {
 };
 
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -37905,7 +41253,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38018,7 +41366,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":62,"./flag":70,"./transferFlags":84}],68:[function(require,module,exports){
+},{"../config":63,"./flag":71,"./transferFlags":85}],69:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38063,7 +41411,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":62,"./flag":70}],69:[function(require,module,exports){
+},{"../config":63,"./flag":71}],70:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38105,7 +41453,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38139,7 +41487,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],71:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38159,7 +41507,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38186,7 +41534,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38237,7 +41585,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":70,"./getActual":71,"./inspect":78,"./objDisplay":79}],74:[function(require,module,exports){
+},{"./flag":71,"./getActual":72,"./inspect":79,"./objDisplay":80}],75:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38259,7 +41607,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38363,7 +41711,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38400,7 +41748,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -38516,7 +41864,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":67,"./addMethod":68,"./addProperty":69,"./flag":70,"./getActual":71,"./getMessage":73,"./getName":74,"./getPathValue":75,"./inspect":78,"./objDisplay":79,"./overwriteChainableMethod":80,"./overwriteMethod":81,"./overwriteProperty":82,"./test":83,"./transferFlags":84,"./type":85,"deep-eql":87}],78:[function(require,module,exports){
+},{"./addChainableMethod":68,"./addMethod":69,"./addProperty":70,"./flag":71,"./getActual":72,"./getMessage":74,"./getName":75,"./getPathValue":76,"./inspect":79,"./objDisplay":80,"./overwriteChainableMethod":81,"./overwriteMethod":82,"./overwriteProperty":83,"./test":84,"./transferFlags":85,"./type":86,"deep-eql":88}],79:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -38838,7 +42186,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":72,"./getName":74,"./getProperties":76}],79:[function(require,module,exports){
+},{"./getEnumerableProperties":73,"./getName":75,"./getProperties":77}],80:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38889,7 +42237,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":62,"./inspect":78}],80:[function(require,module,exports){
+},{"../config":63,"./inspect":79}],81:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38944,7 +42292,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -38997,7 +42345,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -39053,7 +42401,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -39081,7 +42429,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":70}],84:[function(require,module,exports){
+},{"./flag":71}],85:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -39127,7 +42475,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -39174,7 +42522,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -39286,10 +42634,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":88}],88:[function(require,module,exports){
+},{"./lib/eql":89}],89:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -39548,10 +42896,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":26,"type-detect":89}],89:[function(require,module,exports){
+},{"buffer":27,"type-detect":90}],90:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":90}],90:[function(require,module,exports){
+},{"./lib/type":91}],91:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>
