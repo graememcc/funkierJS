@@ -2517,7 +2517,7 @@ module.exports = (function () {
 
   var curryWithConsistentStyle = function(existing, newFn, arity) {
     arity = arity === undefined ? arityOf(newFn) : arity;
-    return curryInternal(existing.hasOwnProperty(contextProp ? existing.contextProp : null), arity, newFn);
+    return curryInternal(existing.hasOwnProperty(contextProp) ? existing[contextProp] : null, arity, newFn);
   };
 
 
