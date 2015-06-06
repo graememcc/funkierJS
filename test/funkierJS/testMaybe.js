@@ -8,6 +8,7 @@
 
   var curryModule = require('../../lib/components/curry');
   var arityOf = curryModule.arityOf;
+  var objectCurry = curryModule.objectCurry;
 
   var internalUtilities = require('../../lib/internalUtilities');
   var valueStringifier = internalUtilities.valueStringifier;
@@ -447,6 +448,17 @@
 
 
       addCurryStyleTests(function(f) { return makeMaybeReturner(f); });
+
+
+      it('Passes execution context to original function', function() {
+        var context;
+        var f = objectCurry(function(x) { context = this; return 1; });
+        var newFn = makeMaybeReturner(f);
+        var obj = {};
+        var r = newFn.apply(obj, [1]);
+
+        expect(context).to.equal(obj);
+      });
     });
   });
 })();

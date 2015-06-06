@@ -2491,6 +2491,11 @@ module.exports = (function() {
    *
    * Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.
    *
+   * Note that the returned function will be curried in the extant style, or using [`curry`](#curry) if the function
+   * is not curried. Thus, if you wish to flip a object-curried function on the object prototype, you must object-curry
+   * before flipping; in the other order, the function will be curried in the standard manner, preventing later object
+   * currying.
+   *
    * Examples:
    *   var backwards = funkierJS.flip(funkierJS.subtract);
    *   backwards(2, 3); // => 1
@@ -2569,6 +2574,10 @@ module.exports = (function() {
    * Partially applies the binary function f with the given argument x, with x being supplied as the first argument
    * to f. The given function f will be curried if necessary. Throws if f is not a binary function.
    *
+   * Note that object-curried functions should first be given a context before passing them into this function:
+   * internally `this` is bound to null within `sectionLeft`, so it cannot supply a useful execution context to
+   * the supplied function.
+   *
    * Examples:
    * var f = function(x, y) {return x * y;};',
    * var g = funkierJS.sectionLeft(f, 2);
@@ -2598,6 +2607,10 @@ module.exports = (function() {
    *
    * Partially applies the binary function f with the given argument x, with x being supplied as the second argument
    * to f. The given function f will be curried if necessary. Throws if f is not a binary function.
+   *
+   * Note that object-curried functions should first be given a context before passing them into this function:
+   * internally `this` is bound to null within `sectionRight`, so it cannot supply a useful execution context to
+   * the supplied function.
    *
    * Examples:
    *   var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
@@ -2632,6 +2645,8 @@ module.exports = (function() {
 
   var curryModule = require('./curry');
   var curry = curryModule.curry;
+  var arityOf = curryModule.arityOf;
+  var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
 
   var array = require('./array');
   var map = array.map;
@@ -2684,6 +2699,8 @@ module.exports = (function() {
    */
 
   var fmap = curry(function(f, val) {
+    f = curryWithConsistentStyle(f, f, arityOf(f));
+
     if (isArrayLike(val))
       return map(f, val);
 
@@ -3828,6 +3845,7 @@ module.exports = (function() {
 
 
   // We cannot use callProp for the setters due to the need to return the given date
+  // TODO: This comment is likely out of date
 
   /*
    * <apifunction>
@@ -8075,6 +8093,10 @@ module.exports = (function() {
    * Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
    * is not a Result.
    *
+   * Note that, if required, the functions must already have their execution context set. Internally, the execution
+   * context within `either` is `null`, so it cannot supply a useful execution context to any object-curried functions
+   * supplied to this function.
+   *
    * Examples:
    * var f = funkierJS.either(function(x) {console.log('Good: ' + x);}, function(x) {console.log('Bad: ' + x);});
    * f(funkierJS.Ok(2)); // => logs 'Good: 2' to the console
@@ -8906,19 +8928,7 @@ module.exports = (function() {
 module.exports = (function() {
   "use strict";
 
-//  var makeModule = function(require, exports) {
-//    var curryModule = require('./curry');
   var curry = require('./curry').curry;
-//    var curryWithArity = curryModule.curryWithArity;
-//    var getRealArity = curryModule.getRealArity;
-//
-//    var funcUtils = require('./funcUtils');
-//    var checkFunction = funcUtils.checkFunction;
-//
-//    var utils = require('./utils');
-//    var checkPositiveIntegral = utils.checkPositiveIntegral;
-//    var defineValue = utils.defineValue;
-
 
 
   /*
@@ -8942,7 +8952,6 @@ module.exports = (function() {
   var equals = curry(function(x, y) {
     return x == y;
   });
-
 
 
   /*

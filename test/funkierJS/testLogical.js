@@ -4,6 +4,9 @@
 
   var expect = require('chai').expect;
 
+  var curry = require('../../lib/components/curry');
+  var objectCurry = curry.objectCurry;
+
   var base = require('../../lib/components/base');
   var constant = base.constant;
   var constantFalse = constant(false);
@@ -113,6 +116,17 @@
       });
 
 
+      it('notPred passes execution context', function() {
+        var context;
+        var fn = objectCurry(function(x) { context = this; return true; });
+        var negated = notPred(fn);
+
+        var obj = function() {};
+        negated.apply(obj, [1]);
+        expect(context).to.equal(obj);
+      });
+
+
       addCurryStyleTests(function(p) { return notPred(p); }, true, 1);
     });
 
@@ -172,6 +186,20 @@
         addDoubleCurryStyleTests(function(p1, p2) {
           return fnUnderTest(p1, p2);
         }, f1Return);
+
+
+        it('Passes execution context', function() {
+          var context1;
+          var context2;
+          var fn1 = objectCurry(function(x) { context1 = this; return fnUnderTest === logical.andPred; });
+          var fn2 = objectCurry(function(x) { context2 = this; return true; });
+          var combined = fnUnderTest(fn1, fn2);
+
+          var obj = function() {};
+          combined.apply(obj, [1]);
+          expect(context1).to.equal(obj);
+          expect(context2).to.equal(obj);
+        });
       });
     };
 

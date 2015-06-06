@@ -817,6 +817,9 @@ value, the first function f1 will be called with the unwrapped value.  Otherwise
 called function is returned.</p>
 <p>Throws a TypeError if either of the first two arguments is not a function of arity 1 or more, or if the given value
 is not a Result.</p>
+<p>Note that, if required, the functions must already have their execution context set. Internally, the execution
+context within <code>either</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = funkierJS.either(function(x) {console.log(&#39;Good: &#39; + x);}, function(x) {console.log(&#39;Bad: &#39; + x);});
 f(funkierJS.Ok(2)); // =&gt; logs &#39;Good: 2&#39; to the console
@@ -1824,6 +1827,10 @@ h(&#39;fizz&#39;)(&#39;buzz&#39;, &#39;foo&#39;) // =&gt; &#39;fizz&#39;, &#39;b
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Takes a binary function f, and returns a curried function that takes the arguments in the opposite order.</p>
+<p>Note that the returned function will be curried in the extant style, or using <a href="#curry"><code>curry</code></a> if the function
+is not curried. Thus, if you wish to flip a object-curried function on the object prototype, you must object-curry
+before flipping; in the other order, the function will be curried in the standard manner, preventing later object
+currying.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
@@ -2043,6 +2050,9 @@ loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Partially applies the binary function f with the given argument x, with x being supplied as the first argument
 to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<p>Note that object-curried functions should first be given a context before passing them into this function:
+internally <code>this</code> is bound to null within <code>sectionLeft</code>, so it cannot supply a useful execution context to
+the supplied function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(x, y) {return x * y;};&#39;,
 var g = funkierJS.sectionLeft(f, 2);
@@ -2056,6 +2066,9 @@ g(3); // =&gt; 6 (i.e. 2 * 3)&#39;,
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Partially applies the binary function f with the given argument x, with x being supplied as the second argument
 to f. The given function f will be curried if necessary. Throws if f is not a binary function.</p>
+<p>Note that object-curried functions should first be given a context before passing them into this function:
+internally <code>this</code> is bound to null within <code>sectionRight</code>, so it cannot supply a useful execution context to
+the supplied function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = funkierJS.sectionRight(funkierJS.subtract, 3);
 fn(2); // =&gt; -1

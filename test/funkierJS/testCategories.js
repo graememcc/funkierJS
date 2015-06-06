@@ -114,6 +114,15 @@
       });
 
 
+      it('Function is curried if necessary', function() {
+        var arr = [1, 2, 3];
+        var f = function(x, y) {};
+        var result = fmap(f, arr);
+
+        expect(result.every(function(g) { return typeof(g) === 'function'; })).to.equal(true);
+      });
+
+
       var tests = [
         {name: 'null', value: null},
         {name: 'undefined', value: undefined},
