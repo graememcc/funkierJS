@@ -1678,6 +1678,18 @@
     });
 
 
+    describe('fMap', function() {
+      it('fMap exists', function() {
+        expect(funkier).to.have.a.property('fMap');
+      });
+
+
+      it('fMap is a synonym for fmap', function() {
+        expect(funkier.fMap).to.equal(funkier.fmap);
+      });
+    });
+
+
     describe('filter', function() {
       it('filter exists', function() {
         expect(funkier).to.have.a.property('filter');
@@ -1854,6 +1866,34 @@
 
       it('flip is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.flip)).to.equal(true);
+      });
+    });
+
+
+    describe('fmap', function() {
+      it('fmap exists', function() {
+        expect(funkier).to.have.a.property('fmap');
+      });
+
+
+      it('funkierJS\'s fmap is indeed the documented value', function() {
+        var module = require('../../lib/components/categories');
+        expect(funkier.fmap).to.equal(module.fmap);
+      });
+
+
+      it('fmap is a function', function() {
+        expect(funkier.fmap).to.be.a('function');
+      });
+
+
+      it('fmap has documented arity', function() {
+        expect(funkier.arityOf(funkier.fmap)).to.equal(2);
+      });
+
+
+      it('fmap is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.fmap)).to.equal(true);
       });
     });
 
@@ -7411,8 +7451,8 @@
          'copy', 'createObject', 'createObjectWithProps', 'createProp', 'curry', 'curryOwn', 'curryWithArity',
          'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty', 'deleteProp', 'descriptors',
          'div', 'divide', 'drop', 'dropWhile', 'each', 'either', 'element', 'elementWith', 'equals', 'even', 'every',
-         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'firstMatch',
-         'firstMatchFrom', 'flatten', 'flattenMap', 'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst',
+         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'fMap', 'filter', 'first', 'firstMatch',
+         'firstMatchFrom', 'flatten', 'flattenMap', 'flip', 'fmap', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst',
          'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getIndex',
          'getJustValue', 'getMilliseconds', 'getMinutes', 'getMonth', 'getOkValue', 'getOwnPropertyDescriptor',
          'getOwnPropertyNames', 'getSeconds', 'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek',

@@ -2284,7 +2284,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./base":2,"./curry":3,"./logical":6,"./object":9,"./pair":10,"./types":13}],2:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./base":2,"./curry":4,"./logical":7,"./object":10,"./pair":11,"./types":14}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2625,7 +2625,91 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./curry":3}],3:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./curry":4}],3:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+
+  var array = require('./array');
+  var map = array.map;
+
+  var maybe = require('./maybe');
+  var isJust = maybe.isJust;
+  var isNothing = maybe.isNothing;
+  var Just = maybe.Just;
+  var Nothing = maybe.Nothing;
+  var getJustValue = maybe.getJustValue;
+
+  var result = require('./result');
+  var isOk = result.isOk;
+  var isErr = result.isErr;
+  var Ok = result.Ok;
+  var Err = result.Err;
+  var getOkValue = result.getOkValue;
+
+  var internalUtilities = require('../internalUtilities');
+  var isArrayLike = internalUtilities.isArrayLike;
+
+
+  /*
+   * <apifunction>
+   *
+   * fmap
+   *
+   * Category: function
+   *
+   * Synonyms: fMap
+   *
+   * Parameter: f: function
+   * Parameter: g: any
+   * Returns: any
+   *
+   * Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+   * [`Maybes`](#Maybe) and [`Results](#Result), although this may change in future versions. Throws if the
+   * first value is not a function of arity 1, or the second is not a known functor.
+   *
+   * The actions taken are as follows:
+   *   - arrays/strings: the function is mapped over the array
+   *   - Maybe: [`Just`](#Just) values yield a new Just value containing the result of applying the function to the
+   *            contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+   *   - Result: [`Ok`](#Ok) values yiels a new Ok value containing the result of applying the function to the contents
+   *             of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+   *
+   * Examples:
+   *  fmap(function(x) { return x + 1; }, Just(10)); => Just 11
+   *
+   */
+
+  var fmap = curry(function(f, val) {
+    if (isArrayLike(val))
+      return map(f, val);
+
+    if (isJust(val))
+      return Just(f(getJustValue(val)));
+
+    if (isNothing(val))
+      return val;
+
+    if (isOk(val))
+      return Ok(f(getOkValue(val)));
+
+    if (isErr(val))
+      return val;
+
+    throw new Error('Unrecognised functor');
+  });
+
+
+  return {
+    fMap: fmap,
+    fmap: fmap
+  };
+})();
+
+},{"../internalUtilities":18,"./array":1,"./curry":4,"./maybe":9,"./result":12}],4:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -3275,7 +3359,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":17}],4:[function(require,module,exports){
+},{"../internalUtilities":18}],5:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4769,7 +4853,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":3,"./object":9}],5:[function(require,module,exports){
+},{"./curry":4,"./object":10}],6:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5044,7 +5128,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./curry":3}],6:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./curry":4}],7:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5320,7 +5404,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"./curry":3}],7:[function(require,module,exports){
+},{"../funcUtils":15,"./curry":4}],8:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -6062,7 +6146,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":2,"./curry":3,"./object":9}],8:[function(require,module,exports){
+},{"./base":2,"./curry":4,"./object":10}],9:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6315,7 +6399,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./curry":3}],9:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./curry":4}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -7480,7 +7564,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":17,"./base":2,"./curry":3,"./maybe":8}],10:[function(require,module,exports){
+},{"../internalUtilities":18,"./base":2,"./curry":4,"./maybe":9}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7689,7 +7773,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":17,"./curry":3}],11:[function(require,module,exports){
+},{"../internalUtilities":18,"./curry":4}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -8026,7 +8110,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./curry":3}],12:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./curry":4}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -8818,7 +8902,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":14,"../internalUtilities":17,"./base":2,"./curry":3,"./object":9}],13:[function(require,module,exports){
+},{"../funcUtils":15,"../internalUtilities":18,"./base":2,"./curry":4,"./object":10}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9305,7 +9389,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":3}],14:[function(require,module,exports){
+},{"./curry":4}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9366,7 +9450,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":3}],15:[function(require,module,exports){
+},{"./components/curry":4}],16:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9377,6 +9461,7 @@ module.exports = (function() {
   var imports = {
     array: require('./components/array'),
     base: require('./components/base'),
+    categories: require('./components/categories'),
     curry: require('./components/curry'),
     date: require('./components/date'),
     fn: require('./components/fn'),
@@ -9449,7 +9534,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/array":1,"./components/base":2,"./components/curry":3,"./components/date":4,"./components/fn":5,"./components/logical":6,"./components/maths":7,"./components/maybe":8,"./components/object":9,"./components/pair":10,"./components/result":11,"./components/string":12,"./components/types":13,"./help":16}],16:[function(require,module,exports){
+},{"./components/array":1,"./components/base":2,"./components/categories":3,"./components/curry":4,"./components/date":5,"./components/fn":6,"./components/logical":7,"./components/maths":8,"./components/maybe":9,"./components/object":10,"./components/pair":11,"./components/result":12,"./components/string":13,"./components/types":14,"./help":17}],17:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10291,6 +10376,21 @@ module.exports = (function() {
           console.log('Usage: var x = flip(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flip');
+          break;
+
+        case funkier.fmap:
+          console.log('fmap:');
+          console.log('');
+          console.log('Synonyms: fMap');
+          console.log('');
+          console.log('Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,');
+          console.log('Maybes and `Results, although this may change in future versions. Throws if the');
+          console.log('first value is not a function of arity 1, or the second is not a known functor.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = fmap(f, g)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#fmap');
           break;
 
         case funkier.foldl:
@@ -12576,7 +12676,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -12760,5 +12860,5 @@ module.exports = (function() {
   };
 })();
 
-},{}]},{},[15])(15)
+},{}]},{},[16])(16)
 });

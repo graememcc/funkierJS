@@ -2330,6 +2330,9 @@ function `bind` method. Attempting to curry these might lead to surprising resul
     
     h('fizz')('buzz', 'foo') // => 'fizz', 'buzz' logged
 ***
+### fMap ###
+See `fmap`
+***
 ### flip ###
 **Usage:** `var result = flip(f);`
 
@@ -2343,6 +2346,31 @@ Takes a binary function f, and returns a curried function that takes the argumen
 #### Examples ####
     var backwards = funkierJS.flip(funkierJS.subtract);
     backwards(2, 3); // => 1
+***
+### fmap ###
+*Synonyms:* `fMap`
+
+**Usage:** `var result = fmap(f, g);`
+
+Parameters:  
+f `function`  
+g `any`
+
+Returns: `any`
+
+Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+[`Maybes`](#Maybe) and [`Results](#Result), although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.
+
+The actions taken are as follows:
+  - arrays/strings: the function is mapped over the array
+  - Maybe: [`Just`](#Just) values yield a new Just value containing the result of applying the function to the
+           contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+  - Result: [`Ok`](#Ok) values yiels a new Ok value containing the result of applying the function to the contents
+            of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+
+#### Examples ####
+    fmap(function(x) { return x + 1; }, Just(10)); => Just 11
 ***
 ### objectCurry ###
 **Usage:** `var result = objectCurry(f);`

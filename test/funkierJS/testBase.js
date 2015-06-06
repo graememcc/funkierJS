@@ -320,7 +320,7 @@
         {name: 'undefined', value: undefined},
         {name: 'number', value: 42},
         {name: 'string', value: 'functional'},
-        {name: 'boolean', value: 'true'},
+        {name: 'boolean', value: true},
         {name: 'array', value: [1, 2, 3]},
         {name: 'object', value: {foo: 1, bar: 'a'}},
         {name: 'function', value: function(a, b) {}}

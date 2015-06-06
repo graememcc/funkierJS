@@ -1003,6 +1003,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -1108,6 +1112,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -4769,6 +4797,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -4874,6 +4906,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -8535,6 +8591,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -8640,6 +8700,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -12301,6 +12385,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -12406,6 +12494,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -16067,6 +16179,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -16172,6 +16288,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -19833,6 +19973,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -19938,6 +20082,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -23599,6 +23767,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -23704,6 +23876,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -27365,6 +27561,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -27470,6 +27670,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -31131,6 +31355,10 @@ chain, in which case the specified default value is returned.</p>
 <pre><code>funkierJS.extractOrDefaultt(&#39;foo&#39;, 43, {bar: 42}); // =&gt; 43
 </code></pre></section>
 </section>
+<section class="functionRef" id="fMap">
+<h3 class="functionName">fMap</h3>
+<p class="see">See <a class="synonymLink" href="#fmap"><code class="synonymCode">fmap</code></a></p>
+</section>
 <section class="functionRef" id="filter">
 <h3 class="functionName">filter</h3>
 <p class="category">Category: <a class="categoryLink" href="byCategory.html#Array">Array</a></p>
@@ -31236,6 +31464,30 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <section class="examples"><h4>Examples</h4>
 <pre><code>var backwards = funkierJS.flip(funkierJS.subtract);
 backwards(2, 3); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="fmap">
+<h3 class="functionName">fmap</h3>
+<p class="category">Category: <a class="categoryLink" href="byCategory.html#Function">Function</a></p>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">fMap</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = fmap(f, g);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">g: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+first value is not a function of arity 1, or the second is not a known functor.</p>
+<p>The actions taken are as follows:</p>
+<ul>
+<li>arrays/strings: the function is mapped over the array</li>
+<li>Maybe: <a href="#Just"><code>Just</code></a> values yield a new Just value containing the result of applying the function to the<pre><code>   contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+</code></pre></section>
+</li>
+<li>Result: <a href="#Ok"><code>Ok</code></a> values yiels a new Ok value containing the result of applying the function to the contents<pre><code>    of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+</code></pre></section>
+</li>
+</ul>
+<section class="examples"><h4>Examples</h4>
+<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
