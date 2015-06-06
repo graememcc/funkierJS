@@ -16,11 +16,11 @@ module.exports = (function() {
   var testAPI = require('../test/funkierJS/testAPI');
   var testArray = require('../test/funkierJS/testArray');
   var testBase = require('../test/funkierJS/testBase');
+  var testCategories = require('../test/funkierJS/testCategories');
   var testCurry = require('../test/funkierJS/testCurry');
   var testDate = require('../test/funkierJS/testDate');
   var testFn = require('../test/funkierJS/testFn');
   var testFuncUtils = require('../test/funkierJS/testFuncUtils');
-  var testFunkier = require('../test/funkierJS/testFunkier');
   var testingUtilities = require('../test/funkierJS/testingUtilities');
   var testInternalUtilities = require('../test/funkierJS/testInternalUtilities');
   var testLogical = require('../test/funkierJS/testLogical');
@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":36,"../test/docgen/testAPIFunction":37,"../test/docgen/testAPIObject":38,"../test/docgen/testAPIPrototype":39,"../test/docgen/testCPTestDataHelper":40,"../test/docgen/testCollator":41,"../test/docgen/testCommentProcessor":42,"../test/docgen/testLineProcessor":43,"../test/docgen/testMarkdownCreator":44,"../test/docgen/testMarkdownRenderer":45,"../test/funkierJS/testAPI":46,"../test/funkierJS/testArray":47,"../test/funkierJS/testBase":48,"../test/funkierJS/testCurry":49,"../test/funkierJS/testDate":50,"../test/funkierJS/testFn":51,"../test/funkierJS/testFuncUtils":52,"../test/funkierJS/testFunkier":53,"../test/funkierJS/testInternalUtilities":54,"../test/funkierJS/testLogical":55,"../test/funkierJS/testMaths":56,"../test/funkierJS/testMaybe":57,"../test/funkierJS/testObject":58,"../test/funkierJS/testPair":59,"../test/funkierJS/testResult":60,"../test/funkierJS/testString":61,"../test/funkierJS/testTypes":62,"../test/funkierJS/testingUtilities":63}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":36,"../test/docgen/testAPIFunction":37,"../test/docgen/testAPIObject":38,"../test/docgen/testAPIPrototype":39,"../test/docgen/testCPTestDataHelper":40,"../test/docgen/testCollator":41,"../test/docgen/testCommentProcessor":42,"../test/docgen/testLineProcessor":43,"../test/docgen/testMarkdownCreator":44,"../test/docgen/testMarkdownRenderer":45,"../test/funkierJS/testAPI":46,"../test/funkierJS/testArray":47,"../test/funkierJS/testBase":48,"../test/funkierJS/testCategories":49,"../test/funkierJS/testCurry":50,"../test/funkierJS/testDate":51,"../test/funkierJS/testFn":52,"../test/funkierJS/testFuncUtils":53,"../test/funkierJS/testInternalUtilities":54,"../test/funkierJS/testLogical":55,"../test/funkierJS/testMaths":56,"../test/funkierJS/testMaybe":57,"../test/funkierJS/testObject":58,"../test/funkierJS/testPair":59,"../test/funkierJS/testResult":60,"../test/funkierJS/testString":61,"../test/funkierJS/testTypes":62,"../test/funkierJS/testingUtilities":63}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -34552,6 +34552,154 @@ module.exports = (function() {
 
   var expect = require('chai').expect;
 
+  var categoryModule = require('../../lib/components/categories');
+
+  var array = require('../../lib/components/array');
+  var map = array.map;
+
+  var base = require('../../lib/components/base');
+  var compose = base.compose;
+  var id = base.id;
+
+  var string = require('../../lib/components/string');
+  var toUpperCase = string.toUpperCase;
+
+  var maybe = require('../../lib/components/maybe');
+  var Nothing = maybe.Nothing;
+  var Just = maybe.Just;
+  var isNothing = maybe.isNothing;
+  var isJust = maybe.isJust;
+  var getJustValue = maybe.getJustValue;
+
+  var result = require('../../lib/components/result');
+  var Err = result.Err;
+  var Ok = result.Ok;
+  var isErr = result.isErr;
+  var isOk = result.isOk;
+  var getOkValue = result.getOkValue;
+
+  var testUtils = require('./testingUtilities');
+  var checkModule = testUtils.checkModule;
+  var checkFunction = testUtils.checkFunction;
+  var makeArrayLike = testUtils.makeArrayLike;
+
+
+  describe('categories', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['fmap'];
+    checkModule('categories', categoryModule, expectedObjects, expectedFunctions);
+
+
+    describe('fmap', function() {
+      var fmap = categoryModule.fmap;
+
+
+      it('Works correctly for arrays (1)', function() {
+        var arr = [];
+        expect(fmap(id, arr)).to.deep.equal(arr);
+      });
+
+
+      it('Works correctly for arrays (2)', function() {
+        var arr = [1, 2, 3];
+        var inc = function(x) { return x + 1; };
+        expect(fmap(inc, arr)).to.deep.equal(map(inc, arr));
+      });
+
+
+      it('Works correctly for arrays (3)', function() {
+        var arr = makeArrayLike(4, 5, 6);
+        var inc = function(x) { return x + 1; };
+        expect(fmap(inc, arr)).to.deep.equal(map(inc, arr));
+      });
+
+
+      it('Works correctly for strings (1)', function() {
+        var s = '';
+        expect(fmap(id, s)).to.deep.equal([]);
+      });
+
+
+      it('Works correctly for strings (2)', function() {
+        var s = 'abc';
+        expect(fmap(toUpperCase, s)).to.deep.equal(map(toUpperCase, s));
+      });
+
+
+      it('Works correctly for Maybes (1)', function() {
+        var j = Nothing;
+        var inc = function(x) { return x + 1; };
+        expect(isNothing(fmap(inc, j))).to.equal(true);
+      });
+
+
+      it('Works correctly for Maybes (1)', function() {
+        var val = 41;
+        var j = Just(val);
+        var inc = function(x) { return x + 1; };
+
+        var result = fmap(inc, j);
+        expect(isJust(result)).to.equal(true);
+        expect(getJustValue(result)).to.equal(inc(val));
+      });
+
+
+      it('Works correctly for Results (1)', function() {
+        var r = Err(42);
+        var inc = function(x) { return x + 1; };
+        expect(fmap(inc, r)).to.equal(r);
+      });
+
+
+      it('Works correctly for Results (2)', function() {
+        var val = 41;
+        var j = Ok(val);
+        var inc = function(x) { return x + 1; };
+
+        var result = fmap(inc, j);
+        expect(isOk(result)).to.equal(true);
+        expect(getOkValue(result)).to.equal(inc(val));
+      });
+
+
+      it('Function is curried if necessary', function() {
+        var arr = [1, 2, 3];
+        var f = function(x, y) {};
+        var result = fmap(f, arr);
+
+        expect(result.every(function(g) { return typeof(g) === 'function'; })).to.equal(true);
+      });
+
+
+      var tests = [
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'number', value: 42},
+        {name: 'boolean', value: true},
+        {name: 'object', value: {foo: 1, bar: 'a'}},
+      ];
+
+
+      tests.forEach(function(t) {
+        it('Throws when called with ' + t.name, function() {
+          var fn = function() {
+            fmap(id, t.value);
+          };
+
+          expect(fn).to.throw();
+        });
+      });
+    });
+  });
+})();
+
+},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/categories":12,"../../lib/components/maybe":18,"../../lib/components/result":21,"../../lib/components/string":22,"./testingUtilities":63,"chai":64}],50:[function(require,module,exports){
+(function() {
+  "use strict";
+
+
+  var expect = require('chai').expect;
+
   var curryModule = require('../../lib/components/curry');
 
   var testUtils = require('./testingUtilities');
@@ -36903,7 +37051,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":13,"./testingUtilities":63,"chai":64}],50:[function(require,module,exports){
+},{"../../lib/components/curry":13,"./testingUtilities":63,"chai":64}],51:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37306,7 +37454,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/date":14,"./testingUtilities":63,"chai":64}],51:[function(require,module,exports){
+},{"../../lib/components/date":14,"./testingUtilities":63,"chai":64}],52:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37924,7 +38072,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":11,"../../lib/components/curry":13,"../../lib/components/fn":15,"./testingUtilities":63,"chai":64}],52:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":13,"../../lib/components/fn":15,"./testingUtilities":63,"chai":64}],53:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -38102,97 +38250,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":24,"./testingUtilities":63,"chai":64}],53:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var funkier = require('../../funkier');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var exportsProperty = testUtils.exportsProperty;
-//
-//    var utils = require('../utils');
-//
-//    // Import submodules
-//    var curry = require('../curry');
-//    var base = require('../base');
-//    var logical = require('../logical');
-//    var maths = require('../maths');
-//    var object = require('../object');
-//    var string = require('../string');
-//    var fn = require('../fn');
-//    var date = require('../date');
-//    var pair = require('../pair');
-//    var maybe = require('../maybe');
-//    var result = require('../result');
-//    var combinators = require('../combinators');
-//    var array = require('../array');
-//
-//
-//    var imports = [{name: 'curry', val: curry},
-//                   {name: 'base', val: base},
-//                   {name: 'logical', val: logical},
-//                   {name: 'maths', val: maths},
-//                   {name: 'object', val: object},
-//                   {name: 'string', val: string},
-//                   {name: 'fn', val: fn},
-//                   {name: 'date', val: date},
-//                   {name: 'pair', val: pair},
-//                   {name: 'maybe', val: maybe},
-//                   {name: 'result', val: result},
-//                   {name: 'combinators', val: combinators},
-//                   {name: 'array', val: array}];
-//
-//
-//    describe('Funkier exports', function() {
-//      var makeExportCorrectTest = function(key, module) {
-//        return function() {
-//          expect(funkier[key]).to.equal(module[key]);
-//        };
-//      };
-//
-//
-//      imports.forEach(function(importedModule) {
-//        var name = importedModule.name;
-//        var module = importedModule.val;
-//
-//        // We want to check that funkier exports everything exported by the original submodule, and indeed that it
-//        // exports the original version. This also implicitly tests that no two components export a function with
-//        // the same name: one of these tests would fail in that case.
-//        for (var k in module) {
-//          if (!module.hasOwnProperty(k))
-//            continue;
-//
-//          it('funkier.js exports ' + k, exportsProperty(funkier, k));
-//          it('funkier.js exports ' + k + ' from ' + name, makeExportCorrectTest(k, module));
-//        }
-//      });
-//
-//
-//      it('Exports help from utils', function() {
-//        expect(funkier.help).to.equal(utils.help);
-//      });
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
-
-},{}],54:[function(require,module,exports){
+},{"../../lib/funcUtils":24,"./testingUtilities":63,"chai":64}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -39747,6 +39805,7 @@ module.exports = (function() {
   var checkFunction = testingUtilities.checkFunction;
   var testCurriedFunction = testingUtilities.testCurriedFunction;
   var NO_RESTRICTIONS = testingUtilities.NO_RESTRICTIONS;
+
 
   describe('Object', function() {
     var expectedObjects = [];
