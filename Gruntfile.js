@@ -148,6 +148,30 @@ module.exports = function(grunt) {
     },
 
 
+    copy: {
+      css: {
+        expand: true,
+        src: 'docs/css/*',
+        flatten: true,
+        dest: 'website/css'
+      },
+
+      docs: {
+        expand: true,
+        src: 'docs/html/*.html',
+        flatten: true,
+        dest: 'website/docs/'
+      },
+
+      versionedDocs: {
+        expand: true,
+        src: ['docs/<%= pkg.version %>/html/*.html'],
+        flatten: true,
+        dest: 'website/docs/<%= pkg.version %>/'
+      }
+    },
+
+
     watch: {
       build: {
         files: filesToLint,
@@ -175,12 +199,27 @@ module.exports = function(grunt) {
       testGeneration: {
         files: ['automation/generateAPITests.js', 'Gruntfile.js', 'lib/**/*.js'],
         tasks: ['generation:autoTests']
+      },
+
+      websiteCSS: {
+        files: ['docs/css/*'],
+        tasks: ['copy:css']
+      },
+
+      websiteDocs: {
+        files: ['docs/html/*.html'],
+        tasks: ['copy:docs']
+      },
+
+      websiteVersionedDocs: {
+        files: ['docs/<%= pkg.version %>/html/*.html'],
+        tasks: ['copy:versionedDocs']
       }
     }
   });
 
 
-  var tasks = ['jshint', 'uglify', 'watch'];
+  var tasks = ['copy', 'jshint', 'uglify', 'watch'];
   tasks.map(function(task) {
     grunt.loadNpmTasks('grunt-contrib-' + task);
   });
