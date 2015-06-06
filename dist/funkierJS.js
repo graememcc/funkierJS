@@ -8209,7 +8209,6 @@ module.exports = (function() {
   var curry = curryModule.curry;
 
   var internalUtilities = require('../internalUtilities');
-  var defineValue = internalUtilities.defineValue;
   var checkIntegral = internalUtilities.checkIntegral;
 
   var base = require('./base');
