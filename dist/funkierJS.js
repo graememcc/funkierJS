@@ -9493,46 +9493,6 @@ module.exports = (function() {
 
   return funkier;
 })();
-//(funcion() {
-//  "use strict";
-//
-//
-//  var makeModule = function(require, exports) {
-//    var base = require('./base');
-//    var logical = require('./logical');
-//    var maths = require('./maths');
-//    var object = require('./object');
-//    var string = require('./string');
-//    var fn = require('./fn');
-//    var date = require('./date');
-//    var pair = require('./pair');
-//    var maybe = require('./maybe');
-//    var result = require('./result');
-//    var combinators = require('./combinators');
-//    var array = require('./array');
-//
-//    var utils = require('./utils');
-//    var help = utils.help;
-//
-//
-//
-//    // Also export help
-//    exportedFns.help = help;
-//
-//
-//    module.exports = exportedFns;
-//  };
-//
-//
-//  // AMD/CommonJS foo
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      makeModule(require, exports, module);
-//    });
-//  } else {
-//    makeModule(require, exports, module);
-//  }
-//})();
 
 },{"./components/array":1,"./components/base":2,"./components/categories":3,"./components/curry":4,"./components/date":5,"./components/fn":6,"./components/logical":7,"./components/maths":8,"./components/maybe":9,"./components/object":10,"./components/pair":11,"./components/result":12,"./components/string":13,"./components/types":14,"./help":17}],17:[function(require,module,exports){
 module.exports = (function() {
