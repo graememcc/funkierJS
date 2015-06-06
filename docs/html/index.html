@@ -809,7 +809,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -1160,7 +1160,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -2613,7 +2613,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -2660,7 +2660,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -2680,7 +2680,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -2703,7 +2703,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -2726,7 +2726,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -2824,7 +2824,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -2849,7 +2849,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -3301,7 +3301,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -3390,7 +3390,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -3735,7 +3735,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -3797,7 +3797,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -4667,7 +4667,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -5018,7 +5018,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -6471,7 +6471,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -6518,7 +6518,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -6538,7 +6538,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -6561,7 +6561,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -6584,7 +6584,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -6682,7 +6682,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -6707,7 +6707,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -7159,7 +7159,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -7248,7 +7248,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -7593,7 +7593,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -7655,7 +7655,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -8525,7 +8525,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -8876,7 +8876,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -10329,7 +10329,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -10376,7 +10376,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -10396,7 +10396,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -10419,7 +10419,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -10442,7 +10442,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -10540,7 +10540,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -10565,7 +10565,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -11017,7 +11017,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -11106,7 +11106,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -11451,7 +11451,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -11513,7 +11513,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -12383,7 +12383,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -12734,7 +12734,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -14187,7 +14187,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -14234,7 +14234,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -14254,7 +14254,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -14277,7 +14277,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -14300,7 +14300,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -14398,7 +14398,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -14423,7 +14423,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -14875,7 +14875,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -14964,7 +14964,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -15309,7 +15309,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -15371,7 +15371,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -16241,7 +16241,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -16592,7 +16592,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -18045,7 +18045,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -18092,7 +18092,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -18112,7 +18112,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -18135,7 +18135,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -18158,7 +18158,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -18256,7 +18256,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -18281,7 +18281,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -18733,7 +18733,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -18822,7 +18822,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -19167,7 +19167,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -19229,7 +19229,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -20099,7 +20099,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -20450,7 +20450,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -21903,7 +21903,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -21950,7 +21950,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -21970,7 +21970,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -21993,7 +21993,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -22016,7 +22016,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -22114,7 +22114,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -22139,7 +22139,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -22591,7 +22591,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -22680,7 +22680,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -23025,7 +23025,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -23087,7 +23087,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -23957,7 +23957,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -24308,7 +24308,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -25761,7 +25761,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -25808,7 +25808,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -25828,7 +25828,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -25851,7 +25851,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -25874,7 +25874,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -25972,7 +25972,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -25997,7 +25997,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -26449,7 +26449,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -26538,7 +26538,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -26883,7 +26883,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -26945,7 +26945,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -27815,7 +27815,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -28166,7 +28166,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -29619,7 +29619,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -29666,7 +29666,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -29686,7 +29686,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -29709,7 +29709,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -29732,7 +29732,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -29830,7 +29830,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -29855,7 +29855,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -30307,7 +30307,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -30396,7 +30396,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -30741,7 +30741,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -30803,7 +30803,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -31673,7 +31673,7 @@ is not defined.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>A wrapper around the division operator.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.arityOf(4, 2); // =&gt; 2;
+<pre><code>funkierJS.divide(4, 2); // =&gt; 2;
 </code></pre></section>
 </section>
 <section class="functionRef" id="drop">
@@ -32024,7 +32024,7 @@ first value is not a function of arity 1, or the second is not a known functor.<
 </li>
 </ul>
 <section class="examples"><h4>Examples</h4>
-<pre><code>fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
+<pre><code>funkierJS.fmap(function(x) { return x + 1; }, Just(10)); =&gt; Just 11
 </code></pre></section>
 </section>
 <section class="functionRef" id="foldl">
@@ -33477,7 +33477,7 @@ in case you need to give the resulting function to one of the <code>withArity</c
 <section class="examples"><h4>Examples</h4>
 <pre><code>var c = funkierJS.constant(true);&#39;,
 var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
+var f = funkierJS.orPred(c, d);&#39;,
 f(&quot;foo&quot;); // =&gt; true&#39;,
 </code></pre></section>
 </section>
@@ -33524,7 +33524,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;bca&#39;
 </code></pre></section>
 </section>
@@ -33544,7 +33544,7 @@ functions of arities 0 and 1, and equivalent to flip for functions of arity 2.</
 <p>Throws a TypeError if f is not a function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>f = function(x, y, z) {return x + y + z;};
-g = permuteLeft(f);
+g = funkierJS.permuteLeft(f);
 g(&#39;a&#39;, &#39;b&#39;, &#39;c&#39;); // =&gt; &#39;cab&#39;
 </code></pre></section>
 </section>
@@ -33567,7 +33567,7 @@ wrappingFunction will be discarded, and f&#39;s return value will be returned.</
 <p>Throws a TypeError if either of the given values are not functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var postLogger = function(args, result) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;), &#39;returned&#39;, result);};
-var loggedPlus = post(postLogger, plus);
+var loggedPlus = funkierJS.post(postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2 returned 4&#39; to console
 </code></pre></section>
 </section>
@@ -33590,7 +33590,7 @@ new function was invoked with. The return value from f will be returned.</p>
 <p>Throws a TypeError if neither of the given values are functions.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
-var loggedPlus = pre(logger, plus);
+var loggedPlus = funkierJS.pre(logger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; to console
 </code></pre></section>
 </section>
@@ -33688,7 +33688,7 @@ array containing the substrings of s that were separated by substrings matching 
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
 To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+<pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="regExpSplitCount">
@@ -33713,7 +33713,7 @@ returned array containing at most limit such substrings.</p>
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
-<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+<p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
 <h3 class="functionName">rem</h3>
@@ -34165,7 +34165,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 constructor. Throws if called with a non-pair value.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = new funkierJS.Pair(2, 3);
-funkierJS.cnd(p); // =&gt; 3&#39;,
+funkierJS.snd(p); // =&gt; 3&#39;,
 </code></pre></section>
 </section>
 <section class="functionRef" id="some">
@@ -34254,7 +34254,7 @@ containing at most limit such substrings.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
 To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+<pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
 </section>
 <section class="functionRef" id="splitRegExp">
@@ -34599,7 +34599,7 @@ equivalent date in UTC.</p>
 <div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
 <p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+<pre><code>funkierJS.toUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
 </code></pre></section>
 </section>
 <section class="functionRef" id="trim">
@@ -34661,7 +34661,7 @@ the new function was called with, and f&#39;s result</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var logger = function(args) {console.log(&#39;plus called with &#39;, args.join(&#39;, &#39;));};
 var postLogger = function(args, result) {console.log(&#39;plus returned&#39;, result);};
-var loggedPlus = wrap(logger, postLogger, plus);
+var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
 loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus returned 4&#39; to console
 </code></pre></section>
 </section>

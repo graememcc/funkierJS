@@ -2762,7 +2762,7 @@ module.exports = (function() {
    *             of the Ok. [`Err`](#Err) values yield the Err value unchanged.
    *
    * Examples:
-   *  fmap(function(x) { return x + 1; }, Just(10)); => Just 11
+   *  funkierJS.fmap(function(x) { return x + 1; }, Just(10)); => Just 11
    *
    */
 
@@ -5014,7 +5014,7 @@ module.exports = (function() {
    *
    * Examples:
    *   f = function(x, y, z) {return x + y + z;};
-   *   g = permuteLeft(f);
+   *   g = funkierJS.permuteLeft(f);
    *   g('a', 'b', 'c'); // => 'bca'
    *
    */
@@ -5058,7 +5058,7 @@ module.exports = (function() {
    *
    * Examples:
    *   f = function(x, y, z) {return x + y + z;};
-   *   g = permuteLeft(f);
+   *   g = funkierJS.permuteLeft(f);
    *   g('a', 'b', 'c'); // => 'cab'
    *
    */
@@ -5100,7 +5100,7 @@ module.exports = (function() {
    *
    * Examples:
    *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
-   *   var loggedPlus = pre(logger, plus);
+   *   var loggedPlus = funkierJS.pre(logger, plus);
    *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' to console
    *
    */
@@ -5139,7 +5139,7 @@ module.exports = (function() {
    *
    * Examples:
    *   var postLogger = function(args, result) {console.log('plus called with ', args.join(', '), 'returned', result);};
-   *   var loggedPlus = post(postLogger, plus);
+   *   var loggedPlus = funkierJS.post(postLogger, plus);
    *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2 returned 4' to console
    *
    */
@@ -5192,7 +5192,7 @@ module.exports = (function() {
    * Examples:
    *   var logger = function(args) {console.log('plus called with ', args.join(', '));};
    *   var postLogger = function(args, result) {console.log('plus returned', result);};
-   *   var loggedPlus = wrap(logger, postLogger, plus);
+   *   var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
    *   loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
    *
    */
@@ -5423,7 +5423,7 @@ module.exports = (function() {
    * Examples:
    *  var c = funkierJS.constant(true);',
    *  var d = funkierJS.constant(false);',
-   *  var f = funkierJS.andPred(c, d);',
+   *  var f = funkierJS.orPred(c, d);',
    *  f("foo"); // => true',
    *
    */
@@ -5592,7 +5592,7 @@ module.exports = (function() {
    * A wrapper around the division operator.
    *
    * Examples:
-   *   funkierJS.arityOf(4, 2); // => 2;
+   *   funkierJS.divide(4, 2); // => 2;
    *
    */
 
@@ -7785,7 +7785,7 @@ module.exports = (function() {
    *
    * Examples:
    * var p = new funkierJS.Pair(2, 3);
-   * funkierJS.cnd(p); // => 3',
+   * funkierJS.snd(p); // => 3',
    *
    */
 
@@ -8383,7 +8383,7 @@ module.exports = (function() {
    * Equivalent to `String.prototype.toUpperCase`. Takes a string s, and returns a uppercase version of s.
    *
    * Examples:
-   *   funkierJS.oUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
+   *   funkierJS.toUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
    *
    */
 
@@ -8464,7 +8464,7 @@ module.exports = (function() {
    * To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
    *
    * Examples:
-   *   regExpSplit/a/, 'banana'); // => ['b', 'n', 'n']
+   *   funkierJS.regExpSplit/a/, 'banana'); // => ['b', 'n', 'n']
    *
    */
 
@@ -8502,7 +8502,7 @@ module.exports = (function() {
    * To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
    *
    * Examples:
-   *   funkierJS.split('|', 2, '1|2|3'); // => ['1', '2']
+   *   funkierJS.splitMax('|', 2, '1|2|3'); // => ['1', '2']
    *
    */
 
@@ -8540,7 +8540,7 @@ module.exports = (function() {
    * To specify the delimiter as a string, use [`splitMax`](#splitMax).
    * To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
    *
-   *   funkierJS.splitRegExpLimit(/a/, 2, 'banana'); // => ['b', 'n']
+   *   funkierJS.regExpSplitMax(/a/, 2, 'banana'); // => ['b', 'n']
    *
    */
 
