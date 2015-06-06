@@ -96,6 +96,9 @@ removed from the given arrayLike.</p>
 <p>Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
 the remaining members our source upon removing the initial elements for which the predicate function returned true.</p>
 <p>Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>dropWhile</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // =&gt; [3, 5, 7
 </code></pre></section>
@@ -107,6 +110,9 @@ the remaining members our source upon removing the initial elements for which th
 <p>Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
 returns undefined.</p>
 <p>Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>each</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.each(function(e) {console.log(e);}, [1, 2]); // =&gt; Logs 1 then 2 to the console
 </code></pre></section>
@@ -131,6 +137,9 @@ identity) and false otherwise.</p>
 <p>A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
 Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.</p>
 <p>Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>element</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var p = function(e) {return e.foo = 42;};
 funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // =&gt; true
@@ -147,6 +156,9 @@ predicate with every element of the array or string, until either the predicate 
 of the array or string is reached.</p>
 <p>Returns the last value returned by the predicate function.</p>
 <p>Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>every</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.every(even, [2, 4, 6]); // =&gt; true
 </code></pre></section>
@@ -159,6 +171,9 @@ of the array or string is reached.</p>
 <p>Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
 those members of arr—in the same order as the original array—for which the predicate function returned true.</p>
 <p>Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>filter</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.filter(even, [2, 3, 4, 5, 6]); // =&gt; [2, 4, 6]
 </code></pre></section>
@@ -184,6 +199,9 @@ Note that flatten only strips off one layer.</p>
 flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
 TypeError is thrown if this is not the case.</p>
 <p>A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>flattenWith</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var fn = function(n) {return [n, n * n];};
 funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
@@ -201,6 +219,9 @@ value, and the current element. The value returned will form the next accumulati
 value returned by the final call. The first call&#39;s accumulation parameter will be the given initial value.</p>
 <p>Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
 string.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>foldl</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, &#39;123&#39;); // 123
 </code></pre></section>
@@ -218,6 +239,9 @@ returns the value returned by the final call. The first call&#39;s accumulation 
 the array or string.</p>
 <p>Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
 or if the arrayLike is empty.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>foldl1</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.foldl1(multiply, [2, 3, 4]); // =&gt; 24
 </code></pre></section>
@@ -234,6 +258,9 @@ value, and the current element. The value returned will form the next accumulati
 value returned by the final call. The first call&#39;s accumulation parameter willbe the given initial value.</p>
 <p>Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
 arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>foldr</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.foldr(subtract, 0, [2, 3, 4]); // =&gt; -9
 </code></pre></section>
@@ -251,6 +278,9 @@ returns the value returned by the final call. The first call&#39;s accumulation 
 the array or string.</p>
 <p>Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
 string, or if the array or string is empty.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>foldr1</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.foldr1(function(soFar, current) {return current + soFar;}, &quot;banana&quot;); // =&gt; ananab
 </code></pre></section>
@@ -365,6 +395,9 @@ empty arrayLike.</p>
 <p>Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
 we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
 have an arity of at least 1, or if the last argument is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>map</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied to
+this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.map(plus(1), [2, 3, 4]); // =&gt; [3, 4, 5]
 </code></pre></section>
@@ -420,6 +453,9 @@ called with a previously encountered element and the element under consideration
 preserved.</p>
 <p>Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
 is not arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>nubWith</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var pred = function(x, y) { return x.foo === y.foo; };
 funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
@@ -449,6 +485,9 @@ haystack</code></li><li class="paramsItem"><code class="paramType type">arrayLik
 value—tested by the given predicate—and returns an array containing all the indices into haystack where the
 predicate holds.</p>
 <p>Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>occurrences</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var pred = function(e) {return e.foo === 42;};
 var arr = [{foo: 1}, {foo: 42}, {foo: 42}, {foo: 3}];
@@ -578,6 +617,9 @@ predicate with every element of the array or string, until either the predicate 
 of the array or string is reached.</p>
 <p>Returns the last value returned by the predicate function.</p>
 <p>Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>some</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.some(odd, [2, 4, 5, 6]; // =&gt; true
 </code></pre></section>
@@ -602,6 +644,9 @@ of the array or string is reached.</p>
 given function. The function should return a negative number if the first argument is &quot;less than&quot; the second, 0 if
 the two arguments are &quot;equal&quot;, and a positive number if the first argument is greater than the second.</p>
 <p>Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>sortWith</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var sortFn = function(x, y) {return x - y;};
 funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // =&gt; [1, 2, 10, 21]
@@ -667,6 +712,9 @@ of the given arrayLike.</p>
 <p>Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
 string containing the initial members of the given arrayLike for which the predicate returned true.</p>
 <p>Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>takeWhile</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // =&gt; [2, 4]
 </code></pre></section>
@@ -714,6 +762,9 @@ has the same length as the smaller of the two arguments. Each element is the res
 function with the elements at the corresponding position in the original arrayLikes.</p>
 <p>Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
 arguments is arrayLike.</p>
+<p>Note that, if required, the function must already have its execution context set. Internally, the execution context
+within <code>zipWith</code> is <code>null</code>, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f = function(a, b) {return a + b;};
 funkierJS.zipWith(f, &#39;apple&#39;, &#39;banana&#39;); // =&gt; [&#39;ab&#39;, &#39;pa&#39;, &#39;pn&#39;, &#39;la&#39;, &#39;en&#39;]

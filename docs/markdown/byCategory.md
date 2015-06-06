@@ -97,6 +97,10 @@ the remaining members our source upon removing the initial elements for which th
 
 Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `dropWhile` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
+
 #### Examples ####
     funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // => [3, 5, 7
 ***
@@ -111,6 +115,10 @@ Takes a function f, and an array, string or arrayLike arr. Calls f with each mem
 returns undefined.
 
 Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `each` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
 
 #### Examples ####
     funkierJS.each(function(e) {console.log(e);}, [1, 2]); // => Logs 1 then 2 to the console
@@ -146,6 +154,10 @@ Returns true if there is an element in the arrayLike for which p returns true, a
 
 Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `element` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     var p = function(e) {return e.foo = 42;};
     funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // => true
@@ -169,6 +181,10 @@ Returns the last value returned by the predicate function.
 
 Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `every` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     funkierJS.every(even, [2, 4, 6]); // => true
 ***
@@ -185,6 +201,10 @@ Takes a predicate function pred, and an array, string or arrayLike arr. Returns 
 those members of arr—in the same order as the original array—for which the predicate function returned true.
 
 Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `filter` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
 
 #### Examples ####
     funkierJS.filter(even, [2, 3, 4, 5, 6]); // => [2, 4, 6]
@@ -220,6 +240,10 @@ TypeError is thrown if this is not the case.
 
 A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `flattenWith` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
+
 #### Examples ####
     var fn = function(n) {return [n, n * n];};
     funkierJS.flattenMap(fn, [1, 2, 3]); // => Returns [1, 1, 2, 4, 3, 9]
@@ -244,6 +268,10 @@ value returned by the final call. The first call's accumulation parameter will b
 Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
 string.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `foldl` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, '123'); // 123
 ***
@@ -266,6 +294,10 @@ the array or string.
 
 Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
 or if the arrayLike is empty.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `foldl1` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
 
 #### Examples ####
     funkierJS.foldl1(multiply, [2, 3, 4]); // => 24
@@ -290,6 +322,10 @@ value returned by the final call. The first call's accumulation parameter willbe
 Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
 arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `foldr` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     funkierJS.foldr(subtract, 0, [2, 3, 4]); // => -9
 ***
@@ -312,6 +348,10 @@ the array or string.
 
 Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
 string, or if the array or string is empty.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `foldr1` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
 
 #### Examples ####
     funkierJS.foldr1(function(soFar, current) {return current + soFar;}, "banana"); // => ananab
@@ -468,6 +508,10 @@ Takes a function f, and an array,string or other arrayLike. Returns an array arr
 we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
 have an arity of at least 1, or if the last argument is not an arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `map` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied to
+this function.
+
 #### Examples ####
     funkierJS.map(plus(1), [2, 3, 4]); // => [3, 4, 5]
 ***
@@ -543,6 +587,10 @@ preserved.
 Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
 is not arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `nubWith` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     var pred = function(x, y) { return x.foo === y.foo; };
     funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
@@ -579,6 +627,10 @@ value—tested by the given predicate—and returns an array containing all the 
 predicate holds.
 
 Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `occurrences` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
 
 #### Examples ####
     var pred = function(e) {return e.foo === 42;};
@@ -746,6 +798,10 @@ Returns the last value returned by the predicate function.
 
 Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `some` is `null`, so it cannot supply a useful execution context to any object-curried functions supplied
+to this function.
+
 #### Examples ####
     funkierJS.some(odd, [2, 4, 5, 6]; // => true
 ***
@@ -778,6 +834,10 @@ given function. The function should return a negative number if the first argume
 the two arguments are "equal", and a positive number if the first argument is greater than the second.
 
 Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `sortWith` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
 
 #### Examples ####
     var sortFn = function(x, y) {return x - y;};
@@ -866,6 +926,10 @@ string containing the initial members of the given arrayLike for which the predi
 
 Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.
 
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `takeWhile` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
+
 #### Examples ####
     funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // => [2, 4]
 ***
@@ -925,6 +989,10 @@ function with the elements at the corresponding position in the original arrayLi
 
 Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
 arguments is arrayLike.
+
+Note that, if required, the function must already have its execution context set. Internally, the execution context
+within `zipWith` is `null`, so it cannot supply a useful execution context to any object-curried functions
+supplied to this function.
 
 #### Examples ####
     var f = function(a, b) {return a + b;};
