@@ -1,5 +1,935 @@
 # funkierJS API: By Category #
 
+## Array##
+### all ###
+See `every`
+***
+### any ###
+See `some`
+***
+### append ###
+**Usage:** `var result = append(value, arr);`
+
+Parameters:  
+value `any`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.
+
+Throws a TypeError if the second argument is not an arrayLike.
+
+Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+get the result you expect.
+
+#### Examples ####
+    var a = [1, 2, 3];
+    funkierJS.append(4, a); // => [1, 2, 3, 4]
+    a; // => [1, 2, 3] (a is not changed)
+***
+### concat ###
+**Usage:** `var result = concat(arr1, arr2);`
+
+Parameters:  
+arr1 `arrayLike`  
+arr2 `arrayLike`
+
+Returns: `arrayLike`
+
+Takes two arrays, arrayLikes or strings, and returns their concatenation.
+
+Throws a TypeError if either argument is not an arrayLike.
+
+If both arguments are the same type and are either arrays or strings, then the result will be the same type,
+otherwise it will be an array.
+
+#### Examples ####
+    funkierJS.concat([1, 2], [3, 4, 5]); // => [1, 2, 3, 4, 5]
+    funkierJS.concat('abc', 'def'); // => 'abcdef'
+    funkierJS.concat('abc', [1, 2, 3]); // => ['a', 'b', 'c', 1, 2, 3]
+***
+### copy ###
+**Usage:** `var result = copy(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an arrayLike, and returns a new array which is a shallow copy.
+
+Throws a TypeError if the given value is not an arrayLike.
+
+#### Examples ####
+    var a = [1, 2, 3];]
+    var b = funkierJS.copy(a); // => [1, 2, 3]
+    b === a; // => false
+***
+### drop ###
+**Usage:** `var result = drop(count, arr);`
+
+Parameters:  
+count `number`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+removed from the given arrayLike.
+
+Throws a TypeError if the count is not integral, or if the last argument is not an array or string.
+
+#### Examples ####
+    funkierJS.drop(3, 'banana'); // => 'anana'
+***
+### dropWhile ###
+**Usage:** `var result = dropWhile(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
+the remaining members our source upon removing the initial elements for which the predicate function returned true.
+
+Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // => [3, 5, 7
+***
+### each ###
+**Usage:** `each(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
+returns undefined.
+
+Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.
+
+#### Examples ####
+    funkierJS.each(function(e) {console.log(e);}, [1, 2]); // => Logs 1 then 2 to the console
+***
+### element ###
+**Usage:** `var result = element(val, arr);`
+
+Parameters:  
+val `any`  
+arr `arrayLike`
+
+Returns: `boolean`
+
+Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict
+identity) and false otherwise.
+
+Throws a TypeError if the second argument is not an arrayLike.
+
+#### Examples ####
+    funkierJS.element('a', 'cable'); // => true
+***
+### elementWith ###
+**Usage:** `var result = elementWith(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `boolean`
+
+A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
+Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.
+
+Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.
+
+#### Examples ####
+    var p = function(e) {return e.foo = 42;};
+    funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // => true
+***
+### every ###
+*Synonyms:* `all`
+
+**Usage:** `var result = every(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `boolean`
+
+Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+predicate with every element of the array or string, until either the predicate function returns false, or the end
+of the array or string is reached.
+
+Returns the last value returned by the predicate function.
+
+Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.
+
+#### Examples ####
+    funkierJS.every(even, [2, 4, 6]); // => true
+***
+### filter ###
+**Usage:** `var result = filter(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
+those members of arr—in the same order as the original array—for which the predicate function returned true.
+
+Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.
+
+#### Examples ####
+    funkierJS.filter(even, [2, 3, 4, 5, 6]); // => [2, 4, 6]
+***
+### flatten ###
+**Usage:** `var result = flatten(arr);`
+
+Parameters:  
+arr `array`
+
+Returns: `array`
+
+Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.
+Note that flatten only strips off one layer.
+
+Throws a TypeError if the supplied value is not arrayLike, or if any of the values within it are not arrayLike.
+
+#### Examples ####
+    funkierJS.flatten([[1, 2], [3, 4]]); // => [1, 2, 3, 4]
+***
+### flattenMap ###
+**Usage:** `var result = flattenMap(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Returns: `array`
+
+Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and
+flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
+TypeError is thrown if this is not the case.
+
+A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.
+
+#### Examples ####
+    var fn = function(n) {return [n, n * n];};
+    funkierJS.flattenMap(fn, [1, 2, 3]); // => Returns [1, 1, 2, 4, 3, 9]
+***
+### foldl ###
+*Synonyms:* `reduce`
+
+**Usage:** `var result = foldl(f, initial, arr);`
+
+Parameters:  
+f `function`  
+initial `any`  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.
+Traverses the array or string from left to right, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and `foldl` returns the
+value returned by the final call. The first call's accumulation parameter will be the given initial value.
+
+Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
+string.
+
+#### Examples ####
+    funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, '123'); // 123
+***
+### foldl1 ###
+*Synonyms:* `reduce1`
+
+**Usage:** `var result = foldl1(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array
+from left to right from the second element, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldl1 returns
+returns the value returned by the final call. The first call's accumulation parameter will be the first element of
+the array or string.
+
+Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
+or if the arrayLike is empty.
+
+#### Examples ####
+    funkierJS.foldl1(multiply, [2, 3, 4]); // => 24
+***
+### foldr ###
+*Synonyms:* `reduceRight`
+
+**Usage:** `var result = foldr(f, initial, arr);`
+
+Parameters:  
+f `function`  
+initial `any`  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.
+Traverses the array or string from right to left, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldr returns the
+value returned by the final call. The first call's accumulation parameter willbe the given initial value.
+
+Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
+arrayLike.
+
+#### Examples ####
+    funkierJS.foldr(subtract, 0, [2, 3, 4]); // => -9
+***
+### foldr1 ###
+*Synonyms:* `reduceRight1`
+
+**Usage:** `var result = foldr1(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from
+right to left from the penultimate element, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldr1 returns
+returns the value returned by the final call. The first call's accumulation parameter will be the last element of
+the array or string.
+
+Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
+string, or if the array or string is empty.
+
+#### Examples ####
+    funkierJS.foldr1(function(soFar, current) {return current + soFar;}, "banana"); // => ananab
+***
+### getIndex ###
+**Usage:** `var result = getIndex(index, arr);`
+
+Parameters:  
+index `number`  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a
+TypeError if the index is outside the range for the given object.
+
+#### Examples ####
+    funkierJS.getIndex(1, "abcd"); 1
+***
+### head ###
+**Usage:** `var result = head(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an
+empty arrayLike.
+
+#### Examples ####
+    funkierJS.head([1, 2, 3]); // => 1
+***
+### init ###
+**Usage:** `var result = init(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike. Returns an array or string containing every element except the last.
+
+Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.init([2, 3, 4, 5]); // => [2, 3, 4]
+***
+### inits ###
+*Synonyms:* `prefixes`
+
+**Usage:** `var result = inits(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.
+
+Throws a TypeError if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.inits([2, 3]); // => [[], [2], [2, 3]]
+***
+### intersperse ###
+**Usage:** `var result = intersperse(val, arr);`
+
+Parameters:  
+val `any`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each
+pair of elements of the original.
+
+Note: if the second parameter is a string, the first parameter will be coerced to a string.
+
+Throws a TypeError if the second argument is not arrayLike.
+
+#### Examples ####
+    funkierJS.intersperse(1, [2, 3, 4]); // => [2, 1, 3, 1, 4]
+***
+### isEmpty ###
+**Usage:** `var result = isEmpty(arr);`
+
+Parameters:  
+arr `arraLike`
+
+Returns: `boolean`
+
+Returns true if the given array, arrayLike or string is empty, and false if not.
+
+Throws a TypeError if the argument is not arrayLike.
+
+#### Examples ####
+    funkierJS.isEmpty([]); // => true
+***
+### join ###
+**Usage:** `var result = join(separator, arr);`
+
+Parameters:  
+separator `any`  
+arr `array`
+
+Returns: `string`
+
+Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString
+of each element in the array, separated by the toString of the given separator.
+
+Throws a TypeError if the last element is not an array.
+
+#### Examples ####
+    funkierJS.join('-', [1, 2, 3]); // => '1-2-3'
+***
+### last ###
+**Usage:** `var result = last(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `any`
+
+Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an
+empty arrayLike.
+
+#### Examples ####
+    funkierJS.last([1, 2, 3]); // => 3
+***
+### length ###
+**Usage:** `var result = length(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `number`
+
+Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.length([1, 2, 3]); // => 3
+***
+### map ###
+**Usage:** `var result = map(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Returns: `array`
+
+Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
+we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
+have an arity of at least 1, or if the last argument is not an arrayLike.
+
+#### Examples ####
+    funkierJS.map(plus(1), [2, 3, 4]); // => [3, 4, 5]
+***
+### maximum ###
+**Usage:** `var result = maximum(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `any`
+
+Returns the largest element of the given array, string or arrayLike.
+
+Throws a TypeError if the value is not an arrayLike, or it is empty.
+
+Note: this function is intended to be used with arrays containing numeric or character data. You are of course free
+to abuse it, but it will likely not do what you expect.
+
+#### Examples ####
+    funkierJS.maximum([20, 10]); // => 20
+***
+### minimum ###
+**Usage:** `var result = minimum(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `any`
+
+Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.
+
+Note: this function is intended to be used with arrays containing numeric or character data. You are of course
+free to abuse it, but it will likely not do what you expect.
+
+#### Examples ####
+    funkierJS.minimum([20, 10]); // => 10
+***
+### nub ###
+*Synonyms:* `uniq`
+
+**Usage:** `var result = nub(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict
+equality—removed. The order of elements is preserved.
+
+Throws a TypeError if the given argument is not arrayLike.
+
+#### Examples ####
+    funkierJS.nub('banana'); // 'ban'
+***
+### nubWith ###
+*Synonyms:* `uniqWith`
+
+**Usage:** `var result = nubWith(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all
+duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when
+called with a previously encountered element and the element under consideration. The order of elements is
+preserved.
+
+Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
+is not arrayLike.
+
+#### Examples ####
+    var pred = function(x, y) { return x.foo === y.foo; };
+    funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
+    // => [{foo: 12}, {foo: 42}]
+***
+### occurrences ###
+**Usage:** `var result = occurrences(needle, haystack);`
+
+Parameters:  
+needle `any` | ``  
+haystack `arrayLike`
+
+Returns: `array`
+
+Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested
+for strict equality—and returns an array containing all the indices into haystack where the values may be found.
+
+Throws a TypeError if the haystack parameter is not arrayLike.
+
+#### Examples ####
+    funkierJS.occurrences(2, [1, 2, 2, 3, 2, 4]; // => [1, 2, 4]
+***
+### occurrencesWith ###
+**Usage:** `var result = occurrencesWith(needle, haystack);`
+
+Parameters:  
+needle `any` | ``  
+haystack `arrayLike`
+
+Returns: `array`
+
+Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the
+value—tested by the given predicate—and returns an array containing all the indices into haystack where the
+predicate holds.
+
+Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.
+
+#### Examples ####
+    var pred = function(e) {return e.foo === 42;};
+    var arr = [{foo: 1}, {foo: 42}, {foo: 42}, {foo: 3}];
+    funkierJS.occurrencesWith(pred, arr); // => [1, 2]
+***
+### prefixes ###
+See `inits`
+***
+### prepend ###
+**Usage:** `var result = prepend(value, arr);`
+
+Parameters:  
+value `any`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.
+
+Throws a TypeError if the second argument is not an arrayLike.
+
+Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+get the result you expect.
+
+#### Examples ####
+    var a = [1, 2, 3];
+    funkierJS.prepend(4, a); // => [4, 1, 2, 3]
+    a; // => [1, 2, 3] (a is not changed)
+***
+### product ###
+**Usage:** `var result = product(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `number`
+
+Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.
+
+Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+but it will likely not do what you expect.
+
+#### Examples ####
+    funkierJS.product([20, 10]); // => 200
+***
+### range ###
+**Usage:** `var result = range(a, b);`
+
+Parameters:  
+a `number`  
+b `number`
+
+Returns: `array`
+
+Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not
+including b, each element increasing by 1.
+
+Throws a TypeError if b < a.
+
+#### Examples ####
+    funkierJS.range(2, 7); // => [2, 3, 4, 5, 6]
+***
+### rangeStep ###
+See `rangeStride`
+***
+### rangeStride ###
+*Synonyms:* `rangeStep`
+
+**Usage:** `var result = rangeStride(a, stride, b);`
+
+Parameters:  
+a `number`  
+stride `number`  
+b `number`
+
+Returns: `array`
+
+Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to
+but not including b, each element increasing by stride.
+
+Throws a TypeError if the sequence will not terminate.
+
+#### Examples ####
+    funkierJS.rangeStep(2, 2, 7); // => [2, 4, 6]
+***
+### reduce ###
+See `foldl`
+***
+### reduce1 ###
+See `foldl1`
+***
+### reduceRight ###
+See `foldr`
+***
+### reduceRight1 ###
+See `foldr1`
+***
+### replicate ###
+**Usage:** `var result = replicate(length, arr);`
+
+Parameters:  
+length `natural`  
+arr `arrayLike`
+
+Returns: `array`
+
+Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws
+a TypeError if the given length is negative.
+
+#### Examples ####
+    funkierJS.replicate(5, 42); // => [42, 42, 42, 42, 42]
+***
+### reverse ###
+**Usage:** `var result = reverse(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.
+
+Throws a TypeError if the argument is not arrayLike.
+
+#### Examples ####
+    funkierJS.reverse('banana'); 'ananab'
+***
+### slice ###
+**Usage:** `var result = slice(from, to, arr);`
+
+Parameters:  
+from `number`  
+to `number`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the
+elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the
+object, then all values from 'from' will be returned.
+
+Throws a TypeError if from or to are not positive integers, or if the last argument is not an arrayLike.
+
+#### Examples ####
+    funkierJS.slice(1, 3, [1, 2, 3, 4, 5]; // => [2, 3]
+***
+### some ###
+*Synonyms:* `any`
+
+**Usage:** `var result = some(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `boolean`
+
+Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+predicate with every element of the array or string, until either the predicate function returns true, or the end
+of the array or string is reached.
+
+Returns the last value returned by the predicate function.
+
+Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.
+
+#### Examples ####
+    funkierJS.some(odd, [2, 4, 5, 6]; // => true
+***
+### sort ###
+**Usage:** `var result = sort(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.
+
+Throws a TypeError if the given argument is not arrayLike.
+
+#### Examples ####
+    funkierJS.sort([10, 1, 21, 2]); // => [1, 10, 2, 21]
+***
+### sortWith ###
+**Usage:** `var result = sortWith(f, arr);`
+
+Parameters:  
+f `function`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the
+given function. The function should return a negative number if the first argument is "less than" the second, 0 if
+the two arguments are "equal", and a positive number if the first argument is greater than the second.
+
+Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.
+
+#### Examples ####
+    var sortFn = function(x, y) {return x - y;};
+    funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // => [1, 2, 10, 21]
+***
+### suffixes ###
+See `tails`
+***
+### sum ###
+**Usage:** `var result = sum(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `number`
+
+Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.
+
+Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+but it will likely not do what you expect.
+
+#### Examples ####
+    funkierJS.sum([20, 10]); // => 30
+***
+### tail ###
+**Usage:** `var result = tail(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike. Returns an array or string containing every element except the first.
+
+Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.tail('banana'); // => 'anana'
+***
+### tails ###
+*Synonyms:* `suffixes`
+
+**Usage:** `var result = tails(arr);`
+
+Parameters:  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.
+
+Throws a TypeError if the given value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.tails([2, 3]); // => [[2, 3], [3], []]
+***
+### take ###
+**Usage:** `var result = take(count, arr);`
+
+Parameters:  
+count `number`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+of the given arrayLike.
+
+Throws a TypeError if the count is not integral, or if the last argument is not an arrayLike.
+
+#### Examples ####
+    funkierJS.take(3, 'banana'); // => 'ban'
+***
+### takeWhile ###
+**Usage:** `var result = takeWhile(pred, arr);`
+
+Parameters:  
+pred `function`  
+arr `arrayLike`
+
+Returns: `arrayLike`
+
+Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
+string containing the initial members of the given arrayLike for which the predicate returned true.
+
+Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.
+
+#### Examples ####
+    funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // => [2, 4]
+***
+### uniq ###
+See `nub`
+***
+### uniqWith ###
+See `nubWith`
+***
+### unzip ###
+**Usage:** `var result = unzip(source);`
+
+Parameters:  
+source `array`
+
+Returns: `Pair`
+
+Takes an array of Pairs, and returns a [`Pair`](#Pair). The first element is an array containing the first element from each
+pair, and likewise the second element is an array containing the second elements.
+
+Throws a TypeError if the given argument is not an array, or if any element is not a Pair.
+
+#### Examples ####
+    funkierJS.unzip([Pair(1, 2), Pair(3, 4)]); // =>  Pair([1, 3], [2, 4])
+***
+### zip ###
+**Usage:** `var result = zip(a, b);`
+
+Parameters:  
+a `arrayLike`  
+b `arrayLike`
+
+Returns: `array`
+
+Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two
+arguments. Each element is a [`Pair`](#Pair) p, such that `fst(p) === a[i]` and `snd(p) === b[i]` for each position
+i in the result.
+
+Throws a TypeError if neither argument is arrayLike.
+
+#### Examples ####
+    funkierJS.zip([1, 2], [3, 4]); // => [Pair(1, 3), Pair(2, 4)]
+***
+### zipWith ###
+**Usage:** `zipWith(f, a, b);`
+
+Parameters:  
+f `function`  
+a `arrayLike`  
+b `arrayLike`
+
+Returns array
+
+Takes a function of arity 2, and a two arrays/arrayLikes/strings, a and b, and returns a new array. The new array
+has the same length as the smaller of the two arguments. Each element is the result of calling the supplied
+function with the elements at the corresponding position in the original arrayLikes.
+
+Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
+arguments is arrayLike.
+
+#### Examples ####
+    var f = function(a, b) {return a + b;};
+    funkierJS.zipWith(f, 'apple', 'banana'); // => ['ab', 'pa', 'pn', 'la', 'en']
+***
 ## DataTypes##
 ### Err ###
 **Usage:** `var result = Err(a);`

@@ -6,6 +6,2292 @@ module.exports = (function() {
   var curryModule = require('./curry');
   var curry = curryModule.curry;
   var curryWithArity = curryModule.curryWithArity;
+  var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
+  var arityOf = curryModule.arityOf;
+
+  var base = require('./base');
+
+  var types = require('./types');
+  var strictEquals = types.strictEquals;
+
+  var object = require('./object');
+  var callPropWithArity = object.callPropWithArity;
+
+  var internalUtilities = require('../internalUtilities');
+  var checkIntegral = internalUtilities.checkIntegral;
+  var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
+  var checkArrayLike = internalUtilities.checkArrayLike;
+  var defineValue = internalUtilities.defineValue;
+
+  var funcUtils = require('../funcUtils');
+  var checkFunction = funcUtils.checkFunction;
+
+  var pair = require('./pair');
+  var Pair = pair.Pair;
+  var fst = pair.fst;
+  var snd = pair.snd;
+
+  var logical = require('./logical');
+  var notPred = logical.notPred;
+
+
+  /*
+   * <apifunction>
+   *
+   *
+   * length
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.length([1, 2, 3]); // => 3
+   *
+   */
+
+  var length = curry(function(arr) {
+    arr = checkArrayLike(arr, {message: 'Value must be arrayLike'});
+
+    return arr.length;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getIndex
+   *
+   * Category: array
+   *
+   * Parameter: index: number
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a
+   * TypeError if the index is outside the range for the given object.
+   *
+   * Examples:
+   *   funkierJS.getIndex(1, "abcd"); 1
+   *
+   */
+
+  var getIndex = curry(function(i, a) {
+    a = checkArrayLike(a);
+    i = checkPositiveIntegral(i, {errorMessage: 'Index out of bounds'});
+    if (i >= a.length)
+      throw new TypeError('Index out of bounds');
+
+    return a[i];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * head
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an
+   * empty arrayLike.
+   *
+   * Examples:
+   *   funkierJS.head([1, 2, 3]); // => 1
+   *
+   */
+
+  var head = getIndex(0);
+
+
+  /*
+   * <apifunction>
+   *
+   * last
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an
+   * empty arrayLike.
+   *
+   * Examples:
+   *   funkierJS.last([1, 2, 3]); // => 3
+   *
+   */
+
+  var last = curry(function(a) {
+    return getIndex(a.length - 1, a);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * replicate
+   *
+   * Category: array
+   *
+   * Parameter: length: natural
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws
+   * a TypeError if the given length is negative.
+   *
+   * Examples:
+   *   funkierJS.replicate(5, 42); // => [42, 42, 42, 42, 42]
+   *
+   */
+
+  var replicate = curry(function(l, value) {
+    l = checkPositiveIntegral(l, {errorMessage: 'Replicate count invalid'});
+
+    var result = [];
+
+    for (var i = 0; i < l; i++)
+      result.push(value);
+
+    return result;
+  });
+
+
+  /*
+   * A number of functions are essentially wrappers around array primitives that take a function.
+   * All these functions would, if written separately, have a similar blueprint:
+   *
+   * - Check the first argument is a function of the correct arity
+   * - Check the last argument is an array or string, and split it if it was a string
+   * - Call the array primitive with the last argument as execution context, with the other arguments as parameters
+   * - Optionally put the string back together
+   *
+   * This function encapsulates this boilerplate. It takes the following parameters:
+   * - arity: How many arguments the prop should be called with (this allows creation of versions
+   *          that call the prop with or without optional arguments - e.g. reduce
+   * - primitive: The primitive to call
+   * - options: Whether the function should be a fixed arity, a minimum arity, the exception messages etc.
+   *
+   */
+
+  var makeArrayPropCaller = function(arity, primitive, options) {
+    options = options || {};
+
+    return curryWithArity(arity, function() {
+      var args = [].slice.call(arguments);
+      var f = args[0];
+      f = curryWithConsistentStyle(f, f, arityOf(f));
+      var arr = last(args);
+      var wasString = false;
+
+      // Is the array really an array
+      var arrCheckOptions = {};
+      if ('aMessage' in options)
+        arrCheckOptions.message = options.aMessage;
+      arr = checkArrayLike(arr, arrCheckOptions);
+
+      // Is the function really a suitable function?
+      var fArity = 0;
+      var fCheckOptions = {};
+      if ('fixedArity' in options) {
+        fCheckOptions.arity = options.fixedArity;
+        fArity = options.fixedArity;
+      } else if ('minimumArity' in options) {
+        fCheckOptions.arity = options.minimumArity;
+        fCheckOptions.minimum = true;
+        fArity = options.minimumArity;
+      }
+      if ('fMessage' in options)
+        fCheckOptions.message = options.fMessage;
+
+      f = checkFunction(f, fCheckOptions);
+
+      if (typeof(arr) === 'string') {
+        wasString = true;
+        arr = arr.split('');
+      }
+
+      // Ensure the function only gets called with as many parameters as were specified
+      var fn = curryWithArity(fArity, function() {
+        var args = [].slice.call(arguments);
+        return f.apply(null, args);
+      });
+      args[0] = fn;
+
+      var result = primitive.apply(arr, args.slice(0, args.length - 1));
+
+      if ('returnSameType' in options && wasString)
+        result = result.join('');
+
+      return result;
+    });
+  };
+
+
+  /*
+   * <apifunction>
+   *
+   * map
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
+   * we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
+   * have an arity of at least 1, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.map(plus(1), [2, 3, 4]); // => [3, 4, 5]
+   *
+   */
+
+   var map = makeArrayPropCaller(2, Array.prototype.map,
+                                 {minimumArity : 1, aMessage: 'Value to be mapped over is not an array/string',
+                                                    fMessage: 'Mapping function must be a function with arity at least 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * each
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   *
+   * Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
+   * returns undefined.
+   *
+   * Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.each(function(e) {console.log(e);}, [1, 2]); // => Logs 1 then 2 to the console
+   *
+   */
+
+  var each = makeArrayPropCaller(2, Array.prototype.forEach,
+                                 {minimumArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'forEach function must be a function with arity at least 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * filter
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
+   * those members of arr—in the same order as the original array—for which the predicate function returned true.
+   *
+   * Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.filter(even, [2, 3, 4, 5, 6]); // => [2, 4, 6]
+   *
+   */
+
+  var filter =  makeArrayPropCaller(2, Array.prototype.filter,
+                                    {aMessage: 'Value to be filtered is not an array/string',
+                                     fMessage: 'Predicate must be a function of arity 1',
+                                     fixedArity: 1, returnSameType: true});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldl
+   *
+   * Category: array
+   *
+   * Synonyms: reduce
+   *
+   * Parameter: f: function
+   * Parameter: initial: any
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.
+   * Traverses the array or string from left to right, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and `foldl` returns the
+   * value returned by the final call. The first call's accumulation parameter will be the given initial value.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
+   * string.
+   *
+   * Examples:
+   *   funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, '123'); // 123
+   *
+   */
+
+  var foldl = makeArrayPropCaller(3, Array.prototype.reduce,
+                                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldl1
+   *
+   * Category: array
+   *
+   * Synonyms: reduce1
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array
+   * from left to right from the second element, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldl1 returns
+   * returns the value returned by the final call. The first call's accumulation parameter will be the first element of
+   * the array or string.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
+   * or if the arrayLike is empty.
+   *
+   * Examples:
+   *   funkierJS.foldl1(multiply, [2, 3, 4]); // => 24
+   *
+   */
+
+  var foldl1 = makeArrayPropCaller(2, Array.prototype.reduce,
+                                   {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                    fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldr
+   *
+   * Category: array
+   *
+   * Synonyms: reduceRight
+   *
+   * Parameter: f: function
+   * Parameter: initial: any
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.
+   * Traverses the array or string from right to left, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldr returns the
+   * value returned by the final call. The first call's accumulation parameter willbe the given initial value.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
+   * arrayLike.
+   *
+   * Examples:
+   *   funkierJS.foldr(subtract, 0, [2, 3, 4]); // => -9
+   *
+   */
+
+  var foldr = makeArrayPropCaller(3, Array.prototype.reduceRight,
+                                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldr1
+   *
+   * Category: array
+   *
+   * Synonyms: reduceRight1
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from
+   * right to left from the penultimate element, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldr1 returns
+   * returns the value returned by the final call. The first call's accumulation parameter will be the last element of
+   * the array or string.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
+   * string, or if the array or string is empty.
+   *
+   * Examples:
+   *   funkierJS.foldr1(function(soFar, current) {return current + soFar;}, "banana"); // => ananab
+   *
+   */
+
+  var foldr1 = makeArrayPropCaller(2, Array.prototype.reduceRight,
+                                   {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                    fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * every
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Synonyms: all
+   *
+   * Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+   * predicate with every element of the array or string, until either the predicate function returns false, or the end
+   * of the array or string is reached.
+   *
+   * Returns the last value returned by the predicate function.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.every(even, [2, 4, 6]); // => true
+   *
+   */
+
+  var every = makeArrayPropCaller(2, Array.prototype.every,
+                                  {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                   fMessage: 'Predicate must be a function of arity 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * some
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Synonyms: any
+   *
+   * Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+   * predicate with every element of the array or string, until either the predicate function returns true, or the end
+   * of the array or string is reached.
+   *
+   * Returns the last value returned by the predicate function.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.
+   *
+   * Examples:
+   *   funkierJS.some(odd, [2, 4, 5, 6]; // => true
+   *
+   */
+
+  var some = makeArrayPropCaller(2, Array.prototype.some,
+                                 {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Predicate must be a function of arity 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * maximum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Returns the largest element of the given array, string or arrayLike.
+   *
+   * Throws a TypeError if the value is not an arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric or character data. You are of course free
+   * to abuse it, but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.maximum([20, 10]); // => 20
+   *
+   */
+
+  var maxFn = function(soFar, current) {
+    if (current > soFar)
+      return current;
+    return soFar;
+  };
+
+  var maximum = foldl1(maxFn);
+
+
+  /*
+   * <apifunction>
+   *
+   * minimum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric or character data. You are of course
+   * free to abuse it, but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.minimum([20, 10]); // => 10
+   *
+   */
+
+  var minFn = function(soFar, current) {
+    if (current < soFar)
+      return current;
+    return soFar;
+  };
+
+  var minimum = foldl1(minFn);
+
+
+  /*
+   * <apifunction>
+   *
+   * sum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+   * but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.sum([20, 10]); // => 30
+   *
+   */
+
+  var sumFn = function(soFar, current) {
+    // Hack to prevent execution with strings
+    if (typeof(current) === 'string')
+      throw new TypeError('sum called on non-array value');
+
+    return soFar + current;
+  };
+
+  var sum = foldl(sumFn, 0);
+
+
+  /*
+   * <apifunction>
+   *
+   * product
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+   * but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.product([20, 10]); // => 200
+   *
+   */
+
+  var productFn = function(soFar, current) {
+    // Hack to prevent execution with strings
+    if (typeof(current) === 'string')
+      throw new TypeError('sum called on non-array value');
+
+    return soFar * current;
+  };
+
+  var product = foldl(productFn, 1);
+
+
+  /*
+   * <apifunction>
+   *
+   * element
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict
+   * identity) and false otherwise.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.element('a', 'cable'); // => true
+   *
+   */
+
+  var element = curry(function(val, arr) {
+    return some(strictEquals(val), arr);
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * elementWith
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
+   * Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.
+   *
+   * Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   var p = function(e) {return e.foo = 42;};
+   *   funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // => true
+   *
+   */
+
+  var elementWith = curry(function(p, arr) {
+    return some(p, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * range
+   *
+   * Category: array
+   *
+   * Parameter: a: number
+   * Parameter: b: number
+   * Returns: array
+   *
+   * Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not
+   * including b, each element increasing by 1.
+   *
+   * Throws a TypeError if b < a.
+   *
+   * Examples:
+   *   funkierJS.range(2, 7); // => [2, 3, 4, 5, 6]
+   *
+   */
+
+  var range = curry(function(a, b) {
+    if (b < a)
+      throw new TypeError('Incorrect bounds for range');
+
+    var result = [];
+    for (var i = a; i < b; i++)
+      result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * rangeStride
+   *
+   * Category: array
+   *
+   * Synonyms: rangeStep
+   *
+   * Parameter: a: number
+   * Parameter: stride: number
+   * Parameter: b: number
+   * Returns: array
+   *
+   * Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to
+   * but not including b, each element increasing by stride.
+   *
+   * Throws a TypeError if the sequence will not terminate.
+   *
+   * Examples:
+   *   funkierJS.rangeStep(2, 2, 7); // => [2, 4, 6]
+   *
+   */
+
+  var rangeStride = curry(function(a, stride, b) {
+    if ((stride > 0 && b < a) || (stride < 0 && b > a) || (stride === 0 && b !== a))
+      throw new TypeError('Incorrect bounds for range');
+
+    if (!isFinite(stride))
+      throw new TypeError('stride must be finite');
+
+    var result = [];
+    for (var i = a; a < b ? i < b : i > b; i += stride)
+      result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * take
+   *
+   * Category: array
+   *
+   * Parameter: count: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+   * of the given arrayLike.
+   *
+   * Throws a TypeError if the count is not integral, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.take(3, 'banana'); // => 'ban'
+   *
+   */
+
+  var take = curry(function(count, arr) {
+    count = checkIntegral(count, 'Invalid count for take');
+    if (count < 0)
+      count = 0;
+
+    arr = checkArrayLike(arr);
+
+    var wasString = typeof(arr) === 'string';
+    if (wasString)
+      arr = arr.split('');
+
+    var result = arr.slice(0, count);
+    if (wasString)
+      result = result.join('');
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * drop
+   *
+   * Category: array
+   *
+   * Parameter: count: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+   * removed from the given arrayLike.
+   *
+   * Throws a TypeError if the count is not integral, or if the last argument is not an array or string.
+   *
+   * Examples:
+   *   funkierJS.drop(3, 'banana'); // => 'anana'
+   *
+   */
+
+  var drop = curry(function(count, arr) {
+    count = checkIntegral(count, 'Invalid count for drop');
+    if (count < 0)
+      count = 0;
+
+    arr = checkArrayLike(arr);
+
+    var wasString = typeof(arr) === 'string';
+    if (wasString)
+    arr = arr.split('');
+
+    var result = arr.slice(count);
+    if (wasString)
+      result = result.join('');
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * init
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns an array or string containing every element except the last.
+   *
+   * Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.init([2, 3, 4, 5]); // => [2, 3, 4]
+   *
+   */
+
+  var init = curry(function(arr) {
+    if (arr.length === 0)
+      throw new TypeError('Cannot take init of empty array/string');
+
+    return take(length(arr) - 1, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * tail
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns an array or string containing every element except the first.
+   *
+   * Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.tail('banana'); // => 'anana'
+   *
+   */
+
+  var tail = curry(function(arr) {
+    if (arr.length === 0)
+      throw new TypeError('Cannot take tail of empty array/string');
+
+    return drop(1, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * inits
+   *
+   * Category: array
+   *
+   * Synonyms: prefixes
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.inits([2, 3]); // => [[], [2], [2, 3]]
+   *
+   */
+
+  var inits = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    var r = range(0, length(arr) + 1);
+
+    return map(function(v) {return take(v, arr);}, r);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * tails
+   *
+   * Category: array
+   *
+   * Synonyms: suffixes
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.tails([2, 3]); // => [[2, 3], [3], []]
+   *
+   */
+
+  var tails = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    var r = range(0, length(arr) + 1);
+
+    return map(function(v) {return drop(v, arr);}, r);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * copy
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an arrayLike, and returns a new array which is a shallow copy.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];]
+   *   var b = funkierJS.copy(a); // => [1, 2, 3]
+   *   b === a; // => false
+   *
+   */
+
+  var copy = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return arr.slice();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * slice
+   *
+   * Category: array
+   *
+   * Parameter: from: number
+   * Parameter: to: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the
+   * elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the
+   * object, then all values from 'from' will be returned.
+   *
+   * Throws a TypeError if from or to are not positive integers, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.slice(1, 3, [1, 2, 3, 4, 5]; // => [2, 3]
+   *
+   */
+
+  var slice = curry(function(from, to, arr) {
+    from = checkPositiveIntegral(from, {errorMessage: 'Invalid from position for slice'});
+    to = checkPositiveIntegral(to, {errorMessage: 'Invalid to position for slice'});
+
+    return take(to - from, drop(from, arr));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * takeWhile
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
+   * string containing the initial members of the given arrayLike for which the predicate returned true.
+   *
+   * Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // => [2, 4]
+   *
+   */
+
+  var takeWhile = curry(function(p, source) {
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    source = checkArrayLike(source, {message: 'takeWhile: source is not an array/string'});
+
+    var result = [];
+    var wasString = typeof(source) === 'string';
+    var l = source.length;
+    var done = false;
+
+    for (var i = 0; !done && i < l; i++) {
+      if (p(source[i]))
+        result.push(source[i]);
+      else
+        done = true;
+    }
+
+    if (wasString)
+      result = result.join('');
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * dropWhile
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
+   * the remaining members our source upon removing the initial elements for which the predicate function returned true.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // => [3, 5, 7
+   *
+   */
+
+  var dropWhile = curry(function(p, source) {
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    source = checkArrayLike(source, {message: 'dropWhile: source is not an array/string'});
+
+    var l = source.length;
+    var done = false;
+
+    var i = 0;
+    while (i < source.length && p(source[i]))
+      i += 1;
+
+    return source.slice(i);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * prepend
+   *
+   * Category: array
+   *
+   * Parameter: value: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+   * get the result you expect.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];
+   *   funkierJS.prepend(4, a); // => [4, 1, 2, 3]
+   *   a; // => [1, 2, 3] (a is not changed)
+   *
+   */
+
+  var prepend = curry(function(v, arr) {
+    arr = checkArrayLike(arr);
+
+    if (Array.isArray(arr))
+      return [v].concat(arr);
+
+    return '' + v + arr;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * append
+   *
+   * Category: array
+   *
+   * Parameter: value: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+   * get the result you expect.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];
+   *   funkierJS.append(4, a); // => [1, 2, 3, 4]
+   *   a; // => [1, 2, 3] (a is not changed)
+   *
+   */
+
+  var append = curry(function(v, arr) {
+    arr = checkArrayLike(arr);
+
+    if (Array.isArray(arr))
+      return arr.concat([v]);
+
+    return '' + arr + v;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * concat
+   *
+   * Category: array
+   *
+   * Parameter: arr1: arrayLike
+   * Parameter: arr2: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes two arrays, arrayLikes or strings, and returns their concatenation.
+   *
+   * Throws a TypeError if either argument is not an arrayLike.
+   *
+   * If both arguments are the same type and are either arrays or strings, then the result will be the same type,
+   * otherwise it will be an array.
+   *
+   * Examples:
+   *   funkierJS.concat([1, 2], [3, 4, 5]); // => [1, 2, 3, 4, 5]
+   *   funkierJS.concat('abc', 'def'); // => 'abcdef'
+   *   funkierJS.concat('abc', [1, 2, 3]); // => ['a', 'b', 'c', 1, 2, 3]
+   *
+   */
+
+  var concat = curry(function(left, right) {
+    left = checkArrayLike(left, {message: 'concat: First value is not arrayLike'});
+    right = checkArrayLike(right, {message: 'concat: Second value is not arrayLike'});
+
+    if (typeof(left) !== typeof(right)) {
+      if (Array.isArray(left))
+        right = right.split('');
+      else
+        left = left.split('');
+    }
+
+    return left.concat(right);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * isEmpty
+   *
+   * Category: array
+   *
+   * Parameter: arr: arraLike
+   * Returns: boolean
+   *
+   * Returns true if the given array, arrayLike or string is empty, and false if not.
+   *
+   * Throws a TypeError if the argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.isEmpty([]); // => true
+   *
+   */
+
+  var isEmpty = curry(function(val) {
+    val = checkArrayLike(val);
+
+    return val.length === 0;
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * intersperse
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each
+   * pair of elements of the original.
+   *
+   * Note: if the second parameter is a string, the first parameter will be coerced to a string.
+   *
+   * Throws a TypeError if the second argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.intersperse(1, [2, 3, 4]); // => [2, 1, 3, 1, 4]
+   *
+   */
+
+  var intersperse = curry(function(val, arr) {
+    arr = checkArrayLike(arr, {message: 'intersperse: Cannot operate on non-arrayLike value'});
+
+    var wasString = false;
+    if (typeof(arr) === 'string') {
+      wasString = true;
+      val = '' + val;
+    }
+
+    var result = wasString ? '' : [];
+    if (arr.length > 0)
+      result = result.concat(wasString ? arr[0] : [arr[0]]);
+    for (var i = 1, l = arr.length; i < l; i++)
+      result = result.concat(wasString ? val + arr[i] : [val, arr[i]]);
+
+    return result;
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * reverse
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.
+   *
+   * Throws a TypeError if the argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.reverse('banana'); 'ananab'
+   *
+   */
+
+  var reverseFn = function(soFar, current) {
+    return soFar.concat(Array.isArray(soFar) ? [current] : current);
+  };
+
+  var reverse = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return foldr(reverseFn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * The search and replace functions are not yet ready, and are under API review.
+
+  var find = defineValue(
+   *
+   * find
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Takes a value, and an array, string or arrayLike. Searches for the value—tested for strict equality—and returns the
+   * index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the second parameter is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.find(2, [1, 2, 3]); // => 1
+   *
+  var find = callPropWithArity('indexOf', 1);
+
+
+  //var findFrom = defineValue(
+   *
+   * findFrom
+   *
+   * Category: array
+    *
+   * signature: value: any, index: number, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, an index, and an array, string or arrayLike. Searches for the
+   * value—tested for strict equality—starting the search at the given index, and
+   * returns the index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the last parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * funkierJS.findFrom(2, 2, [1, 2, 3]); -1
+   *
+    curry(function(val, from, arr) {
+      arr = checkArrayLike(arr);
+      from = checkPositiveIntegral(from, {message: 'Index must be a positive integer'});
+
+      return arr.indexOf(val, from);
+    })
+  );
+
+
+  var findWith = defineValue(
+   *
+   * findWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, haystack: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function pred of arity 1, and haystack, an array, arrayLike
+   * or string. Searches for the value—tested by the given function—and returns the
+   * index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the first parameter is not a predicate function of arity 1,
+   * or if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * var pred = function(e) {return e.foo === 42;};
+   * var arr = [{foo: 1}, {foo: 2}, {foo: 42}, {foo: 3}];
+   * funkierJS.findWith(pred, arr); // 2
+   *
+    curry(function(p, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+      var found = false;
+      for (var i = 0, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
+
+      return found ? i - 1 : -1;
+    })
+  );
+
+
+  var findFromWith = defineValue(
+   *
+   * findFromWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, index: number, haystack: arrayLike
+   * classification: array
+   *
+   *
+   * Examples:
+   *
+   * Takes a predicate function pred of arity 1, and haystack, an array, arrayLike
+   * or string. Searches for the value—tested by the given function—from the given
+   * index, and returns the index of the first match, or -1 if the value is not
+   * present.
+   *
+   * Throws a TypeError if the first parameter is not a predicate function of arity
+   * 1, or the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * var pred = function(e) {return e.foo === 42;};
+   * var arr = [{foo: 1}, {foo: 2}, {foo: 42}, {foo: 3}];
+   * funkierJS.findFromWith(pred, 3, arr); // -1
+   *
+    curry(function(p, index, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
+      index = checkPositiveIntegral(index, {message: 'Index must be a non-negative integer'});
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+      var found = false;
+      for (var i = index, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
+
+      return found ? i - 1 : -1;
+    })
+  );
+*/
+
+
+  /*
+   * <apifunction>
+   *
+   * occurrences
+   *
+   * Category: array
+   *
+   * Parameter: needle: any,
+   * Parameter: haystack: arrayLike
+   * Returns: array
+   *
+   * Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested
+   * for strict equality—and returns an array containing all the indices into haystack where the values may be found.
+   *
+   * Throws a TypeError if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.occurrences(2, [1, 2, 2, 3, 2, 4]; // => [1, 2, 4]
+   *
+   */
+
+  var occurrences = curry(function(val, haystack) {
+    haystack = checkArrayLike(haystack, {message: 'occurrences: haystack must be an array/string'});
+
+    var result = [];
+    for (var i = 0, l = haystack.length; i < l; i++)
+      if (haystack[i] === val)
+        result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * occurrencesWith
+   *
+   * Category: array
+   *
+   * Parameter: needle: any,
+   * Parameter: haystack: arrayLike
+   * Returns: array
+   *
+   * Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the
+   * value—tested by the given predicate—and returns an array containing all the indices into haystack where the
+   * predicate holds.
+   *
+   * Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *   var pred = function(e) {return e.foo === 42;};
+   *   var arr = [{foo: 1}, {foo: 42}, {foo: 42}, {foo: 3}];
+   *   funkierJS.occurrencesWith(pred, arr); // => [1, 2]
+   *
+   */
+
+  var occurrencesWith = curry(function(p, haystack) {
+    haystack = checkArrayLike(haystack, {message: 'occurrencesWith: haystack must be an array/string'});
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    var result = [];
+    for (var i = 0, l = haystack.length; i < l; i++)
+      if (p(haystack[i]))
+        result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * zipWith
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: a: arrayLike
+   * Parameter: b: arrayLike
+   * Returns array
+   *
+   * Takes a function of arity 2, and a two arrays/arrayLikes/strings, a and b, and returns a new array. The new array
+   * has the same length as the smaller of the two arguments. Each element is the result of calling the supplied
+   * function with the elements at the corresponding position in the original arrayLikes.
+   *
+   * Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
+   * arguments is arrayLike.
+   *
+   * Examples:
+   *   var f = function(a, b) {return a + b;};
+   *   funkierJS.zipWith(f, 'apple', 'banana'); // => ['ab', 'pa', 'pn', 'la', 'en']
+   *
+   */
+
+  var zipWith = curry(function(f, a, b) {
+    a = checkArrayLike(a, {message: 'First source value is not an array/string'});
+    b = checkArrayLike(b, {message: 'Second source value is not an array/string'});
+
+    f = checkFunction(f, {arity: 2, minimum: true, message: 'Constructor must be a function with arity at least 2'});
+
+    var len = Math.min(a.length, b.length);
+
+    var result = [];
+    for (var i = 0; i < len; i++)
+      result.push(f(a[i], b[i]));
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * zip
+   *
+   * Category: array
+   *
+   * Parameter: a: arrayLike
+   * Parameter: b: arrayLike
+   * Returns: array
+   *
+   * Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two
+   * arguments. Each element is a [`Pair`](#Pair) p, such that `fst(p) === a[i]` and `snd(p) === b[i]` for each position
+   * i in the result.
+   *
+   * Throws a TypeError if neither argument is arrayLike.
+   *
+   * Examples:
+   *   funkierJS.zip([1, 2], [3, 4]); // => [Pair(1, 3), Pair(2, 4)]
+   *
+   */
+
+  var zip = zipWith(Pair);
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * unzip
+   *
+   * Category: array
+   *
+   * Parameter: source: array
+   * Returns: Pair
+   *
+   * Takes an array of Pairs, and returns a [`Pair`](#Pair). The first element is an array containing the first element from each
+   * pair, and likewise the second element is an array containing the second elements.
+   *
+   * Throws a TypeError if the given argument is not an array, or if any element is not a Pair.
+   *
+   * Examples:
+   *   funkierJS.unzip([Pair(1, 2), Pair(3, 4)]); // =>  Pair([1, 3], [2, 4])
+   *
+   */
+
+  var unzip = curry(function(source) {
+    source = checkArrayLike(source, {noStrings: true, message: 'Source value is not an array'});
+
+    return Pair(map(fst, source), map(snd, source));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * nub
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Synonyms: uniq
+   *
+   * Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict
+   * equality—removed. The order of elements is preserved.
+   *
+   * Throws a TypeError if the given argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.nub('banana'); // 'ban'
+   *
+   */
+
+  var nubFn = function(soFar, current) {
+    return soFar.indexOf(current) !== -1 ? soFar :
+           soFar.concat(Array.isArray(soFar) ? [current] : current);
+  };
+
+  var nub = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return foldl(nubFn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * nubWith
+   *
+   * Category: array
+   *
+   * Synonyms: uniqWith
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all
+   * duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when
+   * called with a previously encountered element and the element under consideration. The order of elements is
+   * preserved.
+   *
+   * Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
+   * is not arrayLike.
+   *
+   * Examples:
+   *   var pred = function(x, y) { return x.foo === y.foo; };
+   *   funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
+   *   // => [{foo: 12}, {foo: 42}]
+   *
+   */
+
+  var nubWithFn = curry(function(p, soFar, current) {
+    var isDuplicate = some(base.flip(p)(current), soFar);
+
+    return isDuplicate ? soFar :
+           soFar.concat(Array.isArray(soFar) ? [current] : current);
+  });
+
+  var nubWith = curry(function(p, arr) {
+    arr = checkArrayLike(arr);
+    p = checkFunction(p, {arity: 2, message: 'Predicate must be a function of arity 2'});
+
+    var fn = nubWithFn(p);
+    return foldl(fn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * sort
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.
+   *
+   * Throws a TypeError if the given argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.sort([10, 1, 21, 2]); // => [1, 10, 2, 21]
+   *
+   */
+
+  var sort = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    arr = arr.slice();
+
+    var wasString = false;
+    if (typeof(arr) === 'string') {
+      wasString = true;
+      arr = arr.split('');
+    }
+
+    arr.sort();
+    if (wasString)
+      arr = arr.join('');
+
+    return arr;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * sortWith
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the
+   * given function. The function should return a negative number if the first argument is "less than" the second, 0 if
+   * the two arguments are "equal", and a positive number if the first argument is greater than the second.
+   *
+   * Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.
+   *
+   * Examples:
+   *   var sortFn = function(x, y) {return x - y;};
+   *   funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // => [1, 2, 10, 21]
+   *
+   */
+
+  var sortWith = makeArrayPropCaller(2, Array.prototype.sort, {fixedArity: 2, returnSameType: true});
+
+
+  /*
+   * The modification functions are not yet ready, and are under API review.
+   *
+   *
+  // XXX Argument order consistency with other funcs that take val and index?
+  //var insert = defineValue(
+   *
+   *
+   * insert
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, a value, and an array, string or arrayLike. Returns a new
+   * array/string with the value inserted at the given index, and later elements
+   * shuffled one place to the right. The index argument should be a number between
+   * 0 and the length of the given array/string; a value equal to the length will
+   * insert the new value at the end of the array/string. If passed a string, the
+   * value will be coerced to a string if necessary.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 2, 3];
+   * funkierJS.insert(1, 10, a); // Returns [1, 10, 2, 3]; a is unchanged
+   *
+    curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'insert: Recipient is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index > arr.length)
+        throw new TypeError('Index out of bounds');
+
+      if (Array.isArray(arr))
+        return arr.slice(0, index).concat([val]).concat(arr.slice(index));
+
+      return arr.slice(0, index) + val + arr.slice(index);
+    })
+  );
+
+
+  // XXX Argument order consistency with other funcs that take val and index?
+  var remove = defineValue(
+   *
+   * remove
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, and an array, string or arrayLike. Returns a new array/string
+   * with the value at the given index removed, and later elements shuffled one place
+   * to the left. The index argument should be a number between 0 and one less than
+   * the length of the given array/string.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 10, 2];
+   * funkierJS.remove(1, a); // Returns [1, 2]; a is unchanged
+   *
+    curry(function(index, arr) {
+      arr = checkArrayLike(arr, {message: 'remove: Value to be modified is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+
+      return arr.slice(0, index).concat(arr.slice(index + 1));
+    })
+  );
+
+
+  // XXX Argument order consistency with other funcs that take val and index?
+  // XXX Also, need to look over this wrt strings
+  var replace = defineValue(
+   *
+   * replace
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, a value, and an array, string or arrayLike. Returns a new
+   * array/string with the value replacing the value at the given index. The index
+   * argument should be a number between 0 and one less than the length of the given
+   *  array/string. If passed a string, the value will be coerced to a string if
+   * necessary.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 10, 3];
+   * funkierJS.replace(1, 2, a); // Returns [1, 2, 3]; a is unchanged
+   *
+    curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'replace: Value to be modified is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+      arr = arr.slice();
+
+      if (Array.isArray(arr)) {
+        arr[index] = val;
+        return arr;
+      }
+
+      val = val.toString();
+      return arr.slice(0, index) + val + arr.slice(index + 1);
+    })
+  );
+
+
+  // XXX Also, need to look over this wrt strings
+  var removeOneWith = defineValue(
+   *
+   * removeOneWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, arr: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, and an array. Returns a new array with the
+   * first value for which the function returns true removed from the array.
+   *
+   * Throws a TypeError if the given predicate is not a function, or does not have
+   * arity 1, or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.removeOne(pred, [{foo: 1}, {foo: 42}, {foo: 3}]); // Returns [{foo: 1}, {foo: 3}]
+   *
+    curry(function(p, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not an array noStrings: true});
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (p(arr[i])) {
+          found = true;
+        } else {
+          i++;
+        }
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(arr.slice(i + 1));
+    })
+  );
+
+
+  var removeOne = defineValue(
+   *
+   * removeOne
+   *
+   * Category: array
+    *
+   * signature: value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, and an array. Returns a new array with the first occurrence of the
+   *  value—checked for strict equality— removed from the array.
+   *
+   * Throws a TypeError if the last argument is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.removeOne(2, [1, 2, 2, 3]); // Returns [1, 2, 3]
+   *
+    compose(removeOneWith, strictEquals)
+  );
+
+
+  var removeAll = defineValue(
+   *
+   * removeAll
+   *
+   * Category: array
+    *
+   * signature: value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, and an array. Returns a new array with all occurrences of the
+   * given value—checked for strict equality—removed from the array.
+   *
+   * Throws a TypeError if the last argument is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.removeAll(2, [1, 2, 2, 3]); // Returns [1, 3]
+   *
+    curry(function(val, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      var pred = notPred(strictEquals(val));
+      return filter(pred, arr);
+    })
+  );
+
+
+  var removeAllWith = defineValue(
+   *
+   * removeAllWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, arr: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, and an array. Returns a new array with
+   * values for which the function returns true removed from the array.
+   *
+   * Throws a TypeError if the first argument is not a predicate function of arity 1,
+   * or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.removeAllWith(pred [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{foo: 12}, {foo: 1}]
+   *
+    curry(function(pred, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      pred = notPred(pred);
+      return filter(pred, arr);
+    })
+  );
+
+
+  var replaceOneWith = defineValue(
+   *
+   * replaceOneWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, value: any, arr: array
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, a replacement value, and an array.
+   * Returns a new array where the first value for which the given predicate returned
+   * true has been replaced with the given replacement.
+   *
+   * Throws a TypeError if the first argument is not a function, if the function does
+   * not have arity 1, or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.replaceOneWith(pred {bar: 10}, [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{bar: 10}, {foo: 12}, {foo: 1}, {foo: 42}]
+   *
+    curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not arrayLike noStrings: true});
+      replacement = [replacement];
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (p(arr[i]))
+          found = true;
+        else
+        i++;
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    })
+  );
+
+
+  var replaceOne = defineValue(
+   *
+   * replaceOne
+   *
+   * Category: array
+    *
+   * signature: value: any, newValue: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, a replacement value, and an array. Returns a new array where the
+   * first occurrence of the given value—checked for strict equality—is replaced with
+   * the given replacement.
+   *
+   * Throws a TypeError if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.replaceOne(2, 42, [1, 2, 3]); // [1, 42, 3]
+   *
+    curry(function(val, replacement, arr) {
+      return replaceOneWith(base.strictEquals(val), replacement, arr);
+    })
+  );
+
+
+  var replaceAllWith = defineValue(
+   *
+   * replaceAllWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, newValue: any, arr: array
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, a replacement value, and an array.
+   * Returns a new array/string where all values for which the predicate returned true
+   * have been replaced with the given replacement.
+   * Throws a TypeError if the first parameter is not a function of arity 1, or if the
+   * last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.replaceAllWith(pred {bar: 10}, [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{bar: 10}, {foo: 12}, {foo: 1}, {bar: 10}]
+   *
+    curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not an array noStrings: true});
+      replacement = [replacement];
+
+      var result = arr.slice();
+      var i = 0;
+
+      while (i < arr.length) {
+        if (!p(result[i])) {
+          i += 1;
+          continue;
+        }
+
+        result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
+        i += 1;
+      }
+
+      return result;
+    })
+  );
+
+
+  var replaceAll = defineValue(
+   *
+   * replaceAll
+   *
+   * Category: array
+    *
+   * signature: value: any, newValue: any, arr: array
+   * classification: array
+   *
+   * Takes a value, a replacement value, and an array. Returns a new array where all
+   * occurrences of the given value—checked for strict equality—have been replaced
+   * with the given replacement.
+   *
+   * Throws a TypeError if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   *
+    curry(function(val, replacement, arr) {
+      return replaceAllWith(strictEquals(val), replacement, arr);
+    })
+  );
+*/
+
+
+  /*
+   * <apifunction>
+   *
+   * join
+   *
+   * Category: array
+   *
+   * Parameter: separator: any
+   * Parameter: arr: array
+   * Returns: string
+   *
+   * Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString
+   * of each element in the array, separated by the toString of the given separator.
+   *
+   * Throws a TypeError if the last element is not an array.
+   *
+   * Examples:
+   *   funkierJS.join('-', [1, 2, 3]); // => '1-2-3'
+   *
+   */
+
+  var join = curry(function(sep, arr) {
+    arr = checkArrayLike(arr, {noStrings: true, message: 'join: Value to be joined is not an array'});
+
+    return arr.join(sep);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * flatten
+   *
+   * Category: array
+   *
+   * Parameter: arr: array
+   * Returns: array
+   *
+   * Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.
+   * Note that flatten only strips off one layer.
+   *
+   * Throws a TypeError if the supplied value is not arrayLike, or if any of the values within it are not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.flatten([[1, 2], [3, 4]]); // => [1, 2, 3, 4]
+   *
+   */
+
+  var flattenFn = function(soFar, current) {
+    current = checkArrayLike(current);
+
+    return concat(soFar, current);
+  };
+
+  var flatten = curry(function(arr) {
+    arr = checkArrayLike(arr, {noStrings: true, message: 'Value to be flattened is not an array'});
+
+    return foldl(flattenFn, [], arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * flattenMap
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and
+   * flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
+   * TypeError is thrown if this is not the case.
+   *
+   * A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.
+   *
+   * Examples:
+   *   var fn = function(n) {return [n, n * n];};
+   *   funkierJS.flattenMap(fn, [1, 2, 3]); // => Returns [1, 1, 2, 4, 3, 9]
+   *
+   */
+
+  var flattenMap = curry(function(f, arr) {
+    return flatten(map(f, arr));
+  });
+
+
+  return {
+    all: every,
+    any: some,
+    append: append,
+    concat: concat,
+    copy: copy,
+    drop: drop,
+    dropWhile: dropWhile,
+    each: each,
+    element: element,
+    elementWith: elementWith,
+    every: every,
+    filter: filter,
+/*
+    find: find,
+    findFrom: findFrom,
+    findFromWith: findFromWith,
+    findWith: findWith,
+*/
+    flatten: flatten,
+    flattenMap: flattenMap,
+    foldl: foldl,
+    foldl1: foldl1,
+    foldr: foldr,
+    foldr1: foldr1,
+    getIndex: getIndex,
+    head: head,
+    init: init,
+    inits: inits,
+ //   insert: insert,
+    intersperse: intersperse,
+    isEmpty: isEmpty,
+    join: join,
+    last: last,
+    length: length,
+    map: map,
+    maximum: maximum,
+    minimum: minimum,
+    nub: nub,
+    nubWith: nubWith,
+    occurrences: occurrences,
+    occurrencesWith: occurrencesWith,
+    prefixes: inits,
+    prepend: prepend,
+    product: product,
+    range: range,
+    rangeStep: rangeStride,
+    rangeStride: rangeStride,
+    reduce: foldl,
+    reduce1: foldl1,
+    reduceRight: foldr,
+    reduceRight1: foldr1,
+/*
+    remove: remove,
+    removeAll: removeAll,
+    removeAllWith: removeAllWith,
+    removeOne: removeOne,
+    removeOneWith: removeOneWith,
+    replace: replace,
+    replaceAll: replaceAll,
+    replaceAllWith: replaceAllWith,
+    replaceOne: replaceOne,
+    replaceOneWith: replaceOneWith,
+*/
+    replicate: replicate,
+    reverse: reverse,
+    slice: slice,
+    some: some,
+    sort: sort,
+    sortWith: sortWith,
+    suffixes: tails,
+    sum: sum,
+    tail: tail,
+    tails: tails,
+    take: take,
+    takeWhile: takeWhile,
+    uniq: nub,
+    uniqWith: nubWith,
+    unzip: unzip,
+    zip: zip,
+    zipWith: zipWith
+  };
+})();
+
+},{"../funcUtils":13,"../internalUtilities":16,"./base":2,"./curry":3,"./logical":6,"./object":9,"./pair":10,"./types":12}],2:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
   var arityOf = curryModule.arityOf;
   var chooseCurryStyle = curryModule._chooseCurryStyle;
   var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
@@ -339,7 +2625,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],2:[function(require,module,exports){
+},{"../funcUtils":13,"../internalUtilities":16,"./curry":3}],3:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -989,7 +3275,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":15}],3:[function(require,module,exports){
+},{"../internalUtilities":16}],4:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2483,7 +4769,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2,"./object":8}],4:[function(require,module,exports){
+},{"./curry":3,"./object":9}],5:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -2758,7 +5044,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],5:[function(require,module,exports){
+},{"../funcUtils":13,"../internalUtilities":16,"./curry":3}],6:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3034,7 +5320,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":12,"./curry":2}],6:[function(require,module,exports){
+},{"../funcUtils":13,"./curry":3}],7:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -3776,7 +6062,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":1,"./curry":2,"./object":8}],7:[function(require,module,exports){
+},{"./base":2,"./curry":3,"./object":9}],8:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4029,7 +6315,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],8:[function(require,module,exports){
+},{"../funcUtils":13,"../internalUtilities":16,"./curry":3}],9:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -5194,7 +7480,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":15,"./base":1,"./curry":2,"./maybe":7}],9:[function(require,module,exports){
+},{"../internalUtilities":16,"./base":2,"./curry":3,"./maybe":8}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5403,7 +7689,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":15,"./curry":2}],10:[function(require,module,exports){
+},{"../internalUtilities":16,"./curry":3}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5740,7 +8026,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":12,"../internalUtilities":15,"./curry":2}],11:[function(require,module,exports){
+},{"../funcUtils":13,"../internalUtilities":16,"./curry":3}],12:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6227,7 +8513,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":2}],12:[function(require,module,exports){
+},{"./curry":3}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6288,7 +8574,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":2}],13:[function(require,module,exports){
+},{"./components/curry":3}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6297,6 +8583,7 @@ module.exports = (function() {
 
   // Imports need to be explicit for browserify to find them
   var imports = {
+    array: require('./components/array'),
     base: require('./components/base'),
     curry: require('./components/curry'),
     date: require('./components/date'),
@@ -6369,7 +8656,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":1,"./components/curry":2,"./components/date":3,"./components/fn":4,"./components/logical":5,"./components/maths":6,"./components/maybe":7,"./components/object":8,"./components/pair":9,"./components/result":10,"./components/types":11,"./help":14}],14:[function(require,module,exports){
+},{"./components/array":1,"./components/base":2,"./components/curry":3,"./components/date":4,"./components/fn":5,"./components/logical":6,"./components/maths":7,"./components/maybe":8,"./components/object":9,"./components/pair":10,"./components/result":11,"./components/types":12,"./help":15}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6507,6 +8794,17 @@ module.exports = (function() {
           console.log('Usage: var x = andPred(f1, f2)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#andpred');
+          break;
+
+        case funkier.append:
+          console.log('append:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = append(value, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#append');
           break;
 
         case funkier.apply:
@@ -6716,6 +9014,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#composeon');
           break;
 
+        case funkier.concat:
+          console.log('concat:');
+          console.log('');
+          console.log('Takes two arrays, arrayLikes or strings, and returns their concatenation.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = concat(arr1, arr2)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#concat');
+          break;
+
         case funkier.constant:
           console.log('constant:');
           console.log('');
@@ -6737,6 +9046,17 @@ module.exports = (function() {
           console.log('Usage: var x = constant0(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant0');
+          break;
+
+        case funkier.copy:
+          console.log('copy:');
+          console.log('');
+          console.log('Takes an arrayLike, and returns a new array which is a shallow copy.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = copy(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#copy');
           break;
 
         case funkier.createObject:
@@ -6917,6 +9237,42 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#divide');
           break;
 
+        case funkier.drop:
+          console.log('drop:');
+          console.log('');
+          console.log('Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements');
+          console.log('removed from the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = drop(count, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#drop');
+          break;
+
+        case funkier.dropWhile:
+          console.log('dropWhile:');
+          console.log('');
+          console.log('Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing');
+          console.log('the remaining members our source upon removing the initial elements for which the predicate function returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = dropWhile(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#dropwhile');
+          break;
+
+        case funkier.each:
+          console.log('each:');
+          console.log('');
+          console.log('Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and');
+          console.log('returns undefined.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = each(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#each');
+          break;
+
         case funkier.either:
           console.log('either:');
           console.log('');
@@ -6929,6 +9285,30 @@ module.exports = (function() {
           console.log('Usage: var x = either(f1, f2, r)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#either');
+          break;
+
+        case funkier.element:
+          console.log('element:');
+          console.log('');
+          console.log('Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict');
+          console.log('identity) and false otherwise.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = element(val, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#element');
+          break;
+
+        case funkier.elementWith:
+          console.log('elementWith:');
+          console.log('');
+          console.log('A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.');
+          console.log('Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = elementWith(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#elementwith');
           break;
 
         case funkier.equals:
@@ -6951,6 +9331,21 @@ module.exports = (function() {
           console.log('Usage: var x = even(x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#even');
+          break;
+
+        case funkier.every:
+          console.log('every:');
+          console.log('');
+          console.log('Synonyms: all');
+          console.log('');
+          console.log('Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the');
+          console.log('predicate with every element of the array or string, until either the predicate function returns false, or the end');
+          console.log('of the array or string is reached.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = every(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#every');
           break;
 
         case funkier.exp:
@@ -7021,6 +9416,43 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extractordefault');
           break;
 
+        case funkier.filter:
+          console.log('filter:');
+          console.log('');
+          console.log('Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing');
+          console.log('those members of arr—in the same order as the original array—for which the predicate function returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = filter(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#filter');
+          break;
+
+        case funkier.flatten:
+          console.log('flatten:');
+          console.log('');
+          console.log('Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.');
+          console.log('Note that flatten only strips off one layer.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = flatten(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flatten');
+          break;
+
+        case funkier.flattenMap:
+          console.log('flattenMap:');
+          console.log('');
+          console.log('Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and');
+          console.log('flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a');
+          console.log('TypeError is thrown if this is not the case.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = flattenMap(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flattenmap');
+          break;
+
         case funkier.flip:
           console.log('flip:');
           console.log('');
@@ -7030,6 +9462,72 @@ module.exports = (function() {
           console.log('Usage: var x = flip(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flip');
+          break;
+
+        case funkier.foldl:
+          console.log('foldl:');
+          console.log('');
+          console.log('Synonyms: reduce');
+          console.log('');
+          console.log('Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.');
+          console.log('Traverses the array or string from left to right, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldl returns the');
+          console.log('value returned by the final call. The first call\'s accumulation parameter will be the given initial value.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldl(f, initial, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldl');
+          break;
+
+        case funkier.foldl1:
+          console.log('foldl1:');
+          console.log('');
+          console.log('Synonyms: reduce1');
+          console.log('');
+          console.log('Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array');
+          console.log('from left to right from the second element, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldl1 returns');
+          console.log('returns the value returned by the final call. The first call\'s accumulation parameter will be the first element of');
+          console.log('the array or string.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldl1(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldl1');
+          break;
+
+        case funkier.foldr:
+          console.log('foldr:');
+          console.log('');
+          console.log('Synonyms: reduceRight');
+          console.log('');
+          console.log('Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.');
+          console.log('Traverses the array or string from right to left, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldr returns the');
+          console.log('value returned by the final call. The first call\'s accumulation parameter willbe the given initial value.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldr(f, initial, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldr');
+          break;
+
+        case funkier.foldr1:
+          console.log('foldr1:');
+          console.log('');
+          console.log('Synonyms: reduceRight1');
+          console.log('');
+          console.log('Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from');
+          console.log('right to left from the penultimate element, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldr1 returns');
+          console.log('returns the value returned by the final call. The first call\'s accumulation parameter will be the last element of');
+          console.log('the array or string.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldr1(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldr1');
           break;
 
         case funkier.fst:
@@ -7116,6 +9614,18 @@ module.exports = (function() {
           console.log('Usage: var x = getHours(d)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gethours');
+          break;
+
+        case funkier.getIndex:
+          console.log('getIndex:');
+          console.log('');
+          console.log('Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a');
+          console.log('TypeError if the index is outside the range for the given object.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = getIndex(index, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getindex');
           break;
 
         case funkier.getJustValue:
@@ -7387,6 +9897,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasproperty');
           break;
 
+        case funkier.head:
+          console.log('head:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an');
+          console.log('empty arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = head(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#head');
+          break;
+
         case funkier.id:
           console.log('id:');
           console.log('');
@@ -7396,6 +9918,30 @@ module.exports = (function() {
           console.log('Usage: var x = id(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#id');
+          break;
+
+        case funkier.init:
+          console.log('init:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns an array or string containing every element except the last.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = init(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#init');
+          break;
+
+        case funkier.inits:
+          console.log('inits:');
+          console.log('');
+          console.log('Synonyms: prefixes');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = inits(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#inits');
           break;
 
         case funkier.instanceOf:
@@ -7408,6 +9954,18 @@ module.exports = (function() {
           console.log('Usage: var x = instanceOf(constructor, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#instanceof');
+          break;
+
+        case funkier.intersperse:
+          console.log('intersperse:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each');
+          console.log('pair of elements of the original.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = intersperse(val, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#intersperse');
           break;
 
         case funkier.is:
@@ -7444,6 +10002,17 @@ module.exports = (function() {
           console.log('Usage: var x = isBoolean(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isboolean');
+          break;
+
+        case funkier.isEmpty:
+          console.log('isEmpty:');
+          console.log('');
+          console.log('Returns true if the given array, arrayLike or string is empty, and false if not.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = isEmpty(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isempty');
           break;
 
         case funkier.isErr:
@@ -7602,6 +10171,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isundefined');
           break;
 
+        case funkier.join:
+          console.log('join:');
+          console.log('');
+          console.log('Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString');
+          console.log('of each element in the array, separated by the toString of the given separator.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = join(separator, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#join');
+          break;
+
         case funkier.keyValues:
           console.log('keyValues:');
           console.log('');
@@ -7628,6 +10209,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keys');
           break;
 
+        case funkier.last:
+          console.log('last:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an');
+          console.log('empty arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = last(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#last');
+          break;
+
         case funkier.leftShift:
           console.log('leftShift:');
           console.log('');
@@ -7637,6 +10230,17 @@ module.exports = (function() {
           console.log('Usage: var x = leftShift(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#leftshift');
+          break;
+
+        case funkier.length:
+          console.log('length:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = length(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#length');
           break;
 
         case funkier.lessThan:
@@ -7807,6 +10411,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeseconddate');
           break;
 
+        case funkier.map:
+          console.log('map:');
+          console.log('');
+          console.log('Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],');
+          console.log('we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not');
+          console.log('have an arity of at least 1, or if the last argument is not an arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = map(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#map');
+          break;
+
         case funkier.max:
           console.log('max:');
           console.log('');
@@ -7816,6 +10433,17 @@ module.exports = (function() {
           console.log('Usage: var x = max(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#max');
+          break;
+
+        case funkier.maximum:
+          console.log('maximum:');
+          console.log('');
+          console.log('Returns the largest element of the given array, string or arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = maximum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#maximum');
           break;
 
         case funkier.maybeExtract:
@@ -7841,6 +10469,18 @@ module.exports = (function() {
           console.log('Usage: var x = min(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#min');
+          break;
+
+        case funkier.minimum:
+          console.log('minimum:');
+          console.log('');
+          console.log('Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = minimum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#minimum');
           break;
 
         case funkier.modify:
@@ -7906,6 +10546,36 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#notpred');
           break;
 
+        case funkier.nub:
+          console.log('nub:');
+          console.log('');
+          console.log('Synonyms: uniq');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict');
+          console.log('equality—removed. The order of elements is preserved.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = nub(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#nub');
+          break;
+
+        case funkier.nubWith:
+          console.log('nubWith:');
+          console.log('');
+          console.log('Synonyms: uniqWith');
+          console.log('');
+          console.log('Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all');
+          console.log('duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when');
+          console.log('called with a previously encountered element and the element under consideration. The order of elements is');
+          console.log('preserved.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = nubWith(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#nubwith');
+          break;
+
         case funkier.objectCurry:
           console.log('objectCurry:');
           console.log('');
@@ -7942,6 +10612,31 @@ module.exports = (function() {
           console.log('Usage: var x = objectCurryWithArity(n, f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#objectcurrywitharity');
+          break;
+
+        case funkier.occurrences:
+          console.log('occurrences:');
+          console.log('');
+          console.log('Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested');
+          console.log('for strict equality—and returns an array containing all the indices into haystack where the values may be found.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = occurrences(needle, haystack)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#occurrences');
+          break;
+
+        case funkier.occurrencesWith:
+          console.log('occurrencesWith:');
+          console.log('');
+          console.log('Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the');
+          console.log('value—tested by the given predicate—and returns an array containing all the indices into haystack where the');
+          console.log('predicate holds.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = occurrencesWith(needle, haystack)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#occurrenceswith');
           break;
 
         case funkier.odd:
@@ -8058,6 +10753,55 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#pre');
           break;
 
+        case funkier.prepend:
+          console.log('prepend:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = prepend(value, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#prepend');
+          break;
+
+        case funkier.product:
+          console.log('product:');
+          console.log('');
+          console.log('Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = product(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#product');
+          break;
+
+        case funkier.range:
+          console.log('range:');
+          console.log('');
+          console.log('Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not');
+          console.log('including b, each element increasing by 1.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = range(a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#range');
+          break;
+
+        case funkier.rangeStride:
+          console.log('rangeStride:');
+          console.log('');
+          console.log('Synonyms: rangeStep');
+          console.log('');
+          console.log('Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to');
+          console.log('but not including b, each element increasing by stride.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = rangeStride(a, stride, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rangestride');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -8067,6 +10811,29 @@ module.exports = (function() {
           console.log('Usage: var x = rem(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rem');
+          break;
+
+        case funkier.replicate:
+          console.log('replicate:');
+          console.log('');
+          console.log('Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws');
+          console.log('a TypeError if the given length is negative.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = replicate(length, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#replicate');
+          break;
+
+        case funkier.reverse:
+          console.log('reverse:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = reverse(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#reverse');
           break;
 
         case funkier.rightShift:
@@ -8403,6 +11170,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcseconds');
           break;
 
+        case funkier.slice:
+          console.log('slice:');
+          console.log('');
+          console.log('Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the');
+          console.log('elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the');
+          console.log('object, then all values from \'from\' will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = slice(from, to, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#slice');
+          break;
+
         case funkier.snd:
           console.log('snd:');
           console.log('');
@@ -8415,6 +11195,45 @@ module.exports = (function() {
           console.log('Usage: var x = snd(p)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#snd');
+          break;
+
+        case funkier.some:
+          console.log('some:');
+          console.log('');
+          console.log('Synonyms: any');
+          console.log('');
+          console.log('Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the');
+          console.log('predicate with every element of the array or string, until either the predicate function returns true, or the end');
+          console.log('of the array or string is reached.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = some(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#some');
+          break;
+
+        case funkier.sort:
+          console.log('sort:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sort(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sort');
+          break;
+
+        case funkier.sortWith:
+          console.log('sortWith:');
+          console.log('');
+          console.log('Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the');
+          console.log('given function. The function should return a negative number if the first argument is "less than" the second, 0 if');
+          console.log('the two arguments are "equal", and a positive number if the first argument is greater than the second.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sortWith(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sortwith');
           break;
 
         case funkier.strictEquals:
@@ -8465,6 +11284,66 @@ module.exports = (function() {
           console.log('Usage: var x = subtract(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#subtract');
+          break;
+
+        case funkier.sum:
+          console.log('sum:');
+          console.log('');
+          console.log('Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sum');
+          break;
+
+        case funkier.tail:
+          console.log('tail:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns an array or string containing every element except the first.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = tail(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tail');
+          break;
+
+        case funkier.tails:
+          console.log('tails:');
+          console.log('');
+          console.log('Synonyms: suffixes');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = tails(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tails');
+          break;
+
+        case funkier.take:
+          console.log('take:');
+          console.log('');
+          console.log('Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements');
+          console.log('of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = take(count, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#take');
+          break;
+
+        case funkier.takeWhile:
+          console.log('takeWhile:');
+          console.log('');
+          console.log('Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or');
+          console.log('string containing the initial members of the given arrayLike for which the predicate returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = takeWhile(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#takewhile');
           break;
 
         case funkier.toBaseAndString:
@@ -8592,6 +11471,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
+        case funkier.unzip:
+          console.log('unzip:');
+          console.log('');
+          console.log('Takes an array of Pairs, and returns a Pair. The first element is an array containing the first element from each');
+          console.log('pair, and likewise the second element is an array containing the second elements.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = unzip(source)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#unzip');
+          break;
+
         case funkier.wrap:
           console.log('wrap:');
           console.log('');
@@ -8629,6 +11520,30 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#xorpred');
           break;
 
+        case funkier.zip:
+          console.log('zip:');
+          console.log('');
+          console.log('Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two');
+          console.log('arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i] for each position');
+          console.log('i in the result.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = zip(a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#zip');
+          break;
+
+        case funkier.zipWith:
+          console.log('zipWith:');
+          console.log('');
+          console.log('Returns array');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = zipWith(f, a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#zipwith');
+          break;
+
         default:
           console.log('No help available');
       }
@@ -8638,7 +11553,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -8822,5 +11737,5 @@ module.exports = (function() {
   };
 })();
 
-},{}]},{},[13])(13)
+},{}]},{},[14])(14)
 });

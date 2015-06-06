@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":33,"../test/docgen/testAPIFunction":34,"../test/docgen/testAPIObject":35,"../test/docgen/testAPIPrototype":36,"../test/docgen/testCPTestDataHelper":37,"../test/docgen/testCollator":38,"../test/docgen/testCommentProcessor":39,"../test/docgen/testLineProcessor":40,"../test/docgen/testMarkdownCreator":41,"../test/docgen/testMarkdownRenderer":42,"../test/funkierJS/testAPI":43,"../test/funkierJS/testArray":44,"../test/funkierJS/testBase":45,"../test/funkierJS/testCurry":46,"../test/funkierJS/testDate":47,"../test/funkierJS/testFn":48,"../test/funkierJS/testFuncUtils":49,"../test/funkierJS/testFunkier":50,"../test/funkierJS/testInternalUtilities":51,"../test/funkierJS/testLogical":52,"../test/funkierJS/testMaths":53,"../test/funkierJS/testMaybe":54,"../test/funkierJS/testObject":55,"../test/funkierJS/testPair":56,"../test/funkierJS/testResult":57,"../test/funkierJS/testString":58,"../test/funkierJS/testTypes":59,"../test/funkierJS/testingUtilities":60}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":34,"../test/docgen/testAPIFunction":35,"../test/docgen/testAPIObject":36,"../test/docgen/testAPIPrototype":37,"../test/docgen/testCPTestDataHelper":38,"../test/docgen/testCollator":39,"../test/docgen/testCommentProcessor":40,"../test/docgen/testLineProcessor":41,"../test/docgen/testMarkdownCreator":42,"../test/docgen/testMarkdownRenderer":43,"../test/funkierJS/testAPI":44,"../test/funkierJS/testArray":45,"../test/funkierJS/testBase":46,"../test/funkierJS/testCurry":47,"../test/funkierJS/testDate":48,"../test/funkierJS/testFn":49,"../test/funkierJS/testFuncUtils":50,"../test/funkierJS/testFunkier":51,"../test/funkierJS/testInternalUtilities":52,"../test/funkierJS/testLogical":53,"../test/funkierJS/testMaths":54,"../test/funkierJS/testMaybe":55,"../test/funkierJS/testObject":56,"../test/funkierJS/testPair":57,"../test/funkierJS/testResult":58,"../test/funkierJS/testString":59,"../test/funkierJS/testTypes":60,"../test/funkierJS/testingUtilities":61}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1587,7 +1587,2293 @@ module.exports = (function() {
   return makeMarkdownRenderer;
 })();
 
-},{"marked":32}],10:[function(require,module,exports){
+},{"marked":33}],10:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+  var curryWithArity = curryModule.curryWithArity;
+  var curryWithConsistentStyle = curryModule._curryWithConsistentStyle;
+  var arityOf = curryModule.arityOf;
+
+  var base = require('./base');
+
+  var types = require('./types');
+  var strictEquals = types.strictEquals;
+
+  var object = require('./object');
+  var callPropWithArity = object.callPropWithArity;
+
+  var internalUtilities = require('../internalUtilities');
+  var checkIntegral = internalUtilities.checkIntegral;
+  var checkPositiveIntegral = internalUtilities.checkPositiveIntegral;
+  var checkArrayLike = internalUtilities.checkArrayLike;
+  var defineValue = internalUtilities.defineValue;
+
+  var funcUtils = require('../funcUtils');
+  var checkFunction = funcUtils.checkFunction;
+
+  var pair = require('./pair');
+  var Pair = pair.Pair;
+  var fst = pair.fst;
+  var snd = pair.snd;
+
+  var logical = require('./logical');
+  var notPred = logical.notPred;
+
+
+  /*
+   * <apifunction>
+   *
+   *
+   * length
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.length([1, 2, 3]); // => 3
+   *
+   */
+
+  var length = curry(function(arr) {
+    arr = checkArrayLike(arr, {message: 'Value must be arrayLike'});
+
+    return arr.length;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * getIndex
+   *
+   * Category: array
+   *
+   * Parameter: index: number
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a
+   * TypeError if the index is outside the range for the given object.
+   *
+   * Examples:
+   *   funkierJS.getIndex(1, "abcd"); 1
+   *
+   */
+
+  var getIndex = curry(function(i, a) {
+    a = checkArrayLike(a);
+    i = checkPositiveIntegral(i, {errorMessage: 'Index out of bounds'});
+    if (i >= a.length)
+      throw new TypeError('Index out of bounds');
+
+    return a[i];
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * head
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an
+   * empty arrayLike.
+   *
+   * Examples:
+   *   funkierJS.head([1, 2, 3]); // => 1
+   *
+   */
+
+  var head = getIndex(0);
+
+
+  /*
+   * <apifunction>
+   *
+   * last
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an
+   * empty arrayLike.
+   *
+   * Examples:
+   *   funkierJS.last([1, 2, 3]); // => 3
+   *
+   */
+
+  var last = curry(function(a) {
+    return getIndex(a.length - 1, a);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * replicate
+   *
+   * Category: array
+   *
+   * Parameter: length: natural
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws
+   * a TypeError if the given length is negative.
+   *
+   * Examples:
+   *   funkierJS.replicate(5, 42); // => [42, 42, 42, 42, 42]
+   *
+   */
+
+  var replicate = curry(function(l, value) {
+    l = checkPositiveIntegral(l, {errorMessage: 'Replicate count invalid'});
+
+    var result = [];
+
+    for (var i = 0; i < l; i++)
+      result.push(value);
+
+    return result;
+  });
+
+
+  /*
+   * A number of functions are essentially wrappers around array primitives that take a function.
+   * All these functions would, if written separately, have a similar blueprint:
+   *
+   * - Check the first argument is a function of the correct arity
+   * - Check the last argument is an array or string, and split it if it was a string
+   * - Call the array primitive with the last argument as execution context, with the other arguments as parameters
+   * - Optionally put the string back together
+   *
+   * This function encapsulates this boilerplate. It takes the following parameters:
+   * - arity: How many arguments the prop should be called with (this allows creation of versions
+   *          that call the prop with or without optional arguments - e.g. reduce
+   * - primitive: The primitive to call
+   * - options: Whether the function should be a fixed arity, a minimum arity, the exception messages etc.
+   *
+   */
+
+  var makeArrayPropCaller = function(arity, primitive, options) {
+    options = options || {};
+
+    return curryWithArity(arity, function() {
+      var args = [].slice.call(arguments);
+      var f = args[0];
+      f = curryWithConsistentStyle(f, f, arityOf(f));
+      var arr = last(args);
+      var wasString = false;
+
+      // Is the array really an array
+      var arrCheckOptions = {};
+      if ('aMessage' in options)
+        arrCheckOptions.message = options.aMessage;
+      arr = checkArrayLike(arr, arrCheckOptions);
+
+      // Is the function really a suitable function?
+      var fArity = 0;
+      var fCheckOptions = {};
+      if ('fixedArity' in options) {
+        fCheckOptions.arity = options.fixedArity;
+        fArity = options.fixedArity;
+      } else if ('minimumArity' in options) {
+        fCheckOptions.arity = options.minimumArity;
+        fCheckOptions.minimum = true;
+        fArity = options.minimumArity;
+      }
+      if ('fMessage' in options)
+        fCheckOptions.message = options.fMessage;
+
+      f = checkFunction(f, fCheckOptions);
+
+      if (typeof(arr) === 'string') {
+        wasString = true;
+        arr = arr.split('');
+      }
+
+      // Ensure the function only gets called with as many parameters as were specified
+      var fn = curryWithArity(fArity, function() {
+        var args = [].slice.call(arguments);
+        return f.apply(null, args);
+      });
+      args[0] = fn;
+
+      var result = primitive.apply(arr, args.slice(0, args.length - 1));
+
+      if ('returnSameType' in options && wasString)
+        result = result.join('');
+
+      return result;
+    });
+  };
+
+
+  /*
+   * <apifunction>
+   *
+   * map
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
+   * we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
+   * have an arity of at least 1, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.map(plus(1), [2, 3, 4]); // => [3, 4, 5]
+   *
+   */
+
+   var map = makeArrayPropCaller(2, Array.prototype.map,
+                                 {minimumArity : 1, aMessage: 'Value to be mapped over is not an array/string',
+                                                    fMessage: 'Mapping function must be a function with arity at least 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * each
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   *
+   * Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
+   * returns undefined.
+   *
+   * Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.each(function(e) {console.log(e);}, [1, 2]); // => Logs 1 then 2 to the console
+   *
+   */
+
+  var each = makeArrayPropCaller(2, Array.prototype.forEach,
+                                 {minimumArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'forEach function must be a function with arity at least 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * filter
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
+   * those members of arr—in the same order as the original array—for which the predicate function returned true.
+   *
+   * Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.filter(even, [2, 3, 4, 5, 6]); // => [2, 4, 6]
+   *
+   */
+
+  var filter =  makeArrayPropCaller(2, Array.prototype.filter,
+                                    {aMessage: 'Value to be filtered is not an array/string',
+                                     fMessage: 'Predicate must be a function of arity 1',
+                                     fixedArity: 1, returnSameType: true});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldl
+   *
+   * Category: array
+   *
+   * Synonyms: reduce
+   *
+   * Parameter: f: function
+   * Parameter: initial: any
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.
+   * Traverses the array or string from left to right, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and `foldl` returns the
+   * value returned by the final call. The first call's accumulation parameter will be the given initial value.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
+   * string.
+   *
+   * Examples:
+   *   funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, '123'); // 123
+   *
+   */
+
+  var foldl = makeArrayPropCaller(3, Array.prototype.reduce,
+                                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldl1
+   *
+   * Category: array
+   *
+   * Synonyms: reduce1
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array
+   * from left to right from the second element, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldl1 returns
+   * returns the value returned by the final call. The first call's accumulation parameter will be the first element of
+   * the array or string.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
+   * or if the arrayLike is empty.
+   *
+   * Examples:
+   *   funkierJS.foldl1(multiply, [2, 3, 4]); // => 24
+   *
+   */
+
+  var foldl1 = makeArrayPropCaller(2, Array.prototype.reduce,
+                                   {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                    fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldr
+   *
+   * Category: array
+   *
+   * Synonyms: reduceRight
+   *
+   * Parameter: f: function
+   * Parameter: initial: any
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.
+   * Traverses the array or string from right to left, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldr returns the
+   * value returned by the final call. The first call's accumulation parameter willbe the given initial value.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
+   * arrayLike.
+   *
+   * Examples:
+   *   funkierJS.foldr(subtract, 0, [2, 3, 4]); // => -9
+   *
+   */
+
+  var foldr = makeArrayPropCaller(3, Array.prototype.reduceRight,
+                                 {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * foldr1
+   *
+   * Category: array
+   *
+   * Synonyms: reduceRight1
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from
+   * right to left from the penultimate element, calling the function with two arguments: the current accumulation
+   * value, and the current element. The value returned will form the next accumulation value, and foldr1 returns
+   * returns the value returned by the final call. The first call's accumulation parameter will be the last element of
+   * the array or string.
+   *
+   * Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
+   * string, or if the array or string is empty.
+   *
+   * Examples:
+   *   funkierJS.foldr1(function(soFar, current) {return current + soFar;}, "banana"); // => ananab
+   *
+   */
+
+  var foldr1 = makeArrayPropCaller(2, Array.prototype.reduceRight,
+                                   {fixedArity : 2, aMessage: 'Value to be iterated over is not an array/string',
+                                    fMessage: 'Accumulator must be a function of arity 2'});
+
+
+  /*
+   * <apifunction>
+   *
+   * every
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Synonyms: all
+   *
+   * Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+   * predicate with every element of the array or string, until either the predicate function returns false, or the end
+   * of the array or string is reached.
+   *
+   * Returns the last value returned by the predicate function.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.every(even, [2, 4, 6]); // => true
+   *
+   */
+
+  var every = makeArrayPropCaller(2, Array.prototype.every,
+                                  {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                   fMessage: 'Predicate must be a function of arity 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * some
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Synonyms: any
+   *
+   * Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+   * predicate with every element of the array or string, until either the predicate function returns true, or the end
+   * of the array or string is reached.
+   *
+   * Returns the last value returned by the predicate function.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.
+   *
+   * Examples:
+   *   funkierJS.some(odd, [2, 4, 5, 6]; // => true
+   *
+   */
+
+  var some = makeArrayPropCaller(2, Array.prototype.some,
+                                 {fixedArity : 1, aMessage: 'Value to be iterated over is not an array/string',
+                                  fMessage: 'Predicate must be a function of arity 1'});
+
+
+  /*
+   * <apifunction>
+   *
+   * maximum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Returns the largest element of the given array, string or arrayLike.
+   *
+   * Throws a TypeError if the value is not an arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric or character data. You are of course free
+   * to abuse it, but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.maximum([20, 10]); // => 20
+   *
+   */
+
+  var maxFn = function(soFar, current) {
+    if (current > soFar)
+      return current;
+    return soFar;
+  };
+
+  var maximum = foldl1(maxFn);
+
+
+  /*
+   * <apifunction>
+   *
+   * minimum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: any
+   *
+   * Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric or character data. You are of course
+   * free to abuse it, but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.minimum([20, 10]); // => 10
+   *
+   */
+
+  var minFn = function(soFar, current) {
+    if (current < soFar)
+      return current;
+    return soFar;
+  };
+
+  var minimum = foldl1(minFn);
+
+
+  /*
+   * <apifunction>
+   *
+   * sum
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+   * but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.sum([20, 10]); // => 30
+   *
+   */
+
+  var sumFn = function(soFar, current) {
+    // Hack to prevent execution with strings
+    if (typeof(current) === 'string')
+      throw new TypeError('sum called on non-array value');
+
+    return soFar + current;
+  };
+
+  var sum = foldl(sumFn, 0);
+
+
+  /*
+   * <apifunction>
+   *
+   * product
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+   * arrayLike, or it is empty.
+   *
+   * Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+   * but it will likely not do what you expect.
+   *
+   * Examples:
+   *   funkierJS.product([20, 10]); // => 200
+   *
+   */
+
+  var productFn = function(soFar, current) {
+    // Hack to prevent execution with strings
+    if (typeof(current) === 'string')
+      throw new TypeError('sum called on non-array value');
+
+    return soFar * current;
+  };
+
+  var product = foldl(productFn, 1);
+
+
+  /*
+   * <apifunction>
+   *
+   * element
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict
+   * identity) and false otherwise.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.element('a', 'cable'); // => true
+   *
+   */
+
+  var element = curry(function(val, arr) {
+    return some(strictEquals(val), arr);
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * elementWith
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: boolean
+   *
+   * A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
+   * Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.
+   *
+   * Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.
+   *
+   * Examples:
+   *   var p = function(e) {return e.foo = 42;};
+   *   funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // => true
+   *
+   */
+
+  var elementWith = curry(function(p, arr) {
+    return some(p, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * range
+   *
+   * Category: array
+   *
+   * Parameter: a: number
+   * Parameter: b: number
+   * Returns: array
+   *
+   * Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not
+   * including b, each element increasing by 1.
+   *
+   * Throws a TypeError if b < a.
+   *
+   * Examples:
+   *   funkierJS.range(2, 7); // => [2, 3, 4, 5, 6]
+   *
+   */
+
+  var range = curry(function(a, b) {
+    if (b < a)
+      throw new TypeError('Incorrect bounds for range');
+
+    var result = [];
+    for (var i = a; i < b; i++)
+      result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * rangeStride
+   *
+   * Category: array
+   *
+   * Synonyms: rangeStep
+   *
+   * Parameter: a: number
+   * Parameter: stride: number
+   * Parameter: b: number
+   * Returns: array
+   *
+   * Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to
+   * but not including b, each element increasing by stride.
+   *
+   * Throws a TypeError if the sequence will not terminate.
+   *
+   * Examples:
+   *   funkierJS.rangeStep(2, 2, 7); // => [2, 4, 6]
+   *
+   */
+
+  var rangeStride = curry(function(a, stride, b) {
+    if ((stride > 0 && b < a) || (stride < 0 && b > a) || (stride === 0 && b !== a))
+      throw new TypeError('Incorrect bounds for range');
+
+    if (!isFinite(stride))
+      throw new TypeError('stride must be finite');
+
+    var result = [];
+    for (var i = a; a < b ? i < b : i > b; i += stride)
+      result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * take
+   *
+   * Category: array
+   *
+   * Parameter: count: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+   * of the given arrayLike.
+   *
+   * Throws a TypeError if the count is not integral, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.take(3, 'banana'); // => 'ban'
+   *
+   */
+
+  var take = curry(function(count, arr) {
+    count = checkIntegral(count, 'Invalid count for take');
+    if (count < 0)
+      count = 0;
+
+    arr = checkArrayLike(arr);
+
+    var wasString = typeof(arr) === 'string';
+    if (wasString)
+      arr = arr.split('');
+
+    var result = arr.slice(0, count);
+    if (wasString)
+      result = result.join('');
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * drop
+   *
+   * Category: array
+   *
+   * Parameter: count: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+   * removed from the given arrayLike.
+   *
+   * Throws a TypeError if the count is not integral, or if the last argument is not an array or string.
+   *
+   * Examples:
+   *   funkierJS.drop(3, 'banana'); // => 'anana'
+   *
+   */
+
+  var drop = curry(function(count, arr) {
+    count = checkIntegral(count, 'Invalid count for drop');
+    if (count < 0)
+      count = 0;
+
+    arr = checkArrayLike(arr);
+
+    var wasString = typeof(arr) === 'string';
+    if (wasString)
+    arr = arr.split('');
+
+    var result = arr.slice(count);
+    if (wasString)
+      result = result.join('');
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * init
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns an array or string containing every element except the last.
+   *
+   * Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.init([2, 3, 4, 5]); // => [2, 3, 4]
+   *
+   */
+
+  var init = curry(function(arr) {
+    if (arr.length === 0)
+      throw new TypeError('Cannot take init of empty array/string');
+
+    return take(length(arr) - 1, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * tail
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns an array or string containing every element except the first.
+   *
+   * Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.tail('banana'); // => 'anana'
+   *
+   */
+
+  var tail = curry(function(arr) {
+    if (arr.length === 0)
+      throw new TypeError('Cannot take tail of empty array/string');
+
+    return drop(1, arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * inits
+   *
+   * Category: array
+   *
+   * Synonyms: prefixes
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.inits([2, 3]); // => [[], [2], [2, 3]]
+   *
+   */
+
+  var inits = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    var r = range(0, length(arr) + 1);
+
+    return map(function(v) {return take(v, arr);}, r);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * tails
+   *
+   * Category: array
+   *
+   * Synonyms: suffixes
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.tails([2, 3]); // => [[2, 3], [3], []]
+   *
+   */
+
+  var tails = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    var r = range(0, length(arr) + 1);
+
+    return map(function(v) {return drop(v, arr);}, r);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * copy
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an arrayLike, and returns a new array which is a shallow copy.
+   *
+   * Throws a TypeError if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];]
+   *   var b = funkierJS.copy(a); // => [1, 2, 3]
+   *   b === a; // => false
+   *
+   */
+
+  var copy = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return arr.slice();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * slice
+   *
+   * Category: array
+   *
+   * Parameter: from: number
+   * Parameter: to: number
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the
+   * elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the
+   * object, then all values from 'from' will be returned.
+   *
+   * Throws a TypeError if from or to are not positive integers, or if the last argument is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.slice(1, 3, [1, 2, 3, 4, 5]; // => [2, 3]
+   *
+   */
+
+  var slice = curry(function(from, to, arr) {
+    from = checkPositiveIntegral(from, {errorMessage: 'Invalid from position for slice'});
+    to = checkPositiveIntegral(to, {errorMessage: 'Invalid to position for slice'});
+
+    return take(to - from, drop(from, arr));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * takeWhile
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
+   * string containing the initial members of the given arrayLike for which the predicate returned true.
+   *
+   * Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // => [2, 4]
+   *
+   */
+
+  var takeWhile = curry(function(p, source) {
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    source = checkArrayLike(source, {message: 'takeWhile: source is not an array/string'});
+
+    var result = [];
+    var wasString = typeof(source) === 'string';
+    var l = source.length;
+    var done = false;
+
+    for (var i = 0; !done && i < l; i++) {
+      if (p(source[i]))
+        result.push(source[i]);
+      else
+        done = true;
+    }
+
+    if (wasString)
+      result = result.join('');
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * dropWhile
+   *
+   * Category: array
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
+   * the remaining members our source upon removing the initial elements for which the predicate function returned true.
+   *
+   * Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.
+   *
+   * Examples:
+   *   funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // => [3, 5, 7
+   *
+   */
+
+  var dropWhile = curry(function(p, source) {
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    source = checkArrayLike(source, {message: 'dropWhile: source is not an array/string'});
+
+    var l = source.length;
+    var done = false;
+
+    var i = 0;
+    while (i < source.length && p(source[i]))
+      i += 1;
+
+    return source.slice(i);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * prepend
+   *
+   * Category: array
+   *
+   * Parameter: value: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+   * get the result you expect.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];
+   *   funkierJS.prepend(4, a); // => [4, 1, 2, 3]
+   *   a; // => [1, 2, 3] (a is not changed)
+   *
+   */
+
+  var prepend = curry(function(v, arr) {
+    arr = checkArrayLike(arr);
+
+    if (Array.isArray(arr))
+      return [v].concat(arr);
+
+    return '' + v + arr;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * append
+   *
+   * Category: array
+   *
+   * Parameter: value: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.
+   *
+   * Throws a TypeError if the second argument is not an arrayLike.
+   *
+   * Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+   * get the result you expect.
+   *
+   * Examples:
+   *   var a = [1, 2, 3];
+   *   funkierJS.append(4, a); // => [1, 2, 3, 4]
+   *   a; // => [1, 2, 3] (a is not changed)
+   *
+   */
+
+  var append = curry(function(v, arr) {
+    arr = checkArrayLike(arr);
+
+    if (Array.isArray(arr))
+      return arr.concat([v]);
+
+    return '' + arr + v;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * concat
+   *
+   * Category: array
+   *
+   * Parameter: arr1: arrayLike
+   * Parameter: arr2: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes two arrays, arrayLikes or strings, and returns their concatenation.
+   *
+   * Throws a TypeError if either argument is not an arrayLike.
+   *
+   * If both arguments are the same type and are either arrays or strings, then the result will be the same type,
+   * otherwise it will be an array.
+   *
+   * Examples:
+   *   funkierJS.concat([1, 2], [3, 4, 5]); // => [1, 2, 3, 4, 5]
+   *   funkierJS.concat('abc', 'def'); // => 'abcdef'
+   *   funkierJS.concat('abc', [1, 2, 3]); // => ['a', 'b', 'c', 1, 2, 3]
+   *
+   */
+
+  var concat = curry(function(left, right) {
+    left = checkArrayLike(left, {message: 'concat: First value is not arrayLike'});
+    right = checkArrayLike(right, {message: 'concat: Second value is not arrayLike'});
+
+    if (typeof(left) !== typeof(right)) {
+      if (Array.isArray(left))
+        right = right.split('');
+      else
+        left = left.split('');
+    }
+
+    return left.concat(right);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * isEmpty
+   *
+   * Category: array
+   *
+   * Parameter: arr: arraLike
+   * Returns: boolean
+   *
+   * Returns true if the given array, arrayLike or string is empty, and false if not.
+   *
+   * Throws a TypeError if the argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.isEmpty([]); // => true
+   *
+   */
+
+  var isEmpty = curry(function(val) {
+    val = checkArrayLike(val);
+
+    return val.length === 0;
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * intersperse
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each
+   * pair of elements of the original.
+   *
+   * Note: if the second parameter is a string, the first parameter will be coerced to a string.
+   *
+   * Throws a TypeError if the second argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.intersperse(1, [2, 3, 4]); // => [2, 1, 3, 1, 4]
+   *
+   */
+
+  var intersperse = curry(function(val, arr) {
+    arr = checkArrayLike(arr, {message: 'intersperse: Cannot operate on non-arrayLike value'});
+
+    var wasString = false;
+    if (typeof(arr) === 'string') {
+      wasString = true;
+      val = '' + val;
+    }
+
+    var result = wasString ? '' : [];
+    if (arr.length > 0)
+      result = result.concat(wasString ? arr[0] : [arr[0]]);
+    for (var i = 1, l = arr.length; i < l; i++)
+      result = result.concat(wasString ? val + arr[i] : [val, arr[i]]);
+
+    return result;
+  });
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * reverse
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.
+   *
+   * Throws a TypeError if the argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.reverse('banana'); 'ananab'
+   *
+   */
+
+  var reverseFn = function(soFar, current) {
+    return soFar.concat(Array.isArray(soFar) ? [current] : current);
+  };
+
+  var reverse = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return foldr(reverseFn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * The search and replace functions are not yet ready, and are under API review.
+
+  var find = defineValue(
+   *
+   * find
+   *
+   * Category: array
+   *
+   * Parameter: val: any
+   * Parameter: arr: arrayLike
+   * Returns: number
+   *
+   * Takes a value, and an array, string or arrayLike. Searches for the value—tested for strict equality—and returns the
+   * index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the second parameter is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.find(2, [1, 2, 3]); // => 1
+   *
+  var find = callPropWithArity('indexOf', 1);
+
+
+  //var findFrom = defineValue(
+   *
+   * findFrom
+   *
+   * Category: array
+    *
+   * signature: value: any, index: number, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, an index, and an array, string or arrayLike. Searches for the
+   * value—tested for strict equality—starting the search at the given index, and
+   * returns the index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the last parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * funkierJS.findFrom(2, 2, [1, 2, 3]); -1
+   *
+    curry(function(val, from, arr) {
+      arr = checkArrayLike(arr);
+      from = checkPositiveIntegral(from, {message: 'Index must be a positive integer'});
+
+      return arr.indexOf(val, from);
+    })
+  );
+
+
+  var findWith = defineValue(
+   *
+   * findWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, haystack: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function pred of arity 1, and haystack, an array, arrayLike
+   * or string. Searches for the value—tested by the given function—and returns the
+   * index of the first match, or -1 if the value is not present.
+   *
+   * Throws a TypeError if the first parameter is not a predicate function of arity 1,
+   * or if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * var pred = function(e) {return e.foo === 42;};
+   * var arr = [{foo: 1}, {foo: 2}, {foo: 42}, {foo: 3}];
+   * funkierJS.findWith(pred, arr); // 2
+   *
+    curry(function(p, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+      var found = false;
+      for (var i = 0, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
+
+      return found ? i - 1 : -1;
+    })
+  );
+
+
+  var findFromWith = defineValue(
+   *
+   * findFromWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, index: number, haystack: arrayLike
+   * classification: array
+   *
+   *
+   * Examples:
+   *
+   * Takes a predicate function pred of arity 1, and haystack, an array, arrayLike
+   * or string. Searches for the value—tested by the given function—from the given
+   * index, and returns the index of the first match, or -1 if the value is not
+   * present.
+   *
+   * Throws a TypeError if the first parameter is not a predicate function of arity
+   * 1, or the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *
+   * var pred = function(e) {return e.foo === 42;};
+   * var arr = [{foo: 1}, {foo: 2}, {foo: 42}, {foo: 3}];
+   * funkierJS.findFromWith(pred, 3, arr); // -1
+   *
+    curry(function(p, index, haystack) {
+      haystack = checkArrayLike(haystack, {message: 'Haystack must be an array/string'});
+      index = checkPositiveIntegral(index, {message: 'Index must be a non-negative integer'});
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+      var found = false;
+      for (var i = index, l = haystack.length; !found && i < l; i++)
+        found = p(haystack[i]);
+
+      return found ? i - 1 : -1;
+    })
+  );
+*/
+
+
+  /*
+   * <apifunction>
+   *
+   * occurrences
+   *
+   * Category: array
+   *
+   * Parameter: needle: any,
+   * Parameter: haystack: arrayLike
+   * Returns: array
+   *
+   * Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested
+   * for strict equality—and returns an array containing all the indices into haystack where the values may be found.
+   *
+   * Throws a TypeError if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.occurrences(2, [1, 2, 2, 3, 2, 4]; // => [1, 2, 4]
+   *
+   */
+
+  var occurrences = curry(function(val, haystack) {
+    haystack = checkArrayLike(haystack, {message: 'occurrences: haystack must be an array/string'});
+
+    var result = [];
+    for (var i = 0, l = haystack.length; i < l; i++)
+      if (haystack[i] === val)
+        result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * occurrencesWith
+   *
+   * Category: array
+   *
+   * Parameter: needle: any,
+   * Parameter: haystack: arrayLike
+   * Returns: array
+   *
+   * Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the
+   * value—tested by the given predicate—and returns an array containing all the indices into haystack where the
+   * predicate holds.
+   *
+   * Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.
+   *
+   * Examples:
+   *   var pred = function(e) {return e.foo === 42;};
+   *   var arr = [{foo: 1}, {foo: 42}, {foo: 42}, {foo: 3}];
+   *   funkierJS.occurrencesWith(pred, arr); // => [1, 2]
+   *
+   */
+
+  var occurrencesWith = curry(function(p, haystack) {
+    haystack = checkArrayLike(haystack, {message: 'occurrencesWith: haystack must be an array/string'});
+    p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+
+    var result = [];
+    for (var i = 0, l = haystack.length; i < l; i++)
+      if (p(haystack[i]))
+        result.push(i);
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * zipWith
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: a: arrayLike
+   * Parameter: b: arrayLike
+   * Returns array
+   *
+   * Takes a function of arity 2, and a two arrays/arrayLikes/strings, a and b, and returns a new array. The new array
+   * has the same length as the smaller of the two arguments. Each element is the result of calling the supplied
+   * function with the elements at the corresponding position in the original arrayLikes.
+   *
+   * Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
+   * arguments is arrayLike.
+   *
+   * Examples:
+   *   var f = function(a, b) {return a + b;};
+   *   funkierJS.zipWith(f, 'apple', 'banana'); // => ['ab', 'pa', 'pn', 'la', 'en']
+   *
+   */
+
+  var zipWith = curry(function(f, a, b) {
+    a = checkArrayLike(a, {message: 'First source value is not an array/string'});
+    b = checkArrayLike(b, {message: 'Second source value is not an array/string'});
+
+    f = checkFunction(f, {arity: 2, minimum: true, message: 'Constructor must be a function with arity at least 2'});
+
+    var len = Math.min(a.length, b.length);
+
+    var result = [];
+    for (var i = 0; i < len; i++)
+      result.push(f(a[i], b[i]));
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * zip
+   *
+   * Category: array
+   *
+   * Parameter: a: arrayLike
+   * Parameter: b: arrayLike
+   * Returns: array
+   *
+   * Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two
+   * arguments. Each element is a [`Pair`](#Pair) p, such that `fst(p) === a[i]` and `snd(p) === b[i]` for each position
+   * i in the result.
+   *
+   * Throws a TypeError if neither argument is arrayLike.
+   *
+   * Examples:
+   *   funkierJS.zip([1, 2], [3, 4]); // => [Pair(1, 3), Pair(2, 4)]
+   *
+   */
+
+  var zip = zipWith(Pair);
+
+
+  /*
+   *
+   * <apifunction>
+   *
+   * unzip
+   *
+   * Category: array
+   *
+   * Parameter: source: array
+   * Returns: Pair
+   *
+   * Takes an array of Pairs, and returns a [`Pair`](#Pair). The first element is an array containing the first element from each
+   * pair, and likewise the second element is an array containing the second elements.
+   *
+   * Throws a TypeError if the given argument is not an array, or if any element is not a Pair.
+   *
+   * Examples:
+   *   funkierJS.unzip([Pair(1, 2), Pair(3, 4)]); // =>  Pair([1, 3], [2, 4])
+   *
+   */
+
+  var unzip = curry(function(source) {
+    source = checkArrayLike(source, {noStrings: true, message: 'Source value is not an array'});
+
+    return Pair(map(fst, source), map(snd, source));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * nub
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Synonyms: uniq
+   *
+   * Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict
+   * equality—removed. The order of elements is preserved.
+   *
+   * Throws a TypeError if the given argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.nub('banana'); // 'ban'
+   *
+   */
+
+  var nubFn = function(soFar, current) {
+    return soFar.indexOf(current) !== -1 ? soFar :
+           soFar.concat(Array.isArray(soFar) ? [current] : current);
+  };
+
+  var nub = curry(function(arr) {
+    arr = checkArrayLike(arr);
+
+    return foldl(nubFn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * nubWith
+   *
+   * Category: array
+   *
+   * Synonyms: uniqWith
+   *
+   * Parameter: pred: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all
+   * duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when
+   * called with a previously encountered element and the element under consideration. The order of elements is
+   * preserved.
+   *
+   * Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
+   * is not arrayLike.
+   *
+   * Examples:
+   *   var pred = function(x, y) { return x.foo === y.foo; };
+   *   funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
+   *   // => [{foo: 12}, {foo: 42}]
+   *
+   */
+
+  var nubWithFn = curry(function(p, soFar, current) {
+    var isDuplicate = some(base.flip(p)(current), soFar);
+
+    return isDuplicate ? soFar :
+           soFar.concat(Array.isArray(soFar) ? [current] : current);
+  });
+
+  var nubWith = curry(function(p, arr) {
+    arr = checkArrayLike(arr);
+    p = checkFunction(p, {arity: 2, message: 'Predicate must be a function of arity 2'});
+
+    var fn = nubWithFn(p);
+    return foldl(fn, Array.isArray(arr) ? [] : '', arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * sort
+   *
+   * Category: array
+   *
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.
+   *
+   * Throws a TypeError if the given argument is not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.sort([10, 1, 21, 2]); // => [1, 10, 2, 21]
+   *
+   */
+
+  var sort = curry(function(arr) {
+    arr = checkArrayLike(arr);
+    arr = arr.slice();
+
+    var wasString = false;
+    if (typeof(arr) === 'string') {
+      wasString = true;
+      arr = arr.split('');
+    }
+
+    arr.sort();
+    if (wasString)
+      arr = arr.join('');
+
+    return arr;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * sortWith
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: arrayLike
+   *
+   * Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the
+   * given function. The function should return a negative number if the first argument is "less than" the second, 0 if
+   * the two arguments are "equal", and a positive number if the first argument is greater than the second.
+   *
+   * Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.
+   *
+   * Examples:
+   *   var sortFn = function(x, y) {return x - y;};
+   *   funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // => [1, 2, 10, 21]
+   *
+   */
+
+  var sortWith = makeArrayPropCaller(2, Array.prototype.sort, {fixedArity: 2, returnSameType: true});
+
+
+  /*
+   * The modification functions are not yet ready, and are under API review.
+   *
+   *
+  // XXX Argument order consistency with other funcs that take val and index?
+  //var insert = defineValue(
+   *
+   *
+   * insert
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, a value, and an array, string or arrayLike. Returns a new
+   * array/string with the value inserted at the given index, and later elements
+   * shuffled one place to the right. The index argument should be a number between
+   * 0 and the length of the given array/string; a value equal to the length will
+   * insert the new value at the end of the array/string. If passed a string, the
+   * value will be coerced to a string if necessary.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 2, 3];
+   * funkierJS.insert(1, 10, a); // Returns [1, 10, 2, 3]; a is unchanged
+   *
+    curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'insert: Recipient is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index > arr.length)
+        throw new TypeError('Index out of bounds');
+
+      if (Array.isArray(arr))
+        return arr.slice(0, index).concat([val]).concat(arr.slice(index));
+
+      return arr.slice(0, index) + val + arr.slice(index);
+    })
+  );
+
+
+  // XXX Argument order consistency with other funcs that take val and index?
+  var remove = defineValue(
+   *
+   * remove
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, and an array, string or arrayLike. Returns a new array/string
+   * with the value at the given index removed, and later elements shuffled one place
+   * to the left. The index argument should be a number between 0 and one less than
+   * the length of the given array/string.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 10, 2];
+   * funkierJS.remove(1, a); // Returns [1, 2]; a is unchanged
+   *
+    curry(function(index, arr) {
+      arr = checkArrayLike(arr, {message: 'remove: Value to be modified is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+
+      return arr.slice(0, index).concat(arr.slice(index + 1));
+    })
+  );
+
+
+  // XXX Argument order consistency with other funcs that take val and index?
+  // XXX Also, need to look over this wrt strings
+  var replace = defineValue(
+   *
+   * replace
+   *
+   * Category: array
+    *
+   * signature: index: number, value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes an index, a value, and an array, string or arrayLike. Returns a new
+   * array/string with the value replacing the value at the given index. The index
+   * argument should be a number between 0 and one less than the length of the given
+   *  array/string. If passed a string, the value will be coerced to a string if
+   * necessary.
+   *
+   * Throws a TypeError if the index is out of bounds, or otherwise invalid, or if
+   * the last argument is not arrayLike.
+   *
+   * Examples:
+   *
+   * var a = [1, 10, 3];
+   * funkierJS.replace(1, 2, a); // Returns [1, 2, 3]; a is unchanged
+   *
+    curry(function(index, val, arr) {
+      arr = checkArrayLike(arr, {message: 'replace: Value to be modified is not arrayLike'});
+      index = checkPositiveIntegral(index, 'Index out of bounds');
+      if (index >= arr.length)
+        throw new TypeError('Index out of bounds');
+
+      arr = arr.slice();
+
+      if (Array.isArray(arr)) {
+        arr[index] = val;
+        return arr;
+      }
+
+      val = val.toString();
+      return arr.slice(0, index) + val + arr.slice(index + 1);
+    })
+  );
+
+
+  // XXX Also, need to look over this wrt strings
+  var removeOneWith = defineValue(
+   *
+   * removeOneWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, arr: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, and an array. Returns a new array with the
+   * first value for which the function returns true removed from the array.
+   *
+   * Throws a TypeError if the given predicate is not a function, or does not have
+   * arity 1, or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.removeOne(pred, [{foo: 1}, {foo: 42}, {foo: 3}]); // Returns [{foo: 1}, {foo: 3}]
+   *
+    curry(function(p, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not an array noStrings: true});
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (p(arr[i])) {
+          found = true;
+        } else {
+          i++;
+        }
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(arr.slice(i + 1));
+    })
+  );
+
+
+  var removeOne = defineValue(
+   *
+   * removeOne
+   *
+   * Category: array
+    *
+   * signature: value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, and an array. Returns a new array with the first occurrence of the
+   *  value—checked for strict equality— removed from the array.
+   *
+   * Throws a TypeError if the last argument is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.removeOne(2, [1, 2, 2, 3]); // Returns [1, 2, 3]
+   *
+    compose(removeOneWith, strictEquals)
+  );
+
+
+  var removeAll = defineValue(
+   *
+   * removeAll
+   *
+   * Category: array
+    *
+   * signature: value: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, and an array. Returns a new array with all occurrences of the
+   * given value—checked for strict equality—removed from the array.
+   *
+   * Throws a TypeError if the last argument is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.removeAll(2, [1, 2, 2, 3]); // Returns [1, 3]
+   *
+    curry(function(val, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      var pred = notPred(strictEquals(val));
+      return filter(pred, arr);
+    })
+  );
+
+
+  var removeAllWith = defineValue(
+   *
+   * removeAllWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, arr: arrayLike
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, and an array. Returns a new array with
+   * values for which the function returns true removed from the array.
+   *
+   * Throws a TypeError if the first argument is not a predicate function of arity 1,
+   * or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.removeAllWith(pred [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{foo: 12}, {foo: 1}]
+   *
+    curry(function(pred, arr) {
+      arr = checkArrayLike(arr, {noStrings: true});
+
+      pred = notPred(pred);
+      return filter(pred, arr);
+    })
+  );
+
+
+  var replaceOneWith = defineValue(
+   *
+   * replaceOneWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, value: any, arr: array
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, a replacement value, and an array.
+   * Returns a new array where the first value for which the given predicate returned
+   * true has been replaced with the given replacement.
+   *
+   * Throws a TypeError if the first argument is not a function, if the function does
+   * not have arity 1, or if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.replaceOneWith(pred {bar: 10}, [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{bar: 10}, {foo: 12}, {foo: 1}, {foo: 42}]
+   *
+    curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not arrayLike noStrings: true});
+      replacement = [replacement];
+
+      var found = false;
+      var i = 0;
+      while (!found && i < arr.length) {
+        if (p(arr[i]))
+          found = true;
+        else
+        i++;
+      }
+
+      if (!found)
+        return arr.slice();
+
+      return arr.slice(0, i).concat(replacement).concat(arr.slice(i + 1));
+    })
+  );
+
+
+  var replaceOne = defineValue(
+   *
+   * replaceOne
+   *
+   * Category: array
+    *
+   * signature: value: any, newValue: any, arr: arrayLike
+   * classification: array
+   *
+   * Takes a value, a replacement value, and an array. Returns a new array where the
+   * first occurrence of the given value—checked for strict equality—is replaced with
+   * the given replacement.
+   *
+   * Throws a TypeError if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   * funkierJS.replaceOne(2, 42, [1, 2, 3]); // [1, 42, 3]
+   *
+    curry(function(val, replacement, arr) {
+      return replaceOneWith(base.strictEquals(val), replacement, arr);
+    })
+  );
+
+
+  var replaceAllWith = defineValue(
+   *
+   * replaceAllWith
+   *
+   * Category: array
+    *
+   * signature: pred: function, newValue: any, arr: array
+   * classification: array
+   *
+   * Takes a predicate function of arity 1, a replacement value, and an array.
+   * Returns a new array/string where all values for which the predicate returned true
+   * have been replaced with the given replacement.
+   * Throws a TypeError if the first parameter is not a function of arity 1, or if the
+   * last parameter is not an array.
+   *
+   * Examples:
+   *
+   * var pred = function(x) {return x.foo === 42;};
+   * funkierJS.replaceAllWith(pred {bar: 10}, [{foo: 42}, {foo: 12}, {foo: 1}, {foo: 42}]);
+   * // returns [{bar: 10}, {foo: 12}, {foo: 1}, {bar: 10}]
+   *
+    curry(function(p, replacement, arr) {
+      p = checkFunction(p, {arity: 1, message: 'Predicate must be a function of arity 1'});
+      arr = checkArrayLike(arr, {message:   * Value to be modified is not an array noStrings: true});
+      replacement = [replacement];
+
+      var result = arr.slice();
+      var i = 0;
+
+      while (i < arr.length) {
+        if (!p(result[i])) {
+          i += 1;
+          continue;
+        }
+
+        result = result.slice(0, i).concat(replacement).concat(result.slice(i + 1));
+        i += 1;
+      }
+
+      return result;
+    })
+  );
+
+
+  var replaceAll = defineValue(
+   *
+   * replaceAll
+   *
+   * Category: array
+    *
+   * signature: value: any, newValue: any, arr: array
+   * classification: array
+   *
+   * Takes a value, a replacement value, and an array. Returns a new array where all
+   * occurrences of the given value—checked for strict equality—have been replaced
+   * with the given replacement.
+   *
+   * Throws a TypeError if the last parameter is not an array.
+   *
+   * Examples:
+   *
+   *
+    curry(function(val, replacement, arr) {
+      return replaceAllWith(strictEquals(val), replacement, arr);
+    })
+  );
+*/
+
+
+  /*
+   * <apifunction>
+   *
+   * join
+   *
+   * Category: array
+   *
+   * Parameter: separator: any
+   * Parameter: arr: array
+   * Returns: string
+   *
+   * Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString
+   * of each element in the array, separated by the toString of the given separator.
+   *
+   * Throws a TypeError if the last element is not an array.
+   *
+   * Examples:
+   *   funkierJS.join('-', [1, 2, 3]); // => '1-2-3'
+   *
+   */
+
+  var join = curry(function(sep, arr) {
+    arr = checkArrayLike(arr, {noStrings: true, message: 'join: Value to be joined is not an array'});
+
+    return arr.join(sep);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * flatten
+   *
+   * Category: array
+   *
+   * Parameter: arr: array
+   * Returns: array
+   *
+   * Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.
+   * Note that flatten only strips off one layer.
+   *
+   * Throws a TypeError if the supplied value is not arrayLike, or if any of the values within it are not arrayLike.
+   *
+   * Examples:
+   *   funkierJS.flatten([[1, 2], [3, 4]]); // => [1, 2, 3, 4]
+   *
+   */
+
+  var flattenFn = function(soFar, current) {
+    current = checkArrayLike(current);
+
+    return concat(soFar, current);
+  };
+
+  var flatten = curry(function(arr) {
+    arr = checkArrayLike(arr, {noStrings: true, message: 'Value to be flattened is not an array'});
+
+    return foldl(flattenFn, [], arr);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * flattenMap
+   *
+   * Category: array
+   *
+   * Parameter: f: function
+   * Parameter: arr: arrayLike
+   * Returns: array
+   *
+   * Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and
+   * flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
+   * TypeError is thrown if this is not the case.
+   *
+   * A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.
+   *
+   * Examples:
+   *   var fn = function(n) {return [n, n * n];};
+   *   funkierJS.flattenMap(fn, [1, 2, 3]); // => Returns [1, 1, 2, 4, 3, 9]
+   *
+   */
+
+  var flattenMap = curry(function(f, arr) {
+    return flatten(map(f, arr));
+  });
+
+
+  return {
+    all: every,
+    any: some,
+    append: append,
+    concat: concat,
+    copy: copy,
+    drop: drop,
+    dropWhile: dropWhile,
+    each: each,
+    element: element,
+    elementWith: elementWith,
+    every: every,
+    filter: filter,
+/*
+    find: find,
+    findFrom: findFrom,
+    findFromWith: findFromWith,
+    findWith: findWith,
+*/
+    flatten: flatten,
+    flattenMap: flattenMap,
+    foldl: foldl,
+    foldl1: foldl1,
+    foldr: foldr,
+    foldr1: foldr1,
+    getIndex: getIndex,
+    head: head,
+    init: init,
+    inits: inits,
+ //   insert: insert,
+    intersperse: intersperse,
+    isEmpty: isEmpty,
+    join: join,
+    last: last,
+    length: length,
+    map: map,
+    maximum: maximum,
+    minimum: minimum,
+    nub: nub,
+    nubWith: nubWith,
+    occurrences: occurrences,
+    occurrencesWith: occurrencesWith,
+    prefixes: inits,
+    prepend: prepend,
+    product: product,
+    range: range,
+    rangeStep: rangeStride,
+    rangeStride: rangeStride,
+    reduce: foldl,
+    reduce1: foldl1,
+    reduceRight: foldr,
+    reduceRight1: foldr1,
+/*
+    remove: remove,
+    removeAll: removeAll,
+    removeAllWith: removeAllWith,
+    removeOne: removeOne,
+    removeOneWith: removeOneWith,
+    replace: replace,
+    replaceAll: replaceAll,
+    replaceAllWith: replaceAllWith,
+    replaceOne: replaceOne,
+    replaceOneWith: replaceOneWith,
+*/
+    replicate: replicate,
+    reverse: reverse,
+    slice: slice,
+    some: some,
+    sort: sort,
+    sortWith: sortWith,
+    suffixes: tails,
+    sum: sum,
+    tail: tail,
+    tails: tails,
+    take: take,
+    takeWhile: takeWhile,
+    uniq: nub,
+    uniqWith: nubWith,
+    unzip: unzip,
+    zip: zip,
+    zipWith: zipWith
+  };
+})();
+
+},{"../funcUtils":22,"../internalUtilities":25,"./base":11,"./curry":12,"./logical":15,"./object":18,"./pair":19,"./types":21}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1928,7 +4214,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],11:[function(require,module,exports){
+},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],12:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -2578,7 +4864,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":24}],12:[function(require,module,exports){
+},{"../internalUtilities":25}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4072,7 +6358,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11,"./object":17}],13:[function(require,module,exports){
+},{"./curry":12,"./object":18}],14:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4347,7 +6633,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],14:[function(require,module,exports){
+},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4623,7 +6909,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":21,"./curry":11}],15:[function(require,module,exports){
+},{"../funcUtils":22,"./curry":12}],16:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -5365,7 +7651,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./base":10,"./curry":11,"./object":17}],16:[function(require,module,exports){
+},{"./base":11,"./curry":12,"./object":18}],17:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -5618,7 +7904,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],17:[function(require,module,exports){
+},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -6783,7 +9069,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":24,"./base":10,"./curry":11,"./maybe":16}],18:[function(require,module,exports){
+},{"../internalUtilities":25,"./base":11,"./curry":12,"./maybe":17}],19:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6992,7 +9278,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":24,"./curry":11}],19:[function(require,module,exports){
+},{"../internalUtilities":25,"./curry":12}],20:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7329,7 +9615,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":21,"../internalUtilities":24,"./curry":11}],20:[function(require,module,exports){
+},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],21:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7816,7 +10102,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":11}],21:[function(require,module,exports){
+},{"./curry":12}],22:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7877,7 +10163,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":11}],22:[function(require,module,exports){
+},{"./components/curry":12}],23:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -7886,6 +10172,7 @@ module.exports = (function() {
 
   // Imports need to be explicit for browserify to find them
   var imports = {
+    array: require('./components/array'),
     base: require('./components/base'),
     curry: require('./components/curry'),
     date: require('./components/date'),
@@ -7958,7 +10245,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/base":10,"./components/curry":11,"./components/date":12,"./components/fn":13,"./components/logical":14,"./components/maths":15,"./components/maybe":16,"./components/object":17,"./components/pair":18,"./components/result":19,"./components/types":20,"./help":23}],23:[function(require,module,exports){
+},{"./components/array":10,"./components/base":11,"./components/curry":12,"./components/date":13,"./components/fn":14,"./components/logical":15,"./components/maths":16,"./components/maybe":17,"./components/object":18,"./components/pair":19,"./components/result":20,"./components/types":21,"./help":24}],24:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -8096,6 +10383,17 @@ module.exports = (function() {
           console.log('Usage: var x = andPred(f1, f2)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#andpred');
+          break;
+
+        case funkier.append:
+          console.log('append:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = append(value, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#append');
           break;
 
         case funkier.apply:
@@ -8305,6 +10603,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#composeon');
           break;
 
+        case funkier.concat:
+          console.log('concat:');
+          console.log('');
+          console.log('Takes two arrays, arrayLikes or strings, and returns their concatenation.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = concat(arr1, arr2)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#concat');
+          break;
+
         case funkier.constant:
           console.log('constant:');
           console.log('');
@@ -8326,6 +10635,17 @@ module.exports = (function() {
           console.log('Usage: var x = constant0(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#constant0');
+          break;
+
+        case funkier.copy:
+          console.log('copy:');
+          console.log('');
+          console.log('Takes an arrayLike, and returns a new array which is a shallow copy.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = copy(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#copy');
           break;
 
         case funkier.createObject:
@@ -8506,6 +10826,42 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#divide');
           break;
 
+        case funkier.drop:
+          console.log('drop:');
+          console.log('');
+          console.log('Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements');
+          console.log('removed from the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = drop(count, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#drop');
+          break;
+
+        case funkier.dropWhile:
+          console.log('dropWhile:');
+          console.log('');
+          console.log('Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing');
+          console.log('the remaining members our source upon removing the initial elements for which the predicate function returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = dropWhile(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#dropwhile');
+          break;
+
+        case funkier.each:
+          console.log('each:');
+          console.log('');
+          console.log('Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and');
+          console.log('returns undefined.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = each(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#each');
+          break;
+
         case funkier.either:
           console.log('either:');
           console.log('');
@@ -8518,6 +10874,30 @@ module.exports = (function() {
           console.log('Usage: var x = either(f1, f2, r)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#either');
+          break;
+
+        case funkier.element:
+          console.log('element:');
+          console.log('');
+          console.log('Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict');
+          console.log('identity) and false otherwise.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = element(val, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#element');
+          break;
+
+        case funkier.elementWith:
+          console.log('elementWith:');
+          console.log('');
+          console.log('A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.');
+          console.log('Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = elementWith(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#elementwith');
           break;
 
         case funkier.equals:
@@ -8540,6 +10920,21 @@ module.exports = (function() {
           console.log('Usage: var x = even(x)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#even');
+          break;
+
+        case funkier.every:
+          console.log('every:');
+          console.log('');
+          console.log('Synonyms: all');
+          console.log('');
+          console.log('Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the');
+          console.log('predicate with every element of the array or string, until either the predicate function returns false, or the end');
+          console.log('of the array or string is reached.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = every(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#every');
           break;
 
         case funkier.exp:
@@ -8610,6 +11005,43 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#extractordefault');
           break;
 
+        case funkier.filter:
+          console.log('filter:');
+          console.log('');
+          console.log('Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing');
+          console.log('those members of arr—in the same order as the original array—for which the predicate function returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = filter(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#filter');
+          break;
+
+        case funkier.flatten:
+          console.log('flatten:');
+          console.log('');
+          console.log('Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.');
+          console.log('Note that flatten only strips off one layer.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = flatten(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flatten');
+          break;
+
+        case funkier.flattenMap:
+          console.log('flattenMap:');
+          console.log('');
+          console.log('Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and');
+          console.log('flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a');
+          console.log('TypeError is thrown if this is not the case.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = flattenMap(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flattenmap');
+          break;
+
         case funkier.flip:
           console.log('flip:');
           console.log('');
@@ -8619,6 +11051,72 @@ module.exports = (function() {
           console.log('Usage: var x = flip(f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#flip');
+          break;
+
+        case funkier.foldl:
+          console.log('foldl:');
+          console.log('');
+          console.log('Synonyms: reduce');
+          console.log('');
+          console.log('Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.');
+          console.log('Traverses the array or string from left to right, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldl returns the');
+          console.log('value returned by the final call. The first call\'s accumulation parameter will be the given initial value.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldl(f, initial, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldl');
+          break;
+
+        case funkier.foldl1:
+          console.log('foldl1:');
+          console.log('');
+          console.log('Synonyms: reduce1');
+          console.log('');
+          console.log('Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array');
+          console.log('from left to right from the second element, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldl1 returns');
+          console.log('returns the value returned by the final call. The first call\'s accumulation parameter will be the first element of');
+          console.log('the array or string.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldl1(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldl1');
+          break;
+
+        case funkier.foldr:
+          console.log('foldr:');
+          console.log('');
+          console.log('Synonyms: reduceRight');
+          console.log('');
+          console.log('Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.');
+          console.log('Traverses the array or string from right to left, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldr returns the');
+          console.log('value returned by the final call. The first call\'s accumulation parameter willbe the given initial value.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldr(f, initial, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldr');
+          break;
+
+        case funkier.foldr1:
+          console.log('foldr1:');
+          console.log('');
+          console.log('Synonyms: reduceRight1');
+          console.log('');
+          console.log('Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from');
+          console.log('right to left from the penultimate element, calling the function with two arguments: the current accumulation');
+          console.log('value, and the current element. The value returned will form the next accumulation value, and foldr1 returns');
+          console.log('returns the value returned by the final call. The first call\'s accumulation parameter will be the last element of');
+          console.log('the array or string.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = foldr1(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#foldr1');
           break;
 
         case funkier.fst:
@@ -8705,6 +11203,18 @@ module.exports = (function() {
           console.log('Usage: var x = getHours(d)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#gethours');
+          break;
+
+        case funkier.getIndex:
+          console.log('getIndex:');
+          console.log('');
+          console.log('Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a');
+          console.log('TypeError if the index is outside the range for the given object.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = getIndex(index, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#getindex');
           break;
 
         case funkier.getJustValue:
@@ -8976,6 +11486,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#hasproperty');
           break;
 
+        case funkier.head:
+          console.log('head:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an');
+          console.log('empty arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = head(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#head');
+          break;
+
         case funkier.id:
           console.log('id:');
           console.log('');
@@ -8985,6 +11507,30 @@ module.exports = (function() {
           console.log('Usage: var x = id(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#id');
+          break;
+
+        case funkier.init:
+          console.log('init:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns an array or string containing every element except the last.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = init(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#init');
+          break;
+
+        case funkier.inits:
+          console.log('inits:');
+          console.log('');
+          console.log('Synonyms: prefixes');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = inits(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#inits');
           break;
 
         case funkier.instanceOf:
@@ -8997,6 +11543,18 @@ module.exports = (function() {
           console.log('Usage: var x = instanceOf(constructor, obj)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#instanceof');
+          break;
+
+        case funkier.intersperse:
+          console.log('intersperse:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each');
+          console.log('pair of elements of the original.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = intersperse(val, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#intersperse');
           break;
 
         case funkier.is:
@@ -9033,6 +11591,17 @@ module.exports = (function() {
           console.log('Usage: var x = isBoolean(a)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isboolean');
+          break;
+
+        case funkier.isEmpty:
+          console.log('isEmpty:');
+          console.log('');
+          console.log('Returns true if the given array, arrayLike or string is empty, and false if not.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = isEmpty(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isempty');
           break;
 
         case funkier.isErr:
@@ -9191,6 +11760,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#isundefined');
           break;
 
+        case funkier.join:
+          console.log('join:');
+          console.log('');
+          console.log('Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString');
+          console.log('of each element in the array, separated by the toString of the given separator.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = join(separator, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#join');
+          break;
+
         case funkier.keyValues:
           console.log('keyValues:');
           console.log('');
@@ -9217,6 +11798,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#keys');
           break;
 
+        case funkier.last:
+          console.log('last:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an');
+          console.log('empty arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = last(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#last');
+          break;
+
         case funkier.leftShift:
           console.log('leftShift:');
           console.log('');
@@ -9226,6 +11819,17 @@ module.exports = (function() {
           console.log('Usage: var x = leftShift(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#leftshift');
+          break;
+
+        case funkier.length:
+          console.log('length:');
+          console.log('');
+          console.log('Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = length(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#length');
           break;
 
         case funkier.lessThan:
@@ -9396,6 +12000,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#makeseconddate');
           break;
 
+        case funkier.map:
+          console.log('map:');
+          console.log('');
+          console.log('Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],');
+          console.log('we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not');
+          console.log('have an arity of at least 1, or if the last argument is not an arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = map(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#map');
+          break;
+
         case funkier.max:
           console.log('max:');
           console.log('');
@@ -9405,6 +12022,17 @@ module.exports = (function() {
           console.log('Usage: var x = max(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#max');
+          break;
+
+        case funkier.maximum:
+          console.log('maximum:');
+          console.log('');
+          console.log('Returns the largest element of the given array, string or arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = maximum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#maximum');
           break;
 
         case funkier.maybeExtract:
@@ -9430,6 +12058,18 @@ module.exports = (function() {
           console.log('Usage: var x = min(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#min');
+          break;
+
+        case funkier.minimum:
+          console.log('minimum:');
+          console.log('');
+          console.log('Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = minimum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#minimum');
           break;
 
         case funkier.modify:
@@ -9495,6 +12135,36 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#notpred');
           break;
 
+        case funkier.nub:
+          console.log('nub:');
+          console.log('');
+          console.log('Synonyms: uniq');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict');
+          console.log('equality—removed. The order of elements is preserved.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = nub(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#nub');
+          break;
+
+        case funkier.nubWith:
+          console.log('nubWith:');
+          console.log('');
+          console.log('Synonyms: uniqWith');
+          console.log('');
+          console.log('Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all');
+          console.log('duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when');
+          console.log('called with a previously encountered element and the element under consideration. The order of elements is');
+          console.log('preserved.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = nubWith(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#nubwith');
+          break;
+
         case funkier.objectCurry:
           console.log('objectCurry:');
           console.log('');
@@ -9531,6 +12201,31 @@ module.exports = (function() {
           console.log('Usage: var x = objectCurryWithArity(n, f)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#objectcurrywitharity');
+          break;
+
+        case funkier.occurrences:
+          console.log('occurrences:');
+          console.log('');
+          console.log('Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested');
+          console.log('for strict equality—and returns an array containing all the indices into haystack where the values may be found.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = occurrences(needle, haystack)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#occurrences');
+          break;
+
+        case funkier.occurrencesWith:
+          console.log('occurrencesWith:');
+          console.log('');
+          console.log('Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the');
+          console.log('value—tested by the given predicate—and returns an array containing all the indices into haystack where the');
+          console.log('predicate holds.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = occurrencesWith(needle, haystack)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#occurrenceswith');
           break;
 
         case funkier.odd:
@@ -9647,6 +12342,55 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#pre');
           break;
 
+        case funkier.prepend:
+          console.log('prepend:');
+          console.log('');
+          console.log('Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = prepend(value, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#prepend');
+          break;
+
+        case funkier.product:
+          console.log('product:');
+          console.log('');
+          console.log('Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = product(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#product');
+          break;
+
+        case funkier.range:
+          console.log('range:');
+          console.log('');
+          console.log('Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not');
+          console.log('including b, each element increasing by 1.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = range(a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#range');
+          break;
+
+        case funkier.rangeStride:
+          console.log('rangeStride:');
+          console.log('');
+          console.log('Synonyms: rangeStep');
+          console.log('');
+          console.log('Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to');
+          console.log('but not including b, each element increasing by stride.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = rangeStride(a, stride, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rangestride');
+          break;
+
         case funkier.rem:
           console.log('rem:');
           console.log('');
@@ -9656,6 +12400,29 @@ module.exports = (function() {
           console.log('Usage: var x = rem(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rem');
+          break;
+
+        case funkier.replicate:
+          console.log('replicate:');
+          console.log('');
+          console.log('Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws');
+          console.log('a TypeError if the given length is negative.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = replicate(length, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#replicate');
+          break;
+
+        case funkier.reverse:
+          console.log('reverse:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = reverse(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#reverse');
           break;
 
         case funkier.rightShift:
@@ -9992,6 +12759,19 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#setutcseconds');
           break;
 
+        case funkier.slice:
+          console.log('slice:');
+          console.log('');
+          console.log('Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the');
+          console.log('elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the');
+          console.log('object, then all values from \'from\' will be returned.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = slice(from, to, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#slice');
+          break;
+
         case funkier.snd:
           console.log('snd:');
           console.log('');
@@ -10004,6 +12784,45 @@ module.exports = (function() {
           console.log('Usage: var x = snd(p)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#snd');
+          break;
+
+        case funkier.some:
+          console.log('some:');
+          console.log('');
+          console.log('Synonyms: any');
+          console.log('');
+          console.log('Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the');
+          console.log('predicate with every element of the array or string, until either the predicate function returns true, or the end');
+          console.log('of the array or string is reached.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = some(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#some');
+          break;
+
+        case funkier.sort:
+          console.log('sort:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sort(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sort');
+          break;
+
+        case funkier.sortWith:
+          console.log('sortWith:');
+          console.log('');
+          console.log('Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the');
+          console.log('given function. The function should return a negative number if the first argument is "less than" the second, 0 if');
+          console.log('the two arguments are "equal", and a positive number if the first argument is greater than the second.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sortWith(f, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sortwith');
           break;
 
         case funkier.strictEquals:
@@ -10054,6 +12873,66 @@ module.exports = (function() {
           console.log('Usage: var x = subtract(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#subtract');
+          break;
+
+        case funkier.sum:
+          console.log('sum:');
+          console.log('');
+          console.log('Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an');
+          console.log('arrayLike, or it is empty.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = sum(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sum');
+          break;
+
+        case funkier.tail:
+          console.log('tail:');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns an array or string containing every element except the first.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = tail(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tail');
+          break;
+
+        case funkier.tails:
+          console.log('tails:');
+          console.log('');
+          console.log('Synonyms: suffixes');
+          console.log('');
+          console.log('Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = tails(arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tails');
+          break;
+
+        case funkier.take:
+          console.log('take:');
+          console.log('');
+          console.log('Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements');
+          console.log('of the given arrayLike.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = take(count, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#take');
+          break;
+
+        case funkier.takeWhile:
+          console.log('takeWhile:');
+          console.log('');
+          console.log('Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or');
+          console.log('string containing the initial members of the given arrayLike for which the predicate returned true.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = takeWhile(pred, arr)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#takewhile');
           break;
 
         case funkier.toBaseAndString:
@@ -10181,6 +13060,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
           break;
 
+        case funkier.unzip:
+          console.log('unzip:');
+          console.log('');
+          console.log('Takes an array of Pairs, and returns a Pair. The first element is an array containing the first element from each');
+          console.log('pair, and likewise the second element is an array containing the second elements.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = unzip(source)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#unzip');
+          break;
+
         case funkier.wrap:
           console.log('wrap:');
           console.log('');
@@ -10218,6 +13109,30 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#xorpred');
           break;
 
+        case funkier.zip:
+          console.log('zip:');
+          console.log('');
+          console.log('Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two');
+          console.log('arguments. Each element is a Pair p, such that fst(p) === a[i] and snd(p) === b[i] for each position');
+          console.log('i in the result.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = zip(a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#zip');
+          break;
+
+        case funkier.zipWith:
+          console.log('zipWith:');
+          console.log('');
+          console.log('Returns array');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = zipWith(f, a, b)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#zipwith');
+          break;
+
         default:
           console.log('No help available');
       }
@@ -10227,7 +13142,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10411,7 +13326,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -10507,7 +13422,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":26,"./lib/keys.js":27}],26:[function(require,module,exports){
+},{"./lib/is_arguments.js":27,"./lib/keys.js":28}],27:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -10529,7 +13444,7 @@ function unsupported(object){
     false;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -10540,7 +13455,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -11956,7 +14871,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":29,"ieee754":30,"is-array":31}],29:[function(require,module,exports){
+},{"base64-js":30,"ieee754":31,"is-array":32}],30:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -12082,7 +14997,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -12168,7 +15083,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 
 /**
  * isArray
@@ -12203,7 +15118,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -13479,7 +16394,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -13742,7 +16657,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14155,7 +17070,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":61}],35:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":62}],36:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14370,7 +17285,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":61}],36:[function(require,module,exports){
+},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":62}],37:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -14624,7 +17539,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIPrototype":4,"chai":61}],37:[function(require,module,exports){
+},{"../../docgen/APIPrototype":4,"chai":62}],38:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15739,7 +18654,7 @@ module.exports = (function() {
   });
 })();
 
-},{"./CPTestDataHelper":33,"chai":61}],38:[function(require,module,exports){
+},{"./CPTestDataHelper":34,"chai":62}],39:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -15989,7 +18904,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":61}],39:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":62}],40:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17228,7 +20143,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":33,"chai":61}],40:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":34,"chai":62}],41:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17485,7 +20400,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/lineProcessor":7,"chai":61}],41:[function(require,module,exports){
+},{"../../docgen/lineProcessor":7,"chai":62}],42:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17747,7 +20662,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":61}],42:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":62}],43:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -18037,7 +20952,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/markdownRenderer":9,"chai":61,"marked":32}],43:[function(require,module,exports){
+},{"../../docgen/markdownRenderer":9,"chai":62,"marked":33}],44:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -18246,6 +21161,18 @@ module.exports = (function() {
     });
 
 
+    describe('all', function() {
+      it('all exists', function() {
+        expect(funkier).to.have.a.property('all');
+      });
+
+
+      it('all is a synonym for every', function() {
+        expect(funkier.all).to.equal(funkier.every);
+      });
+    });
+
+
     describe('and', function() {
       it('and exists', function() {
         expect(funkier).to.have.a.property('and');
@@ -18298,6 +21225,46 @@ module.exports = (function() {
 
       it('andPred is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.andPred)).to.equal(true);
+      });
+    });
+
+
+    describe('any', function() {
+      it('any exists', function() {
+        expect(funkier).to.have.a.property('any');
+      });
+
+
+      it('any is a synonym for some', function() {
+        expect(funkier.any).to.equal(funkier.some);
+      });
+    });
+
+
+    describe('append', function() {
+      it('append exists', function() {
+        expect(funkier).to.have.a.property('append');
+      });
+
+
+      it('funkierJS\'s append is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.append).to.equal(module.append);
+      });
+
+
+      it('append is a function', function() {
+        expect(funkier.append).to.be.a('function');
+      });
+
+
+      it('append has documented arity', function() {
+        expect(funkier.arityOf(funkier.append)).to.equal(2);
+      });
+
+
+      it('append is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.append)).to.equal(true);
       });
     });
 
@@ -18746,6 +21713,34 @@ module.exports = (function() {
     });
 
 
+    describe('concat', function() {
+      it('concat exists', function() {
+        expect(funkier).to.have.a.property('concat');
+      });
+
+
+      it('funkierJS\'s concat is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.concat).to.equal(module.concat);
+      });
+
+
+      it('concat is a function', function() {
+        expect(funkier.concat).to.be.a('function');
+      });
+
+
+      it('concat has documented arity', function() {
+        expect(funkier.arityOf(funkier.concat)).to.equal(2);
+      });
+
+
+      it('concat is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.concat)).to.equal(true);
+      });
+    });
+
+
     describe('constant', function() {
       it('constant exists', function() {
         expect(funkier).to.have.a.property('constant');
@@ -18798,6 +21793,34 @@ module.exports = (function() {
 
       it('constant0 is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.constant0)).to.equal(true);
+      });
+    });
+
+
+    describe('copy', function() {
+      it('copy exists', function() {
+        expect(funkier).to.have.a.property('copy');
+      });
+
+
+      it('funkierJS\'s copy is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.copy).to.equal(module.copy);
+      });
+
+
+      it('copy is a function', function() {
+        expect(funkier.copy).to.be.a('function');
+      });
+
+
+      it('copy has documented arity', function() {
+        expect(funkier.arityOf(funkier.copy)).to.equal(1);
+      });
+
+
+      it('copy is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.copy)).to.equal(true);
       });
     });
 
@@ -19190,6 +22213,90 @@ module.exports = (function() {
     });
 
 
+    describe('drop', function() {
+      it('drop exists', function() {
+        expect(funkier).to.have.a.property('drop');
+      });
+
+
+      it('funkierJS\'s drop is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.drop).to.equal(module.drop);
+      });
+
+
+      it('drop is a function', function() {
+        expect(funkier.drop).to.be.a('function');
+      });
+
+
+      it('drop has documented arity', function() {
+        expect(funkier.arityOf(funkier.drop)).to.equal(2);
+      });
+
+
+      it('drop is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.drop)).to.equal(true);
+      });
+    });
+
+
+    describe('dropWhile', function() {
+      it('dropWhile exists', function() {
+        expect(funkier).to.have.a.property('dropWhile');
+      });
+
+
+      it('funkierJS\'s dropWhile is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.dropWhile).to.equal(module.dropWhile);
+      });
+
+
+      it('dropWhile is a function', function() {
+        expect(funkier.dropWhile).to.be.a('function');
+      });
+
+
+      it('dropWhile has documented arity', function() {
+        expect(funkier.arityOf(funkier.dropWhile)).to.equal(2);
+      });
+
+
+      it('dropWhile is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.dropWhile)).to.equal(true);
+      });
+    });
+
+
+    describe('each', function() {
+      it('each exists', function() {
+        expect(funkier).to.have.a.property('each');
+      });
+
+
+      it('funkierJS\'s each is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.each).to.equal(module.each);
+      });
+
+
+      it('each is a function', function() {
+        expect(funkier.each).to.be.a('function');
+      });
+
+
+      it('each has documented arity', function() {
+        expect(funkier.arityOf(funkier.each)).to.equal(2);
+      });
+
+
+      it('each is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.each)).to.equal(true);
+      });
+    });
+
+
     describe('either', function() {
       it('either exists', function() {
         expect(funkier).to.have.a.property('either');
@@ -19214,6 +22321,62 @@ module.exports = (function() {
 
       it('either is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.either)).to.equal(true);
+      });
+    });
+
+
+    describe('element', function() {
+      it('element exists', function() {
+        expect(funkier).to.have.a.property('element');
+      });
+
+
+      it('funkierJS\'s element is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.element).to.equal(module.element);
+      });
+
+
+      it('element is a function', function() {
+        expect(funkier.element).to.be.a('function');
+      });
+
+
+      it('element has documented arity', function() {
+        expect(funkier.arityOf(funkier.element)).to.equal(2);
+      });
+
+
+      it('element is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.element)).to.equal(true);
+      });
+    });
+
+
+    describe('elementWith', function() {
+      it('elementWith exists', function() {
+        expect(funkier).to.have.a.property('elementWith');
+      });
+
+
+      it('funkierJS\'s elementWith is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.elementWith).to.equal(module.elementWith);
+      });
+
+
+      it('elementWith is a function', function() {
+        expect(funkier.elementWith).to.be.a('function');
+      });
+
+
+      it('elementWith has documented arity', function() {
+        expect(funkier.arityOf(funkier.elementWith)).to.equal(2);
+      });
+
+
+      it('elementWith is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.elementWith)).to.equal(true);
       });
     });
 
@@ -19270,6 +22433,34 @@ module.exports = (function() {
 
       it('even is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.even)).to.equal(true);
+      });
+    });
+
+
+    describe('every', function() {
+      it('every exists', function() {
+        expect(funkier).to.have.a.property('every');
+      });
+
+
+      it('funkierJS\'s every is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.every).to.equal(module.every);
+      });
+
+
+      it('every is a function', function() {
+        expect(funkier.every).to.be.a('function');
+      });
+
+
+      it('every has documented arity', function() {
+        expect(funkier.arityOf(funkier.every)).to.equal(2);
+      });
+
+
+      it('every is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.every)).to.equal(true);
       });
     });
 
@@ -19414,6 +22605,34 @@ module.exports = (function() {
     });
 
 
+    describe('filter', function() {
+      it('filter exists', function() {
+        expect(funkier).to.have.a.property('filter');
+      });
+
+
+      it('funkierJS\'s filter is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.filter).to.equal(module.filter);
+      });
+
+
+      it('filter is a function', function() {
+        expect(funkier.filter).to.be.a('function');
+      });
+
+
+      it('filter has documented arity', function() {
+        expect(funkier.arityOf(funkier.filter)).to.equal(2);
+      });
+
+
+      it('filter is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.filter)).to.equal(true);
+      });
+    });
+
+
     describe('first', function() {
       it('first exists', function() {
         expect(funkier).to.have.a.property('first');
@@ -19422,6 +22641,62 @@ module.exports = (function() {
 
       it('first is a synonym for fst', function() {
         expect(funkier.first).to.equal(funkier.fst);
+      });
+    });
+
+
+    describe('flatten', function() {
+      it('flatten exists', function() {
+        expect(funkier).to.have.a.property('flatten');
+      });
+
+
+      it('funkierJS\'s flatten is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.flatten).to.equal(module.flatten);
+      });
+
+
+      it('flatten is a function', function() {
+        expect(funkier.flatten).to.be.a('function');
+      });
+
+
+      it('flatten has documented arity', function() {
+        expect(funkier.arityOf(funkier.flatten)).to.equal(1);
+      });
+
+
+      it('flatten is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.flatten)).to.equal(true);
+      });
+    });
+
+
+    describe('flattenMap', function() {
+      it('flattenMap exists', function() {
+        expect(funkier).to.have.a.property('flattenMap');
+      });
+
+
+      it('funkierJS\'s flattenMap is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.flattenMap).to.equal(module.flattenMap);
+      });
+
+
+      it('flattenMap is a function', function() {
+        expect(funkier.flattenMap).to.be.a('function');
+      });
+
+
+      it('flattenMap has documented arity', function() {
+        expect(funkier.arityOf(funkier.flattenMap)).to.equal(2);
+      });
+
+
+      it('flattenMap is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.flattenMap)).to.equal(true);
       });
     });
 
@@ -19450,6 +22725,118 @@ module.exports = (function() {
 
       it('flip is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.flip)).to.equal(true);
+      });
+    });
+
+
+    describe('foldl', function() {
+      it('foldl exists', function() {
+        expect(funkier).to.have.a.property('foldl');
+      });
+
+
+      it('funkierJS\'s foldl is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.foldl).to.equal(module.foldl);
+      });
+
+
+      it('foldl is a function', function() {
+        expect(funkier.foldl).to.be.a('function');
+      });
+
+
+      it('foldl has documented arity', function() {
+        expect(funkier.arityOf(funkier.foldl)).to.equal(3);
+      });
+
+
+      it('foldl is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.foldl)).to.equal(true);
+      });
+    });
+
+
+    describe('foldl1', function() {
+      it('foldl1 exists', function() {
+        expect(funkier).to.have.a.property('foldl1');
+      });
+
+
+      it('funkierJS\'s foldl1 is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.foldl1).to.equal(module.foldl1);
+      });
+
+
+      it('foldl1 is a function', function() {
+        expect(funkier.foldl1).to.be.a('function');
+      });
+
+
+      it('foldl1 has documented arity', function() {
+        expect(funkier.arityOf(funkier.foldl1)).to.equal(2);
+      });
+
+
+      it('foldl1 is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.foldl1)).to.equal(true);
+      });
+    });
+
+
+    describe('foldr', function() {
+      it('foldr exists', function() {
+        expect(funkier).to.have.a.property('foldr');
+      });
+
+
+      it('funkierJS\'s foldr is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.foldr).to.equal(module.foldr);
+      });
+
+
+      it('foldr is a function', function() {
+        expect(funkier.foldr).to.be.a('function');
+      });
+
+
+      it('foldr has documented arity', function() {
+        expect(funkier.arityOf(funkier.foldr)).to.equal(3);
+      });
+
+
+      it('foldr is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.foldr)).to.equal(true);
+      });
+    });
+
+
+    describe('foldr1', function() {
+      it('foldr1 exists', function() {
+        expect(funkier).to.have.a.property('foldr1');
+      });
+
+
+      it('funkierJS\'s foldr1 is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.foldr1).to.equal(module.foldr1);
+      });
+
+
+      it('foldr1 is a function', function() {
+        expect(funkier.foldr1).to.be.a('function');
+      });
+
+
+      it('foldr1 has documented arity', function() {
+        expect(funkier.arityOf(funkier.foldr1)).to.equal(2);
+      });
+
+
+      it('foldr1 is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.foldr1)).to.equal(true);
       });
     });
 
@@ -19646,6 +23033,34 @@ module.exports = (function() {
 
       it('getHours is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.getHours)).to.equal(true);
+      });
+    });
+
+
+    describe('getIndex', function() {
+      it('getIndex exists', function() {
+        expect(funkier).to.have.a.property('getIndex');
+      });
+
+
+      it('funkierJS\'s getIndex is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.getIndex).to.equal(module.getIndex);
+      });
+
+
+      it('getIndex is a function', function() {
+        expect(funkier.getIndex).to.be.a('function');
+      });
+
+
+      it('getIndex has documented arity', function() {
+        expect(funkier.arityOf(funkier.getIndex)).to.equal(2);
+      });
+
+
+      it('getIndex is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.getIndex)).to.equal(true);
       });
     });
 
@@ -20302,6 +23717,34 @@ module.exports = (function() {
     });
 
 
+    describe('head', function() {
+      it('head exists', function() {
+        expect(funkier).to.have.a.property('head');
+      });
+
+
+      it('funkierJS\'s head is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.head).to.equal(module.head);
+      });
+
+
+      it('head is a function', function() {
+        expect(funkier.head).to.be.a('function');
+      });
+
+
+      it('head has documented arity', function() {
+        expect(funkier.arityOf(funkier.head)).to.equal(1);
+      });
+
+
+      it('head is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.head)).to.equal(true);
+      });
+    });
+
+
     describe('id', function() {
       it('id exists', function() {
         expect(funkier).to.have.a.property('id');
@@ -20330,6 +23773,62 @@ module.exports = (function() {
     });
 
 
+    describe('init', function() {
+      it('init exists', function() {
+        expect(funkier).to.have.a.property('init');
+      });
+
+
+      it('funkierJS\'s init is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.init).to.equal(module.init);
+      });
+
+
+      it('init is a function', function() {
+        expect(funkier.init).to.be.a('function');
+      });
+
+
+      it('init has documented arity', function() {
+        expect(funkier.arityOf(funkier.init)).to.equal(1);
+      });
+
+
+      it('init is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.init)).to.equal(true);
+      });
+    });
+
+
+    describe('inits', function() {
+      it('inits exists', function() {
+        expect(funkier).to.have.a.property('inits');
+      });
+
+
+      it('funkierJS\'s inits is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.inits).to.equal(module.inits);
+      });
+
+
+      it('inits is a function', function() {
+        expect(funkier.inits).to.be.a('function');
+      });
+
+
+      it('inits has documented arity', function() {
+        expect(funkier.arityOf(funkier.inits)).to.equal(1);
+      });
+
+
+      it('inits is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.inits)).to.equal(true);
+      });
+    });
+
+
     describe('instanceOf', function() {
       it('instanceOf exists', function() {
         expect(funkier).to.have.a.property('instanceOf');
@@ -20354,6 +23853,34 @@ module.exports = (function() {
 
       it('instanceOf is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.instanceOf)).to.equal(true);
+      });
+    });
+
+
+    describe('intersperse', function() {
+      it('intersperse exists', function() {
+        expect(funkier).to.have.a.property('intersperse');
+      });
+
+
+      it('funkierJS\'s intersperse is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.intersperse).to.equal(module.intersperse);
+      });
+
+
+      it('intersperse is a function', function() {
+        expect(funkier.intersperse).to.be.a('function');
+      });
+
+
+      it('intersperse has documented arity', function() {
+        expect(funkier.arityOf(funkier.intersperse)).to.equal(2);
+      });
+
+
+      it('intersperse is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.intersperse)).to.equal(true);
       });
     });
 
@@ -20438,6 +23965,34 @@ module.exports = (function() {
 
       it('isBoolean is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.isBoolean)).to.equal(true);
+      });
+    });
+
+
+    describe('isEmpty', function() {
+      it('isEmpty exists', function() {
+        expect(funkier).to.have.a.property('isEmpty');
+      });
+
+
+      it('funkierJS\'s isEmpty is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.isEmpty).to.equal(module.isEmpty);
+      });
+
+
+      it('isEmpty is a function', function() {
+        expect(funkier.isEmpty).to.be.a('function');
+      });
+
+
+      it('isEmpty has documented arity', function() {
+        expect(funkier.arityOf(funkier.isEmpty)).to.equal(1);
+      });
+
+
+      it('isEmpty is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.isEmpty)).to.equal(true);
       });
     });
 
@@ -20834,6 +24389,34 @@ module.exports = (function() {
     });
 
 
+    describe('join', function() {
+      it('join exists', function() {
+        expect(funkier).to.have.a.property('join');
+      });
+
+
+      it('funkierJS\'s join is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.join).to.equal(module.join);
+      });
+
+
+      it('join is a function', function() {
+        expect(funkier.join).to.be.a('function');
+      });
+
+
+      it('join has documented arity', function() {
+        expect(funkier.arityOf(funkier.join)).to.equal(2);
+      });
+
+
+      it('join is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.join)).to.equal(true);
+      });
+    });
+
+
     describe('keyValues', function() {
       it('keyValues exists', function() {
         expect(funkier).to.have.a.property('keyValues');
@@ -20890,6 +24473,34 @@ module.exports = (function() {
     });
 
 
+    describe('last', function() {
+      it('last exists', function() {
+        expect(funkier).to.have.a.property('last');
+      });
+
+
+      it('funkierJS\'s last is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.last).to.equal(module.last);
+      });
+
+
+      it('last is a function', function() {
+        expect(funkier.last).to.be.a('function');
+      });
+
+
+      it('last has documented arity', function() {
+        expect(funkier.arityOf(funkier.last)).to.equal(1);
+      });
+
+
+      it('last is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.last)).to.equal(true);
+      });
+    });
+
+
     describe('leftShift', function() {
       it('leftShift exists', function() {
         expect(funkier).to.have.a.property('leftShift');
@@ -20914,6 +24525,34 @@ module.exports = (function() {
 
       it('leftShift is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.leftShift)).to.equal(true);
+      });
+    });
+
+
+    describe('length', function() {
+      it('length exists', function() {
+        expect(funkier).to.have.a.property('length');
+      });
+
+
+      it('funkierJS\'s length is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.length).to.equal(module.length);
+      });
+
+
+      it('length is a function', function() {
+        expect(funkier.length).to.be.a('function');
+      });
+
+
+      it('length has documented arity', function() {
+        expect(funkier.arityOf(funkier.length)).to.equal(1);
+      });
+
+
+      it('length is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.length)).to.equal(true);
       });
     });
 
@@ -21306,6 +24945,34 @@ module.exports = (function() {
     });
 
 
+    describe('map', function() {
+      it('map exists', function() {
+        expect(funkier).to.have.a.property('map');
+      });
+
+
+      it('funkierJS\'s map is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.map).to.equal(module.map);
+      });
+
+
+      it('map is a function', function() {
+        expect(funkier.map).to.be.a('function');
+      });
+
+
+      it('map has documented arity', function() {
+        expect(funkier.arityOf(funkier.map)).to.equal(2);
+      });
+
+
+      it('map is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.map)).to.equal(true);
+      });
+    });
+
+
     describe('max', function() {
       it('max exists', function() {
         expect(funkier).to.have.a.property('max');
@@ -21330,6 +24997,34 @@ module.exports = (function() {
 
       it('max is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.max)).to.equal(true);
+      });
+    });
+
+
+    describe('maximum', function() {
+      it('maximum exists', function() {
+        expect(funkier).to.have.a.property('maximum');
+      });
+
+
+      it('funkierJS\'s maximum is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.maximum).to.equal(module.maximum);
+      });
+
+
+      it('maximum is a function', function() {
+        expect(funkier.maximum).to.be.a('function');
+      });
+
+
+      it('maximum has documented arity', function() {
+        expect(funkier.arityOf(funkier.maximum)).to.equal(1);
+      });
+
+
+      it('maximum is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.maximum)).to.equal(true);
       });
     });
 
@@ -21470,6 +25165,34 @@ module.exports = (function() {
 
       it('min is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.min)).to.equal(true);
+      });
+    });
+
+
+    describe('minimum', function() {
+      it('minimum exists', function() {
+        expect(funkier).to.have.a.property('minimum');
+      });
+
+
+      it('funkierJS\'s minimum is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.minimum).to.equal(module.minimum);
+      });
+
+
+      it('minimum is a function', function() {
+        expect(funkier.minimum).to.be.a('function');
+      });
+
+
+      it('minimum has documented arity', function() {
+        expect(funkier.arityOf(funkier.minimum)).to.equal(1);
+      });
+
+
+      it('minimum is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.minimum)).to.equal(true);
       });
     });
 
@@ -21638,6 +25361,62 @@ module.exports = (function() {
     });
 
 
+    describe('nub', function() {
+      it('nub exists', function() {
+        expect(funkier).to.have.a.property('nub');
+      });
+
+
+      it('funkierJS\'s nub is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.nub).to.equal(module.nub);
+      });
+
+
+      it('nub is a function', function() {
+        expect(funkier.nub).to.be.a('function');
+      });
+
+
+      it('nub has documented arity', function() {
+        expect(funkier.arityOf(funkier.nub)).to.equal(1);
+      });
+
+
+      it('nub is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.nub)).to.equal(true);
+      });
+    });
+
+
+    describe('nubWith', function() {
+      it('nubWith exists', function() {
+        expect(funkier).to.have.a.property('nubWith');
+      });
+
+
+      it('funkierJS\'s nubWith is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.nubWith).to.equal(module.nubWith);
+      });
+
+
+      it('nubWith is a function', function() {
+        expect(funkier.nubWith).to.be.a('function');
+      });
+
+
+      it('nubWith has documented arity', function() {
+        expect(funkier.arityOf(funkier.nubWith)).to.equal(2);
+      });
+
+
+      it('nubWith is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.nubWith)).to.equal(true);
+      });
+    });
+
+
     describe('objectCurry', function() {
       it('objectCurry exists', function() {
         expect(funkier).to.have.a.property('objectCurry');
@@ -21690,6 +25469,62 @@ module.exports = (function() {
 
       it('objectCurryWithArity is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.objectCurryWithArity)).to.equal(true);
+      });
+    });
+
+
+    describe('occurrences', function() {
+      it('occurrences exists', function() {
+        expect(funkier).to.have.a.property('occurrences');
+      });
+
+
+      it('funkierJS\'s occurrences is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.occurrences).to.equal(module.occurrences);
+      });
+
+
+      it('occurrences is a function', function() {
+        expect(funkier.occurrences).to.be.a('function');
+      });
+
+
+      it('occurrences has documented arity', function() {
+        expect(funkier.arityOf(funkier.occurrences)).to.equal(2);
+      });
+
+
+      it('occurrences is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.occurrences)).to.equal(true);
+      });
+    });
+
+
+    describe('occurrencesWith', function() {
+      it('occurrencesWith exists', function() {
+        expect(funkier).to.have.a.property('occurrencesWith');
+      });
+
+
+      it('funkierJS\'s occurrencesWith is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.occurrencesWith).to.equal(module.occurrencesWith);
+      });
+
+
+      it('occurrencesWith is a function', function() {
+        expect(funkier.occurrencesWith).to.be.a('function');
+      });
+
+
+      it('occurrencesWith has documented arity', function() {
+        expect(funkier.arityOf(funkier.occurrencesWith)).to.equal(2);
+      });
+
+
+      it('occurrencesWith is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.occurrencesWith)).to.equal(true);
       });
     });
 
@@ -21954,6 +25789,190 @@ module.exports = (function() {
     });
 
 
+    describe('prefixes', function() {
+      it('prefixes exists', function() {
+        expect(funkier).to.have.a.property('prefixes');
+      });
+
+
+      it('prefixes is a synonym for inits', function() {
+        expect(funkier.prefixes).to.equal(funkier.inits);
+      });
+    });
+
+
+    describe('prepend', function() {
+      it('prepend exists', function() {
+        expect(funkier).to.have.a.property('prepend');
+      });
+
+
+      it('funkierJS\'s prepend is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.prepend).to.equal(module.prepend);
+      });
+
+
+      it('prepend is a function', function() {
+        expect(funkier.prepend).to.be.a('function');
+      });
+
+
+      it('prepend has documented arity', function() {
+        expect(funkier.arityOf(funkier.prepend)).to.equal(2);
+      });
+
+
+      it('prepend is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.prepend)).to.equal(true);
+      });
+    });
+
+
+    describe('product', function() {
+      it('product exists', function() {
+        expect(funkier).to.have.a.property('product');
+      });
+
+
+      it('funkierJS\'s product is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.product).to.equal(module.product);
+      });
+
+
+      it('product is a function', function() {
+        expect(funkier.product).to.be.a('function');
+      });
+
+
+      it('product has documented arity', function() {
+        expect(funkier.arityOf(funkier.product)).to.equal(1);
+      });
+
+
+      it('product is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.product)).to.equal(true);
+      });
+    });
+
+
+    describe('range', function() {
+      it('range exists', function() {
+        expect(funkier).to.have.a.property('range');
+      });
+
+
+      it('funkierJS\'s range is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.range).to.equal(module.range);
+      });
+
+
+      it('range is a function', function() {
+        expect(funkier.range).to.be.a('function');
+      });
+
+
+      it('range has documented arity', function() {
+        expect(funkier.arityOf(funkier.range)).to.equal(2);
+      });
+
+
+      it('range is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.range)).to.equal(true);
+      });
+    });
+
+
+    describe('rangeStep', function() {
+      it('rangeStep exists', function() {
+        expect(funkier).to.have.a.property('rangeStep');
+      });
+
+
+      it('rangeStep is a synonym for rangeStride', function() {
+        expect(funkier.rangeStep).to.equal(funkier.rangeStride);
+      });
+    });
+
+
+    describe('rangeStride', function() {
+      it('rangeStride exists', function() {
+        expect(funkier).to.have.a.property('rangeStride');
+      });
+
+
+      it('funkierJS\'s rangeStride is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.rangeStride).to.equal(module.rangeStride);
+      });
+
+
+      it('rangeStride is a function', function() {
+        expect(funkier.rangeStride).to.be.a('function');
+      });
+
+
+      it('rangeStride has documented arity', function() {
+        expect(funkier.arityOf(funkier.rangeStride)).to.equal(3);
+      });
+
+
+      it('rangeStride is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.rangeStride)).to.equal(true);
+      });
+    });
+
+
+    describe('reduce', function() {
+      it('reduce exists', function() {
+        expect(funkier).to.have.a.property('reduce');
+      });
+
+
+      it('reduce is a synonym for foldl', function() {
+        expect(funkier.reduce).to.equal(funkier.foldl);
+      });
+    });
+
+
+    describe('reduce1', function() {
+      it('reduce1 exists', function() {
+        expect(funkier).to.have.a.property('reduce1');
+      });
+
+
+      it('reduce1 is a synonym for foldl1', function() {
+        expect(funkier.reduce1).to.equal(funkier.foldl1);
+      });
+    });
+
+
+    describe('reduceRight', function() {
+      it('reduceRight exists', function() {
+        expect(funkier).to.have.a.property('reduceRight');
+      });
+
+
+      it('reduceRight is a synonym for foldr', function() {
+        expect(funkier.reduceRight).to.equal(funkier.foldr);
+      });
+    });
+
+
+    describe('reduceRight1', function() {
+      it('reduceRight1 exists', function() {
+        expect(funkier).to.have.a.property('reduceRight1');
+      });
+
+
+      it('reduceRight1 is a synonym for foldr1', function() {
+        expect(funkier.reduceRight1).to.equal(funkier.foldr1);
+      });
+    });
+
+
     describe('rem', function() {
       it('rem exists', function() {
         expect(funkier).to.have.a.property('rem');
@@ -21978,6 +25997,62 @@ module.exports = (function() {
 
       it('rem is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.rem)).to.equal(true);
+      });
+    });
+
+
+    describe('replicate', function() {
+      it('replicate exists', function() {
+        expect(funkier).to.have.a.property('replicate');
+      });
+
+
+      it('funkierJS\'s replicate is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.replicate).to.equal(module.replicate);
+      });
+
+
+      it('replicate is a function', function() {
+        expect(funkier.replicate).to.be.a('function');
+      });
+
+
+      it('replicate has documented arity', function() {
+        expect(funkier.arityOf(funkier.replicate)).to.equal(2);
+      });
+
+
+      it('replicate is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.replicate)).to.equal(true);
+      });
+    });
+
+
+    describe('reverse', function() {
+      it('reverse exists', function() {
+        expect(funkier).to.have.a.property('reverse');
+      });
+
+
+      it('funkierJS\'s reverse is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.reverse).to.equal(module.reverse);
+      });
+
+
+      it('reverse is a function', function() {
+        expect(funkier.reverse).to.be.a('function');
+      });
+
+
+      it('reverse has documented arity', function() {
+        expect(funkier.arityOf(funkier.reverse)).to.equal(1);
+      });
+
+
+      it('reverse is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.reverse)).to.equal(true);
       });
     });
 
@@ -22762,6 +26837,34 @@ module.exports = (function() {
     });
 
 
+    describe('slice', function() {
+      it('slice exists', function() {
+        expect(funkier).to.have.a.property('slice');
+      });
+
+
+      it('funkierJS\'s slice is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.slice).to.equal(module.slice);
+      });
+
+
+      it('slice is a function', function() {
+        expect(funkier.slice).to.be.a('function');
+      });
+
+
+      it('slice has documented arity', function() {
+        expect(funkier.arityOf(funkier.slice)).to.equal(3);
+      });
+
+
+      it('slice is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.slice)).to.equal(true);
+      });
+    });
+
+
     describe('snd', function() {
       it('snd exists', function() {
         expect(funkier).to.have.a.property('snd');
@@ -22786,6 +26889,90 @@ module.exports = (function() {
 
       it('snd is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.snd)).to.equal(true);
+      });
+    });
+
+
+    describe('some', function() {
+      it('some exists', function() {
+        expect(funkier).to.have.a.property('some');
+      });
+
+
+      it('funkierJS\'s some is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.some).to.equal(module.some);
+      });
+
+
+      it('some is a function', function() {
+        expect(funkier.some).to.be.a('function');
+      });
+
+
+      it('some has documented arity', function() {
+        expect(funkier.arityOf(funkier.some)).to.equal(2);
+      });
+
+
+      it('some is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.some)).to.equal(true);
+      });
+    });
+
+
+    describe('sort', function() {
+      it('sort exists', function() {
+        expect(funkier).to.have.a.property('sort');
+      });
+
+
+      it('funkierJS\'s sort is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.sort).to.equal(module.sort);
+      });
+
+
+      it('sort is a function', function() {
+        expect(funkier.sort).to.be.a('function');
+      });
+
+
+      it('sort has documented arity', function() {
+        expect(funkier.arityOf(funkier.sort)).to.equal(1);
+      });
+
+
+      it('sort is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.sort)).to.equal(true);
+      });
+    });
+
+
+    describe('sortWith', function() {
+      it('sortWith exists', function() {
+        expect(funkier).to.have.a.property('sortWith');
+      });
+
+
+      it('funkierJS\'s sortWith is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.sortWith).to.equal(module.sortWith);
+      });
+
+
+      it('sortWith is a function', function() {
+        expect(funkier.sortWith).to.be.a('function');
+      });
+
+
+      it('sortWith has documented arity', function() {
+        expect(funkier.arityOf(funkier.sortWith)).to.equal(2);
+      });
+
+
+      it('sortWith is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.sortWith)).to.equal(true);
       });
     });
 
@@ -22922,6 +27109,158 @@ module.exports = (function() {
 
       it('subtract is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.subtract)).to.equal(true);
+      });
+    });
+
+
+    describe('suffixes', function() {
+      it('suffixes exists', function() {
+        expect(funkier).to.have.a.property('suffixes');
+      });
+
+
+      it('suffixes is a synonym for tails', function() {
+        expect(funkier.suffixes).to.equal(funkier.tails);
+      });
+    });
+
+
+    describe('sum', function() {
+      it('sum exists', function() {
+        expect(funkier).to.have.a.property('sum');
+      });
+
+
+      it('funkierJS\'s sum is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.sum).to.equal(module.sum);
+      });
+
+
+      it('sum is a function', function() {
+        expect(funkier.sum).to.be.a('function');
+      });
+
+
+      it('sum has documented arity', function() {
+        expect(funkier.arityOf(funkier.sum)).to.equal(1);
+      });
+
+
+      it('sum is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.sum)).to.equal(true);
+      });
+    });
+
+
+    describe('tail', function() {
+      it('tail exists', function() {
+        expect(funkier).to.have.a.property('tail');
+      });
+
+
+      it('funkierJS\'s tail is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.tail).to.equal(module.tail);
+      });
+
+
+      it('tail is a function', function() {
+        expect(funkier.tail).to.be.a('function');
+      });
+
+
+      it('tail has documented arity', function() {
+        expect(funkier.arityOf(funkier.tail)).to.equal(1);
+      });
+
+
+      it('tail is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.tail)).to.equal(true);
+      });
+    });
+
+
+    describe('tails', function() {
+      it('tails exists', function() {
+        expect(funkier).to.have.a.property('tails');
+      });
+
+
+      it('funkierJS\'s tails is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.tails).to.equal(module.tails);
+      });
+
+
+      it('tails is a function', function() {
+        expect(funkier.tails).to.be.a('function');
+      });
+
+
+      it('tails has documented arity', function() {
+        expect(funkier.arityOf(funkier.tails)).to.equal(1);
+      });
+
+
+      it('tails is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.tails)).to.equal(true);
+      });
+    });
+
+
+    describe('take', function() {
+      it('take exists', function() {
+        expect(funkier).to.have.a.property('take');
+      });
+
+
+      it('funkierJS\'s take is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.take).to.equal(module.take);
+      });
+
+
+      it('take is a function', function() {
+        expect(funkier.take).to.be.a('function');
+      });
+
+
+      it('take has documented arity', function() {
+        expect(funkier.arityOf(funkier.take)).to.equal(2);
+      });
+
+
+      it('take is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.take)).to.equal(true);
+      });
+    });
+
+
+    describe('takeWhile', function() {
+      it('takeWhile exists', function() {
+        expect(funkier).to.have.a.property('takeWhile');
+      });
+
+
+      it('funkierJS\'s takeWhile is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.takeWhile).to.equal(module.takeWhile);
+      });
+
+
+      it('takeWhile is a function', function() {
+        expect(funkier.takeWhile).to.be.a('function');
+      });
+
+
+      it('takeWhile has documented arity', function() {
+        expect(funkier.arityOf(funkier.takeWhile)).to.equal(2);
+      });
+
+
+      it('takeWhile is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.takeWhile)).to.equal(true);
       });
     });
 
@@ -23230,6 +27569,58 @@ module.exports = (function() {
     });
 
 
+    describe('uniq', function() {
+      it('uniq exists', function() {
+        expect(funkier).to.have.a.property('uniq');
+      });
+
+
+      it('uniq is a synonym for nub', function() {
+        expect(funkier.uniq).to.equal(funkier.nub);
+      });
+    });
+
+
+    describe('uniqWith', function() {
+      it('uniqWith exists', function() {
+        expect(funkier).to.have.a.property('uniqWith');
+      });
+
+
+      it('uniqWith is a synonym for nubWith', function() {
+        expect(funkier.uniqWith).to.equal(funkier.nubWith);
+      });
+    });
+
+
+    describe('unzip', function() {
+      it('unzip exists', function() {
+        expect(funkier).to.have.a.property('unzip');
+      });
+
+
+      it('funkierJS\'s unzip is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.unzip).to.equal(module.unzip);
+      });
+
+
+      it('unzip is a function', function() {
+        expect(funkier.unzip).to.be.a('function');
+      });
+
+
+      it('unzip has documented arity', function() {
+        expect(funkier.arityOf(funkier.unzip)).to.equal(1);
+      });
+
+
+      it('unzip is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.unzip)).to.equal(true);
+      });
+    });
+
+
     describe('wrap', function() {
       it('wrap exists', function() {
         expect(funkier).to.have.a.property('wrap');
@@ -23312,6 +27703,62 @@ module.exports = (function() {
         expect(funkier.arityOf._isCurried(funkier.xorPred)).to.equal(true);
       });
     });
+
+
+    describe('zip', function() {
+      it('zip exists', function() {
+        expect(funkier).to.have.a.property('zip');
+      });
+
+
+      it('funkierJS\'s zip is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.zip).to.equal(module.zip);
+      });
+
+
+      it('zip is a function', function() {
+        expect(funkier.zip).to.be.a('function');
+      });
+
+
+      it('zip has documented arity', function() {
+        expect(funkier.arityOf(funkier.zip)).to.equal(2);
+      });
+
+
+      it('zip is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.zip)).to.equal(true);
+      });
+    });
+
+
+    describe('zipWith', function() {
+      it('zipWith exists', function() {
+        expect(funkier).to.have.a.property('zipWith');
+      });
+
+
+      it('funkierJS\'s zipWith is indeed the documented value', function() {
+        var module = require('../../lib/components/array');
+        expect(funkier.zipWith).to.equal(module.zipWith);
+      });
+
+
+      it('zipWith is a function', function() {
+        expect(funkier.zipWith).to.be.a('function');
+      });
+
+
+      it('zipWith has documented arity', function() {
+        expect(funkier.arityOf(funkier.zipWith)).to.equal(3);
+      });
+
+
+      it('zipWith is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.zipWith)).to.equal(true);
+      });
+    });
   });
 
 
@@ -23320,34 +27767,41 @@ module.exports = (function() {
 
 
     beforeEach(function() {
-      documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'and', 'andPred',
-         'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext', 'bindWithContextAndArity', 'bitwiseAnd',
-         'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp', 'callPropWithArity', 'clone', 'compose', 'composeMany',
-         'composeOn', 'constant', 'constant0', 'createObject', 'createObjectWithProps', 'createProp', 'curry',
-         'curryOwn', 'curryWithArity', 'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty',
-         'deleteProp', 'descriptors', 'div', 'divide', 'either', 'equals', 'even', 'exp', 'extend', 'extendOwn',
-         'extract', 'extractOrDefault', 'first', 'flip', 'fst', 'getCurrentTimeString', 'getDayOfMonth',
-         'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getJustValue', 'getMilliseconds', 'getMinutes',
+      documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'all', 'and',
+         'andPred', 'any', 'append', 'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext',
+         'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp',
+         'callPropWithArity', 'clone', 'compose', 'composeMany', 'composeOn', 'concat', 'constant', 'constant0',
+         'copy', 'createObject', 'createObjectWithProps', 'createProp', 'curry', 'curryOwn', 'curryWithArity',
+         'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty', 'deleteProp', 'descriptors',
+         'div', 'divide', 'drop', 'dropWhile', 'each', 'either', 'element', 'elementWith', 'equals', 'even', 'every',
+         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'flatten', 'flattenMap',
+         'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst', 'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek',
+         'getErrValue', 'getFullYear', 'getHours', 'getIndex', 'getJustValue', 'getMilliseconds', 'getMinutes',
          'getMonth', 'getOkValue', 'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getSeconds',
          'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
          'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'greaterThan', 'greaterThanEqual',
-         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'id', 'instanceOf', 'is', 'isArray', 'isBoolean',
-         'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair',
-         'isPrototypeOf', 'isRealObject', 'isResult', 'isString', 'isUndefined', 'keyValues', 'keys', 'leftShift',
-         'lessThan', 'lessThanEqual', 'log', 'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString',
-         'makeDayDate', 'makeHourDate', 'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate',
-         'makeResultReturner', 'makeSecondDate', 'max', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
-         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'modify', 'modifyProp', 'multiply', 'not',
-         'notEqual', 'notEquals', 'notPred', 'objectCurry', 'objectCurryWithArity', 'odd', 'or', 'orPred', 'parseInt',
-         'parseIntInBase', 'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'rem', 'rightShift',
-         'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp', 'safeExtract',
-         'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft', 'sectionRight',
-         'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes', 'setMonth', 'setProp',
-         'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours', 'setUTCMilliseconds',
-         'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'snd', 'strictEquals', 'strictInequality',
-         'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'tap', 'toBaseAndRadix', 'toBaseAndString',
-         'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString', 'toLocaleDateString',
-         'toPrecision', 'toTimeString', 'toUTCString', 'wrap', 'xor', 'xorPred'];
+         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'head', 'id', 'init', 'inits', 'instanceOf',
+         'intersperse', 'is', 'isArray', 'isBoolean', 'isEmpty', 'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull',
+         'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf', 'isRealObject', 'isResult', 'isString',
+         'isUndefined', 'join', 'keyValues', 'keys', 'last', 'leftShift', 'length', 'lessThan', 'lessThanEqual', 'log',
+         'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate', 'makeHourDate',
+         'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate', 'makeResultReturner',
+         'makeSecondDate', 'map', 'max', 'maximum', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
+         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'minimum', 'modify', 'modifyProp',
+         'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'nub', 'nubWith', 'objectCurry',
+         'objectCurryWithArity', 'occurrences', 'occurrencesWith', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase',
+         'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'prefixes', 'prepend', 'product', 'range',
+         'rangeStep', 'rangeStride', 'reduce', 'reduce1', 'reduceRight', 'reduceRight1', 'rem', 'replicate', 'reverse',
+         'rightShift', 'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp',
+         'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
+         'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
+         'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
+         'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'slice', 'snd', 'some',
+         'sort', 'sortWith', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt',
+         'subtract', 'suffixes', 'sum', 'tail', 'tails', 'take', 'takeWhile', 'tap', 'toBaseAndRadix',
+         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
+         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'uniq', 'uniqWith', 'unzip', 'wrap',
+         'xor', 'xorPred', 'zip', 'zipWith'];
     });
 
 
@@ -23364,4234 +27818,4114 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/date":12,"../../lib/components/fn":13,"../../lib/components/logical":14,"../../lib/components/maths":15,"../../lib/components/maybe":16,"../../lib/components/object":17,"../../lib/components/pair":18,"../../lib/components/result":19,"../../lib/components/types":20,"../../lib/funkier":22,"chai":61}],44:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var array = require('../../array');
-//
-//    var curryModule = require('../../curry');
-//    var getRealArity = curryModule.getRealArity;
-//
-//    var base = require('../../base');
-//    var id = base.id;
-//    var isArray = base.isArray;
-//    var equals = base.equals;
-//    var strictEquals = base.strictEquals;
-//    var constant = base.constant;
-//    var alwaysTrue = base.constant(true);
-//    var alwaysFalse = base.constant(false);
-//
-//    var pair = require('../../pair');
-//    var Pair = pair.Pair;
-//    var isPair = pair.isPair;
-//    var fst = pair.fst;
-//    var snd = pair.snd;
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//    var makeArrayLike = testUtils.makeArrayLike;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['length', 'getIndex', 'head', 'last', 'replicate', 'map', 'each', 'filter',
-//                             'foldl', 'foldl1', 'foldr', 'foldr1', 'every', 'some', 'maximum', 'minimum',
-//                             'sum', 'product', 'element', 'elementWith', 'range', 'rangeStep', 'take',
-//                             'drop', 'init', 'tail', 'inits', 'tails', 'copy', 'slice', 'takeWhile',
-//                             'dropWhile', 'prepend', 'append', 'concat', 'isEmpty', 'intersperse',
-//                             'reverse', 'find', 'findFrom', 'findWith', 'findFromWith', 'occurrences',
-//                             'occurrencesWith', 'zip', 'zipWith', 'nub', 'uniq', 'nubWith', 'uniqWith',
-//                             'sort', 'sortWith', 'unzip', 'insert', 'remove', 'replace', 'removeOne',
-//                             'removeOneWith', 'removeAll', 'removeAllWith', 'replaceOne', 'replaceOneWith',
-//                             'replaceAll', 'replaceAllWith', 'join', 'flatten', 'flattenMap'];
-//
-//    describeModule('array', array, expectedObjects, expectedFunctions);
-//
-//
-//    // Many of the predicate functions on strings are tested with the following predicate
-//    var isDigit = function(x) {return x >= '0' && x <= '9';};
-//    // and likewise the array tests regularly use this test
-//    var fooIs42 = function(x) {return x.foo === 42;};
-//
-//
-//    // Many functions split string arguments in order to run a test using every
-//    var splitIfNecessary = function(val) {
-//      if (typeof(val) === 'string')
-//        val = val.split('');
-//
-//      // Turn arraylikes into real arrays
-//      if (!isArray(val))
-//        return [].slice.call(val);
-//
-//      return val;
-//    };
-//
-//
-//    // Various test generation functions need a clean copy of their test data, to ensure there
-//    // is no interdependence between individual tests
-//    var sliceIfNecessary = function(originalData) {
-//      if (typeof(originalData) === 'string')
-//        return originalData;
-//
-//      return originalData.slice();
-//    };
-//
-//
-//    // Several functions need to check "equality" where one value is an array and the other an arraylike
-//    var valuesEqual = function(source, copy) {
-//      var sameLength = source.length === copy.length;
-//
-//      source = splitIfNecessary(source);
-//      var sameValues = source.every(function(val, i) {
-//        return copy[i] === val;
-//      });
-//
-//      return sameLength && sameValues;
-//    };
-//
-//
-//    // Several functions need to auto-generate tests for the empty values. Let's not replicate that logic
-//    // all over the place
-//    var addEmptyTests = function(testAdder) {
-//      testAdder('empty array', []);
-//      testAdder('empty arraylike', makeArrayLike());
-//      testAdder('empty string', '');
-//    };
-//
-//
-//    // Several functions should throw on empty arrays/strings
-//    var addThrowsOnEmptyTests = function(fnUnderTest, args) {
-//      var addOne = function(message, data) {
-//        it('Throws for empty ' + message, function() {
-//          var fn = function() {
-//            fnUnderTest.apply(null, args.concat([data]));
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addOne('arrays', []);
-//      addOne('arraylikes', makeArrayLike());
-//      addOne('strings', '');
-//    };
-//
-//
-//    // Several functions should return a value of the same length
-//    var addSameLengthTest = function(fnUnderTest, message, otherArgs, originalData, modifier) {
-//      modifier = modifier || 0;
-//
-//      it('Result has same length for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var length = fnUnderTest.apply(null, otherArgs.concat([data])).length;
-//
-//        expect(length).to.equal(data.length + modifier);
-//      });
-//    };
-//
-//
-//    // Several functions expect the first argument to be a function that should be always be called with a
-//    // specific number of arguments
-//    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween, arrayOnly) {
-//      // None of the functions in array need more than 2 arguments: throw at test generation stage if I get
-//      // this wrong
-//      if (requiredArgs > 2)
-//        throw new Error('Incorrect test: addFuncCalledWithSpecificArityTests called with ' + requiredArgs);
-//
-//      argsBetween = argsBetween || [];
-//      arrayOnly = arrayOnly || false;
-//
-//      var addTestsForType = function(type, originalData) {
-//        it('Function called with correct number of arguments when called with ' + type, function() {
-//          var allArgs = [];
-//          var f;
-//
-//          if (requiredArgs === 1) {
-//            f = function(x) {
-//              var args = [].slice.call(arguments);
-//              allArgs.push(args);
-//            };
-//          } else {
-//            f = function(x, y) {
-//              var args = [].slice.call(arguments);
-//              allArgs.push(args);
-//            };
-//          }
-//
-//          fnUnderTest.apply(null, [f].concat(argsBetween).concat([originalData]));
-//          var result = allArgs.every(function(arr) {
-//            return arr.length === requiredArgs;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTestsForType('array', [1, 2, 3]);
-//      addTestsForType('arraylike', makeArrayLike(2, 3, 4, 5));
-//      if (!arrayOnly)
-//        addTestsForType('string', 'abc');
-//    };
-//
-//
-//    // Several functions expect that the function being tested should be called with each element
-//    // of the given object, in order.
-//    var addCalledWithEveryMemberTests = function(fnUnderTest, argsBetween, isArity2, isRTL, skipsFirst) {
-//      argsBetween = argsBetween || [];
-//
-//      // only the fold* functions have arity 2
-//      isArity2 = isArity2 || false;
-//      // only the foldr* functions operate RTL
-//      isRTL = isRTL || false;
-//      // only the fold*1 functions skip the first element
-//      skipsFirst = skipsFirst || false;
-//
-//      var addTestsForType = function(type, originalData) {
-//        it('Called the correct number of times for ' + type, function() {
-//          var data = sliceIfNecessary(originalData);
-//
-//          var allArgs = [];
-//          var f = function(x) {
-//            allArgs.push(x);
-//          };
-//
-//          if (isArity2) {
-//            f = function(x, y) {
-//              // In the fold* functions, the current element is the second parameter
-//              allArgs.push(y);
-//            };
-//          }
-//
-//          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
-//
-//          // allArgs now contains each element that our function was called with
-//          expect(allArgs.length).to.equal(skipsFirst ? originalData.length - 1 : originalData.length);
-//        });
-//
-//
-//        it('Called with every element of ' + type, function() {
-//          var data = sliceIfNecessary(originalData);
-//
-//          var allArgs = [];
-//          var f = function(x) {
-//            allArgs.push(x);
-//          };
-//
-//          if (isArity2) {
-//            f = function(x, y) {
-//              // In the fold* functions, the current element is the second parameter
-//              allArgs.push(y);
-//            };
-//          }
-//
-//          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
-//
-//          // allArgs now contains each element that our function was called with
-//          originalData = splitIfNecessary(originalData);
-//          var numElems = originalData.length - 1;
-//
-//          var result = originalData.every(function(elem, i) {
-//            // The fold*1 functions should have 1 call fewer
-//            if (skipsFirst) {
-//              if ((isRTL && i === numElems) || (!isRTL && i === 0))
-//                return true;
-//            }
-//
-//            // Where should this element be in allArgs?
-//            var index = i;
-//            if (skipsFirst) {
-//              if (isRTL)
-//                index += 1;
-//              else
-//                index -= 1;
-//            }
-//
-//            return allArgs[isRTL ? numElems - index : index] === elem;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTestsForType('array', [1, 2, 3]);
-//      addTestsForType('arraylike', makeArrayLike(2, 3, 4, 5));
-//      addTestsForType('string', 'abc');
-//    };
-//
-//
-//    // Several functions expect that the result should be distinct from the original
-//    // value, not harming the original value in any way
-//    var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore) {
-//      var addOne = function(type, data) {
-//        it('Doesn\'t modify original ' + type + ' value', function() {
-//          var copy = sliceIfNecessary(data);
-//          var fnResult = fnUnderTest.apply(null, argsBefore.concat([data]));
-//
-//          var different = fnResult !== data;
-//          var sameLength = data.length === copy.length;
-//
-//          data = splitIfNecessary(data);
-//          var sameEntries = data.every(function(v, i) {
-//            return copy[i] === v;
-//          });
-//
-//          expect(sameLength && sameEntries && different).to.equal(true);
-//        });
-//      };
-//
-//
-//      addOne('array', [{foo: 1}, {foo: 2}, {bar: 3}]);
-//      addOne('arraylike', makeArrayLike({foo: 1}, {foo: 2}, {bar: 3}));
-//    };
-//
-//
-//    // Several functions expect the return type to be the same as the final argument
-//    var addReturnsSameTypeTests = function(fnUnderTest, argsBefore, arrayOnly) {
-//      arrayOnly = arrayOnly || false;
-//
-//      var addOne = function(type, data) {
-//        it('Returns ' + (type === 'arraylike' ? 'array' : type) + ' when called with ' + type, function() {
-//          var result = fnUnderTest.apply(null, argsBefore.concat([data]));
-//
-//          if (type !== 'string')
-//            expect(isArray(result)).to.equal(true);
-//          else
-//            expect(typeof(result)).to.equal('string');
-//        });
-//      };
-//
-//      addOne('array', [{foo: 1}]);
-//      addOne('arraylike', makeArrayLike(1, 2));
-//      if (!arrayOnly)
-//        addOne('string', 'abc');
-//    };
-//
-//
-//    // Several functions should yield the empty array/string when called with an empty
-//    // array/string
-//    var addReturnsEmptyOnEmptyTests = function(fnUnderTest, argsBefore, alwaysArray) {
-//      alwaysArray = alwaysArray || false;
-//
-//
-//      it('Returns empty array when called with empty array', function() {
-//        var original = [];
-//        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
-//
-//        expect(result).to.not.equal(original);
-//        expect(result).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns empty array when called with empty arraylike', function() {
-//        var original = makeArrayLike();
-//        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
-//
-//        expect(result).to.not.equal(original);
-//        expect(result).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns empty ' + (alwaysArray ? 'array' : 'string') + ' when called with empty string', function() {
-//        var original = '';
-//        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
-//
-//        expect(result).to.deep.equal(alwaysArray ? [] : '');
-//      });
-//    };
-//
-//
-//    var lengthSpec = {
-//      name: 'length',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(lengthSpec, array.length, function(length) {
-//      var addOne = function(message, data) {
-//        it('Works ' + message, function() {
-//          expect(length(data)).to.equal(data.length);
-//        });
-//      };
-//
-//
-//      addEmptyTests(addOne);
-//      addOne('arrays (1)', [1]);
-//      addOne('arrays (2)', [2, 3]);
-//      addOne('arraylikes (1)', makeArrayLike(1));
-//      addOne('arraylikes (2)', makeArrayLike(2, 3));
-//      addOne('strings (1)', 'a');
-//      addOne('strings (2)', 'bcd');
-//    });
-//
-//
-//    var getIndexSpec = {
-//      name: 'getIndex',
-//      arity: 2,
-//      restrictions: [['positive'], ['arraylike']],
-//      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(getIndexSpec, array.getIndex, function(getIndex) {
-//      addThrowsOnEmptyTests(getIndex, [0]);
-//
-//
-//      var addTests = function(originalData) {
-//        // The generated tests assume a length of 3. Sanity-check my data.
-//        if (originalData.length < 3)
-//          throw new Error('Test generation for getIndex requires test data of length ' + originalData.length);
-//
-//        var typeString = typeof(originalData) === 'string' ? 'string' : isArray(originalData) ? 'array' : 'arraylike';
-//
-//
-//        it('Works for ' + typeString + ' (1)', function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = getIndex(0, data);
-//
-//          expect(result).to.equal(data[0]);
-//        });
-//
-//
-//        it('Works for ' + typeString + ' (2)', function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = getIndex(2, data);
-//
-//          expect(result).to.equal(data[2]);
-//        });
-//
-//
-//        it('Throws when ' + typeString + ' indices outside range', function() {
-//          var data = sliceIfNecessary(originalData);
-//          var fn = function() {
-//            getIndex(data.length, data);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addTests([1, 7, 0, 42]);
-//      addTests(makeArrayLike(4, 3, 2, 1));
-//      addTests('funkier');
-//
-//
-//      testCurriedFunction(getIndex, [1, ['a', 'b']]);
-//    });
-//
-//
-//    // The tests for head and tail are very similar, and can be generated
-//    var makeElementSelectorTest = function(desc, fnUnderTest, isFirst) {
-//      var spec = {
-//        name: desc,
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addThrowsOnEmptyTests(fnUnderTest, []);
-//
-//        var addOne = function(message, data) {
-//          it('Works for ' + message, function() {
-//            var result = fnUnderTest(data);
-//
-//            expect(result).to.equal(data[isFirst ? 0 : data.length - 1]);
-//          });
-//        };
-//
-//
-//        addOne('arrays (1)', [1]);
-//        addOne('arrays (2)', [2, 3]);
-//        addOne('arraylikes (1)', makeArrayLike(4));
-//        addOne('arraylikes (2)', makeArrayLike(5, 6));
-//        addOne('strings (1)', 'a');
-//        addOne('strings (2)', 'funkier');
-//      });
-//    };
-//
-//
-//    makeElementSelectorTest('head', array.head, true);
-//    makeElementSelectorTest('last', array.last, false);
-//
-//
-//    var replicateSpec = {
-//      name: 'replicate',
-//      arity: 2,
-//      restrictions: [['positive'], []],
-//      validArguments: [[1], ['a']]
-//    };
-//
-//
-//    describeFunction(replicateSpec, array.replicate, function(replicate) {
-//      var addTests = function(message, count, data) {
-//        it('Returns array ' + message, function() {
-//          var replicated = replicate(count, data);
-//
-//          expect(isArray(replicated)).to.equal(true);
-//        });
-//
-//
-//        it('Returned array has correct length ' + message, function() {
-//          var result = replicate(count, data);
-//
-//          expect(result.length).to.equal(count);
-//        });
-//
-//
-//        it('Returned array\'s elements strictly equal given value ' + message, function() {
-//          var result = replicate(count, data).every(function(e) {
-//            return e === data;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('(1)', 1, 'a');
-//      addTests('(2)', 10, {});
-//      addTests('when count is zero', 0, 2);
-//
-//
-//      testCurriedFunction(replicate, [1, 1]);
-//    });
-//
-//
-//    var mapSpec = {
-//      name: 'map',
-//      arity: 2,
-//      restrictions: [['function: minarity 1'], ['arraylike']],
-//      validArguments: [[function() {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(mapSpec, array.map, function(map) {
-//      addFuncCalledWithSpecificArityTests(map, 1);
-//      addCalledWithEveryMemberTests(map);
-//      addReturnsEmptyOnEmptyTests(map, [function(x) {return 42;}], true);
-//
-//
-//      var addTests = function(message, f, originalData) {
-//        addSameLengthTest(map, message, [f], originalData);
-//
-//
-//        it('Returns an array for ', function() {
-//          var data = sliceIfNecessary(originalData);
-//          var mapped = map(f, data);
-//
-//          expect(isArray(mapped)).to.equal(true);
-//        });
-//
-//
-//        it('Returned array correct for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = map(f, data).every(function(val, i) {
-//            return val === f(data[i]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array (1)', id, [1, true, null, undefined]);
-//      addTests('array (2)', function(x) {return x + 1;}, [2, 3, 4]);
-//      addTests('arraylike (1)', id, makeArrayLike({}, {}));
-//      addTests('arraylike (2)', function(x) {return x - 1;}, makeArrayLike(5, 6, 7));
-//      addTests('strings (1)', function(x) {return x.toUpperCase();}, 'funkier');
-//      addTests('strings (2)', function(x) {return x.charCodeAt(0);}, 'abc');
-//
-//
-//      it('Array contains partially applied functions if supplied function arity > 1', function() {
-//        var uncurried = function(x, y) {return x + y;};
-//        var mapped = map(uncurried, [1, 2]);
-//        var allPartiallyApplied = mapped.every(function(f) {
-//          return typeof(f) === 'function' && getRealArity(f) === 1;
-//        });
-//
-//        expect(allPartiallyApplied).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(map, [id, [1, 2]]);
-//    });
-//
-//
-//    var eachSpec = {
-//      name: 'each',
-//      arity: 2,
-//      restrictions: [['function'], ['arraylike']],
-//      validArguments: [[function() {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(eachSpec, array.each, function(each) {
-//      addFuncCalledWithSpecificArityTests(each, 1);
-//      addCalledWithEveryMemberTests(each);
-//
-//
-//      var addOne = function(message, data) {
-//        it('Returns undefined when called with ' + data, function() {
-//          var result = each(id, data);
-//
-//          expect(result).to.equal(undefined);
-//        });
-//      };
-//
-//
-//      addOne('array', [1, true, null]);
-//      addOne('arraylike', makeArrayLike(2, 3, 4));
-//      addOne('string', 'abc');
-//
-//
-//      testCurriedFunction(each, [id, [1, 2]]);
-//    });
-//
-//
-//    var filterSpec = {
-//      name: 'filter',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['arraylike']],
-//      validArguments: [[function(x) {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(filterSpec, array.filter, function(filter) {
-//      addReturnsSameTypeTests(filter, [alwaysTrue]);
-//      addFuncCalledWithSpecificArityTests(filter, 1);
-//      addCalledWithEveryMemberTests(filter);
-//      addNoModificationOfOriginalTests(filter, [alwaysTrue]);
-//      addReturnsEmptyOnEmptyTests(filter, [alwaysTrue]);
-//
-//
-//      var addTests = function(message, f, originalData, expectedResult, isArrayLike) {
-//        isArrayLike = isArrayLike || false;
-//
-//
-//        var addLengthAndValuesTests = function(countMessage, fn, expected) {
-//          it('Returned value correct for ' + message + ' ' + countMessage, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var filtered = filter(fn, data);
-//
-//            expect(filtered).to.deep.equal(expected);
-//          });
-//        };
-//
-//
-//        // We test filter returns correct arrays for 3 different functions:
-//        //  - alwaysTrue: this should result in a copy of the original value
-//        //  - alwaysFalse: this should result in an empty value
-//        //  - the custom function passed in to this test generator
-//        addLengthAndValuesTests('(1)', alwaysTrue, isArrayLike ? [].slice.call(originalData) : originalData);
-//        addLengthAndValuesTests('(2)', alwaysFalse, typeof(originalData) === 'string' ? '' : []);
-//        addLengthAndValuesTests('(3)', f, expectedResult);
-//      };
-//
-//
-//      addTests('for an array', function(x) {return x % 2 === 0;}, [1, 2, 3, 4], [2, 4]);
-//      addTests('for an arraylike', function(x) {return x > 10;}, makeArrayLike(11, 3, 2, 20, 42, 1), [11, 20, 42], true);
-//      addTests('for a string', function(c) {return c !== 'a';}, 'banana', 'bnn');
-//
-//
-//      it('Elements of returned values strictly equal those from the original value', function() {
-//        var a = [{}, {}, {}, {}];
-//        var f = alwaysTrue;
-//        var allStrictEqual = filter(f, a).every(function(e, i) {
-//          return e === a[i];
-//        });
-//
-//        expect(allStrictEqual).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(filter, [alwaysTrue, [1, 2]]);
-//    });
-//
-//
-//    var addFoldTests = function(spec, fnUnderTest, specificTests, is1Func, isRTL) {
-//      var betweenArgs = is1Func ? [] : [0];
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
-//        addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
-//
-//
-//        var addCalledWithAccumulatorTest = function(type, originalData) {
-//          it('Function called with correct accumulator for ' + type, function() {
-//            // We save each accumulator our fold function is called with
-//            var data = sliceIfNecessary(originalData);
-//            var accumulators = [];
-//
-//            var count = 1;
-//            var f = function(acc, current) {
-//              accumulators.push(acc);
-//              return count++;
-//            };
-//
-//            var fnArgs = is1Func ? [f, data] : [f, 0, data];
-//            fnUnderTest.apply(null, fnArgs);
-//
-//            // Calculate the first element of the array/string for fold*1 tests
-//            var first = data[isRTL ? data.length - 1 : 0];
-//
-//            var accumulatorsCorrect = accumulators.every(function(acc, i) {
-//              if (is1Func && i === 0)
-//                return acc === first;
-//
-//              return acc === i;
-//            });
-//
-//            expect(accumulatorsCorrect).to.equal(true);
-//          });
-//        };
-//
-//
-//        var addInitialOnEmptyTests = function(message, originalData) {
-//          // fold(l|r) should return the 'initial' parameter if the value to be folded is empty
-//          // We test with two different values to confirm the return value is not fixed
-//
-//          var addOneInitialTest = function(count, initValue) {
-//            it('Returns initial value when called with empty ' + message + ' ' + count, function() {
-//              var data = sliceIfNecessary(originalData);
-//              var result = fnUnderTest(function(x, y) {return 3;}, initValue, data);
-//
-//              expect(result).to.deep.equal(initValue);
-//            });
-//          };
-//
-//
-//          addOneInitialTest('(1)', {});
-//          addOneInitialTest('(2)', 'z');
-//        };
-//
-//
-//        addCalledWithAccumulatorTest([1, 2, 3], 'array');
-//        addCalledWithAccumulatorTest(makeArrayLike(2, 3, 4), 'arraylike');
-//        addCalledWithAccumulatorTest('123', 'string');
-//
-//
-//        if (is1Func)
-//          addThrowsOnEmptyTests(fnUnderTest, function(x, y) {return 3;});
-//        else
-//          addEmptyTests(addInitialOnEmptyTests);
-//
-//
-//        specificTests.forEach(function(testData) {
-//          var message = testData.message;
-//          var args = testData.args;
-//          var expected = testData.expected;
-//
-//
-//          it('Works correctly for ' + message, function() {
-//            var result = fnUnderTest.apply(null, args);
-//
-//            expect(result).to.equal(expected);
-//          });
-//        });
-//
-//
-//        var curriedArgs = is1Func ? [function(x, y) {return 42;}, [1, 2]] :
-//                                    [function(x, y) {return 42;}, 0, [1, 2]];
-//
-//        testCurriedFunction(fnUnderTest, curriedArgs);
-//      });
-//    };
-//
-//
-//    var foldlSpec = {
-//      name: 'foldl',
-//      arity: 3,
-//      restrictions: [['function: arity 2'], [], ['arraylike']],
-//      validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    var foldlTests = [
-//      {message: 'array (1)', args: [function(x, y) {return x + y;}, 4, [1, 2, 3]], expected: 4 + 1 + 2 + 3},
-//      {message: 'array (2)', args: [function(x, y) {return x - y;}, 0, [1, 2, 3]], expected: -1 - 2 - 3},
-//      {message: 'arraylike (1)', args: [function(x, y) {return x + y;}, 6, makeArrayLike(3, 4, 5)],
-//       expected: 6 + 3 + 4 + 5},
-//      {message: 'arraylike (2)', args: [function(x, y) {return x - y;}, 0, makeArrayLike(5, 6, 7)],
-//       expected: 0 - 5 - 6 - 7},
-//      {message: 'string (1)', args: [function(x, y) {return x + y;}, '', 'abc'], expected: '' + 'a' + 'b' + 'c'},
-//      {message: 'string (2)', args: [function(x, y) {return x + y;}, 'z', 'abc'], expected: 'z' + 'a' + 'b' + 'c'}
-//    ];
-//
-//
-//    addFoldTests(foldlSpec, array.foldl, foldlTests, false, false);
-//
-//
-//    var foldl1Spec = {
-//      name: 'foldl1',
-//      arity: 2,
-//      restrictions: [['function: arity 2'], ['arraylike']],
-//      validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    var foldl1Tests = [
-//      {message: 'array (1)', args: [function(x, y) {return x + y;}, [1, 2, 3]], expected: 1 + 2 + 3},
-//      {message: 'array (2)', args: [function(x, y) {return x - y;}, [1, 2, 3]], expected: 1 - 2 - 3},
-//      {message: 'arraylike (1)', args: [function(x, y) {return x + y;}, makeArrayLike(3, 4, 5)], expected: 3 + 4 + 5},
-//      {message: 'arraylike (2)', args: [function(x, y) {return x - y;}, makeArrayLike(5, 6, 7)], expected: 5 - 6 - 7},
-//      {message: 'string (1)', args: [function(x, y) {return x + y;}, 'abc'], expected: 'a' + 'b' + 'c'},
-//      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'abc'], expected: 'c' + 'b' + 'a'}
-//    ];
-//
-//
-//    addFoldTests(foldl1Spec, array.foldl1, foldl1Tests, true, false);
-//
-//
-//    var foldrSpec = {
-//      name: 'foldr',
-//      arity: 3,
-//      restrictions: [['function: arity 2'], [], ['arraylike']],
-//      validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    var foldrTests = [
-//      {message: 'array (1)', args: [function(x, y) {return x + y;}, 4, [1, 2, 3]], expected: 4 + 3 + 2 + 1},
-//      {message: 'array (2)', args: [function(x, y) {return x - y;}, 0, [1, 2, 3]], expected: -3 - 2 - 1},
-//      {message: 'arraylike (1)', args: [function(x, y) {return x + y;}, 6, makeArrayLike(3, 4, 5)],
-//       expected: 6 + 5 + 4 + 3},
-//      {message: 'arraylike (2)', args: [function(x, y) {return x - y;}, 0, makeArrayLike(5, 6, 7)],
-//       expected:  0 - 5 - 6 - 7},
-//      {message: 'string (1)', args: [function(x, y) {return x + y;}, '', 'abc'], expected: '' + 'c' + 'b' + 'a'},
-//      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'z', 'abc'], expected: 'a' + 'b' + 'c' + 'z'}
-//    ];
-//
-//
-//    addFoldTests(foldrSpec, array.foldr, foldrTests, false, true);
-//
-//
-//    var foldr1Spec = {
-//      name: 'foldr1',
-//      arity: 2,
-//      restrictions: [['function: arity 2'], ['arraylike']],
-//      validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    var foldr1Tests = [
-//      {message: 'array (1)', args: [function(x, y) {return x + y;}, [1, 2, 3]], expected: 3 + 2 + 1},
-//      {message: 'array (2)', args: [function(x, y) {return x - y;}, [1, 2, 3]], expected: 3 - 2 - 1},
-//      {message: 'arraylike (1)', args: [function(x, y) {return x + y;}, makeArrayLike(3, 4, 5)], expected: 5 + 4 + 3},
-//      {message: 'arraylike (2)', args: [function(x, y) {return x - y;}, makeArrayLike(5, 6, 7)], expected: 7 - 6 - 5},
-//      {message: 'string (1)', args: [function(x, y) {return x + y;}, 'abc'], expected: 'c' + 'b' + 'a'},
-//      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'abc'], expected: 'a' + 'b' + 'c'}
-//    ];
-//
-//
-//    addFoldTests(foldr1Spec, array.foldr1, foldr1Tests, true, true);
-//
-//
-//    var makeArrayBooleanTest = function(desc, fnUnderTest, trigger) {
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [['function: arity 1'], ['arraylike']],
-//        validArguments: [[function(x) {}], [[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var okVal = !trigger;
-//        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
-//
-//
-//        var addTests = function(type, num, originalData) {
-//          it('Stops prematurely when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            // We use a function that is expected to return the short-circuit trigger after length - 2 calls. If the
-//            // function under tests works correctly, this function should not be called again, and calls should still
-//            // equal data.length - 2
-//
-//            var calls = 0;
-//            var f = function(x) {
-//              calls += 1;
-//              if (calls === data.length - 2)
-//                return trigger;
-//              return okVal;
-//            };
-//
-//            fnUnderTest(f, data);
-//
-//            expect(calls).to.equal(data.length - 2);
-//          });
-//
-//
-//          it('Called with correct values when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            // This function ensures the function under test traverses the array in order, starting at element 0
-//            // equal data.length - 2
-//            var vals = [];
-//            var calls = 0;
-//            var f = function(x) {
-//              calls += 1;
-//              vals.push(x);
-//              if (calls === data.length - 1)
-//                return trigger;
-//              return okVal;
-//            };
-//
-//            fnUnderTest(f, data);
-//            var result = vals.every(function(elem, i) {
-//              return data[i] === elem;
-//            });
-//
-//            expect(result).to.equal(true);
-//          });
-//
-//
-//          it('Returns correct value when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            var calls = 0;
-//            var f = function(x) {
-//              calls += 1;
-//              if (calls === data.length - 1)
-//                return trigger;
-//              return okVal;
-//            };
-//
-//            var result = fnUnderTest(f, data);
-//
-//            expect(result).to.equal(trigger);
-//          });
-//
-//
-//          it('Called with all values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            // If the trigger is not returned, the entire value should be iterated over
-//            var calls = 0;
-//            var f = function(x) {
-//              calls += 1;
-//              return okVal;
-//            };
-//
-//            fnUnderTest(f, data);
-//
-//            expect(calls).to.equal(data.length);
-//          });
-//
-//
-//          it('Called with correct values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            var vals = [];
-//            var calls = 0;
-//            var f = function(x) {
-//              vals.push(x);
-//              calls += 1;
-//              return okVal;
-//            };
-//
-//            fnUnderTest(f, data);
-//
-//            var calledWithEvery = vals.every(function(elem, i) {
-//              return data[i] === elem;
-//            });
-//
-//            expect(calledWithEvery).to.equal(true);
-//          });
-//
-//
-//          it('Returns correctly when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
-//            var data = sliceIfNecessary(originalData);
-//            var calls = 0;
-//            var f = function(x) {
-//              calls += 1;
-//              return okVal;
-//            };
-//            var result = fnUnderTest(f, data);
-//
-//            expect(result).to.equal(okVal);
-//          });
-//        };
-//
-//
-//        addTests('array', 1, [1, 2, 3]);
-//        addTests('array', 2, [{}, {}, {}, {}]);
-//        addTests('arraylike', 1, makeArrayLike(true, false, true));
-//        addTests('arraylike', 2, makeArrayLike(function() {}, function() {}, function() {}));
-//        addTests('string', 1, 'abc');
-//        addTests('string', 2, 'funkier');
-//
-//
-//        var checkEmpty = function(message, value) {
-//          it('Returns ' + okVal + ' for ' + message, function() {
-//            expect(fnUnderTest(function(x) {}, value)).to.equal(okVal);
-//          });
-//        };
-//        addEmptyTests(checkEmpty);
-//
-//
-//        testCurriedFunction(fnUnderTest, [alwaysTrue, [1, 2, 3]]);
-//      });
-//    };
-//
-//
-//    makeArrayBooleanTest('every', array.every, false);
-//    makeArrayBooleanTest('some', array.some, true);
-//
-//
-//    // The "work correctly" tests for max/min/sum/product are the same shape
-//    var addSpecialFoldsTest = function(fnUnderTest, message, originalData, expected) {
-//      it('Works correctly for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var result = fnUnderTest(data);
-//
-//        expect(result).to.equal(expected);
-//      });
-//    };
-//
-//
-//    var makeMinMaxTests = function(desc, fnUnderTest, isMax) {
-//      var spec = {
-//        name: desc,
-//        arity: 1,
-//        restrictions: [['arraylike']],
-//        validArguments: [[[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addThrowsOnEmptyTests(fnUnderTest, []);
-//
-//
-//        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [3, 1, 2, 42, 6], isMax ? 42 : 1);
-//        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
-//        addSpecialFoldsTest(fnUnderTest, 'for arraylike (1)', makeArrayLike(4, 7, 13, 2, 8), isMax ? 13 : 2);
-//        addSpecialFoldsTest(fnUnderTest, 'for arraylike (2)', makeArrayLike(7), 7);
-//        addSpecialFoldsTest(fnUnderTest, 'for string (1)', 'bad0Z9w', isMax ? 'w' : '0');
-//        addSpecialFoldsTest(fnUnderTest, 'for string (2)', 'e', 'e');
-//      });
-//    };
-//
-//
-//    makeMinMaxTests('maximum', array.maximum, true);
-//    makeMinMaxTests('minimum', array.minimum, false);
-//
-//
-//    var makeSumProductTests = function(desc, fnUnderTest, isSum) {
-//      var spec = {
-//        name: desc,
-//        arity: 1,
-//        restrictions: [['strictarraylike']],
-//        validArguments: [[[1, 2], makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        it('Throws when called with a string', function() {
-//          var fn = function() {
-//            fnUnderTest('abc');
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//
-//
-//        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [1, 2, 3, 4], isSum ? 10 : 24);
-//        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
-//        addSpecialFoldsTest(fnUnderTest, 'for empty array', [], isSum ? 0 : 1);
-//        addSpecialFoldsTest(fnUnderTest, 'for arraylike (1)', makeArrayLike(1, 3, 5), isSum ? 9 : 15);
-//        addSpecialFoldsTest(fnUnderTest, 'for arraylike (2)', makeArrayLike(5), 5);
-//        addSpecialFoldsTest(fnUnderTest, 'for empty arraylike', makeArrayLike(), isSum ? 0 : 1);
-//      });
-//    };
-//
-//
-//    makeSumProductTests('sum', array.sum, true);
-//    makeSumProductTests('product', array.product, false);
-//
-//
-//    // element and elementWith share common behaviours. The next two functions are used
-//    // for generating these tests
-//    var addElementNotFoundTest = function(fnUnderTest, message, value, data) {
-//      it('Returns false when called with empty ' + message, function() {
-//        var found = fnUnderTest(value, data);
-//
-//        expect(found).to.equal(false);
-//      });
-//    };
-//
-//
-//    var addElementFoundTest = function(fnUnderTest, message, value, data) {
-//      it('Returns true when ' + message, function() {
-//        var found = fnUnderTest(value, data);
-//
-//        expect(found).to.equal(true);
-//      });
-//    };
-//
-//
-//    var elementSpec = {
-//      name: 'element',
-//      arity: 2,
-//      restrictions: [[], ['arraylike']],
-//      validArguments: [['a'], [['a', 'b', 'c'], 'abc', makeArrayLike('a', 'c', 'd')]]
-//    };
-//
-//
-//    describeFunction(elementSpec, array.element, function(element) {
-//      addElementNotFoundTest(element, 'array empty', 2, []);
-//      addElementNotFoundTest(element, 'arraylike empty', 7, makeArrayLike());
-//      addElementNotFoundTest(element, 'string empty', 'a', '');
-//      addElementNotFoundTest(element, 'element not present in array', 5, [1, 3, 4]);
-//      addElementNotFoundTest(element, 'element not present in arraylike', 6, makeArrayLike(1, 2, 3));
-//      addElementNotFoundTest(element, 'element not present in string', 'd', 'abc');
-//      addElementNotFoundTest(element, 'identical element not in array', {foo: 1},
-//                                      [{foo: 1}, {foo: 1}, {foo: 1}]);
-//      addElementNotFoundTest(element, 'identical element not in arraylike', {}, makeArrayLike({}, {}, {}));
-//
-//      addElementFoundTest(element, 'element present in array', 6, [1, 6, 4]);
-//      addElementFoundTest(element, 'element present in arraylike', 8, makeArrayLike(1, 2, 8));
-//      addElementFoundTest(element, 'element present in string', 'b', 'abc');
-//      var obj = {foo: 1};
-//      addElementFoundTest(element, 'identical element in array', obj, [{foo: 1}, {foo: 1}, obj]);
-//      addElementFoundTest(element, 'identical element in arraylike', obj, makeArrayLike({foo: 1}, obj, {}));
-//
-//
-//      testCurriedFunction(element, [2, [1, 2, 3]]);
-//    });
-//
-//
-//    var elementWithSpec = {
-//      name: 'elementWith',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['arraylike']],
-//      validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(elementWithSpec, array.elementWith, function(elementWith) {
-//      addElementNotFoundTest(elementWith, 'array is empty', alwaysTrue, []);
-//      addElementNotFoundTest(elementWith, 'arraylike is empty', alwaysTrue, makeArrayLike());
-//      addElementNotFoundTest(elementWith, 'string is empty', alwaysTrue, '');
-//      addElementNotFoundTest(elementWith, 'array predicate returns false', function(x) {return x.foo === 5;},
-//                                          [{foo: 1}, {foo: 4}, {foo: 3}]);
-//      addElementNotFoundTest(elementWith, 'arraylike predicate returns false', alwaysFalse, makeArrayLike('a', 'b'));
-//      addElementNotFoundTest(elementWith, 'string predicate returns false', isDigit, 'abcde');
-//
-//      addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7;},
-//                                       [{foo: 1}, {foo: 7}, {foo: 4}]);
-//      addElementFoundTest(elementWith, 'predicate matches arraylike element', fooIs42,
-//                                       makeArrayLike({foo: 4}, {foo: 42}));
-//      addElementFoundTest(elementWith, 'predicate matches element in string', isDigit, 'abc8de');
-//
-//
-//      testCurriedFunction(elementWith, [function(x) {return true;}, [1, 2, 3]]);
-//    });
-//
-//
-//    // The two range functions have some common behaviours: the value returned should be empty if the limits are equal,
-//    // and the right-hand limit should not be included
-//    var addCommonRangeTests = function(fnUnderTest, hasStep) {
-//      hasStep = hasStep || false;
-//
-//
-//      it('Returns empty array if b === a', function() {
-//        var args = hasStep ? [1, 1, 1] : [1, 1];
-//        var result = fnUnderTest.apply(null, args);
-//
-//        expect(result).to.deep.equal([]);
-//      });
-//
-//
-//      it('Does not include right-hand limit (1)', function() {
-//        var b = 10;
-//        var args = hasStep ? [0, 1, b] : [0, b];
-//        var result = fnUnderTest.apply(null, args);
-//
-//        expect(array.last(result) < b).to.equal(true);
-//      });
-//
-//
-//      it('Does not include right-hand limit (2)', function() {
-//        var b = 15.2;
-//        var args = hasStep ? [1.1, 1.1, b] : [1.1, b];
-//        var result = fnUnderTest.apply(null, args);
-//
-//        expect(array.last(result) < b).to.equal(true);
-//      });
-//    };
-//
-//
-//    var rangeSpec = {
-//      name: 'range',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(rangeSpec, array.range, function(range) {
-//      addCommonRangeTests(range);
-//
-//
-//      it('Throws if b < a', function() {
-//        var fn = function() {
-//          range(1, 0);
-//        };
-//
-//        expect(fn).to.throw(TypeError);
-//      });
-//
-//
-//      var addCorrectTest = function(message, a, b) {
-//        it('Works correctly ' + message, function() {
-//          var arr = range(a, b);
-//          var result = arr.every(function(val, i) {
-//            return (i === 0 && val === a) || (val === arr[i - 1] + 1);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addCorrectTest('(1)', 0, 10);
-//      addCorrectTest('(2)', 1.1, 15.2);
-//
-//
-//      testCurriedFunction(range, [1, 5]);
-//    });
-//
-//
-//    var rangeStepSpec = {
-//      name: 'rangeStep',
-//      arity: 3
-//    };
-//
-//
-//    describeFunction(rangeStepSpec, array.rangeStep, function(rangeStep) {
-//      addCommonRangeTests(rangeStep, true);
-//
-//
-//      var addBadRangeTest = function(message, a, step, b) {
-//        it('Throws if ' + message, function() {
-//          var fn = function() {
-//            rangeStep(a, step, b);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addBadRangeTest('b < a, and step positive', 1, 1, 0);
-//      addBadRangeTest('b < a, and step zero', 1, 0, 0);
-//      addBadRangeTest('b < a, and step not finite (1)', 1, Number.POSITIVE_INFINITY, 0);
-//      addBadRangeTest('b < a, and step not finite (2)', 1, Number.NEGATIVE_INFINITY, 0);
-//      addBadRangeTest('b > a, and step positive', 1, -1, 10);
-//      addBadRangeTest('b > a, and step zero', 1, 0, 10);
-//      addBadRangeTest('b > a, and step not finite (1)', 1, Number.POSITIVE_INFINITY, 10);
-//      addBadRangeTest('b > a, and step not finite (2)', 1, Number.NEGATIVE_INFINITY, 10);
-//
-//
-//      var addCorrectTest = function(message, a, step, b) {
-//        it('Works correctly (1)', function() {
-//          var arr = rangeStep(a, step, b);
-//          var result = arr.every(function(val, i) {
-//            return (i === 0 && val === a) || (val === arr[i - 1] + step);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addCorrectTest('(1)', 0, 2, 10);
-//      addCorrectTest('(2)', 15.2, -1.1, 1.1);
-//
-//
-//      it('Empty if a === b, and step incorrect', function() {
-//        var a = 1;
-//        var step = 0;
-//        var b = 1;
-//        var arr = rangeStep(a, step, b);
-//
-//        expect(arr).to.deep.equal([]);
-//      });
-//
-//
-//      // The common range tests don't test the bacward step case
-//      it('Does not include right-hand limit (3)', function() {
-//        var a = 20;
-//        var step = -1;
-//        var b = 10;
-//        var result = rangeStep(a, step, b);
-//
-//        expect(array.last(result) > b).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(rangeStep, [1, 1, 5]);
-//    });
-//
-//
-//    var addCommonTakeDropTests = function(testAdder) {
-//      var tests = [
-//        {name: 'array', makeEmpty: function() {return [];}, makeNormal: function() {return [1, 2, 3];}},
-//        {name: 'arraylike', makeEmpty: function() {return makeArrayLike();},
-//                            makeNormal: function() {return makeArrayLike(2, 3, 4);}},
-//        {name: 'string', makeEmpty: function() {return '';}, makeNormal: function() {return 'funkier';}}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        testAdder('count is 0 for empty ' + test.name, 0, test.makeEmpty());
-//        testAdder('count is 0 for ' + test.name, 0, test.makeNormal());
-//        testAdder('count is negative for empty ' + test.name, -1, test.makeEmpty());
-//        testAdder('count is negative for ' + test.name, -1, test.makeNormal());
-//      });
-//    };
-//
-//
-//    var takeSpec = {
-//      name: 'take',
-//      arity: 2,
-//      restrictions: [['integer'], ['arraylike']],
-//      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(takeSpec, array.take, function(take) {
-//      addReturnsSameTypeTests(take, [1]);
-//      addNoModificationOfOriginalTests(take, [1]);
-//      addReturnsEmptyOnEmptyTests(take, [1]);
-//
-//
-//      var addExpectEmptyTest = function(message, count, originalData) {
-//        var isArray = typeof(originalData) !== 'string';
-//
-//
-//        it('Returns empty ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = take(count, data);
-//
-//          expect(result).to.deep.equal(isArray ? [] : '');
-//        });
-//      };
-//
-//
-//      addCommonTakeDropTests(addExpectEmptyTest);
-//
-//
-//      var addCorrectEntryTests = function(message, count, arrData, arrlikeData, strData) {
-//        var addTest = function(typeMessage, originalData) {
-//          it('Works correctly when ' + message + typeMessage, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var arr = take(count, data);
-//            arr = splitIfNecessary(arr);
-//
-//            var result = arr.every(function(val, i) {
-//              return val === data[i];
-//            });
-//
-//            expect(result).to.equal(true);
-//          });
-//        };
-//
-//        addTest(' for array', arrData);
-//        addTest(' for arrayLike', arrlikeData);
-//        addTest(' for string', strData);
-//      };
-//
-//
-//      addCorrectEntryTests('count < length', 2, [1, 2, 3], makeArrayLike(2, 3, 4), 'funkier');
-//      addCorrectEntryTests('count === length', 3, [{}, {}, {}], makeArrayLike(5, 6, 7), 'abc');
-//      addCorrectEntryTests('count > length', 4, [3, 4, 5], makeArrayLike(8, 9), 'x');
-//
-//
-//      testCurriedFunction(take, [1, [1, 2, 3]]);
-//    });
-//
-//
-//    var dropSpec = {
-//      name: 'drop',
-//      arity: 2,
-//      restrictions: [['integer'], ['arraylike']],
-//      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(dropSpec, array.drop, function(drop) {
-//      addReturnsSameTypeTests(drop, [1]);
-//      addNoModificationOfOriginalTests(drop, [1]);
-//      addReturnsEmptyOnEmptyTests(drop, [1]);
-//
-//
-//      var addExpectFullTest = function(message, count, originalData) {
-//        var isArray = typeof(original) !== 'string';
-//
-//        it('Returns copy of ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var dropped = drop(count, data);
-//
-//          expect(valuesEqual(data, dropped)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addCommonTakeDropTests(addExpectFullTest);
-//
-//
-//      var addCorrectEntryTests = function(message, count, arrData, arrlikeData, strData) {
-//        var addTest = function(typeMessage, originalData) {
-//          it('Works correctly when ' + message + typeMessage, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var arr = drop(count, data);
-//            arr = splitIfNecessary(arr);
-//
-//            var result = arr.every(function(val, i) {
-//              return val === data[i + count];
-//            });
-//
-//            expect(result).to.equal(true);
-//          });
-//        };
-//
-//        addTest(' for array', arrData);
-//        addTest(' for arraylike', arrlikeData);
-//        addTest(' for string', strData);
-//      };
-//
-//
-//      var addEmptyAfterDropTests = function(message, count, arrData, arrlikeData, strData) {
-//        var addTest = function(type, typeMessage, originalData) {
-//          it('Returns empty ' + type + ' when ' + message + typeMessage, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var result = drop(count, data);
-//
-//            expect(result).to.deep.equal(type === 'array' ? [] : '');
-//          });
-//        };
-//
-//        addTest('array', ' for array ', arrData);
-//        addTest('array', ' for arraylike', arrlikeData);
-//        addTest('string', ' for string ', strData);
-//      };
-//
-//
-//      addCorrectEntryTests('count < length', 1, [1, 2, 3], makeArrayLike(2, 3, 4), 'funkier');
-//      addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], makeArrayLike(1, 2, 3), 'abc');
-//      addEmptyAfterDropTests('count > length', 4, [3, 4, 5], makeArrayLike('a', 'b'), 'x');
-//
-//
-//      testCurriedFunction(drop, [1, [1, 2, 3]]);
-//    });
-//
-//
-//    var makeInitTailTests = function(desc, fnUnderTest) {
-//      var spec = {
-//        name: desc,
-//        arity: 1,
-//        restrictions: [['arraylike']],
-//        validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addThrowsOnEmptyTests(fnUnderTest, []);
-//        addReturnsSameTypeTests(fnUnderTest, []);
-//
-//
-//        var addTests = function(type, tests) {
-//          var addOne = function(originalData, count) {
-//            var lenMessage = 'Returns ' + (typeof(originalData === 'string') ? 'string' : 'array') +
-//                             ' of correct length when called with ' + type + '(' + count + ')';
-//            addSameLengthTest(fnUnderTest, lenMessage, [], originalData, -1);
-//
-//
-//            it('Works correctly for ' + type + ' (' + count + ')', function() {
-//              var data = sliceIfNecessary(originalData);
-//              var arr = fnUnderTest(data);
-//              arr = splitIfNecessary(arr);
-//
-//              var valuesCorrect = arr.every(function(val, i) {
-//                return val === data[fnUnderTest === array.tail ? i + 1 : i];
-//              });
-//
-//              expect(valuesCorrect).to.equal(true);
-//            });
-//          };
-//
-//          tests.forEach(addOne);
-//        };
-//
-//
-//        addTests('array', [[1, 2, 3], [{}, {}, {}, {}, {}]]);
-//        addTests('arraylike', [makeArrayLike({}, {}), makeArrayLike(true, false, null)]);
-//        addTests('string', ['abc', 'funkier']);
-//      });
-//    };
-//
-//
-//    makeInitTailTests('init', array.init);
-//    makeInitTailTests('tail', array.tail);
-//
-//
-//    var makeInitsTailsTests = function(desc, fnUnderTest) {
-//      var spec = {
-//        name: desc,
-//        arity: 1,
-//        restrictions: [['arraylike']],
-//        validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var addTests = function(type, tests) {
-//          var expectedType = type === 'string' ? 'string' : 'array';
-//
-//
-//          var addOneSet = function(originalData, count) {
-//            var lenMessage = 'Returns array of correct length when called with ' + type + '(' + count + ')';
-//            addSameLengthTest(fnUnderTest, lenMessage, [], originalData, 1);
-//
-//
-//            it('Returns array when called with ' + type + '(' + count + ')', function() {
-//              var data = sliceIfNecessary(originalData);
-//              var result = fnUnderTest(data);
-//
-//              expect(isArray(result)).to.equal(true);
-//            });
-//
-//
-//            it('Returns elements of type ' + expectedType + ' when called with ' + type + '(' + count + ')', function() {
-//              var data = sliceIfNecessary(originalData);
-//              var elementsHaveCorrectType = fnUnderTest(data).every(function(val) {
-//                if (expectedType === 'array')
-//                  return isArray(val);
-//                return typeof(val) === 'string';
-//               });
-//
-//               expect(elementsHaveCorrectType).to.equal(true);
-//            });
-//
-//
-//            it('Elements have correct length when called with ' + type + '(' + count + ')', function() {
-//              var data = sliceIfNecessary(originalData);
-//              var elementLengthsCorrect = fnUnderTest(data).every(function(val, i) {
-//                return val.length === (fnUnderTest === array.tails ? data.length - i : i);
-//              });
-//
-//              expect(elementLengthsCorrect).to.equal(true);
-//            });
-//
-//
-//            it('Works correctly for ' + type + ' (' + count + ')', function() {
-//              var data = sliceIfNecessary(originalData);
-//              var arr = fnUnderTest(data);
-//              var elementsCorrect = arr.every(function(val, i) {
-//                val = splitIfNecessary(val);
-//
-//                return val.every(function(v, j) {
-//                  return v === data[fnUnderTest === array.tails ? i + j : j];
-//                });
-//              });
-//
-//              expect(elementsCorrect).to.equal(true);
-//            });
-//          };
-//
-//          tests.forEach(addOneSet);
-//        };
-//
-//
-//        addTests('array', [[], [1, 2], [{}, {}, {}]]);
-//        addTests('arraylike', [makeArrayLike(), makeArrayLike(2, 3), makeArrayLike({}, true, null)]);
-//        addTests('string', ['', 'ab', 'funkier']);
-//        addNoModificationOfOriginalTests(fnUnderTest, []);
-//      });
-//    };
-//
-//
-//    makeInitsTailsTests('inits', array.inits);
-//    makeInitsTailsTests('tails', array.tails);
-//
-//
-//    var copySpec = {
-//      name: 'copy',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(copySpec, array.copy, function(copy) {
-//      addReturnsSameTypeTests(copy, []);
-//      addReturnsEmptyOnEmptyTests(copy, []);
-//
-//
-//      var addTests = function(message, originalData) {
-//        addSameLengthTest(copy, message, [], originalData);
-//
-//
-//        it('Returns a copy for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var sameValue = copy(data) === data;
-//
-//          expect(sameValue).to.equal(false);
-//        });
-//
-//
-//        it('Works correctly for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var copied = copy(data);
-//
-//
-//          expect(valuesEqual(data, copied)).to.equal(true);
-//        });
-//
-//
-//        it('Shallow copies members for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var membersAreCopies = copy(data).every(function(val, i) {
-//            return val === data[i];
-//          });
-//
-//          expect(membersAreCopies).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('empty arrays', []);
-//      addTests('arrays (1)', [1, 2, 3]);
-//      addTests('arrays (2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
-//      addTests('empty arraylikes', makeArrayLike());
-//      addTests('arraylikes (1)', makeArrayLike(2, 3, 4));
-//      addTests('arraylikes (2)', makeArrayLike({fizz: 3}, {buzz: 5}));
-//    });
-//
-//
-//    var sliceSpec = {
-//      name: 'slice',
-//      arity: 3,
-//      restrictions: [['positive'], ['positive'], ['arraylike']],
-//      validArguments: [[0], [1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(sliceSpec, array.slice, function(slice) {
-//      addReturnsSameTypeTests(slice, [0, 1]);
-//      addNoModificationOfOriginalTests(slice, []);
-//      addNoModificationOfOriginalTests(slice, []);
-//
-//
-//      var addReturnEmptyTests = function(originalData) {
-//        var isArray = typeof(originalData) !== 'string';
-//
-//
-//        it('Returns empty ' + (isArray ? 'array' : 'string') + ' if from > length', function() {
-//          var data = originalData.slice();
-//          var result = slice(data.length + 2, data.length + 4, data);
-//
-//          expect(result).to.deep.equal(isArray ? [] : '');
-//        });
-//
-//
-//        it('Returns empty ' + (isArray ? 'array' : 'string') + ' if from === length', function() {
-//          var data = originalData.slice();
-//          var result = slice(data.length, data.length + 3, data);
-//
-//          expect(result).to.deep.equal(isArray ? [] : '');
-//        });
-//      };
-//
-//
-//      addReturnEmptyTests([1, 2, 3]);
-//      addReturnEmptyTests(makeArrayLike(true, 1, null));
-//      addReturnEmptyTests('abc');
-//
-//      // we should also test we get an empty when passing empty. We cannot pass addReturnEmptyTests directly to
-//      // addTests: addTests expects the generator to have arity 2, addReturnEmptyTests has arity 1. Thus we wrap it.
-//      var addEmpty = function(message, data) {addReturnEmptyTests(data);};
-//      addEmptyTests(addEmpty);
-//
-//
-//      var addTests = function(message, from, to, arrData, arrlikeData, strData) {
-//        var addOne = function(type, originalData) {
-//          it('Result has correct length when ' + message + ' for ' + type, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var result = slice(from, to, data).length === Math.min(data.length - from, to - from);
-//
-//            expect(result).to.equal(true);
-//          });
-//
-//
-//          it('Result has correct values when ' + message + ' for ' + type, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var newVal = slice(from, to, data);
-//            newVal = splitIfNecessary(newVal);
-//
-//            var result = newVal.every(function(val, i) {
-//              return val === data[from + i];
-//            });
-//
-//            expect(result).to.equal(true);
-//          });
-//        };
-//
-//        addOne('array', arrData);
-//        addOne('arraylike', arrlikeData);
-//        addOne('string', strData);
-//      };
-//
-//
-//      addTests('to > len', 1, 5, [1, 2, 3, 4], makeArrayLike(2, 3, 4, 5), 'abcd');
-//      addTests('to === len', 1, 4, [2, 3, 4, 5], makeArrayLike(2, 3, 4, 5), 'efgh');
-//      addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], makeArrayLike(2, 3, 4, 5), 'abcd');
-//
-//
-//      testCurriedFunction(slice, [1, 2, 'funkier']);
-//    });
-//
-//
-//    var makeTakeWDropWTests = function(desc, fnUnderTest) {
-//      var isTakeWhile = desc === 'takeWhile';
-//
-//
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [['function: arity 1'], ['arraylike']],
-//        validArguments: [[function(x) {return true;}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
-//        addReturnsSameTypeTests(fnUnderTest, [alwaysTrue]);
-//        addReturnsEmptyOnEmptyTests(fnUnderTest, [alwaysTrue]);
-//        addNoModificationOfOriginalTests(fnUnderTest, [alwaysTrue]);
-//
-//
-//        var addTests = function(type, message, predicate, expectedLength, originalData) {
-//          it('Result has correct length ' + message + ' for ' + type, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var correctLength = isTakeWhile ? expectedLength : data.length - expectedLength;
-//            var length = fnUnderTest(predicate, data).length;
-//
-//            expect(length).to.equal(correctLength);
-//          });
-//
-//
-//          it('Predicate only called as often as needed ' + message + ' for ' + type, function() {
-//            var data = sliceIfNecessary(originalData);
-//
-//            // We use a predicate that records how often it is called, and check we didn't iterate over the whole value
-//            var called = 0;
-//            var newPredicate = function(x) {called += 1; return predicate(x);};
-//            fnUnderTest(newPredicate, data);
-//            var calledCorrectly = called === expectedLength + (expectedLength === data.length ? 0 : 1);
-//
-//            expect(calledCorrectly).to.equal(true);
-//          });
-//
-//
-//          it('Result has correct members ' + message + ' for ' + type, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var arr = fnUnderTest(predicate, originalData);
-//            arr = splitIfNecessary(arr);
-//
-//            var membersCorrect = arr.every(function(val, i) {
-//              return val === data[isTakeWhile ? i : i + expectedLength];
-//            });
-//
-//            expect(membersCorrect).to.equal(true);
-//          });
-//        };
-//
-//
-//        // Each type has 3 tests: one where only some initial elements match, one where no element matches, and one
-//        // where every element matches
-//        var testData = [
-//          {name: 'array', tests: [{f: function(x) {return x.foo < 4;}, expected: 2,
-//                                   data: [{foo: 1}, {foo: 3}, {foo: 4}, {foo: 5}, {foo: 6}]},
-//                                  {f: function(x) {return x % 2 === 0;}, expected: 0, data: [3, 4, 6, 1, 5]},
-//                                  {f: alwaysTrue, expected: 5, data: [2, 4, 6, 1, 5]}]},
-//          {name: 'arraylike', tests: [{f: function(x) {return x.foo < 5;}, expected: 4,
-//                                       data: makeArrayLike({foo: 1}, {foo: 3}, {foo: 4}, {foo: 2}, {foo: 6})},
-//                                      {f: function(x) {return x % 2 !== 0;}, expected: 0,
-//                                       data: makeArrayLike(2, 4, 6, 1, 5)},
-//                                      {f: alwaysTrue, expected: 5, data: makeArrayLike(2, 4, 6, 1, 5)}]},
-//          {name: 'string', tests: [{f: function(x) {return x === ' ';}, expected: 3, data: '   funkier'},
-//                                   {f: isDigit, expected: 0, data: 'zxabc'},
-//                                   {f: alwaysTrue, expected: 5, data: 'abcde'}]}
-//        ];
-//
-//
-//        testData.forEach(function(t) {
-//          t.tests.forEach(function(test, i) {
-//            addTests(t.name, '(' + (i + 1) + ')', test.f, test.expected, test.data);
-//          });
-//        });
-//
-//
-//        testCurriedFunction(fnUnderTest, [function(x) {return true;}, [1, 2, 3]]);
-//      });
-//    };
-//
-//
-//    makeTakeWDropWTests('takeWhile', array.takeWhile);
-//    makeTakeWDropWTests('dropWhile', array.dropWhile);
-//
-//
-//    var makePrependAppendTests = function(desc, fnUnderTest) {
-//      var isPrepend = desc === 'prepend';
-//
-//
-//      var spec = {
-//        name: desc,
-//        arity: 2,
-//        restrictions: [[], ['arraylike']],
-//        validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        addReturnsSameTypeTests(fnUnderTest, [1]);
-//        addNoModificationOfOriginalTests(fnUnderTest, [1]);
-//
-//
-//        var addTests = function(arrData, arrlikeData, strData) {
-//          var addOne = function(type, message, val, originalData) {
-//            addSameLengthTest(fnUnderTest, message, [val], originalData, 1);
-//
-//
-//            it('Result has correct values ' + message + ' for ' + type, function() {
-//              var data = sliceIfNecessary(originalData);
-//              var newVal = fnUnderTest(val, data);
-//              newVal = splitIfNecessary(newVal);
-//
-//              var prependCheck = function(v, i) {
-//                if (i === 0)
-//                  return v === val;
-//                return v === data[i - 1];
-//              };
-//
-//              var appendCheck = function(v, i) {
-//                if (i === data.length)
-//                  return v === val;
-//                return v === data[i];
-//              };
-//
-//              var elementsCorrect = newVal.every(isPrepend ? prependCheck : appendCheck);
-//
-//              expect(elementsCorrect).to.equal(true);
-//            });
-//          };
-//
-//          arrData.forEach(function(data, i) {
-//            addOne('array', '(' + (i + 1) + ')', data[0], data[1]);
-//          });
-//          arrlikeData.forEach(function(data, i) {
-//            addOne('arraylike', '(' + (i + 1) + ')', data[0], data[1]);
-//          });
-//          strData.forEach(function(data, i) {
-//            addOne('string', '(' + (i + 1) + ')', data[0], data[1]);
-//          });
-//        };
-//
-//
-//        // The tests include a "normal" test, and a value to be modified to is empty test
-//        addTests([[{}, [{foo: 1}, {bar: 2}, {fizz: 3}]], [1, []]],
-//                 [[5, makeArrayLike(6, 7, 8, 9)], ['a', makeArrayLike()]],
-//                 [['a', 'bcd'], ['z', '']]);
-//
-//
-//        testCurriedFunction(fnUnderTest, [1, [1, 2, 3]]);
-//      });
-//    };
-//
-//
-//    makePrependAppendTests('prepend', array.prepend);
-//    makePrependAppendTests('append', array.append);
-//
-//
-//    var concatSpec = {
-//      name: 'concat',
-//      arity: 2,
-//      restrictions: [['arraylike'], ['arraylike']],
-//      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(concatSpec, array.concat, function(concat) {
-//      var addTest = function(expectedType, message, left, right) {
-//        // We can't use the global returnsSameType test generator here
-//        it('Result has type ' + expectedType + ' for ' + message, function() {
-//          var first = left.slice();
-//          var second = right.slice();
-//          var result = concat(first, second);
-//
-//          if (expectedType === 'array')
-//            expect(isArray(result)).to.equal(true);
-//          else
-//            expect(result).to.be.a('string');
-//        });
-//
-//
-//        it('Result has correct length for ' + message, function() {
-//          var first = left.slice();
-//          var second = right.slice();
-//          var length = concat(first, second).length;
-//
-//          expect(length).to.equal(first.length + second.length);
-//        });
-//
-//
-//        it('Result has correct values for ' + message, function() {
-//          var first = left.slice();
-//          var second = right.slice();
-//          var newVal = concat(first, second);
-//          newVal = splitIfNecessary(newVal);
-//
-//          var valsCorrect = newVal.every(function(v, i) {
-//            return v === (i < first.length ? first[i] : second[i - first.length]);
-//          });
-//
-//          expect(valsCorrect).to.equal(true);
-//        });
-//
-//
-//        it('Doesn\'t affect originals for ' + message, function() {
-//          var first = left.slice();
-//          var second = right.slice();
-//          var firstLength = first.length;
-//          var secondLength = second.length;
-//          concat(first, second);
-//
-//          expect(first.length === firstLength && second.length === secondLength).to.equal(true);
-//        });
-//      };
-//
-//
-//      var tests = [
-//        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
-//        {name: 'arraylike', tests: [{type: 'empty', value: makeArrayLike()},
-//                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
-//        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
-//      ];
-//
-//
-//      tests.forEach(function(left) {
-//        left.tests.forEach(function(leftTest) {
-//          tests.forEach(function(right) {
-//            right.tests.forEach(function(rightTest) {
-//              var expectedType = left.name === 'string' && right.name === 'string' ? 'string' : 'array';
-//              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
-//
-//              addTest(expectedType, message, leftTest.value, rightTest.value);
-//            });
-//          });
-//        });
-//      });
-//
-//
-//      testCurriedFunction(concat, [[1], [1, 2, 3]]);
-//    });
-//
-//
-//    var isEmptySpec = {
-//      name: 'empty',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[], '', makeArrayLike()]]
-//    };
-//
-//
-//    describeFunction(isEmptySpec, array.isEmpty, function(isEmpty) {
-//      var addOne = function(message, originalData) {
-//        it('Works for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//
-//          expect(isEmpty(data)).to.equal(data.length === 0);
-//        });
-//      };
-//
-//
-//      addEmptyTests(addOne);
-//      addOne('a non-empty array', [1, 2]);
-//      addOne('a non-empty arraylike', makeArrayLike(2, 3));
-//      addOne('a non-empty string', 'a');
-//    });
-//
-//
-//    var intersperseSpec = {
-//      name: 'intersperse',
-//      arity: 2,
-//      restrictions: [[], ['arraylike']],
-//      validArguments: [[','], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(intersperseSpec, array.intersperse, function(intersperse) {
-//      addReturnsSameTypeTests(intersperse, ['-']);
-//
-//
-//      var addDegenerateTest = function(message, originalData) {
-//        it('Works correctly for ' + message, function() {
-//          var val = originalData.slice();
-//          var result = intersperse(',', val);
-//
-//          expect(valuesEqual(val, result)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addEmptyTests(addDegenerateTest);
-//      addDegenerateTest('for single element array', [1]);
-//      addDegenerateTest('for single element arraylike', makeArrayLike(2));
-//      addDegenerateTest('for single element string', 'a');
-//
-//
-//      var addTests = function(message, originalData) {
-//        it('Result has correct length ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var length = intersperse(',', data).length;
-//
-//          expect(length).to.equal(2 * data.length - 1);
-//        });
-//
-//
-//        it('Result has original values at correct positions ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var interspersed = intersperse(',', data);
-//          interspersed = splitIfNecessary(interspersed);
-//          var originalElementsPresent = interspersed.every(function(v, i) {
-//            // the values at odd indices should be the interspersed string
-//            if (i % 2 === 1) return true;
-//
-//            return v === data[i / 2];
-//          });
-//
-//          expect(originalElementsPresent).to.equal(true);
-//        });
-//
-//
-//        it('Result has interspersed values at correct positions ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var intersperseValue = ':';
-//          var interspersed = intersperse(intersperseValue, data);
-//          interspersed = splitIfNecessary(interspersed);
-//          var interspersedCorrectly = interspersed.every(function(v, i) {
-//            // the values at even indices were checked in the preceding test
-//            if (i % 2 === 0) return true;
-//
-//            return v === intersperseValue;
-//          });
-//
-//          expect(interspersedCorrectly).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array (1)', [1, 2]);
-//      addTests('array (2)', [1, 2, 3, 4]);
-//      addTests('arraylike (1)', makeArrayLike(2, 3));
-//      addTests('arraylike (2)', makeArrayLike(4, 5, 6, 7));
-//      addTests('string (1)', 'ab');
-//      addTests('string (2)', 'funkier');
-//
-//
-//      testCurriedFunction(intersperse, ['1', 'abc']);
-//    });
-//
-//
-//    var reverseSpec = {
-//      name: 'reverse',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(reverseSpec, array.reverse, function(reverse) {
-//      addReturnsEmptyOnEmptyTests(reverse, []);
-//      addReturnsSameTypeTests(reverse, []);
-//
-//
-//      var addTests = function(message, originalData) {
-//        it('Returns value with same length as original for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var expected = data.length;
-//          var result = reverse(data);
-//
-//          expect(result.length).to.equal(expected);
-//        });
-//
-//
-//        it('Returns correct result for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var originalLength = data.length - 1;
-//          var reversed = reverse(data);
-//          reversed = splitIfNecessary(reversed);
-//          var result = reversed.every(function(v, i) {
-//            return v === data[originalLength - i];
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array', [{}, {}]);
-//      addTests('arraylike', makeArrayLike(1, 2));
-//      addTests('string', 'funkier');
-//      addTests('single element array', [1]);
-//      addTests('single element arraylike', makeArrayLike(3));
-//      addTests('single element string', '');
-//    });
-//
-//
-//    var addFindTest = function(message, fnUnderTest, args, expected) {
-//      var val = args[0];
-//      var originalData = args[args.length - 1];
-//
-//      it(message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var argData = args.slice();
-//        var result = fnUnderTest.apply(null, argData);
-//
-//        expect(result).to.equal(expected);
-//        if (result !== -1) {
-//          if (typeof(val) !== 'function') {
-//            expect(data[result]).to.equal(val);
-//          } else {
-//            expect(val(data[result])).to.equal(true);
-//          }
-//        }
-//      });
-//    };
-//
-//
-//    var findSpec = {
-//      name: 'find',
-//      arity: 2,
-//      restrictions: [[], ['arraylike']],
-//      validArguments: [[1], [[2, 3], '234', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(findSpec, array.find, function(find) {
-//      var addEmpty = function(message, value) {
-//        addFindTest('Works correctly for ' + message, find, [1, value], -1);
-//      };
-//      addEmptyTests(addEmpty);
-//
-//
-//      // Each test's value should be such that the value at index 0 is duplicated in the value, the second and last
-//      // values are not duplicated, and the number 0 does not appear anywhere in the value
-//      var tests = [
-//        {name: 'array', value: [1, 2, 3, 1, 4]},
-//        {name: 'arraylike', value: makeArrayLike(2, 4, 2, 6)},
-//        {name: 'string', value: 'abacus'}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        addFindTest('Works correctly for ' + test.name + ' (1)', find, [test.value[1], test.value], 1);
-//        var len = test.value.length - 1;
-//        addFindTest('Works correctly for ' + test.name + ' (2)', find, [test.value[len], test.value], len);
-//        addFindTest('Returns first match for  ' + test.name, find, [test.value[0], test.value], 0);
-//        addFindTest('Returns -1 when no match for ' + test.name, find, [0, test.value], -1);
-//      });
-//
-//
-//      var obj = {};
-//      addFindTest('Tests with strict identity for array (1)', find, [obj, [{}, {}, {}]], -1);
-//      addFindTest('Tests with strict identity for array (2)', find, [obj, [{}, obj, {}]], 1);
-//      addFindTest('Tests with strict identity for arraylike (1)', find, [obj, makeArrayLike({}, {}, {})], -1);
-//      addFindTest('Tests with strict identity for arraylike (2)', find, [obj, makeArrayLike({}, obj, {})], 1);
-//    });
-//
-//
-//    var findFromSpec = {
-//      name: 'findFrom',
-//      arity: 3,
-//      restrictions: [[], ['positive'], ['arraylike']],
-//      validArguments: [[1], [1], [[2, 3], '234', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(findFromSpec, array.findFrom, function(findFrom) {
-//      var addEmpty = function(message, value) {
-//        addFindTest('Works correctly for ' + message, findFrom, [0, 0, value], -1);
-//      };
-//      addEmptyTests(addEmpty);
-//
-//
-//      // Each test's value should be such that:
-//      //  - the value at index 3 is the same as that at index 0
-//      //  - the values at index 1 and the last value occur only once
-//      //  - the value at index 2 and the second last value are the same
-//      //  - the number 0 does not appear anywhere in the value
-//      var tests = [
-//        {name: 'array', value: [1, 5, 6, 1, 6, 8]},
-//        {name: 'arraylike', value: makeArrayLike(2, 9, 7, 2, 7, 1)},
-//        {name: 'string', value: 'bacbcd'}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        var len = test.value.length - 1;
-//        addFindTest('Works correctly for ' + test.name + ' (1)', findFrom, [test.value[1], 1, test.value], 1);
-//        addFindTest('Works correctly for ' + test.name + ' (2)', findFrom, [test.value[len], 2, test.value], len);
-//        addFindTest('Returns first match for ' + test.name, findFrom, [test.value[2], 3, test.value], len - 1);
-//        addFindTest('Ignores earlier matches for ' + test.name, findFrom, [test.value[0], 1, test.value], 3);
-//        addFindTest('Returns -1 when no match for ' + test.name, findFrom, [0, 1, test.value], -1);
-//        addFindTest('Returns -1 when no match at position for ' + test.name, findFrom, [test.value[1], 2, test.value], -1);
-//        addFindTest('Returns -1 when from === length for ' + test.name, findFrom, [0, len + 1, test.value], -1);
-//        addFindTest('Returns -1 when from > length for ' + test.name, findFrom, [0, len + 2, test.value], -1);
-//      });
-//
-//      var obj = {};
-//      addFindTest('Tests with strict identity for array (1)', findFrom, [obj, 0, [{}, {}, {}]], -1);
-//      addFindTest('Tests with strict identity for array (2)', findFrom, [obj, 1, [{}, {}, obj, {}]], 2);
-//      addFindTest('Tests with strict identity for arraylike (1)', findFrom, [obj, 1, makeArrayLike({}, {})], -1);
-//      addFindTest('Tests with strict identity for arraylike (2)', findFrom, [obj, 1, makeArrayLike({}, obj, {}, {})], 1);
-//    });
-//
-//
-//    var addFindPredicateCalledWithEveryNotFoundTest = function(fnUnderTest, fnArgs) {
-//      var originalData = fnArgs[fnArgs.length - 1];
-//      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
-//
-//
-//      it('Function called with every element if not found (' + message + ')', function() {
-//        // The function records every argument it is called with. This should equal the original data
-//        var args = [];
-//        var f = function(x) {args.push(x); return false;};
-//
-//        var from = fnArgs.length === 1 ? 0 : fnArgs[0];
-//        var data = sliceIfNecessary(fnArgs[fnArgs.length - 1]);
-//        var realFnArgs = [f].concat(fnArgs.slice(0, fnArgs.length - 1)).concat([data]);
-//
-//        var result = fnUnderTest.apply(null, realFnArgs);
-//
-//        var calledWithEvery = args.every(function(v, i) {
-//          return v === data[i + from];
-//        });
-//
-//        expect(args.length).to.equal(data.length - from);
-//        expect(calledWithEvery).to.equal(true);
-//      });
-//    };
-//
-//
-//    var addFindPredicateCalledOnlyAsOftenAsNecessaryTest = function(fnUnderTest, fnArgs) {
-//      var originalData = fnArgs[fnArgs.length - 1];
-//      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
-//
-//
-//      it('Function called only as often as necessary when found (' + message + ')', function() {
-//        // Create a new predicate function that records the values it's called with, then defers to
-//        // the supplied predicate. We can then confirm we iterated from left to right.
-//        var args = [];
-//        var predicate = fnArgs[0];
-//        var f = function(x) {args.push(x); return predicate(x);};
-//
-//        var data = sliceIfNecessary(fnArgs[fnArgs.length - 1]);
-//        var from = fnArgs.length === 2 ? 0 : fnArgs[1];
-//        var realFnArgs = [f].concat(fnArgs.slice(1, fnArgs.length - 1)).concat([data]);
-//        var index = fnUnderTest.apply(null, realFnArgs);
-//
-//        var iteratedOverValue = args.every(function(v, i) {
-//          return v === data[from + i];
-//        });
-//
-//        expect(args.length).to.equal(index + 1 - from);
-//        expect(iteratedOverValue).to.equal(true);
-//      });
-//    };
-//
-//
-//    var findWithSpec = {
-//      name: 'findWith',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['arraylike']],
-//      validArguments: [[alwaysTrue], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(findWithSpec, array.findWith, function(findWith) {
-//      addFuncCalledWithSpecificArityTests(findWith, 1);
-//
-//
-//      var addEmpty = function(message, originalData) {
-//        it('Function never called for ' + message, function() {
-//          var called = false;
-//          var f = function(x) {called = true; return true;};
-//          var data = sliceIfNecessary(originalData);
-//          findWith(f, data);
-//
-//          expect(called).to.equal(false);
-//        });
-//
-//
-//        it('Works correctly for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = findWith(alwaysTrue, data);
-//
-//          expect(result).to.equal(-1);
-//        });
-//      };
-//
-//
-//      addEmptyTests(addEmpty);
-//      addFindPredicateCalledWithEveryNotFoundTest(findWith, [[1, 2, 3]]);
-//      addFindPredicateCalledWithEveryNotFoundTest(findWith, [makeArrayLike()]);
-//      addFindPredicateCalledWithEveryNotFoundTest(findWith, ['funkier']);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith,
-//                                              [fooIs42, [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]]);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith,
-//                                                     [fooIs42, makeArrayLike({foo: 1}, {foo: 6}, {foo: 42}, {foo: 1})]);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith, [function(x) {return x < 'a';}, 'abCde']);
-//
-//
-//      // Each test's value should be such that:
-//      // - value1 should have one value that matches the predicate, at index 2
-//      // - value2 should have two values that match the predicate, at indices 1 and 3
-//      var tests = [
-//        {name: 'array', predicate: fooIs42, value1: [{foo: 1}, {foo: 3}, {foo: 42}, {foo: 6}],
-//                                            value2: [{foo: 2}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 7}]},
-//        {name: 'arraylike', predicate: fooIs42, value1: makeArrayLike({foo: 3}, {foo: 12}, {foo: 42}, {foo: 1}),
-//                                                value2: makeArrayLike({foo: 0}, {foo: 42}, {foo: 10}, {foo: 42})},
-//        {name: 'string', predicate: isDigit, value1: 'ab7def', value2: 'a1b2d'}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        addFindTest('Returns -1 when value not found for ' + test.name, findWith, [alwaysFalse, test.value1], -1);
-//        addFindTest('Works correctly for ' + test.name, findWith, [test.predicate, test.value1], 2);
-//        addFindTest('Returns first match for ' + test.name, findWith, [test.predicate, test.value2], 1);
-//      });
-//
-//
-//      testCurriedFunction(findWith, [alwaysTrue, 'funkier']);
-//    });
-//
-//
-//    var findFromWithSpec = {
-//      name: 'findFromWith',
-//      arity: 3,
-//      restrictions: [['function: arity 1'], ['positive'], ['arraylike']],
-//      validArguments: [[alwaysTrue], [1], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
-//      addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
-//
-//
-//      var addEmpty = function(message, originalData) {
-//        it('Function never called with ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var called = 0;
-//          var f = function(x) {called += 1; return true;};
-//          findFromWith(f, 1, data);
-//
-//          expect(called).to.equal(0);
-//        });
-//
-//
-//        it('Works correctly for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = findFromWith(alwaysTrue, 0, data);
-//
-//          expect(result).to.equal(-1);
-//        });
-//      };
-//
-//
-//      // Each test's value should be such that:
-//      // - value1 should have one value that matches the predicate, at index 2
-//      // - value2 should have two values that match the predicate, at indices 1 and 3
-//      var tests = [
-//        {name: 'array', predicate: fooIs42, value1: [{foo: 1}, {foo: 3}, {foo: 42}, {foo: 6}, {foo: 8}],
-//                                            value2: [{foo: 2}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 7}]},
-//        {name: 'arraylike', predicate: fooIs42, value1: makeArrayLike({foo: 3}, {foo: 12}, {foo: 42}, {foo: 1}, {foo: 9}),
-//                                                value2: makeArrayLike({foo: 0}, {foo: 42}, {foo: 10}, {foo: 42})},
-//        {name: 'string', predicate: isDigit, value1: 'ab7edef', value2: 'a1b2d'}
-//      ];
-//
-//
-//      tests.forEach(function(test) {
-//        addFindTest('Returns -1 when value not found for ' + test.name, findFromWith,
-//                                                                 [alwaysFalse, 1, test.value1], -1);
-//        addFindTest('Returns -1 when value not found from position for ' + test.name, findFromWith,
-//                                                                 [test.predicate, 3, test.value1], -1);
-//        addFindTest('Returns -1 when index equals length for ' + test.name, findFromWith,
-//                                                                 [test.predicate, test.value1.length, test.value1], -1);
-//        addFindTest('Returns -1 when index > length for ' + test.name, findFromWith,
-//                                                              [test.predicate, test.value1.length + 1, test.value1], -1);
-//        addFindTest('Works correctly for ' + test.name, findFromWith, [test.predicate, 1, test.value1], 2);
-//        addFindTest('Returns first match for ' + test.name, findFromWith, [test.predicate, 0, test.value2], 1);
-//        addFindTest('Ignores earlier matches for ' + test.name, findFromWith, [test.predicate, 2, test.value2], 3);
-//      });
-//
-//
-//      addEmptyTests(addEmpty);
-//      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [1, [1, 2, 3]]);
-//      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [2, makeArrayLike(2, 3, 4, 5, 6)]);
-//      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [3, 'funkier']);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith,
-//                                           [fooIs42, 2, [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]]);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith,
-//                                                  [fooIs42, 1, makeArrayLike({foo: 1}, {foo: 6}, {foo: 42}, {foo: 1})]);
-//      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith, [function(x) {return x < 'a';}, 1, 'abdCde']);
-//
-//
-//      testCurriedFunction(findFromWith, [alwaysTrue, 1, 'funkier']);
-//    });
-//
-//
-//    var occurrencesSpec = {
-//      name: 'occurrences',
-//      arity: 2,
-//      restrictions: [[], ['arraylike']],
-//      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(occurrencesSpec, array.occurrences, function(occurrences) {
-//      addReturnsEmptyOnEmptyTests(occurrences, ['z'], true);
-//
-//
-//      var addEmptyWhenNotFoundTest = function(val, data) {
-//        var message = isArray(data) ? 'array' : typeof(data) === 'string' ? 'string' : 'arraylike';
-//
-//
-//        it('Returns empty array when value not found (' + message + ')', function() {
-//          var result = occurrences(val, data);
-//
-//          expect(result).to.deep.equal([]);
-//        });
-//      };
-//
-//
-//      addEmptyWhenNotFoundTest(1, [2, 3, 4]);
-//      addEmptyWhenNotFoundTest(1, makeArrayLike(2, 3, 4));
-//      addEmptyWhenNotFoundTest('a', 'bcd');
-//
-//
-//      var addTest = function(message, val, originalData) {
-//        it('Returns an array ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = occurrences(val, data);
-//
-//          expect(isArray(result)).to.equal(true);
-//        });
-//
-//
-//        it('Returned values are valid indices ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = occurrences(val, data).every(function(i) {
-//            return i >= 0 && i < data.length && data[i] === val;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('No indices missing ' + message, function() {
-//          var data = splitIfNecessary(originalData.slice());
-//          var found = occurrences(val, data);
-//          var result = data.every(function(v, i) {
-//            if (found.indexOf(i) !== -1) return true;
-//            return v !== val;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTest('for array (1)', 1, [2, 1, 3]);
-//      addTest('for array (2)', 1, [2, 1, 1, 3, 1]);
-//      var obj = {};
-//      addTest('for array (3)', obj, [{}, {}, {}]);
-//      addTest('for array (4)', obj, [{}, obj, {}]);
-//      addTest('for arraylike (1)', 1, makeArrayLike(2, 1, 3, 1, 1));
-//      addTest('for arraylike (2)', obj, makeArrayLike({}, obj, obj, {}, obj));
-//      addTest('for string (1)', 'a', 'ban');
-//      addTest('for string (2)', 'a', 'banana');
-//
-//
-//      testCurriedFunction(occurrences, [1, [1, 2, 3]]);
-//    });
-//
-//
-//    var occurrencesWithSpec = {
-//      name: 'occurrencesWith',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['arraylike']],
-//      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(occurrencesWithSpec, array.occurrencesWith, function(occurrencesWith) {
-//      addReturnsEmptyOnEmptyTests(occurrencesWith, [alwaysTrue], true);
-//
-//
-//      var addTests = function(message, p, originalData, isNotFound) {
-//        isNotFound = isNotFound || false;
-//
-//
-//        it('Returns an array for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = occurrencesWith(p, data);
-//
-//          expect(isArray(result)).to.equal(true);
-//        });
-//
-//
-//        if (isNotFound) {
-//          it('Returns empty array for ' + message, function() {
-//            var data = sliceIfNecessary(originalData);
-//            var result = occurrencesWith(alwaysFalse, data);
-//
-//            expect(result).to.deep.equal([]);
-//          });
-//        }
-//
-//
-//        it('Function called for every element for ' + message, function() {
-//          var args = [];
-//          var f = function(x) {args.push(x); return p(x);};
-//          var data = sliceIfNecessary(originalData);
-//          occurrencesWith(f, data);
-//
-//          var calledWithEvery = args.every(function(v, i) {
-//            return v === data[i];
-//          });
-//
-//          expect(args.length).to.equal(data.length);
-//          expect(calledWithEvery).to.equal(true);
-//        });
-//
-//
-//        it('Returned values are valid indices for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var indicesValid = occurrencesWith(p, data).every(function(i) {
-//            return i >= 0 && i < data.length && p(data[i]);
-//          });
-//
-//          expect(indicesValid).to.equal(true);
-//        });
-//
-//
-//        it('No indices missing for ' + message, function() {
-//          var data = splitIfNecessary(originalData.slice());
-//          var found = occurrencesWith(p, data);
-//
-//          var noneMissing = data.every(function(v, i) {
-//            if (found.indexOf(i) !== -1) return true;
-//            return p(v) === false;
-//          });
-//
-//          expect(noneMissing).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array when value not found', alwaysFalse, [1, 2, 3]);
-//      addTests('arraylike when value not found', alwaysFalse, makeArrayLike(2, 3, 4));
-//      addTests('string when value not found', alwaysFalse, 'funkier');
-//      addTests('array (1)', strictEquals(1), [2, 1, 3]);
-//      addTests('array (2)', strictEquals(1), [2, 1, 1, 3, 1]);
-//      addTests('array (3)', function(x) {return x.foo === 3;},
-//              [{foo: 3}, {foo: 42}, {foo: 3}, {foo: 3}, {foo: undefined}]);
-//      addTests('arraylike (1)', strictEquals(2), [2, 1, 3]);
-//      addTests('arraylike (2)', strictEquals(2), [2, 1, 1, 2, 2]);
-//      addTests('string (1)', strictEquals('a'), 'ban');
-//      addTests('string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
-//
-//
-//      testCurriedFunction(occurrencesWith, [alwaysTrue, [1, 2, 3]]);
-//    });
-//
-//
-//    var zipSpec = {
-//      name: 'zip',
-//      arity: 2,
-//      restrictions: [['arraylike'], ['arraylike']],
-//      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)], [[3, 4, 5], 'def', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(zipSpec, array.zip, function(zip) {
-//      var addDegenerateTests = function(message, left, right) {
-//        it('Works for ' + message, function() {
-//          var result = zip(left, right);
-//
-//          expect(result).to.deep.equal([]);
-//        });
-//      };
-//
-//
-//      var degenerateTests = [
-//        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
-//        {name: 'arraylike', tests: [{type: 'empty', value: makeArrayLike()},
-//                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
-//        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
-//      ];
-//
-//
-//      degenerateTests.forEach(function(left) {
-//        left.tests.forEach(function(leftTest) {
-//          degenerateTests.forEach(function(right) {
-//            right.tests.forEach(function(rightTest) {
-//              if (leftTest.type === 'normal' && rightTest.type === 'normal')
-//                return;
-//
-//              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
-//              addDegenerateTests(message, leftTest.value, rightTest.value);
-//            });
-//          });
-//        });
-//      });
-//
-//
-//      var addTests = function(message, left, right) {
-//        it('Result is an array for ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var result = zip(l, r);
-//
-//          expect(isArray(result)).to.equal(true);
-//        });
-//
-//
-//        it('Result has correct length for ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var expectedLength = Math.min(l.length, r.length);
-//          var length = zip(l, r).length;
-//
-//          expect(length).to.equal(expectedLength);
-//        });
-//
-//
-//        it('Every element is a pair for ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var allPairs = zip(l, r).every(function(p) {
-//            return isPair(p);
-//          });
-//
-//          expect(allPairs).to.equal(true);
-//        });
-//
-//
-//        it('First of every element is correct for ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var firstsCorrect = zip(l, r).every(function(p, i) {
-//            return fst(p) === l[i];
-//          });
-//
-//          expect(firstsCorrect).to.equal(true);
-//        });
-//
-//
-//        it('Second of every element is correct for ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var secondsCorrect = zip(l, r).every(function(p, i) {
-//            return snd(p) === r[i];
-//          });
-//
-//          expect(secondsCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      var tests = [
-//        {name: 'array', tests: [{type: 'singleton', value: [3]}, {type: 'normal', value: [1, 2]}]},
-//        {name: 'arraylike', tests: [{type: 'singleton', value: makeArrayLike(5)},
-//                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
-//        {name: 'string', tests: [{type: 'singleton', value: 'a'}, {type: 'normal', value: 'funkier'}]}
-//      ];
-//
-//
-//      tests.forEach(function(left) {
-//        left.tests.forEach(function(leftTest) {
-//          tests.forEach(function(right) {
-//            right.tests.forEach(function(rightTest) {
-//              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
-//              if (left.name === right.name)
-//                message = ' ' + left.name + ' (' + message + ')';
-//              else
-//                message = ' mix (' + message + ')';
-//
-//              addTests(message, leftTest.value, rightTest.value);
-//            });
-//          });
-//        });
-//      });
-//
-//
-//      testCurriedFunction(zip, [[1, 2, 3], [4, 5, 6]]);
-//    });
-//
-//
-//    var zipWithSpec = {
-//      name: 'zipWith',
-//      arity: 3,
-//      restrictions: [['function: minarity 2'], ['arraylike'], ['arraylike']],
-//      validArguments: [[function(x, y) {return x + y;}], [[1, 2], 'abc', makeArrayLike(2, 3, 4)],
-//                      [[3, 4, 5], 'def', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(zipWithSpec, array.zipWith, function(zipWith) {
-//      addFuncCalledWithSpecificArityTests(zipWith, 2, [['a', 'b', 'c']]);
-//
-//
-//      var addDegenerateTests = function(message, left, right) {
-//        it('Works for ' + message, function() {
-//          var result = zipWith(function(l, r) {return l;}, left, right);
-//
-//          expect(result).to.deep.equal([]);
-//        });
-//      };
-//
-//
-//      var degenerateTests = [
-//        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
-//        {name: 'arraylike', tests: [{type: 'empty', value: makeArrayLike()},
-//                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
-//        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
-//      ];
-//
-//
-//      degenerateTests.forEach(function(left) {
-//        left.tests.forEach(function(leftTest) {
-//          degenerateTests.forEach(function(right) {
-//            right.tests.forEach(function(rightTest) {
-//              if (leftTest.type === 'normal' && rightTest.type === 'normal')
-//                return;
-//
-//              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
-//              addDegenerateTests(message, leftTest.value, rightTest.value);
-//            });
-//          });
-//        });
-//      });
-//
-//
-//      var addTests = function(message, f, left, right) {
-//        it('Result is an array ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var result = zipWith(f, l, r);
-//
-//          expect(isArray(result)).to.equal(true);
-//        });
-//
-//
-//        it('Result has correct length ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var expectedLength = Math.min(l.length, r.length);
-//          var length = zipWith(f, l, r).length;
-//
-//          expect(length).to.equal(expectedLength);
-//        });
-//
-//
-//        it('Every element is correct ' + message, function() {
-//          var l = left.slice();
-//          var r = right.slice();
-//          var elementsCorrect = zipWith(f, l, r).every(function(p, i) {
-//            return p === f(l[i], r[i]);
-//          });
-//
-//          expect(elementsCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      var tests = [
-//        {name: 'array', tests: [{type: 'singleton', value: [3]}, {type: 'normal', value: [1, 2]}]},
-//        {name: 'arraylike', tests: [{type: 'singleton', value: makeArrayLike(5)},
-//                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
-//        {name: 'string', tests: [{type: 'singleton', value: 'a'}, {type: 'normal', value: 'funkier'}]}
-//      ];
-//
-//
-//      var addTwo = function(x, y) {return x + y;};
-//      tests.forEach(function(left) {
-//        left.tests.forEach(function(leftTest) {
-//          tests.forEach(function(right) {
-//            right.tests.forEach(function(rightTest) {
-//              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
-//              if (left.name === right.name)
-//                message = ' ' + left.name + ' (' + message + ')';
-//              else
-//                message = ' mix (' + message + ')';
-//
-//              addTests(message, addTwo, leftTest.value, rightTest.value);
-//            });
-//          });
-//        });
-//      });
-//
-//
-//      testCurriedFunction(zipWith, [function(x, y) {return x * y;}, [1, 2, 3], [4, 5, 6]]);
-//    });
-//
-//
-//    var addCommonNubTests = function(fnUnderTest, message, originalData, otherArgs, expectedLength) {
-//      it('Length is correct for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var length = fnUnderTest.apply(null, otherArgs.concat([data])).length;
-//
-//        expect(length).to.equal(expectedLength);
-//      });
-//
-//
-//      it('Each value came from original for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var unique = fnUnderTest.apply(null, otherArgs.concat([data]));
-//        unique = splitIfNecessary(unique);
-//        var copiedFromSource = unique.every(function(val) {
-//          return data.indexOf(val) !== -1;
-//        });
-//
-//        expect(copiedFromSource).to.equal(true);
-//      });
-//
-//
-//      it('Ordering maintained from original for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var unique = fnUnderTest.apply(null, otherArgs.concat([data]));
-//        unique = splitIfNecessary(unique);
-//
-//        var sameOrder = unique.every(function(val, i) {
-//          if (i === 0) return true; // vacuously true
-//
-//          return data.indexOf(unique[i - 1]) < data.indexOf(val);
-//        });
-//
-//        expect(sameOrder).to.equal(true);
-//      });
-//    };
-//
-//
-//    var nubSpec = {
-//      name: 'nub',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(nubSpec, array.nub, function(nub) {
-//      addReturnsEmptyOnEmptyTests(nub, []);
-//      addNoModificationOfOriginalTests(nub, []);
-//      addReturnsSameTypeTests(nub, []);
-//
-//
-//      var addTests = function(message, originalData, expectedLength) {
-//        addCommonNubTests(nub, message, originalData, [], expectedLength);
-//
-//
-//        it('Each value only occurs once for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var unique = nub(data);
-//          unique = splitIfNecessary(unique);
-//          var allUnique = unique.every(function(val) {
-//            return array.occurrences(val, unique).length === 1;
-//          });
-//
-//          expect(allUnique).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('singleton array', [5], 1);
-//      addTests('array with no duplicates', [2, 3, 4], 3);
-//      addTests('array with one duplicate', [2, 3, 2, 4], 3);
-//      addTests('array with multiple duplicates', [2, 3, 3, 4, 2, 4], 3);
-//      addTests('singleton arraylike', makeArrayLike(1), 1);
-//      addTests('arraylike with no duplicates', makeArrayLike(2, 3, 4), 3);
-//      addTests('arraylike with one duplicate', makeArrayLike(2, 3, 2, 4), 3);
-//      addTests('arraylike with multiple duplicates', makeArrayLike(2, 3, 2, 3, 4, 4), 3);
-//      addTests('singleton string', 'a', 1);
-//      addTests('string with no duplicates', 'abcd', 4);
-//      addTests('string with one duplicate', 'mozilla', 6);
-//      addTests('string with multiple duplicates', 'banana', 3);
-//    });
-//
-//
-//    describe('uniq', function() {
-//      it('uniq is a synonym for nub', function() {
-//        return array.uniq === array.nub;
-//      });
-//    });
-//
-//
-//    var nubWithSpec = {
-//      name: 'nubWith',
-//      arity: 2,
-//      restrictions: [['function: arity 2'], ['arraylike']],
-//      validArguments: [[function(x, y) {return false;}], [[1, 2, 3], 'abcd', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(nubWithSpec, array.nubWith, function(nubWith) {
-//      var alwaysFalse = function(x, y) {return false;};
-//
-//
-//      addReturnsEmptyOnEmptyTests(nubWith, [alwaysFalse]);
-//      addNoModificationOfOriginalTests(nubWith, [alwaysFalse]);
-//      addReturnsSameTypeTests(nubWith, [alwaysFalse]);
-//      addFuncCalledWithSpecificArityTests(nubWith, 2);
-//
-//
-//      var addTests = function(message, f, originalData, expectedLength) {
-//        addCommonNubTests(nubWith, message, originalData, [f], expectedLength);
-//
-//
-//        it('Predicate function called as often as required for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var called = 0;
-//          var p = function(x, y) {
-//            called += 1;
-//            return f(x, y);
-//          };
-//          nubWith(p, data);
-//
-//          expect(called).to.be.at.most(data.length * (data.length - 1) / 2);
-//        });
-//
-//
-//        it('Each value only occurs once for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var unique = nubWith(f, data);
-//          unique = splitIfNecessary(unique);
-//          var allUnique = unique.every(function(val, i) {
-//            return unique.every(function(val2, j) {
-//              if (i === j) return true;
-//
-//              if (j < i)
-//                return f(val2, val) === false;
-//
-//              return f(val, val2) === false;
-//            });
-//          });
-//
-//          expect(allUnique).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('singleton array', alwaysFalse, [1], 1);
-//      addTests('array with no duplicates', function(x, y) {return x + y === 4;}, [2, 3, 4], 3);
-//      addTests('array with one duplicate', function(x, y) {return x + y === 4;}, [2, 3, 2, 4], 3);
-//      addTests('array with multiple duplicates', function(x, y) {return x.foo === y.foo;},
-//               [{foo: 1}, {foo: 2}, {foo: 1}, {foo: 3}, {foo: 2}], 3);
-//      addTests('singleton arraylike', alwaysFalse, makeArrayLike(2), 1);
-//      addTests('arraylike with no duplicates', function(x, y) {return x + y === 4;}, makeArrayLike(2, 3, 4), 3);
-//      addTests('arraylike with one duplicate', function(x, y) {return x + y === 4;}, makeArrayLike(2, 3, 2, 4), 3);
-//      addTests('arraylike with multiple duplicates', function(x, y) {return x.foo === y.foo;},
-//               makeArrayLike({foo: 1}, {foo: 2}, {foo: 1}, {foo: 3}, {foo: 2}), 3);
-//
-//      var oneVowel = function(x, y) {return 'aeiou'.indexOf(x) !== -1 && 'aeiou'.indexOf(y) !== -1;};
-//      addTests('singleton string', oneVowel, 'a', 1);
-//      addTests('string with no duplicates', oneVowel, 'abcd', 4);
-//      addTests('string with one duplicate', oneVowel, 'java', 3);
-//      addTests('string with multiple duplicates', oneVowel, 'funkier', 5);
-//
-//
-//      testCurriedFunction(nubWith, [function(x, y) {return false;}, 'funkier']);
-//    });
-//
-//
-//    describe('uniqWith', function() {
-//      it('uniqWith is a synonym for nubWith', function() {
-//        return array.uniqWith === array.nubWith;
-//      });
-//    });
-//
-//
-//    var sortSpec = {
-//      name: 'sort',
-//      arity: 1,
-//      restrictions: [['arraylike']],
-//      validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(sortSpec, array.sort, function(sort) {
-//      addReturnsEmptyOnEmptyTests(sort, []);
-//      addNoModificationOfOriginalTests(sort, []);
-//      addReturnsSameTypeTests(sort, []);
-//
-//
-//      var addTests = function(message, originalData) {
-//        addSameLengthTest(sort, message, [], originalData);
-//
-//
-//        it('Each value came from original for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var sorted = sort(data);
-//          sorted = splitIfNecessary(sorted);
-//          var copiedFromSource = sorted.every(function(val) {
-//            var ourOccurrences = array.occurrences(val, sorted).length;
-//            var originalOccurrences = array.occurrences(val, data).length;
-//
-//            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
-//          });
-//
-//          expect(copiedFromSource).to.equal(true);
-//        });
-//
-//
-//        it('Ordering correct for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var sorted = sort(data);
-//          sorted = splitIfNecessary(sorted);
-//          var isSorted = sorted.every(function(val, i) {
-//            if (i === 0) return true; // vacuously true
-//
-//            return sorted[i - 1] <= val;
-//          });
-//
-//          expect(isSorted).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('singleton array', [1]);
-//      addTests('array with no duplicates', [4, 2, 3]);
-//      addTests('array with duplicate', [4, 2, 3, 2]);
-//      addTests('already sorted array', [1, 2, 3]);
-//      addTests('worst case array', [5, 4, 3, 2, 1]);
-//
-//      addTests('singleton arraylike', makeArrayLike(1));
-//      addTests('arraylike with no duplicates', makeArrayLike(5, 7, 1));
-//      addTests('arraylike with duplicate', makeArrayLike(5, 7, 1, 7, 2));
-//      addTests('already sorted arraylike', makeArrayLike(1, 2, 3));
-//      addTests('worst case arraylike', makeArrayLike(5, 4, 3, 2, 1));
-//
-//      addTests('singleton string', 'a');
-//      addTests('string with no duplicates', 'debc');
-//      addTests('string with duplicate', 'dcebc');
-//      addTests('already sorted string', '0123');
-//      addTests('worst case string', 'zyxw');
-//    });
-//
-//
-//    var sortWithSpec = {
-//      name: 'sortWith',
-//      arity: 2,
-//      restrictions: [['function: arity 2'], ['arraylike']],
-//      validArguments: [[function(x, y) {return -1;}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(sortWithSpec, array.sortWith, function(sortWith) {
-//      var normalCompare = function(x, y) {return x - y;};
-//      addReturnsEmptyOnEmptyTests(sortWith, [normalCompare]);
-//      addNoModificationOfOriginalTests(sortWith, [normalCompare]);
-//      addReturnsSameTypeTests(sortWith, [normalCompare]);
-//      addFuncCalledWithSpecificArityTests(sortWith, 2);
-//
-//
-//      var addTests = function(message, f, originalData) {
-//        addSameLengthTest(sortWith, message, [f], originalData);
-//
-//
-//        it('Each value came from original for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var sorted = sortWith(f, data);
-//          sorted = splitIfNecessary(sorted);
-//          var copiedFromSource = sorted.every(function(val) {
-//            var ourOccurrences = array.occurrences(val, sorted).length;
-//            var originalOccurrences = array.occurrences(val, data).length;
-//
-//            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
-//          });
-//
-//          expect(copiedFromSource).to.equal(true);
-//        });
-//
-//
-//        it('Ordering correct for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var sorted = sortWith(f, data);
-//          sorted = splitIfNecessary(sorted);
-//          var result = sorted.every(function(val, i) {
-//            if (i === 0) return true; // vacuously true
-//
-//            return f(sorted[i - 1], val) <= 0;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('singleton array', normalCompare, [1]);
-//      addTests('array with no duplicates', function(x, y) {return x.foo - y.foo;},
-//                [{foo: 1}, {foo: 3}, {foo: 2}]);
-//      addTests('array with duplicate', function(x, y) {return x.foo - y.foo;},
-//                [{foo: 1}, {foo: 3}, {foo: 1}, {foo: 3}]);
-//      addTests('already sorted array', function(x, y) {return x.foo - y.foo;},
-//                [{foo: 1}, {foo: 2}, {foo: 3}]);
-//      addTests('worst case',  function(x, y) {return x.foo - y.foo;},
-//                [{foo: 3}, {foo: 2}, {foo: 1}]);
-//
-//      addTests('singleton arraylike', normalCompare, makeArrayLike(1));
-//      addTests('arraylike with no duplicates', function(x, y) {return x.foo - y.foo;},
-//                makeArrayLike({foo: 1}, {foo: 3}, {foo: 2}));
-//      addTests('arraylike with duplicate', function(x, y) {return x.foo - y.foo;},
-//                makeArrayLike({foo: 1}, {foo: 3}, {foo: 1}, {foo: 3}));
-//      addTests('already sorted arraylike', function(x, y) {return x.foo - y.foo;},
-//                makeArrayLike({foo: 1}, {foo: 2}, {foo: 3}));
-//      addTests('worst case',  function(x, y) {return x.foo - y.foo;},
-//                makeArrayLike({foo: 3}, {foo: 2}, {foo: 1}));
-//
-//      var stringSort = function(x, y) {
-//        return x.toUpperCase() < y.toUpperCase() ? -1 : x.toUpperCase() === y.toUpperCase() ? 0 : 1;
-//      };
-//      addTests('singleton string', stringSort, 'a');
-//      addTests('string with no duplicates', stringSort, 'debc');
-//      addTests('string with duplicate', stringSort, 'dcebc');
-//      addTests('already sorted string', stringSort, '0123');
-//      addTests('worst case', stringSort, 'zyxw');
-//
-//
-//      testCurriedFunction(sortWith, [normalCompare, [1, 2, 3]]);
-//    });
-//
-//
-//    var unzipSpec = {
-//      name: 'unzip',
-//      arity: 1,
-//      restrictions: [['strictarraylike']],
-//      validArguments: [[[Pair(1, 2)], makeArrayLike(Pair(2, 3), Pair(4, 5))]]
-//    };
-//
-//
-//    describeFunction(unzipSpec, array.unzip, function(unzip) {
-//      var addThrowsWhenNotPairTest = function(bogus, message) {
-//        it('Throws if any element is not a Pair ' + message, function() {
-//          var fn = function() {
-//            unzip(bogus);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addThrowsWhenNotPairTest('(1)', ['a', Pair(1, 2), Pair(3, 4)]);
-//      addThrowsWhenNotPairTest('(2)', [Pair(1, 2), Pair(5, 6), 1, Pair(3, 4)]);
-//      addThrowsWhenNotPairTest('(3)', [Pair(1, 2), Pair(5, 6), Pair(3, 4), []]);
-//      addThrowsWhenNotPairTest('(4)', makeArrayLike('a', Pair(1, 2), Pair(3, 4)));
-//
-//
-//      var addDegenerateTest = function(message, data) {
-//        it('Works for degenerate ' + message + ' case', function() {
-//          var result = unzip(data);
-//
-//          expect(isPair(result)).to.equal(true);
-//          expect(fst(result)).to.deep.equal([]);
-//          expect(snd(result)).to.deep.equal([]);
-//        });
-//      };
-//
-//
-//      addDegenerateTest('array', []);
-//      addDegenerateTest('arraylike', makeArrayLike());
-//
-//
-//      var addTests = function(message, originalData) {
-//        it('Returns a pair for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = unzip(data);
-//
-//          expect(isPair(result)).to.equal(true);
-//        });
-//
-//
-//        it('First element is an array for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var firstIsArray = isArray(fst(unzip(data)));
-//
-//          expect(firstIsArray).to.equal(true);
-//        });
-//
-//
-//        it('Second element is an array for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var secondIsArray = isArray(snd(unzip(data)));
-//
-//          expect(secondIsArray).to.equal(true);
-//        });
-//
-//
-//        it('First element has correct length for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var length = fst(unzip(data)).length;
-//
-//          expect(length).to.equal(data.length);
-//        });
-//
-//
-//        it('Second element has correct length for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var length = snd(unzip(data)).length;
-//
-//          expect(length).to.equal(data.length);
-//        });
-//
-//
-//        it('Doesn\'t affect the original ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var originalUnaffected = unzip(data) !== data;
-//
-//          expect(originalUnaffected).to.equal(true);
-//        });
-//
-//
-//        it('First element correct for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var firstCorrect = fst(unzip(data)).every(function(val, i) {
-//            return fst(data[i]) === val;
-//          });
-//
-//          expect(firstCorrect).to.equal(true);
-//        });
-//
-//
-//        it('Second element correct for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var secondCorrect = snd(unzip(data)).every(function(val, i) {
-//            return snd(data[i]) === val;
-//          });
-//
-//          expect(secondCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('singleton array', [Pair(1, 2)]);
-//      addTests('normal array', [Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})]);
-//      addTests('singleton arraylike', makeArrayLike(Pair(1, 2)));
-//      addTests('normal arraylike', makeArrayLike(Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})));
-//    });
-//
-//
-//    var insertSpec = {
-//      name: 'insert',
-//      arity: 3,
-//      restrictions: [['positive'], [], ['arraylike']],
-//      validArguments: [[0], ['1'], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(insertSpec, array.insert, function(insert) {
-//      addNoModificationOfOriginalTests(insert, [0, 'a']);
-//      addReturnsSameTypeTests(insert, [0, 'a']);
-//
-//
-//      var addIndexTest = function(message, index, val, originalData, dontThrow) {
-//        dontThrow = dontThrow || false;
-//
-//
-//        it((!dontThrow ? 'Does not throw' : 'Throws') + ' when ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var fn = function() {
-//            insert(index, val, data);
-//          };
-//
-//          if (dontThrow)
-//            expect(fn).to.not.throw(TypeError);
-//          else
-//            expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addIndexTest('index > length (array)', 4, 1, [1, 2]);
-//      addIndexTest('index > length (arraylike)', 5, 1, makeArrayLike(2, 3, 4));
-//      addIndexTest('index > length (string)', 10, 'a', 'bcde');
-//      addIndexTest('index === length (array)', 2, 1, [1, 2], true);
-//      addIndexTest('index === length (arraylike)', 2, 1, makeArrayLike(2, 3), true);
-//      addIndexTest('index === length (string)', 4, 'a', 'bcde', true);
-//
-//
-//      var addTests = function(message, index, val, originalData) {
-//        addSameLengthTest(insert, 'Returned value is the correct length ' + message, [index, val], originalData, 1);
-//
-//
-//        it('Returned value has correct elements ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var newVal = insert(index, val, data);
-//          newVal = splitIfNecessary(newVal);
-//          var elementsCorrect = newVal.every(function(v, i) {
-//            if (i < index)
-//              return v === data[i];
-//
-//            if (i === index)
-//              return v === val;
-//
-//            return v === data[i - 1];
-//          });
-//
-//          expect(elementsCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('for array', 1, 4, [1, 2, 3]);
-//      addTests('for arraylike', 1, 4, makeArrayLike(1, 2, 3));
-//      addTests('for string', 1, 'd', 'abc');
-//      addTests('for array when index === length', 3, 4, [1, 2, 3]);
-//      addTests('for arraylike when index === length', 3, 4, makeArrayLike(1, 2, 3));
-//      addTests('for string when index === length', 3, 'd', 'abc');
-//      addTests('for array when index === 0', 0, 4, [1, 2, 3]);
-//      addTests('for arraylike when index === 0', 0, 4, makeArrayLike(1, 2, 3));
-//      addTests('for string when index === 0', 0, 'd', 'abc');
-//      addTests('for empty array when index === 0', 0, 1, []);
-//      addTests('for empty arraylike when index === 0', 0, 1, makeArrayLike());
-//      addTests('for empty string when index === 0', 0, 'a', '');
-//
-//
-//      it('toString called when inserting non-string in string', function() {
-//        var obj = {toString: function() {return 'funk';}};
-//        var result = insert(0, obj, 'ier');
-//
-//        expect(result).to.equal('funkier');
-//      });
-//
-//
-//      testCurriedFunction(insert, [0, 'a', [1, 2, 3]]);
-//    });
-//
-//
-//    // remove and replace both throw when index >= length
-//    var addCommonRemoveReplaceTests = function(fnUnderTest, argsBetween) {
-//      argsBetween = argsBetween || [];
-//
-//
-//      var addTest = function(message, index, originalData) {
-//        it('Throws if index >= length ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var args = [index].concat(argsBetween).concat([data]);
-//          var fn = function() {
-//            fnUnderTest.apply(null, args);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      };
-//
-//
-//      addTest('for array (1)', 4, [1, 2, 3]);
-//      addTest('for array (2)', 3, [2, 3, 4]);
-//      addTest('for arraylike (1)', 4, makeArrayLike(2, 3, 4));
-//      addTest('for arraylike (2)', 3, makeArrayLike(3, 4, 5));
-//      addTest('for string (1)', 4, 'abc');
-//      addTest('for string (2)', 3, 'bcd');
-//    };
-//
-//
-//    var removeSpec = {
-//      name: 'remove',
-//      arity: 2,
-//      restrictions: [['positive'], ['arraylike']],
-//      validArguments: [[0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(removeSpec, array.remove, function(remove) {
-//      addNoModificationOfOriginalTests(remove, [0]);
-//      addReturnsSameTypeTests(remove, [0]);
-//      addCommonRemoveReplaceTests(remove);
-//
-//
-//      var addTests = function(message, index, originalData) {
-//        addSameLengthTest(remove, 'Returned value is the correct length for ' + message, [index], originalData, -1);
-//
-//
-//        it('Returned value has correct elements for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var newVal = remove(index, data);
-//          newVal = splitIfNecessary(newVal);
-//          var elementsCorrect = newVal.every(function(v, i) {
-//            if (i < index)
-//              return v === data[i];
-//
-//            return v === data[i + 1];
-//          });
-//
-//          expect(elementsCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array', 1, [1, 2, 3]);
-//      addTests('arraylike', 1, makeArrayLike(1, 2, 3));
-//      addTests('string', 1, 'abc');
-//      addTests('array when index === length - 1', 2, [1, 2, 3]);
-//      addTests('arraylike when index === length - 1', 1, makeArrayLike(2, 3));
-//      addTests('string when index === length - 1', 2, 'abc');
-//      addTests('array when index === 0', 0, [1, 2, 3]);
-//      addTests('arraylike when index === 0', 0, makeArrayLike(3, 4));
-//      addTests('string when index === 0', 0, 'abc');
-//      addTests('singleton array when index === 0', 0, [1]);
-//      addTests('singleton arraylike when index === 0', 0, makeArrayLike(2));
-//      addTests('singleton string when index === 0', 0, 'a');
-//
-//
-//      testCurriedFunction(remove, [0, [1, 2, 3]]);
-//    });
-//
-//
-//    var replaceSpec = {
-//      name: 'replace',
-//      arity: 3,
-//      restrictions: [['positive'], [], ['arraylike']],
-//      validArguments: [[0], ['a'], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(replaceSpec, array.replace, function(replace) {
-//      addNoModificationOfOriginalTests(replace, [0, 'a']);
-//      addReturnsSameTypeTests(replace, [0, 'a']);
-//      addCommonRemoveReplaceTests(replace, [1]);
-//
-//
-//      var addTests = function(message, index, val, originalData) {
-//        addSameLengthTest(replace, message, [index, val], originalData);
-//
-//
-//        it('Returned value has correct elements for ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var newVal = replace(index, val, data);
-//          newVal = splitIfNecessary(newVal);
-//          var elementsCorrect = newVal.every(function(v, i) {
-//            if (i !== index)
-//              return v === data[i];
-//
-//            return v === val;
-//          });
-//
-//          expect(elementsCorrect).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('array', 1, 0, [1, 2, 3]);
-//      addTests('arraylike', 1, 0, makeArrayLike(2, 3, 4, 5));
-//      addTests('string', 1, 'd', 'abc');
-//      addTests('array when index === length - 1', 2, 0, [1, 2, 3]);
-//      addTests('arraylike when index === length - 1', 3, 0, makeArrayLike(2, 3, 4, 5));
-//      addTests('string when index === length - 1', 2, 'd', 'abc');
-//      addTests('array when index === 0', 0, 0, [1, 2, 3]);
-//      addTests('arraylike when index === 0', 0, 0, makeArrayLike(2, 3));
-//      addTests('string when index === 0', 0, 'd', 'abc');
-//      addTests('singleton array when index === 0', 0, 0, [1]);
-//      addTests('singleton arraylike when index === 0', 0, 0, makeArrayLike(2));
-//      addTests('singleton string when index === 0', 0, 'd', 'a');
-//
-//
-//      it('toString called when replacement is non-string for string', function() {
-//        var obj = {toString: function() {return 'funk';}};
-//        var result = replace(0, obj, 'bier');
-//
-//        expect(result).to.equal('funkier');
-//      });
-//
-//
-//      testCurriedFunction(replace, [0, 0, [1, 2, 3]]);
-//    });
-//
-//
-//    var addCommonRemoveNotFoundTests = function(message, fnUnderTest, val, originalData) {
-//      addSameLengthTest(fnUnderTest, message, [val], originalData);
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var newVal = fnUnderTest(val, data);
-//        var elementsCorrect = newVal.every(function(v, i) {
-//          return v === data[i];
-//        });
-//
-//        expect(elementsCorrect).to.equal(true);
-//      });
-//    };
-//
-//
-//    var addCommonRemoveValTests = function(testAdder, fnUnderTest) {
-//      testAdder('array', 2, [1, 2, 3]);
-//      testAdder('array when value matches last entry', 3, [1, 2, 3]);
-//      testAdder('array when value matches first entry', 1, [1, 2, 3]);
-//      testAdder('singleton array when value matches', 1, [1]);
-//      testAdder('array with multiple matches', 1, [1, 2, 3, 1]);
-//
-//      testAdder('arraylike', 2, makeArrayLike(1, 2, 3));
-//      testAdder('arraylike when value matches last entry', 3, makeArrayLike(1, 2, 3));
-//      testAdder('arraylike when value matches first entry', 1, makeArrayLike(1, 2, 3));
-//      testAdder('singleton arraylike when value matches', 1, makeArrayLike(1));
-//      testAdder('arraylike with multiple matches', 1, makeArrayLike(1, 2, 3, 1));
-//
-//      addCommonRemoveNotFoundTests('array when value not found', fnUnderTest, 4, [1, 2, 3]);
-//      var obj = {foo: 42};
-//      addCommonRemoveNotFoundTests('array when value not strictly equal', fnUnderTest, obj,
-//                                    [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      testAdder('array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
-//
-//      addCommonRemoveNotFoundTests('arraylike when value not found', fnUnderTest, 4, makeArrayLike(1, 2, 3));
-//      addCommonRemoveNotFoundTests('arraylike when value not strictly equal', fnUnderTest, obj,
-//                                   makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
-//      testAdder('arraylike when value strictly equal', obj, makeArrayLike({foo: 1}, obj, {foo: 3}));
-//    };
-//
-//
-//    var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
-//      testAdder('array', fooIs42, [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      testAdder('array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
-//      testAdder('array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
-//      testAdder('singleton array when value matches', equals(1), [1]);
-//      testAdder('array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
-//
-//      testAdder('arraylike', fooIs42, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
-//      testAdder('arraylike when value matches last entry', function(x) {return x >= 3;}, makeArrayLike(1, 2, 3));
-//      testAdder('arraylike when value matches first entry', function(x) {return x < 2;}, makeArrayLike(1, 2, 3));
-//      testAdder('singleton arraylike when value matches', equals(1), makeArrayLike(1));
-//      testAdder('arraylike with multiple matches', function(x) {return x < 10;}, makeArrayLike(1, 2, 3, 1));
-//
-//      addCommonRemoveNotFoundTests('array when value not found', fnUnderTest,
-//                             function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      addCommonRemoveNotFoundTests('arraylike when value not found', fnUnderTest,
-//                             function(x) {return x.foo === 4;}, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
-//    };
-//
-//
-//    var addCommonRemoveOneTests = function(fnUnderTest, message, val, originalData, isWith) {
-//      addSameLengthTest(fnUnderTest, 'Returned value is the correct length for ' + message, [val], originalData, -1);
-//      isWith = isWith || false;
-//      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var newVal = fnUnderTest(val, data);
-//
-//        var f = isWith ? val : function(x) {return x === val;};
-//        var deletionFound = false;
-//        var elementsCorrect = newVal.every(function(v, i) {
-//          if (deletionFound || f(data[i])) {
-//            deletionFound = true;
-//            return v === data[i + 1];
-//          }
-//
-//          return v === data[i];
-//        });
-//
-//        expect(elementsCorrect).to.equal(true);
-//      });
-//
-//
-//      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
-//      // these behavious to be explicit
-//      it('Returned value has one less occurrence of value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var originalCount = occurrencesFn(val, data).length;
-//        var newVal = fnUnderTest(val, data);
-//        var newCount = occurrencesFn(val, newVal).length;
-//
-//        expect(newCount).to.equal(originalCount - 1);
-//      });
-//
-//
-//      it('Removes first occurrence of value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var originalOcc = occurrencesFn(val, data);
-//        var newVal = fnUnderTest(val, data);
-//        var newOcc = occurrencesFn(val, newVal);
-//
-//        if (originalOcc.length === 1)
-//          expect(newOcc).to.deep.equal([]);
-//        else
-//          expect(newOcc[0]).to.equal(originalOcc[1] - 1);
-//      });
-//    };
-//
-//
-//    var removeOneSpec = {
-//      name: 'removeOne',
-//      arity: 2,
-//      restrictions: [[], ['strictarraylike']],
-//      validArguments: [[2], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(removeOneSpec, array.removeOne, function(removeOne) {
-//      addNoModificationOfOriginalTests(removeOne, [0]);
-//      addReturnsSameTypeTests(removeOne, [0], true);
-//
-//
-//      var addTests = function(message, val, originalData) {
-//        addCommonRemoveOneTests(removeOne, message, val, originalData);
-//      };
-//      addCommonRemoveValTests(addTests, removeOne);
-//
-//
-//      testCurriedFunction(removeOne, [0, [1, 2, 3]]);
-//    });
-//
-//
-//    var removeOneWithSpec = {
-//      name: 'removeOneWith',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['strictarraylike']],
-//      validArguments: [[alwaysTrue], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
-//      addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue]);
-//      addReturnsSameTypeTests(removeOneWith, [alwaysTrue], true);
-//      addFuncCalledWithSpecificArityTests(removeOneWith, 1, [], true);
-//
-//
-//      var addTests = function(message, f, originalData) {
-//        addCommonRemoveOneTests(removeOneWith, message, f, originalData, true);
-//      };
-//      addCommonRemoveWithTests(addTests, removeOneWith);
-//
-//
-//      testCurriedFunction(removeOneWith, [alwaysTrue, [1, 2, 3]]);
-//    });
-//
-//
-//    var addCommonRemoveAllTests = function(fnUnderTest, message, val, originalData, isWith) {
-//      isWith = isWith || false;
-//      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
-//
-//
-//      it('Returned value is the correct length for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var occurrences = occurrencesFn(val, data);
-//        var length = fnUnderTest(val, data).length;
-//
-//        expect(length).to.equal(data.length - occurrences.length);
-//      });
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var newVal = fnUnderTest(val, data);
-//
-//        var f = isWith ? val : function(x) {return x === val;};
-//        var offset = 0;
-//        var elementsCorrect = newVal.every(function(v, i) {
-//          while (f(data[i + offset]))
-//             offset += 1;
-//
-//          return data[i + offset] === v;
-//        });
-//
-//        expect(elementsCorrect).to.equal(true);
-//      });
-//
-//
-//      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
-//      // these behavious to be explicit
-//      it('Returned value has no occurrences of value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var newVal = fnUnderTest(val, data);
-//        var newCount = occurrencesFn(val, newVal).length;
-//
-//        expect(newCount).to.equal(0);
-//      });
-//    };
-//
-//
-//    var removeAllSpec = {
-//      name: 'removeAll',
-//      arity: 2,
-//      restrictions: [[], ['strictarraylike']],
-//      validArguments: [[2], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(removeAllSpec, array.removeAll, function(removeAll) {
-//      addNoModificationOfOriginalTests(removeAll, [0]);
-//      addReturnsSameTypeTests(removeAll, [0], true);
-//
-//
-//      var addTests = function(message, val, originalData) {
-//        addCommonRemoveAllTests(removeAll, message, val, originalData);
-//      };
-//
-//
-//      addCommonRemoveValTests(addTests, removeAll);
-//      addTests('array with all matches', 1, [1, 1, 1, 1]);
-//      addTests('arraylike with all matches', 1, makeArrayLike(1, 1, 1, 1));
-//
-//
-//      testCurriedFunction(removeAll, [0, [1, 2, 3]]);
-//    });
-//
-//
-//    var removeAllWithSpec = {
-//      name: 'removeAllWith',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['strictarraylike']],
-//      validArguments: [[alwaysTrue], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
-//      addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue]);
-//      addReturnsSameTypeTests(removeAllWith, [alwaysTrue], true);
-//      addFuncCalledWithSpecificArityTests(removeAllWith, 1, [], true);
-//
-//
-//      var addTests = function(message, f, originalData) {
-//        addCommonRemoveAllTests(removeAllWith, message, f, originalData, true);
-//      };
-//
-//
-//      addCommonRemoveWithTests(addTests, removeAllWith);
-//      addTests('array where every value matches', alwaysTrue, [1, 2, 3, 4]);
-//      addTests('arraylike where every value matches', alwaysTrue, makeArrayLike(1, 2, 3, 4));
-//
-//
-//      testCurriedFunction(removeAllWith, [alwaysTrue, [1, 2, 3]]);
-//    });
-//
-//
-//    var addCommonReplaceNotFoundTests = function(message, fnUnderTest, val, newVal, originalData) {
-//      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var replaced = fnUnderTest(val, newVal, data);
-//
-//        // Can't use chai's deepEqual: it won't equal(true) for arraylike
-//        var allCorrect = replaced.every(function(v, i) {
-//          return v === data[i];
-//        });
-//
-//        expect(allCorrect).to.equal(true);
-//      });
-//    };
-//
-//
-//    var addCommonReplaceValTests = function(testAdder, fnUnderTest) {
-//      testAdder('array', 2, 4, [1, 2, 3]);
-//      testAdder('array with multiple matches', 1, 4, [1, 2, 3, 1]);
-//      testAdder('arraylike', 2, 4, makeArrayLike(1, 2, 3));
-//      testAdder('arraylike with multiple matches', 1, 4, makeArrayLike(1, 2, 3, 1));
-//
-//      addCommonReplaceNotFoundTests('array when value not found', fnUnderTest, 4, 5, [1, 2, 3]);
-//      var obj = {foo: 42};
-//      addCommonReplaceNotFoundTests('array when value not strictly equal', fnUnderTest, obj, {foo: 52},
-//                       [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      testAdder('array when value strictly equal', obj, {foo: 62}, [{foo: 1}, obj, {foo: 3}]);
-//
-//      addCommonReplaceNotFoundTests('arraylike when value not found', fnUnderTest, 4, 5, makeArrayLike(1, 2, 3));
-//      addCommonReplaceNotFoundTests('arraylike when value not strictly equal', fnUnderTest, obj, {foo: 52},
-//                       makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
-//      testAdder('arraylike when value strictly equal', obj, {foo: 62}, makeArrayLike({foo: 1}, obj, {foo: 3}));
-//    };
-//
-//
-//    var addCommonReplaceWithTests = function(testAdder, fnUnderTest) {
-//      testAdder('array', fooIs42, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      testAdder('array with multiple matches', function(x) {return x < 10;}, 11, [1, 2, 3, 1]);
-//
-//      testAdder('arraylike', fooIs42, {foo: 52}, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
-//      testAdder('arraylike with multiple matches', function(x) {return x < 10;}, 11, makeArrayLike(1, 2, 3, 1));
-//
-//      addCommonReplaceNotFoundTests('array when value not found', fnUnderTest,
-//                             function(x) {return x.foo === 4;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
-//      addCommonReplaceNotFoundTests('arraylike when value not found', fnUnderTest,
-//                             function(x) {return x.foo === 4;}, {foo: 52}, makeArrayLike({foo: 1}, {foo: 42}));
-//    };
-//
-//
-//    var addCommonReplaceOneTests = function(fnUnderTest, message, val, newVal, originalData, isWith) {
-//      isWith = isWith || false;
-//      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
-//      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var replaced = fnUnderTest(val, newVal, data);
-//
-//        var found = false;
-//        var f = isWith ? val : function(x) {return x === val;};
-//        var elementsCorrect = replaced.every(function(v, i) {
-//          if (!found && f(data[i])) {
-//            found = true;
-//            return v === newVal;
-//          }
-//
-//          return v === data[i];
-//        });
-//
-//        expect(elementsCorrect).to.equal(true);
-//      });
-//
-//
-//      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
-//      // these behavious to be explicit
-//      it('Returned value has one less occurrence of old value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var originalCount = occurrencesFn(val, data).length;
-//        var replaced = fnUnderTest(val, newVal, data);
-//        var newCount = occurrencesFn(val, replaced).length;
-//
-//        expect(newCount).to.equal(originalCount - 1);
-//      });
-//
-//
-//      it('Replaces first occurrence of value with new for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var originalOcc = occurrencesFn(val, data);
-//        var replaced = fnUnderTest(val, newVal, data);
-//        var newSearch = isWith ? base.strictEquals(newVal) : newVal;
-//        var newOcc = occurrencesFn(newSearch, replaced);
-//
-//        expect(newOcc[0]).to.equal(originalOcc[0]);
-//      });
-//    };
-//
-//
-//    var replaceOneSpec = {
-//      name: 'replaceOne',
-//      arity: 3,
-//      restrictions: [[], [], ['strictarraylike']],
-//      validArguments: [[2], [4], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(replaceOneSpec, array.replaceOne, function(replaceOne) {
-//      addNoModificationOfOriginalTests(replaceOne, [0, 1]);
-//      addReturnsSameTypeTests(replaceOne, [0, 1], true);
-//
-//
-//      var addTests = function(message, val, newVal, originalData) {
-//        addCommonReplaceOneTests(replaceOne, message, val, newVal, originalData);
-//      };
-//      addCommonReplaceValTests(addTests, replaceOne);
-//
-//
-//      testCurriedFunction(replaceOne, [0, 1, [1, 2, 3]]);
-//    });
-//
-//
-//    var replaceOneWithSpec = {
-//      name: 'replaceOneWith',
-//      arity: 3,
-//      restrictions: [['function: arity 1'], [], ['strictarraylike']],
-//      validArguments: [[alwaysTrue], [1], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
-//      addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1]);
-//      addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a'], true);
-//      addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a'], true);
-//
-//
-//      var addTests = function(message, f, newVal, originalData) {
-//        addCommonReplaceOneTests(replaceOneWith, message, f, newVal, originalData, true);
-//      };
-//      addCommonReplaceWithTests(addTests, replaceOneWith);
-//
-//
-//      testCurriedFunction(replaceOneWith, [alwaysTrue, 4, [1, 2, 3]]);
-//    });
-//
-//
-//    var addCommonReplaceAllTests = function(fnUnderTest, message, val, newVal, originalData, isWith) {
-//      isWith = isWith || false;
-//      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
-//      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
-//
-//
-//      it('Returned value has correct elements for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var replaced = fnUnderTest(val, newVal, data);
-//
-//        var f = isWith ? val : function(x) {return x === val;};
-//        var elementsCorrect = replaced.every(function(v, i) {
-//          if (f(data[i]))
-//             return v === newVal;
-//
-//          return data[i] === v;
-//        });
-//
-//        expect(elementsCorrect).to.equal(true);
-//      });
-//
-//
-//      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
-//      // these behavious to be explicit
-//      it('Returned value has no occurrences of value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var replaced = fnUnderTest(val, newVal, data);
-//        var newCount = occurrencesFn(val, replaced).length;
-//
-//        expect(newCount).to.equal(0);
-//      });
-//
-//
-//      it('Replaces all occurrences of value for ' + message, function() {
-//        var data = sliceIfNecessary(originalData);
-//        var originalOcc = occurrencesFn(val, data);
-//        var replaced = fnUnderTest(val, newVal, data);
-//        var newSearch = isWith ? base.strictEquals(newVal) : newVal;
-//        var newOcc = occurrencesFn(newSearch, replaced);
-//        var result = newOcc.every(function(idx, i) {
-//          return idx === originalOcc[i];
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//    };
-//
-//
-//    var replaceAllSpec = {
-//      name: 'replaceAll',
-//      arity: 3,
-//      restrictions: [[], [], ['strictarraylike']],
-//      validArguments: [[2], [4], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(replaceAllSpec, array.replaceAll, function(replaceAll) {
-//      addNoModificationOfOriginalTests(replaceAll, [0, 1]);
-//      addReturnsSameTypeTests(replaceAll, [0, 1], true);
-//
-//
-//      var addTests = function(message, val, newVal, originalData) {
-//        addCommonReplaceAllTests(replaceAll, message, val, newVal, originalData);
-//      };
-//      addCommonReplaceValTests(addTests, replaceAll);
-//
-//
-//      testCurriedFunction(replaceAll, [0, 1, [1, 2, 3]]);
-//    });
-//
-//
-//    var replaceAllWithSpec = {
-//      name: 'replaceAllWith',
-//      arity: 3,
-//      restrictions: [['function: arity 1'], [], ['strictarraylike']],
-//      validArguments: [[alwaysTrue], ['e'], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(replaceAllWithSpec, array.replaceAllWith, function(replaceAllWith) {
-//      addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e']);
-//      addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e'], true);
-//      addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e'], true);
-//
-//
-//      var addTests = function(message, f, newVal, originalData) {
-//        addCommonReplaceAllTests(replaceAllWith, message, f, newVal, originalData, true);
-//      };
-//      addCommonReplaceWithTests(addTests, replaceAllWith);
-//
-//      var lessThanFive = function(x) {return x < 5;};
-//      addTests('array where every value matches', lessThanFive, 5, [1, 2, 3, 4]);
-//      addTests('arraylike where every value matches', lessThanFive, 5, makeArrayLike(1, 2, 3, 4));
-//
-//
-//      testCurriedFunction(replaceAllWith, [alwaysTrue, 4, [1, 2, 3]]);
-//    });
-//
-//
-//    var joinSpec = {
-//      name: 'join',
-//      arity: 2,
-//      restrictions: [[], ['strictarraylike']],
-//      validArguments: [[' '], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(joinSpec, array.join, function(join) {
-//      it('Works correctly for empty array', function() {
-//        expect(join('-', [])).to.equal('');
-//      });
-//
-//
-//      it('Works correctly for empty arraylike', function() {
-//        expect(join('-', makeArrayLike())).to.equal('');
-//      });
-//
-//
-//      it('Works correctly for singleton array', function() {
-//        var arr = [1];
-//
-//        expect(join('-', arr)).to.equal(arr[0].toString());
-//      });
-//
-//
-//      it('Works correctly for singleton arraylike', function() {
-//        var arr = makeArrayLike(2);
-//
-//        expect(join('-', arr)).to.equal(arr[0].toString());
-//      });
-//
-//
-//      var addTests = function(message, str, originalData) {
-//        it('Returns a string ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = join(str, data);
-//
-//          expect(result).to.be.a('string');
-//        });
-//
-//
-//        it('Returned value is correct ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var joined = join(str, data);
-//          var s = str.toString();
-//          var l = s.length;
-//          var offset = 0;
-//
-//          var result = data.every(function(val, i) {
-//            var valString = val.toString();
-//
-//            if (joined.slice(offset, offset + valString.length) !== valString)
-//              return false;
-//
-//            if (i === data.length - 1)
-//              return true;
-//
-//            offset += valString.length;
-//            if (joined.slice(offset, offset + l) !== s)
-//              return false;
-//
-//            offset += l;
-//            return true;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addTests('in normal case (array)', ':', ['a', 'b', 'c']);
-//      addTests('when array values are not strings', '_', [1, 2, 3]);
-//      addTests('when join value is not a string (array)', {toString: function() {return '-';}}, [1, 2, 3]);
-//      addTests('in normal case (arraylike)', ':', makeArrayLike('a', 'b', 'c'));
-//      addTests('when arraylike values are not strings', '_', makeArrayLike(true, false, 1));
-//      addTests('when join value is not a string (arraylike)', {toString: function() {return '-';}}, makeArrayLike(1, 2, 3));
-//
-//
-//      testCurriedFunction(join, [', ', [4, 5, 6]]);
-//    });
-//
-//
-//    var flattenSpec = {
-//      name: 'flatten',
-//      arity: 1,
-//      restrictions: [['strictarraylike']],
-//      validArguments: [[[[1, 2], [3, 4]], makeArrayLike([1, 2], [3, 4])]]
-//    };
-//
-//
-//    describeFunction(flattenSpec, array.flatten, function(flatten) {
-//      var notArray = [3, true, undefined, null, {}, function() {}];
-//
-//
-//      notArray.forEach(function(val, i) {
-//        var testBogus = function(type, arr, j) {
-//          it('Throws if any element not an ' + type + ' (' + (3 * i + j + 1) + ')', function() {
-//            var fn = function() {
-//              flatten(arr);
-//            };
-//
-//            expect(fn).to.throw(TypeError);
-//          });
-//        };
-//
-//
-//        var bogusArr = [[val, [1, 2], [3, 4]],
-//                        [[1, 2], val, [3, 4]],
-//                        [[1, 2], [3, 4], val]];
-//        var bogusArrLike = [makeArrayLike(val, [1, 2], [3, 4]),
-//                            makeArrayLike([1, 2], val, [3, 4]),
-//                            makeArrayLike([1, 2], [3, 4], val)];
-//        bogusArr.forEach(testBogus.bind(null, 'array'));
-//        bogusArr.forEach(testBogus.bind(null, 'arraylike'));
-//      });
-//
-//
-//      it('Returns empty array when supplied empty array', function() {
-//        expect(flatten([])).to.deep.equal([]);
-//      });
-//
-//
-//      it('Returns empty array when supplied empty arraylike', function() {
-//        expect(flatten(makeArrayLike())).to.deep.equal([]);
-//      });
-//
-//
-//      var addTests = function(message, originalData) {
-//        it('Result is an array ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var result = flatten(data);
-//
-//          expect(isArray(result)).to.equal(true);
-//        });
-//
-//
-//        it('Result has correct length ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var expected = array.sum(array.map(array.length, data.slice()));
-//          var flattened = flatten(data);
-//
-//          expect(flattened.length).to.equal(expected);
-//        });
-//
-//
-//        it('Result has correct contents ' + message, function() {
-//          var data = sliceIfNecessary(originalData);
-//          var flattened = flatten(data);
-//          var offset = 0;
-//
-//          var result = data.every(function(val) {
-//            val = splitIfNecessary(val);
-//            var result = val.every(function(val2, j) {
-//              return flattened[offset + j] === val2;
-//            });
-//
-//            offset += val.length;
-//            return result;
-//          });
-//        });
-//      };
-//
-//
-//      addTests('for normal case (array)', [[1, 2], [3, 4], [5, 6]]);
-//      addTests('for singleton (array)', [[1]]);
-//      addTests('when some values are strings for array', [[1, 2], 'abc', 'funkier', [5, 6]]);
-//      addTests('when all values are strings for array', ['funkierJS', 'is', 'the', 'best']);
-//      addTests('when some values are arraylikes', [[1, 2], makeArrayLike(3, 4), makeArrayLike(5, 6), [7, 8]]);
-//      addTests('when all values are arraylikes', [makeArrayLike(1, 2), makeArrayLike(3, 4, 5)]);
-//      addTests('for normal case (arraylike)', makeArrayLike(makeArrayLike(1, 2), makeArrayLike(3, 4)));
-//
-//      // We can't make the singleton "arraylike" in the normal fashion, as our makeArrayLike utility returns a copy if passed a single
-//      // arraylike
-//      var arrayLikeSingleton = {'0': makeArrayLike(1), 'length': 1, slice: function() {return makeArrayLike(this);},
-//                                every: function(p) {return [].every.call(this, p);}};
-//      addTests('for singleton (arraylike)', arrayLikeSingleton);
-//      addTests('when some values are strings for arraylike', makeArrayLike(makeArrayLike(1, 2), 'abc', 'funkier'));
-//      addTests('when all values are strings for arraylike', makeArrayLike('funkierJS', 'is', 'the', 'best'));
-//      addTests('when some values are arrays', makeArrayLike([1, 2], makeArrayLike(3, 4), makeArrayLike(5, 6), [7, 8]));
-//      addTests('when all values are arrays', makeArrayLike([1, 2], [3, 4], [5, 6, 7]));
-//
-//
-//      var addOnlyRemovesOneLayerTest = function(message, data) {
-//        it('Only removes one layer for ' + message, function() {
-//          var flattened = flatten(data);
-//          var result = flattened.every(function(val, i) {
-//            var sameType = isArray(val) === isArray(data[0][0]) && typeof(val) === typeof(data[0][0]);
-//            return sameType && val === data[Math.floor(i / 2)][i % 2];
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//      };
-//
-//
-//      addOnlyRemovesOneLayerTest('array (1)', [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
-//      addOnlyRemovesOneLayerTest('array (2)', [['funkier', 'is'], ['the', 'best']]);
-//      addOnlyRemovesOneLayerTest('array (3)', [makeArrayLike(1, 4), makeArrayLike(2, 3)]);
-//      addOnlyRemovesOneLayerTest('arraylike (1)', makeArrayLike([[1, 2], [3, 4]], [[5, 6], [7, 8]]));
-//      addOnlyRemovesOneLayerTest('arraylike (2)', makeArrayLike(['funkier', 'is'], ['the', 'best']));
-//      addOnlyRemovesOneLayerTest('arraylike (3)', makeArrayLike(makeArrayLike(1, 5), makeArrayLike(2, 3)));
-//    });
-//
-//
-//    var flattenMapSpec = {
-//      name: 'flattenMap',
-//      arity: 2,
-//      restrictions: [['function: arity 1'], ['arraylike']],
-//      validArguments: [[array.replicate(2)], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
-//    };
-//
-//
-//    describeFunction(flattenMapSpec, array.flattenMap, function(flattenMap) {
-//      var addTest = function(message, f, data) {
-//        it('Works correctly ' + message, function() {
-//          var result = flattenMap(f, data);
-//
-//          expect(result).to.deep.equal(array.flatten(array.map(f, data)));
-//        });
-//      };
-//
-//
-//      addTest('(1)', array.range(1), [2, 3, 4, 5]);
-//      addTest('(2)', array.replicate(2), 'abc');
-//      addTest('(3)', array.range(2), makeArrayLike(4, 5, 6));
-//      addTest('for singleton', array.replicate(1), [1]);
-//
-//
-//      it('Throws if the function does not return an array/string', function() {
-//        var fn = function() {
-//          flattenMap(function(x) {return x + 1;}, [2, 3, 4]);
-//        };
-//
-//        expect(fn).to.throw(TypeError);
-//      });
-//
-//
-//      testCurriedFunction(flattenMap, [array.range(1), [2, 3, 4]]);
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/date":13,"../../lib/components/fn":14,"../../lib/components/logical":15,"../../lib/components/maths":16,"../../lib/components/maybe":17,"../../lib/components/object":18,"../../lib/components/pair":19,"../../lib/components/result":20,"../../lib/components/types":21,"../../lib/funkier":23,"chai":62}],45:[function(require,module,exports){
+(function() {
+  "use strict";
 
-},{}],45:[function(require,module,exports){
+
+  var expect = require('chai').expect;
+
+  var array = require('../../lib/components/array');
+
+  var curryModule = require('../../lib/components/curry');
+  var arityOf = curryModule.arityOf;
+
+  var base = require('../../lib/components/base');
+  var id = base.id;
+  var constant = base.constant;
+
+  var pair = require('../../lib/components/pair');
+  var Pair = pair.Pair;
+  var isPair = pair.isPair;
+  var fst = pair.fst;
+  var snd = pair.snd;
+
+  var types = require('../../lib/components/types');
+  var isArray = types.isArray;
+  var strictEquals = types.strictEquals;
+
+  var alwaysTrue = base.constant(true);
+  var alwaysFalse = base.constant(false);
+
+  var testingUtilities = require('./testingUtilities');
+  var checkModule = testingUtilities.checkModule;
+  var checkFunction = testingUtilities.checkFunction;
+  var makeArrayLike = testingUtilities.makeArrayLike;
+
+
+  describe('Array', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['append', 'concat', 'copy', 'drop', 'dropWhile', 'each', 'element', 'elementWith', 'every',
+                             'filter', /*'find', 'findFrom', 'findFromWith', 'findWith', */ 'flatten', 'flattenMap', 'foldl',
+                             'foldl1', 'foldr', 'foldr1', 'getIndex', 'head', 'init', 'inits', /*'insert',*/ 'intersperse',
+                             'isEmpty', 'join', 'last', 'length', 'map', 'maximum', 'minimum', 'nub', 'nubWith',
+                             'occurrences', 'occurrencesWith', 'prepend', 'product', 'range', 'rangeStride', /*'remove',
+                             'removeAll', 'removeAllWith', 'removeOne', 'removeOneWith', 'replace', 'replaceAll',
+                             'replaceAllWith', 'replaceOne', 'replaceOneWith',*/ 'replicate', 'reverse', 'slice', 'some',
+                             'sort', 'sortWith', 'sum', 'tail', 'tails', 'take', 'takeWhile', 'unzip', 'zip', 'zipWith'];
+    checkModule('array', array, expectedObjects, expectedFunctions);
+
+
+    /*
+     *******************************************************************************************************************
+     *                                                                                                                 *
+     * There is a lot of test generation in this file, in order to avoid almost-the-same tests for arrays, strings and *
+     * array likes. Various helper functions associated with this test generation follow.                              *
+     *                                                                                                                 *
+     *******************************************************************************************************************
+     */
+
+    /*
+     * Several functions need to auto-generate tests for the empty values. Let's not replicate that logic all over the
+     * place.
+     *
+     */
+
+    var addEmptyTests = function(testAdder) {
+      testAdder('empty array', []);
+      testAdder('empty arrayLike', makeArrayLike());
+      testAdder('empty string', '');
+    };
+
+
+    /*
+     * Several functions should throw when invoked with  empty arrays/strings
+     *
+     */
+
+    var addThrowsOnEmptyTests = function(fnUnderTest, args) {
+      var addOne = function(message, data) {
+        it('Throws for empty ' + message, function() {
+          var fn = function() {
+            fnUnderTest.apply(null, args.concat([data]));
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addOne('arrays', []);
+      addOne('arrayLikes', makeArrayLike());
+      addOne('strings', '');
+    };
+
+
+    /*
+     * Various test generation functions need a clean copy of their test data, to ensure there is no interdependence
+     * between individual tests.
+     *
+     */
+
+    var sliceIfNecessary = function(originalData) {
+      if (typeof(originalData) === 'string')
+        return originalData;
+
+      return originalData.slice();
+    };
+
+
+    /*
+     * Several functions expect the first argument to be a function that should be always be called with a specific
+     * number of arguments.
+     *
+     */
+
+    var addFuncCalledWithSpecificArityTests = function(fnUnderTest, requiredArgs, argsBetween, arrayOnly) {
+      // None of the functions in array need more than 2 arguments: throw at test generation stage if I get
+      // this wrong
+      if (requiredArgs > 2)
+        throw new Error('Incorrect test: addFuncCalledWithSpecificArityTests called with ' + requiredArgs);
+
+      argsBetween = argsBetween || [];
+      arrayOnly = arrayOnly || false;
+
+      var addTestsForType = function(type, originalData) {
+        it('Function called with correct number of arguments when called with ' + type, function() {
+          var allArgs = [];
+          var f;
+
+          if (requiredArgs === 1) {
+            f = function(x) {
+              var args = [].slice.call(arguments);
+              allArgs.push(args);
+            };
+          } else {
+            f = function(x, y) {
+              var args = [].slice.call(arguments);
+              allArgs.push(args);
+            };
+          }
+
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([originalData]));
+          var result = allArgs.every(function(arr) {
+            return arr.length === requiredArgs;
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTestsForType('array', [1, 2, 3]);
+      addTestsForType('arrayLike', makeArrayLike(2, 3, 4, 5));
+      if (!arrayOnly)
+        addTestsForType('string', 'abc');
+    };
+
+
+    /*
+     * Several functions expect that the function being tested should be called with each element of the given object,
+     * in order.
+     *
+     */
+
+    var addCalledWithEveryMemberTests = function(fnUnderTest, argsBetween, isArity2, isRTL, skipsFirst) {
+      argsBetween = argsBetween || [];
+
+      // only the fold* functions have arity 2
+      isArity2 = isArity2 || false;
+      // only the foldr* functions operate RTL
+      isRTL = isRTL || false;
+      // only the fold*1 functions skip the first element
+      skipsFirst = skipsFirst || false;
+
+      var addTestsForType = function(type, originalData) {
+        it('Called the correct number of times for ' + type, function() {
+          var data = sliceIfNecessary(originalData);
+
+          var allArgs = [];
+          var f = function(x) {
+            allArgs.push(x);
+          };
+
+          if (isArity2) {
+            f = function(x, y) {
+              // In the fold* functions, the current element is the second parameter
+              allArgs.push(y);
+            };
+          }
+
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
+
+          // allArgs now contains each element that our function was called with
+          expect(allArgs.length).to.equal(skipsFirst ? originalData.length - 1 : originalData.length);
+        });
+
+
+        it('Called with every element of ' + type, function() {
+          var data = sliceIfNecessary(originalData);
+
+          var allArgs = [];
+          var f = function(x) {
+            allArgs.push(x);
+          };
+
+          if (isArity2) {
+            f = function(x, y) {
+              // In the fold* functions, the current element is the second parameter
+              allArgs.push(y);
+            };
+          }
+
+          fnUnderTest.apply(null, [f].concat(argsBetween).concat([data]));
+
+          // allArgs now contains each element that our function was called with
+          originalData = splitIfNecessary(originalData);
+          var numElems = originalData.length - 1;
+
+          var result = originalData.every(function(elem, i) {
+            // The fold*1 functions should have 1 call fewer
+            if (skipsFirst) {
+              if ((isRTL && i === numElems) || (!isRTL && i === 0))
+                return true;
+            }
+
+            // Where should this element be in allArgs?
+            var index = i;
+            if (skipsFirst) {
+              if (isRTL)
+                index += 1;
+              else
+                index -= 1;
+            }
+
+            return allArgs[isRTL ? numElems - index : index] === elem;
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTestsForType('array', [1, 2, 3]);
+      addTestsForType('arrayLike', makeArrayLike(2, 3, 4, 5));
+      addTestsForType('string', 'abc');
+    };
+
+
+    /*
+     * Several functions should yield the empty array/string when called with an empty array/string.
+     *
+     */
+
+    var addReturnsEmptyOnEmptyTests = function(fnUnderTest, argsBefore, alwaysArray) {
+      alwaysArray = alwaysArray || false;
+
+      it('Returns empty array when called with empty array', function() {
+        var original = [];
+        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
+
+        expect(result).to.not.equal(original);
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when called with empty arrayLike', function() {
+        var original = makeArrayLike();
+        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
+
+        expect(result).to.not.equal(original);
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Returns empty ' + (alwaysArray ? 'array' : 'string') + ' when called with empty string', function() {
+        var original = '';
+        var result = fnUnderTest.apply(null, argsBefore.concat([original]));
+
+        expect(result).to.deep.equal(alwaysArray ? [] : '');
+      });
+    };
+
+
+    /*
+     * Several functions expect the return type to be the same as the final argument.
+     *
+     */
+
+    var addReturnsSameTypeTests = function(fnUnderTest, argsBefore, arrayOnly) {
+      arrayOnly = arrayOnly || false;
+
+      var addOne = function(type, data) {
+        it('Returns ' + (type === 'arrayLike' ? 'array' : type) + ' when called with ' + type, function() {
+          var result = fnUnderTest.apply(null, argsBefore.concat([data]));
+
+          if (type !== 'string')
+            expect(isArray(result)).to.equal(true);
+          else
+            expect(typeof(result)).to.equal('string');
+        });
+      };
+
+      addOne('array', [{foo: 1}]);
+      addOne('arrayLike', makeArrayLike(1, 2));
+      if (!arrayOnly)
+        addOne('string', 'abc');
+    };
+
+
+    /*
+     * Several functions expect that the result should be distinct from the original value, not harming the original
+     * value in any way.
+     *
+     */
+
+    var addNoModificationOfOriginalTests = function(fnUnderTest, argsBefore) {
+      var addOne = function(type, data) {
+        it('Doesn\'t modify original ' + type + ' value', function() {
+          // Take a copy before we make the call, so that we have something to compare to
+          var copy = sliceIfNecessary(data);
+          var fnResult = fnUnderTest.apply(null, argsBefore.concat([data]));
+
+          var different = fnResult !== data;
+          var sameLength = data.length === copy.length;
+
+          data = splitIfNecessary(data);
+          var sameEntries = data.every(function(v, i) {
+            return copy[i] === v;
+          });
+
+          expect(sameLength && sameEntries && different).to.equal(true);
+        });
+      };
+
+
+      addOne('array', [{foo: 1}, {foo: 2}, {bar: 3}]);
+      addOne('arrayLike', makeArrayLike({foo: 1}, {foo: 2}, {bar: 3}));
+    };
+
+
+    /*
+     * Many functions split string arguments in order to run a test using every.
+     *
+     */
+
+    var splitIfNecessary = function(val) {
+      if (typeof(val) === 'string')
+        val = val.split('');
+
+      // Turn arrayLikes into real arrays
+      if (!isArray(val))
+        return [].slice.call(val);
+
+      return val;
+    };
+
+
+    /*
+     * Several functions need to check "equality" where one value is an array and the other an arrayLike.
+     *
+     */
+
+    var valuesEqual = function(source, copy) {
+      var sameLength = source.length === copy.length;
+
+      source = splitIfNecessary(source);
+      var sameValues = source.every(function(val, i) {
+        return copy[i] === val;
+      });
+
+      return sameLength && sameValues;
+    };
+
+
+
+    /*
+     * Several functions should return a value of the same length.
+     *
+     */
+
+    var addSameLengthTest = function(fnUnderTest, message, otherArgs, originalData, modifier) {
+      modifier = modifier || 0;
+
+      it('Result has same length for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var length = fnUnderTest.apply(null, otherArgs.concat([data])).length;
+
+        expect(length).to.equal(data.length + modifier);
+      });
+    };
+
+
+    // Many of the predicate functions on strings are tested with the following predicate
+    var isDigit = function(x) {return x >= '0' && x <= '9';};
+
+    // and likewise the array tests regularly use this test
+    var fooIs42 = function(x) {return x.foo === 42;};
+
+
+    /*
+     *******************************************************************************************************************
+     *                                                                                                                *
+     *                                               End of test generation helpers                                   *
+     *                                                                                                                *
+     ******************************************************************************************************************
+     */
+
+
+    var lengthSpec = {
+      name: 'length',
+      restrictions: [['arrayLike']],
+      validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(lengthSpec, array.length, function(length) {
+      var addOne = function(message, data) {
+        it('Works ' + message, function() {
+          expect(length(data)).to.equal(data.length);
+        });
+      };
+
+
+      addEmptyTests(addOne);
+      addOne('arrays (1)', [1]);
+      addOne('arrays (2)', [2, 3]);
+      addOne('arrayLikes (1)', makeArrayLike(1));
+      addOne('arrayLikes (2)', makeArrayLike(2, 3));
+      addOne('strings (1)', 'a');
+      addOne('strings (2)', 'bcd');
+    });
+
+
+    var getIndexSpec = {
+      name: 'getIndex',
+      restrictions: [['natural'], ['arrayLike']],
+      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(getIndexSpec, array.getIndex, function(getIndex) {
+      addThrowsOnEmptyTests(getIndex, [0]);
+
+
+      var addTests = function(originalData) {
+        // The generated tests assume a length of 3. Sanity-check my data.
+        if (originalData.length < 3)
+          throw new Error('Test generation for getIndex requires test data of length ' + originalData.length);
+
+        var type = typeof(originalData) === 'string' ? 'string' : (isArray(originalData) ? 'array' : 'arrayLike');
+
+
+        it('Works for ' + type + ' (1)', function() {
+          var data = sliceIfNecessary(originalData);
+          var result = getIndex(0, data);
+
+          expect(result).to.equal(data[0]);
+        });
+
+
+        it('Works for ' + type + ' (2)', function() {
+          var data = sliceIfNecessary(originalData);
+          var result = getIndex(2, data);
+
+          expect(result).to.equal(data[2]);
+        });
+
+
+        it('Throws when ' + type + ' indices outside range', function() {
+          var data = sliceIfNecessary(originalData);
+          var fn = function() {
+            getIndex(data.length, data);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addTests([1, 7, 0, 42]);
+      addTests(makeArrayLike(4, 3, 2, 1));
+      addTests('funkier');
+    });
+
+
+    /*
+     * The tests for head and tail are very similar, and can be generated
+     *
+     */
+
+    var makeElementSelectorTest = function(desc, fnUnderTest, isFirst) {
+      describe(desc, function() {
+        addThrowsOnEmptyTests(fnUnderTest, []);
+
+        var addOne = function(message, data) {
+          it('Works for ' + message, function() {
+            var result = fnUnderTest(data);
+
+            expect(result).to.equal(data[isFirst ? 0 : data.length - 1]);
+          });
+        };
+
+
+        addOne('arrays (1)', [1]);
+        addOne('arrays (2)', [2, 3]);
+        addOne('arrayLikes (1)', makeArrayLike(4));
+        addOne('arrayLikes (2)', makeArrayLike(5, 6));
+        addOne('strings (1)', 'a');
+        addOne('strings (2)', 'funkier');
+      });
+    };
+
+
+    makeElementSelectorTest('head', array.head, true);
+    makeElementSelectorTest('last', array.last, false);
+
+
+    var replicateSpec = {
+      name: 'replicate',
+      restrictions: [['natural'], []],
+      validArguments: [[1], ['a']]
+    };
+
+
+    checkFunction(replicateSpec, array.replicate, function(replicate) {
+      var addTests = function(message, count, data) {
+        it('Returns array ' + message, function() {
+          var replicated = replicate(count, data);
+
+          expect(isArray(replicated)).to.equal(true);
+        });
+
+
+        it('Returned array has correct length ' + message, function() {
+          var result = replicate(count, data);
+
+          expect(result.length).to.equal(count);
+        });
+
+
+        it('Returned array\'s elements strictly equal given value ' + message, function() {
+          var allEqual = replicate(count, data).every(function(e) {
+            return e === data;
+          });
+
+          expect(allEqual).to.equal(true);
+        });
+      };
+
+
+      addTests('(1)', 1, 'a');
+      addTests('(2)', 10, {});
+      addTests('when count is zero', 0, 2);
+    });
+
+
+    var mapSpec = {
+      name: 'map',
+      restrictions: [['function: minarity 1'], ['arrayLike']],
+      validArguments: [[function() {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(mapSpec, array.map, function(map) {
+      addFuncCalledWithSpecificArityTests(map, 1);
+      addNoModificationOfOriginalTests(map, [id]);
+      addCalledWithEveryMemberTests(map);
+      addReturnsEmptyOnEmptyTests(map, [function(x) { return 42; }], true);
+
+
+      var addTests = function(message, f, originalData) {
+        addSameLengthTest(map, message, [f], originalData);
+
+
+        it('Returns an array for ', function() {
+          var data = sliceIfNecessary(originalData);
+          var mapped = map(f, data);
+
+          expect(isArray(mapped)).to.equal(true);
+        });
+
+
+        it('Returned array correct for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = map(f, data).every(function(val, i) {
+            return val === f(data[i]);
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTests('array (1)', id, [1, true, null, undefined]);
+      addTests('array (2)', function(x) {return x + 1;}, [2, 3, 4]);
+      addTests('arrayLike (1)', id, makeArrayLike({}, {}));
+      addTests('arrayLike (2)', function(x) {return x - 1;}, makeArrayLike(5, 6, 7));
+      addTests('strings (1)', function(x) {return x.toUpperCase();}, 'funkier');
+      addTests('strings (2)', function(x) {return x.charCodeAt(0);}, 'abc');
+
+
+      it('Array contains partially applied functions if supplied function arity > 1', function() {
+        var uncurried = function(x, y) {return x + y;};
+        var mapped = map(uncurried, [1, 2]);
+        var allPartiallyApplied = mapped.every(function(f) {
+          return typeof(f) === 'function' && arityOf(f) === 1;
+        });
+
+        expect(allPartiallyApplied).to.equal(true);
+      });
+    });
+
+
+    var eachSpec = {
+      name: 'each',
+      restrictions: [['function'], ['arrayLike']],
+      validArguments: [[function() {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(eachSpec, array.each, function(each) {
+      addFuncCalledWithSpecificArityTests(each, 1);
+      addNoModificationOfOriginalTests(each, [id]);
+      addCalledWithEveryMemberTests(each);
+
+
+      var addOne = function(message, data) {
+        it('Returns undefined when called with ' + data, function() {
+          var result = each(id, data);
+
+          expect(result).to.equal(undefined);
+        });
+      };
+
+
+      addOne('array', [1, true, null]);
+      addOne('arrayLike', makeArrayLike(2, 3, 4));
+      addOne('string', 'abc');
+    });
+
+
+    var filterSpec = {
+      name: 'filter',
+      restrictions: [['function: arity 1'], ['arrayLike']],
+      validArguments: [[function(x) {}], [['a'], 'a', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(filterSpec, array.filter, function(filter) {
+      addReturnsSameTypeTests(filter, [alwaysTrue]);
+      addFuncCalledWithSpecificArityTests(filter, 1);
+      addCalledWithEveryMemberTests(filter);
+      addNoModificationOfOriginalTests(filter, [alwaysTrue]);
+      addReturnsEmptyOnEmptyTests(filter, [alwaysTrue]);
+
+
+      var addTests = function(message, f, originalData, expectedResult, isArrayLike) {
+        isArrayLike = isArrayLike || false;
+
+
+        var addLengthAndValuesTests = function(countMessage, fn, expected) {
+          it('Returned value correct for ' + message + ' ' + countMessage, function() {
+            var data = sliceIfNecessary(originalData);
+            var filtered = filter(fn, data);
+
+            expect(filtered).to.deep.equal(expected);
+          });
+        };
+
+
+        // We test filter returns correct arrays for 3 different functions:
+        //  - alwaysTrue: this should result in a copy of the original value
+        //  - alwaysFalse: this should result in an empty value
+        //  - the custom function passed in to this test generator
+        addLengthAndValuesTests('(1)', alwaysTrue, isArrayLike ? [].slice.call(originalData) : originalData);
+        addLengthAndValuesTests('(2)', alwaysFalse, typeof(originalData) === 'string' ? '' : []);
+        addLengthAndValuesTests('(3)', f, expectedResult);
+      };
+
+
+      addTests('for an array', function(x) {return x % 2 === 0;}, [1, 2, 3, 4], [2, 4]);
+      addTests('for an arrayLike', function(x) {return x > 10;}, makeArrayLike(11, 3, 2, 20, 42, 1), [11, 20, 42], true);
+      addTests('for a string', function(c) {return c !== 'a';}, 'banana', 'bnn');
+
+
+      it('Elements of returned values strictly equal those from the original value', function() {
+        var a = [{}, {}, {}, {}];
+        var f = alwaysTrue;
+        var allStrictEqual = filter(f, a).every(function(e, i) {
+          return e === a[i];
+        });
+
+        expect(allStrictEqual).to.equal(true);
+      });
+    });
+
+
+    /*
+     * There is a large amount of commonality in the various fold* tests. We wrap up this commonality here.
+     *
+     */
+
+    var addFoldTests = function(spec, fnUnderTest, specificTests, is1Func, isRTL) {
+      var betweenArgs = is1Func ? [] : [0];
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 2);
+        addCalledWithEveryMemberTests(fnUnderTest, betweenArgs, true, isRTL, is1Func);
+
+
+        var addCalledWithAccumulatorTest = function(type, originalData) {
+          it('Function called with correct accumulator for ' + type, function() {
+            // We save each accumulator our fold function is called with
+            var data = sliceIfNecessary(originalData);
+            var accumulators = [];
+
+            var count = 1;
+            var f = function(acc, current) {
+              accumulators.push(acc);
+              return count++;
+            };
+
+            var fnArgs = is1Func ? [f, data] : [f, 0, data];
+            fnUnderTest.apply(null, fnArgs);
+
+            // Calculate the first element of the array/string for fold*1 tests
+            var first = data[isRTL ? data.length - 1 : 0];
+
+            var accumulatorsCorrect = accumulators.every(function(acc, i) {
+              if (is1Func && i === 0)
+                return acc === first;
+
+              return acc === i;
+            });
+
+            expect(accumulatorsCorrect).to.equal(true);
+          });
+        };
+
+
+        var addInitialOnEmptyTests = function(message, originalData) {
+          // fold(l|r) should return the 'initial' parameter if the value to be folded is empty
+          // We test with two different values to confirm the return value is not fixed
+
+          var addOneInitialTest = function(count, initValue) {
+            it('Returns initial value when called with empty ' + message + ' ' + count, function() {
+              var data = sliceIfNecessary(originalData);
+              var result = fnUnderTest(function(x, y) {return 3;}, initValue, data);
+
+              expect(result).to.deep.equal(initValue);
+            });
+          };
+
+
+          addOneInitialTest('(1)', {});
+          addOneInitialTest('(2)', 'z');
+        };
+
+
+        addCalledWithAccumulatorTest([1, 2, 3], 'array');
+        addCalledWithAccumulatorTest(makeArrayLike(2, 3, 4), 'arrayLike');
+        addCalledWithAccumulatorTest('123', 'string');
+
+
+        if (is1Func)
+          addThrowsOnEmptyTests(fnUnderTest, function(x, y) {return 3;});
+        else
+          addEmptyTests(addInitialOnEmptyTests);
+
+
+        specificTests.forEach(function(testData) {
+          var message = testData.message;
+          var args = testData.args;
+          var expected = testData.expected;
+
+
+          it('Works correctly for ' + message, function() {
+            var result = fnUnderTest.apply(null, args);
+
+            expect(result).to.equal(expected);
+          });
+        });
+      });
+    };
+
+
+    var foldlSpec = {
+      name: 'foldl',
+      restrictions: [['function: arity 2'], [], ['arrayLike']],
+      validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    var foldlTests = [
+      {message: 'array (1)', args: [function(x, y) {return x + y;}, 4, [1, 2, 3]], expected: 4 + 1 + 2 + 3},
+      {message: 'array (2)', args: [function(x, y) {return x - y;}, 0, [1, 2, 3]], expected: -1 - 2 - 3},
+      {message: 'arrayLike (1)', args: [function(x, y) {return x + y;}, 6, makeArrayLike(3, 4, 5)],
+       expected: 6 + 3 + 4 + 5},
+      {message: 'arrayLike (2)', args: [function(x, y) {return x - y;}, 0, makeArrayLike(5, 6, 7)],
+       expected: 0 - 5 - 6 - 7},
+      {message: 'string (1)', args: [function(x, y) {return x + y;}, '', 'abc'], expected: '' + 'a' + 'b' + 'c'},
+      {message: 'string (2)', args: [function(x, y) {return x + y;}, 'z', 'abc'], expected: 'z' + 'a' + 'b' + 'c'}
+    ];
+
+
+    addFoldTests(foldlSpec, array.foldl, foldlTests, false, false);
+
+
+    var foldl1Spec = {
+      name: 'foldl1',
+      restrictions: [['function: arity 2'], ['arrayLike']],
+      validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    var foldl1Tests = [
+      {message: 'array (1)', args: [function(x, y) {return x + y;}, [1, 2, 3]], expected: 1 + 2 + 3},
+      {message: 'array (2)', args: [function(x, y) {return x - y;}, [1, 2, 3]], expected: 1 - 2 - 3},
+      {message: 'arrayLike (1)', args: [function(x, y) {return x + y;}, makeArrayLike(3, 4, 5)], expected: 3 + 4 + 5},
+      {message: 'arrayLike (2)', args: [function(x, y) {return x - y;}, makeArrayLike(5, 6, 7)], expected: 5 - 6 - 7},
+      {message: 'string (1)', args: [function(x, y) {return x + y;}, 'abc'], expected: 'a' + 'b' + 'c'},
+      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'abc'], expected: 'c' + 'b' + 'a'}
+    ];
+
+
+    addFoldTests(foldl1Spec, array.foldl1, foldl1Tests, true, false);
+
+
+    var foldrSpec = {
+      name: 'foldr',
+      restrictions: [['function: arity 2'], [], ['arrayLike']],
+      validArguments: [[function(x, y) {}], [0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    var foldrTests = [
+      {message: 'array (1)', args: [function(x, y) {return x + y;}, 4, [1, 2, 3]], expected: 4 + 3 + 2 + 1},
+      {message: 'array (2)', args: [function(x, y) {return x - y;}, 0, [1, 2, 3]], expected: -3 - 2 - 1},
+      {message: 'arrayLike (1)', args: [function(x, y) {return x + y;}, 6, makeArrayLike(3, 4, 5)],
+       expected: 6 + 5 + 4 + 3},
+      {message: 'arrayLike (2)', args: [function(x, y) {return x - y;}, 0, makeArrayLike(5, 6, 7)],
+       expected:  0 - 5 - 6 - 7},
+      {message: 'string (1)', args: [function(x, y) {return x + y;}, '', 'abc'], expected: '' + 'c' + 'b' + 'a'},
+      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'z', 'abc'], expected: 'a' + 'b' + 'c' + 'z'}
+    ];
+
+
+    addFoldTests(foldrSpec, array.foldr, foldrTests, false, true);
+
+
+    var foldr1Spec = {
+      name: 'foldr1',
+      restrictions: [['function: arity 2'], ['arrayLike']],
+      validArguments: [[function(x, y) {}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    var foldr1Tests = [
+      {message: 'array (1)', args: [function(x, y) {return x + y;}, [1, 2, 3]], expected: 3 + 2 + 1},
+      {message: 'array (2)', args: [function(x, y) {return x - y;}, [1, 2, 3]], expected: 3 - 2 - 1},
+      {message: 'arrayLike (1)', args: [function(x, y) {return x + y;}, makeArrayLike(3, 4, 5)], expected: 5 + 4 + 3},
+      {message: 'arrayLike (2)', args: [function(x, y) {return x - y;}, makeArrayLike(5, 6, 7)], expected: 7 - 6 - 5},
+      {message: 'string (1)', args: [function(x, y) {return x + y;}, 'abc'], expected: 'c' + 'b' + 'a'},
+      {message: 'string (2)', args: [function(x, y) {return y + x;}, 'abc'], expected: 'a' + 'b' + 'c'}
+    ];
+
+
+    addFoldTests(foldr1Spec, array.foldr1, foldr1Tests, true, true);
+
+
+    /*
+     * This function factors out commonality between every/some tests.
+     *
+     */
+
+    var makeArrayBooleanTest = function(desc, fnUnderTest, trigger) {
+      var spec = {
+        name: desc,
+        restrictions: [['function: arity 1'], ['arrayLike']],
+        validArguments: [[function(x) {}], [[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var okVal = !trigger;
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
+
+
+        var addTests = function(type, num, originalData) {
+          it('Stops prematurely when called with ' + type + ' and ' + trigger + ' returned (' + num + ')', function() {
+            var data = sliceIfNecessary(originalData);
+
+            // We use a function that is expected to return the short-circuit trigger after length - 2 calls. If the
+            // function under tests works correctly, this function should not be called again, and calls should still
+            // equal data.length - 2
+
+            var calls = 0;
+            var f = function(x) {
+              calls += 1;
+              if (calls === data.length - 2)
+                return trigger;
+              return okVal;
+            };
+
+            fnUnderTest(f, data);
+
+            expect(calls).to.equal(data.length - 2);
+          });
+
+
+          it('Called with correct values when called with ' + type + ' and ' + trigger + ' returned (' + num + ')',
+             function() {
+            var data = sliceIfNecessary(originalData);
+
+            // This function ensures the function under test traverses the array in order, starting at element 0
+            // equal data.length - 2
+            var vals = [];
+            var calls = 0;
+            var f = function(x) {
+              calls += 1;
+              vals.push(x);
+              if (calls === data.length - 1)
+                return trigger;
+              return okVal;
+            };
+
+            fnUnderTest(f, data);
+            var result = vals.every(function(elem, i) {
+              return data[i] === elem;
+            });
+
+            expect(result).to.equal(true);
+          });
+
+
+          it('Returns correct value when called with ' + type + ' and ' + trigger + ' returned (' + num + ')',
+             function() {
+            var data = sliceIfNecessary(originalData);
+
+            var calls = 0;
+            var f = function(x) {
+              calls += 1;
+              if (calls === data.length - 1)
+                return trigger;
+              return okVal;
+            };
+
+            var result = fnUnderTest(f, data);
+
+            expect(result).to.equal(trigger);
+          });
+
+
+          it('Called with all values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')',
+             function() {
+            var data = sliceIfNecessary(originalData);
+
+            // If the trigger is not returned, the entire value should be iterated over
+            var calls = 0;
+            var f = function(x) {
+              calls += 1;
+              return okVal;
+            };
+
+            fnUnderTest(f, data);
+
+            expect(calls).to.equal(data.length);
+          });
+
+
+          it('Called with correct values when called with ' + type + ' and ' + okVal + ' returned (' + num + ')',
+             function() {
+            var data = sliceIfNecessary(originalData);
+
+            var vals = [];
+            var calls = 0;
+            var f = function(x) {
+              vals.push(x);
+              calls += 1;
+              return okVal;
+            };
+
+            fnUnderTest(f, data);
+
+            var calledWithEvery = vals.every(function(elem, i) {
+              return data[i] === elem;
+            });
+
+            expect(calledWithEvery).to.equal(true);
+          });
+
+
+          it('Returns correctly when called with ' + type + ' and ' + okVal + ' returned (' + num + ')', function() {
+            var data = sliceIfNecessary(originalData);
+            var calls = 0;
+            var f = function(x) {
+              calls += 1;
+              return okVal;
+            };
+            var result = fnUnderTest(f, data);
+
+            expect(result).to.equal(okVal);
+          });
+        };
+
+
+        addTests('array', 1, [1, 2, 3]);
+        addTests('array', 2, [{}, {}, {}, {}]);
+        addTests('arrayLike', 1, makeArrayLike(true, false, true));
+        addTests('arrayLike', 2, makeArrayLike(function() {}, function() {}, function() {}));
+        addTests('string', 1, 'abc');
+        addTests('string', 2, 'funkier');
+
+
+        var checkEmpty = function(message, value) {
+          it('Returns ' + okVal + ' for ' + message, function() {
+            expect(fnUnderTest(function(x) {}, value)).to.equal(okVal);
+          });
+        };
+        addEmptyTests(checkEmpty);
+      });
+    };
+
+
+    makeArrayBooleanTest('every', array.every, false);
+    makeArrayBooleanTest('some', array.some, true);
+
+
+    /*
+     * The "works correctly" tests for max/min/sum/product are the same shape.
+     *
+     */
+
+    var addSpecialFoldsTest = function(fnUnderTest, message, originalData, expected) {
+      it('Works correctly for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var result = fnUnderTest(data);
+
+        expect(result).to.equal(expected);
+      });
+    };
+
+
+    var makeMinMaxTests = function(desc, fnUnderTest, isMax) {
+      var spec = {
+        name: desc,
+        restrictions: [['arrayLike']],
+        validArguments: [[[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addThrowsOnEmptyTests(fnUnderTest, []);
+
+
+        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [3, 1, 2, 42, 6], isMax ? 42 : 1);
+        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
+        addSpecialFoldsTest(fnUnderTest, 'for arrayLike (1)', makeArrayLike(4, 7, 13, 2, 8), isMax ? 13 : 2);
+        addSpecialFoldsTest(fnUnderTest, 'for arrayLike (2)', makeArrayLike(7), 7);
+        addSpecialFoldsTest(fnUnderTest, 'for string (1)', 'bad0Z9w', isMax ? 'w' : '0');
+        addSpecialFoldsTest(fnUnderTest, 'for string (2)', 'e', 'e');
+      });
+    };
+
+
+    makeMinMaxTests('maximum', array.maximum, true);
+    makeMinMaxTests('minimum', array.minimum, false);
+
+
+    var makeSumProductTests = function(desc, fnUnderTest, isSum) {
+      var spec = {
+        name: desc,
+        restrictions: [['strictarrayLike']],
+        validArguments: [[[1, 2], makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Throws when called with a string', function() {
+          var fn = function() {
+            fnUnderTest('abc');
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+
+
+        addSpecialFoldsTest(fnUnderTest, 'for array (1)', [1, 2, 3, 4], isSum ? 10 : 24);
+        addSpecialFoldsTest(fnUnderTest, 'for array (2)', [2], 2);
+        addSpecialFoldsTest(fnUnderTest, 'for empty array', [], isSum ? 0 : 1);
+        addSpecialFoldsTest(fnUnderTest, 'for arrayLike (1)', makeArrayLike(1, 3, 5), isSum ? 9 : 15);
+        addSpecialFoldsTest(fnUnderTest, 'for arrayLike (2)', makeArrayLike(5), 5);
+        addSpecialFoldsTest(fnUnderTest, 'for empty arrayLike', makeArrayLike(), isSum ? 0 : 1);
+      });
+    };
+
+
+    makeSumProductTests('sum', array.sum, true);
+    makeSumProductTests('product', array.product, false);
+
+
+    /*
+     * element and elementWith share common behaviours. The next two functions are used for generating these tests.
+     *
+     */
+
+    var addElementNotFoundTest = function(fnUnderTest, message, value, data) {
+      it('Returns false when called with empty ' + message, function() {
+        var found = fnUnderTest(value, data);
+
+        expect(found).to.equal(false);
+      });
+    };
+
+
+    var addElementFoundTest = function(fnUnderTest, message, value, data) {
+      it('Returns true when ' + message, function() {
+        var found = fnUnderTest(value, data);
+
+        expect(found).to.equal(true);
+      });
+    };
+
+
+    var elementSpec = {
+      name: 'element',
+      restrictions: [[], ['arrayLike']],
+      validArguments: [['a'], [['a', 'b', 'c'], 'abc', makeArrayLike('a', 'c', 'd')]]
+    };
+
+
+    checkFunction(elementSpec, array.element, function(element) {
+      addElementNotFoundTest(element, 'array empty', 2, []);
+      addElementNotFoundTest(element, 'arrayLike empty', 7, makeArrayLike());
+      addElementNotFoundTest(element, 'string empty', 'a', '');
+      addElementNotFoundTest(element, 'element not present in array', 5, [1, 3, 4]);
+      addElementNotFoundTest(element, 'element not present in arrayLike', 6, makeArrayLike(1, 2, 3));
+      addElementNotFoundTest(element, 'element not present in string', 'd', 'abc');
+      addElementNotFoundTest(element, 'identical element not in array', {foo: 1},
+                                      [{foo: 1}, {foo: 1}, {foo: 1}]);
+      addElementNotFoundTest(element, 'identical element not in arrayLike', {}, makeArrayLike({}, {}, {}));
+
+      addElementFoundTest(element, 'element present in array', 6, [1, 6, 4]);
+      addElementFoundTest(element, 'element present in arrayLike', 8, makeArrayLike(1, 2, 8));
+      addElementFoundTest(element, 'element present in string', 'b', 'abc');
+      var obj = {foo: 1};
+      addElementFoundTest(element, 'identical element in array', obj, [{foo: 1}, {foo: 1}, obj]);
+      addElementFoundTest(element, 'identical element in arrayLike', obj, makeArrayLike({foo: 1}, obj, {}));
+    });
+
+
+    var elementWithSpec = {
+      name: 'elementWith',
+      restrictions: [['function: arity 1'], ['arrayLike']],
+      validArguments: [[function(x) {return true;}], [['a', 'b', 'c'], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(elementWithSpec, array.elementWith, function(elementWith) {
+      addElementNotFoundTest(elementWith, 'array is empty', alwaysTrue, []);
+      addElementNotFoundTest(elementWith, 'arrayLike is empty', alwaysTrue, makeArrayLike());
+      addElementNotFoundTest(elementWith, 'string is empty', alwaysTrue, '');
+      addElementNotFoundTest(elementWith, 'array predicate returns false', function(x) {return x.foo === 5;},
+                                          [{foo: 1}, {foo: 4}, {foo: 3}]);
+      addElementNotFoundTest(elementWith, 'arrayLike predicate returns false', alwaysFalse, makeArrayLike('a', 'b'));
+      addElementNotFoundTest(elementWith, 'string predicate returns false', isDigit, 'abcde');
+
+      addElementFoundTest(elementWith, 'predicate matches array element', function(x) {return x.foo === 7;},
+                                       [{foo: 1}, {foo: 7}, {foo: 4}]);
+      addElementFoundTest(elementWith, 'predicate matches arrayLike element', fooIs42,
+                                       makeArrayLike({foo: 4}, {foo: 42}));
+      addElementFoundTest(elementWith, 'predicate matches element in string', isDigit, 'abc8de');
+    });
+
+
+    // The two range functions have some common behaviours: the value returned should be empty if the limits are equal,
+    // and the right-hand limit should not be included
+    var addCommonRangeTests = function(fnUnderTest, hasStride) {
+      hasStride = hasStride || false;
+
+
+      it('Returns empty array if b === a', function() {
+        var args = hasStride ? [1, 1, 1] : [1, 1];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(result).to.deep.equal([]);
+      });
+
+
+      it('Does not include right-hand limit (1)', function() {
+        var b = 10;
+        var args = hasStride ? [0, 1, b] : [0, b];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(array.last(result) < b).to.equal(true);
+      });
+
+
+      it('Does not include right-hand limit (2)', function() {
+        var b = 15.2;
+        var args = hasStride ? [1.1, 1.1, b] : [1.1, b];
+        var result = fnUnderTest.apply(null, args);
+
+        expect(array.last(result) < b).to.equal(true);
+      });
+    };
+
+
+    describe('range', function() {
+      var range = array.range;
+      addCommonRangeTests(range);
+
+
+      it('Throws if b < a', function() {
+        var fn = function() {
+          range(1, 0);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+
+
+      var addCorrectTest = function(message, a, b) {
+        it('Works correctly ' + message, function() {
+          var arr = range(a, b);
+          var result = arr.every(function(val, i) {
+            return (i === 0 && val === a) || (val === arr[i - 1] + 1);
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addCorrectTest('(1)', 0, 10);
+      addCorrectTest('(2)', 1.1, 15.2);
+    });
+
+
+    describe('rangeStride', function() {
+      var rangeStride = array.rangeStride;
+      addCommonRangeTests(rangeStride, true);
+
+
+      var addBadRangeTest = function(message, a, step, b) {
+        it('Throws if ' + message, function() {
+          var fn = function() {
+            rangeStride(a, step, b);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addBadRangeTest('b < a, and stride positive', 1, 1, 0);
+      addBadRangeTest('b < a, and stride zero', 1, 0, 0);
+      addBadRangeTest('b < a, and stride not finite (1)', 1, Number.POSITIVE_INFINITY, 0);
+      addBadRangeTest('b < a, and stride not finite (2)', 1, Number.NEGATIVE_INFINITY, 0);
+      addBadRangeTest('b > a, and stride positive', 1, -1, 10);
+      addBadRangeTest('b > a, and stride zero', 1, 0, 10);
+      addBadRangeTest('b > a, and stride not finite (1)', 1, Number.POSITIVE_INFINITY, 10);
+      addBadRangeTest('b > a, and stride not finite (2)', 1, Number.NEGATIVE_INFINITY, 10);
+
+
+      var addCorrectTest = function(message, a, step, b) {
+        it('Works correctly (1)', function() {
+          var arr = rangeStride(a, step, b);
+          var result = arr.every(function(val, i) {
+            return (i === 0 && val === a) || (val === arr[i - 1] + step);
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addCorrectTest('(1)', 0, 2, 10);
+      addCorrectTest('(2)', 15.2, -1.1, 1.1);
+
+
+      it('Empty if a === b, and stride incorrect', function() {
+        var a = 1;
+        var step = 0;
+        var b = 1;
+        var arr = rangeStride(a, step, b);
+
+        expect(arr).to.deep.equal([]);
+      });
+
+
+      // The common range tests don't test the backward step case
+      it('Does not include right-hand limit (3)', function() {
+        var a = 20;
+        var step = -1;
+        var b = 10;
+        var result = rangeStride(a, step, b);
+
+        expect(array.last(result) > b).to.equal(true);
+      });
+    });
+
+
+    var addCommonTakeDropTests = function(testAdder) {
+      var tests = [
+        {name: 'array', makeEmpty: function() {return [];}, makeNormal: function() {return [1, 2, 3];}},
+        {name: 'arrayLike', makeEmpty: function() {return makeArrayLike();},
+                            makeNormal: function() {return makeArrayLike(2, 3, 4);}},
+        {name: 'string', makeEmpty: function() {return '';}, makeNormal: function() {return 'funkier';}}
+      ];
+
+
+      tests.forEach(function(test) {
+        testAdder('count is 0 for empty ' + test.name, 0, test.makeEmpty());
+        testAdder('count is 0 for ' + test.name, 0, test.makeNormal());
+        testAdder('count is negative for empty ' + test.name, -1, test.makeEmpty());
+        testAdder('count is negative for ' + test.name, -1, test.makeNormal());
+      });
+    };
+
+
+    var takeSpec = {
+      name: 'take',
+      restrictions: [['integer'], ['arrayLike']],
+      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(takeSpec, array.take, function(take) {
+      addReturnsSameTypeTests(take, [1]);
+      addNoModificationOfOriginalTests(take, [1]);
+      addReturnsEmptyOnEmptyTests(take, [1]);
+
+
+      var addExpectEmptyTest = function(message, count, originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Returns empty ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = take(count, data);
+
+          expect(result).to.deep.equal(isArray ? [] : '');
+        });
+      };
+
+
+      addCommonTakeDropTests(addExpectEmptyTest);
+
+
+      var addCorrectEntryTests = function(message, count, arrData, arrlikeData, strData) {
+        var addTest = function(typeMessage, originalData) {
+          it('Works correctly when ' + message + typeMessage, function() {
+            var data = sliceIfNecessary(originalData);
+            var arr = take(count, data);
+            arr = splitIfNecessary(arr);
+
+            var result = arr.every(function(val, i) {
+              return val === data[i];
+            });
+
+            expect(result).to.equal(true);
+          });
+        };
+
+        addTest(' for array', arrData);
+        addTest(' for arrayLike', arrlikeData);
+        addTest(' for string', strData);
+      };
+
+
+      addCorrectEntryTests('count < length', 2, [1, 2, 3], makeArrayLike(2, 3, 4), 'funkier');
+      addCorrectEntryTests('count === length', 3, [{}, {}, {}], makeArrayLike(5, 6, 7), 'abc');
+      addCorrectEntryTests('count > length', 4, [3, 4, 5], makeArrayLike(8, 9), 'x');
+    });
+
+
+    var dropSpec = {
+      name: 'drop',
+      restrictions: [['integer'], ['arrayLike']],
+      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(dropSpec, array.drop, function(drop) {
+      addReturnsSameTypeTests(drop, [1]);
+      addNoModificationOfOriginalTests(drop, [1]);
+      addReturnsEmptyOnEmptyTests(drop, [1]);
+
+
+      var addExpectFullTest = function(message, count, originalData) {
+        var isArray = typeof(original) !== 'string';
+
+        it('Returns copy of ' + (isArray ? 'array' : 'string') + ' when ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var dropped = drop(count, data);
+
+          expect(valuesEqual(data, dropped)).to.equal(true);
+        });
+      };
+
+
+      addCommonTakeDropTests(addExpectFullTest);
+
+
+      var addCorrectEntryTests = function(message, count, arrData, arrlikeData, strData) {
+        var addTest = function(typeMessage, originalData) {
+          it('Works correctly when ' + message + typeMessage, function() {
+            var data = sliceIfNecessary(originalData);
+            var arr = drop(count, data);
+            arr = splitIfNecessary(arr);
+
+            var result = arr.every(function(val, i) {
+              return val === data[i + count];
+            });
+
+            expect(result).to.equal(true);
+          });
+        };
+
+        addTest(' for array', arrData);
+        addTest(' for arrayLike', arrlikeData);
+        addTest(' for string', strData);
+      };
+
+
+      var addEmptyAfterDropTests = function(message, count, arrData, arrlikeData, strData) {
+        var addTest = function(type, typeMessage, originalData) {
+          it('Returns empty ' + type + ' when ' + message + typeMessage, function() {
+            var data = sliceIfNecessary(originalData);
+            var result = drop(count, data);
+
+            expect(result).to.deep.equal(type === 'array' ? [] : '');
+          });
+        };
+
+        addTest('array', ' for array ', arrData);
+        addTest('array', ' for arrayLike', arrlikeData);
+        addTest('string', ' for string ', strData);
+      };
+
+
+      addCorrectEntryTests('count < length', 1, [1, 2, 3], makeArrayLike(2, 3, 4), 'funkier');
+      addEmptyAfterDropTests('count === length', 3, [{}, {}, {}], makeArrayLike(1, 2, 3), 'abc');
+      addEmptyAfterDropTests('count > length', 4, [3, 4, 5], makeArrayLike('a', 'b'), 'x');
+    });
+
+
+    var makeInitTailTests = function(desc, fnUnderTest) {
+      var spec = {
+        name: desc,
+        restrictions: [['arrayLike']],
+        validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addThrowsOnEmptyTests(fnUnderTest, []);
+        addReturnsSameTypeTests(fnUnderTest, []);
+
+
+        var addTests = function(type, tests) {
+          var addOne = function(originalData, count) {
+            var lenMessage = 'Returns ' + (typeof(originalData === 'string') ? 'string' : 'array') +
+                             ' of correct length when called with ' + type + '(' + count + ')';
+            addSameLengthTest(fnUnderTest, lenMessage, [], originalData, -1);
+
+
+            it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var data = sliceIfNecessary(originalData);
+              var arr = fnUnderTest(data);
+              arr = splitIfNecessary(arr);
+
+              var valuesCorrect = arr.every(function(val, i) {
+                return val === data[fnUnderTest === array.tail ? i + 1 : i];
+              });
+
+              expect(valuesCorrect).to.equal(true);
+            });
+          };
+
+          tests.forEach(addOne);
+        };
+
+
+        addTests('array', [[1, 2, 3], [{}, {}, {}, {}, {}]]);
+        addTests('arrayLike', [makeArrayLike({}, {}), makeArrayLike(true, false, null)]);
+        addTests('string', ['abc', 'funkier']);
+      });
+    };
+
+
+    makeInitTailTests('init', array.init);
+    makeInitTailTests('tail', array.tail);
+
+
+    var makeInitsTailsTests = function(desc, fnUnderTest) {
+      var spec = {
+        name: desc,
+        restrictions: [['arrayLike']],
+        validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var addTests = function(type, tests) {
+          var expectedType = type === 'string' ? 'string' : 'array';
+
+
+          var addOneSet = function(originalData, count) {
+            var lenMessage = 'Returns array of correct length when called with ' + type + '(' + count + ')';
+            addSameLengthTest(fnUnderTest, lenMessage, [], originalData, 1);
+
+
+            it('Returns array when called with ' + type + '(' + count + ')', function() {
+              var data = sliceIfNecessary(originalData);
+              var result = fnUnderTest(data);
+
+              expect(isArray(result)).to.equal(true);
+            });
+
+
+            it('Returns elements of type ' + expectedType + ' when called with ' + type + '(' + count + ')', function() {
+              var data = sliceIfNecessary(originalData);
+              var elementsHaveCorrectType = fnUnderTest(data).every(function(val) {
+                if (expectedType === 'array')
+                  return isArray(val);
+                return typeof(val) === 'string';
+               });
+
+               expect(elementsHaveCorrectType).to.equal(true);
+            });
+
+
+            it('Elements have correct length when called with ' + type + '(' + count + ')', function() {
+              var data = sliceIfNecessary(originalData);
+              var elementLengthsCorrect = fnUnderTest(data).every(function(val, i) {
+                return val.length === (fnUnderTest === array.tails ? data.length - i : i);
+              });
+
+              expect(elementLengthsCorrect).to.equal(true);
+            });
+
+
+            it('Works correctly for ' + type + ' (' + count + ')', function() {
+              var data = sliceIfNecessary(originalData);
+              var arr = fnUnderTest(data);
+              var elementsCorrect = arr.every(function(val, i) {
+                val = splitIfNecessary(val);
+
+                return val.every(function(v, j) {
+                  return v === data[fnUnderTest === array.tails ? i + j : j];
+                });
+              });
+
+              expect(elementsCorrect).to.equal(true);
+            });
+          };
+
+          tests.forEach(addOneSet);
+        };
+
+
+        addTests('array', [[], [1, 2], [{}, {}, {}]]);
+        addTests('arrayLike', [makeArrayLike(), makeArrayLike(2, 3), makeArrayLike({}, true, null)]);
+        addTests('string', ['', 'ab', 'funkier']);
+        addNoModificationOfOriginalTests(fnUnderTest, []);
+      });
+    };
+
+
+    makeInitsTailsTests('inits', array.inits);
+    makeInitsTailsTests('tails', array.tails);
+
+
+    var copySpec = {
+      name: 'copy',
+      restrictions: [['arrayLike']],
+      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(copySpec, array.copy, function(copy) {
+      addReturnsSameTypeTests(copy, []);
+      addReturnsEmptyOnEmptyTests(copy, []);
+
+
+      var addTests = function(message, originalData) {
+        addSameLengthTest(copy, message, [], originalData);
+
+
+        it('Returns a copy for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var sameValue = copy(data) === data;
+
+          expect(sameValue).to.equal(false);
+        });
+
+
+        it('Works correctly for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var copied = copy(data);
+
+
+          expect(valuesEqual(data, copied)).to.equal(true);
+        });
+
+
+        it('Shallow copies members for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var membersAreCopies = copy(data).every(function(val, i) {
+            return val === data[i];
+          });
+
+          expect(membersAreCopies).to.equal(true);
+        });
+      };
+
+
+      addTests('empty arrays', []);
+      addTests('arrays (1)', [1, 2, 3]);
+      addTests('arrays (2)', [{foo: 1}, {baz: 2}, {fizz: 3, buzz: 5}]);
+      addTests('empty arrayLikes', makeArrayLike());
+      addTests('arrayLikes (1)', makeArrayLike(2, 3, 4));
+      addTests('arrayLikes (2)', makeArrayLike({fizz: 3}, {buzz: 5}));
+    });
+
+
+    var sliceSpec = {
+      name: 'slice',
+      restrictions: [['natural'], ['natural'], ['arrayLike']],
+      validArguments: [[0], [1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(sliceSpec, array.slice, function(slice) {
+      addReturnsSameTypeTests(slice, [0, 1]);
+      addNoModificationOfOriginalTests(slice, []);
+
+
+      var addReturnEmptyTests = function(originalData) {
+        var isArray = typeof(originalData) !== 'string';
+
+
+        it('Returns empty ' + (isArray ? 'array' : 'string') + ' if from > length', function() {
+          var data = originalData.slice();
+          var result = slice(data.length + 2, data.length + 4, data);
+
+          expect(result).to.deep.equal(isArray ? [] : '');
+        });
+
+
+        it('Returns empty ' + (isArray ? 'array' : 'string') + ' if from === length', function() {
+          var data = originalData.slice();
+          var result = slice(data.length, data.length + 3, data);
+
+          expect(result).to.deep.equal(isArray ? [] : '');
+        });
+      };
+
+
+      addReturnEmptyTests([1, 2, 3]);
+      addReturnEmptyTests(makeArrayLike(true, 1, null));
+      addReturnEmptyTests('abc');
+
+      // we should also test we get an empty when passing empty. We cannot pass addReturnEmptyTests directly to
+      // addTests: addTests expects the generator to have arity 2, addReturnEmptyTests has arity 1. Thus we wrap it.
+      var addEmpty = function(message, data) { addReturnEmptyTests(data); };
+      addEmptyTests(addEmpty);
+
+
+      var addTests = function(message, from, to, arrData, arrlikeData, strData) {
+        var addOne = function(type, originalData) {
+          it('Result has correct length when ' + message + ' for ' + type, function() {
+            var data = sliceIfNecessary(originalData);
+            var result = slice(from, to, data).length === Math.min(data.length - from, to - from);
+
+            expect(result).to.equal(true);
+          });
+
+
+          it('Result has correct values when ' + message + ' for ' + type, function() {
+            var data = sliceIfNecessary(originalData);
+            var newVal = slice(from, to, data);
+            newVal = splitIfNecessary(newVal);
+
+            var result = newVal.every(function(val, i) {
+              return val === data[from + i];
+            });
+
+            expect(result).to.equal(true);
+          });
+        };
+
+        addOne('array', arrData);
+        addOne('arrayLike', arrlikeData);
+        addOne('string', strData);
+      };
+
+
+      addTests('to > len', 1, 5, [1, 2, 3, 4], makeArrayLike(2, 3, 4, 5), 'abcd');
+      addTests('to === len', 1, 4, [2, 3, 4, 5], makeArrayLike(2, 3, 4, 5), 'efgh');
+      addTests('slicing normally', 1, 3, [{foo: 1}, {bar: 2}, {fizz: 3}, {buzz: 5}], makeArrayLike(2, 3, 4, 5), 'abcd');
+    });
+
+
+    var makeTakeWDropWTests = function(desc, fnUnderTest) {
+      var isTakeWhile = desc === 'takeWhile';
+
+
+      var spec = {
+        name: desc,
+        restrictions: [['function: arity 1'], ['arrayLike']],
+        validArguments: [[function(x) {return true;}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addFuncCalledWithSpecificArityTests(fnUnderTest, 1);
+        addReturnsSameTypeTests(fnUnderTest, [alwaysTrue]);
+        addReturnsEmptyOnEmptyTests(fnUnderTest, [alwaysTrue]);
+        addNoModificationOfOriginalTests(fnUnderTest, [alwaysTrue]);
+
+
+        var addTests = function(type, message, predicate, expectedLength, originalData) {
+          it('Result has correct length ' + message + ' for ' + type, function() {
+            var data = sliceIfNecessary(originalData);
+            var correctLength = isTakeWhile ? expectedLength : data.length - expectedLength;
+            var length = fnUnderTest(predicate, data).length;
+
+            expect(length).to.equal(correctLength);
+          });
+
+
+          it('Predicate only called as often as needed ' + message + ' for ' + type, function() {
+            var data = sliceIfNecessary(originalData);
+
+            // We use a predicate that records how often it is called, and check we didn't iterate over the whole value
+            var called = 0;
+            var newPredicate = function(x) {called += 1; return predicate(x);};
+            fnUnderTest(newPredicate, data);
+            var calledCorrectly = called === expectedLength + (expectedLength === data.length ? 0 : 1);
+
+            expect(calledCorrectly).to.equal(true);
+          });
+
+
+          it('Result has correct members ' + message + ' for ' + type, function() {
+            var data = sliceIfNecessary(originalData);
+            var arr = fnUnderTest(predicate, originalData);
+            arr = splitIfNecessary(arr);
+
+            var membersCorrect = arr.every(function(val, i) {
+              return val === data[isTakeWhile ? i : i + expectedLength];
+            });
+
+            expect(membersCorrect).to.equal(true);
+          });
+        };
+
+
+        // Each type has 3 tests: one where only some initial elements match, one where no element matches, and one
+        // where every element matches
+        var testData = [
+          {name: 'array', tests: [{f: function(x) {return x.foo < 4;}, expected: 2,
+                                   data: [{foo: 1}, {foo: 3}, {foo: 4}, {foo: 5}, {foo: 6}]},
+                                  {f: function(x) {return x % 2 === 0;}, expected: 0, data: [3, 4, 6, 1, 5]},
+                                  {f: alwaysTrue, expected: 5, data: [2, 4, 6, 1, 5]}]},
+          {name: 'arrayLike', tests: [{f: function(x) {return x.foo < 5;}, expected: 4,
+                                       data: makeArrayLike({foo: 1}, {foo: 3}, {foo: 4}, {foo: 2}, {foo: 6})},
+                                      {f: function(x) {return x % 2 !== 0;}, expected: 0,
+                                       data: makeArrayLike(2, 4, 6, 1, 5)},
+                                      {f: alwaysTrue, expected: 5, data: makeArrayLike(2, 4, 6, 1, 5)}]},
+          {name: 'string', tests: [{f: function(x) {return x === ' ';}, expected: 3, data: '   funkier'},
+                                   {f: isDigit, expected: 0, data: 'zxabc'},
+                                   {f: alwaysTrue, expected: 5, data: 'abcde'}]}
+        ];
+
+
+        testData.forEach(function(t) {
+          t.tests.forEach(function(test, i) {
+            addTests(t.name, '(' + (i + 1) + ')', test.f, test.expected, test.data);
+          });
+        });
+      });
+    };
+
+
+    makeTakeWDropWTests('takeWhile', array.takeWhile);
+    makeTakeWDropWTests('dropWhile', array.dropWhile);
+
+
+    var makePrependAppendTests = function(desc, fnUnderTest) {
+      var isPrepend = desc === 'prepend';
+
+
+      var spec = {
+        name: desc,
+        restrictions: [[], ['arrayLike']],
+        validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        addReturnsSameTypeTests(fnUnderTest, [1]);
+        addNoModificationOfOriginalTests(fnUnderTest, [1]);
+
+
+        var addTests = function(arrData, arrlikeData, strData) {
+          var addOne = function(type, message, val, originalData) {
+            addSameLengthTest(fnUnderTest, message, [val], originalData, 1);
+
+
+            it('Result has correct values ' + message + ' for ' + type, function() {
+              var data = sliceIfNecessary(originalData);
+              var newVal = fnUnderTest(val, data);
+              newVal = splitIfNecessary(newVal);
+
+              var prependCheck = function(v, i) {
+                if (i === 0)
+                  return v === val;
+                return v === data[i - 1];
+              };
+
+              var appendCheck = function(v, i) {
+                if (i === data.length)
+                  return v === val;
+                return v === data[i];
+              };
+
+              var elementsCorrect = newVal.every(isPrepend ? prependCheck : appendCheck);
+
+              expect(elementsCorrect).to.equal(true);
+            });
+          };
+
+          arrData.forEach(function(data, i) {
+            addOne('array', '(' + (i + 1) + ')', data[0], data[1]);
+          });
+          arrlikeData.forEach(function(data, i) {
+            addOne('arrayLike', '(' + (i + 1) + ')', data[0], data[1]);
+          });
+          strData.forEach(function(data, i) {
+            addOne('string', '(' + (i + 1) + ')', data[0], data[1]);
+          });
+        };
+
+
+        // The tests include a "normal" test, and a value to be modified to is empty test
+        addTests([[{}, [{foo: 1}, {bar: 2}, {fizz: 3}]], [1, []]],
+                 [[5, makeArrayLike(6, 7, 8, 9)], ['a', makeArrayLike()]],
+                 [['a', 'bcd'], ['z', '']]);
+      });
+    };
+
+
+    makePrependAppendTests('prepend', array.prepend);
+    makePrependAppendTests('append', array.append);
+
+
+    var concatSpec = {
+      name: 'concat',
+      restrictions: [['arrayLike'], ['arrayLike']],
+      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(concatSpec, array.concat, function(concat) {
+      var addTest = function(expectedType, message, left, right) {
+        // We can't use the global returnsSameType test generator here
+        it('Result has type ' + expectedType + ' for ' + message, function() {
+          var first = left.slice();
+          var second = right.slice();
+          var result = concat(first, second);
+
+          if (expectedType === 'array')
+            expect(isArray(result)).to.equal(true);
+          else
+            expect(result).to.be.a('string');
+        });
+
+
+        it('Result has correct length for ' + message, function() {
+          var first = left.slice();
+          var second = right.slice();
+          var length = concat(first, second).length;
+
+          expect(length).to.equal(first.length + second.length);
+        });
+
+
+        it('Result has correct values for ' + message, function() {
+          var first = left.slice();
+          var second = right.slice();
+          var newVal = concat(first, second);
+          newVal = splitIfNecessary(newVal);
+
+          var valsCorrect = newVal.every(function(v, i) {
+            return v === (i < first.length ? first[i] : second[i - first.length]);
+          });
+
+          expect(valsCorrect).to.equal(true);
+        });
+
+
+        it('Doesn\'t affect originals for ' + message, function() {
+          var first = left.slice();
+          var second = right.slice();
+          var firstLength = first.length;
+          var secondLength = second.length;
+          concat(first, second);
+
+          expect(first.length === firstLength && second.length === secondLength).to.equal(true);
+        });
+      };
+
+
+      var tests = [
+        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
+        {name: 'arrayLike', tests: [{type: 'empty', value: makeArrayLike()},
+                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
+        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
+      ];
+
+
+      tests.forEach(function(left) {
+        left.tests.forEach(function(leftTest) {
+          tests.forEach(function(right) {
+            right.tests.forEach(function(rightTest) {
+              var expectedType = left.name === 'string' && right.name === 'string' ? 'string' : 'array';
+              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
+
+              addTest(expectedType, message, leftTest.value, rightTest.value);
+            });
+          });
+        });
+      });
+    });
+
+
+    var isEmptySpec = {
+      name: 'empty',
+      restrictions: [['arrayLike']],
+      validArguments: [[[], '', makeArrayLike()]]
+    };
+
+
+    checkFunction(isEmptySpec, array.isEmpty, function(isEmpty) {
+      var addOne = function(message, originalData) {
+        it('Works for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+
+          expect(isEmpty(data)).to.equal(data.length === 0);
+        });
+      };
+
+
+      addEmptyTests(addOne);
+      addOne('a non-empty array', [1, 2]);
+      addOne('a non-empty arrayLike', makeArrayLike(2, 3));
+      addOne('a non-empty string', 'a');
+    });
+
+
+    var intersperseSpec = {
+      name: 'intersperse',
+      restrictions: [[], ['arrayLike']],
+      validArguments: [[','], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(intersperseSpec, array.intersperse, function(intersperse) {
+      addReturnsSameTypeTests(intersperse, ['-']);
+
+
+      var addDegenerateTest = function(message, originalData) {
+        it('Works correctly for ' + message, function() {
+          var val = originalData.slice();
+          var result = intersperse(',', val);
+
+          expect(valuesEqual(val, result)).to.equal(true);
+        });
+      };
+
+
+      addEmptyTests(addDegenerateTest);
+      addDegenerateTest('for single element array', [1]);
+      addDegenerateTest('for single element arrayLike', makeArrayLike(2));
+      addDegenerateTest('for single element string', 'a');
+
+
+      var addTests = function(message, originalData) {
+        it('Result has correct length ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var length = intersperse(',', data).length;
+
+          expect(length).to.equal(2 * data.length - 1);
+        });
+
+
+        it('Result has original values at correct positions ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var interspersed = intersperse(',', data);
+          interspersed = splitIfNecessary(interspersed);
+          var originalElementsPresent = interspersed.every(function(v, i) {
+            // the values at odd indices should be the interspersed string
+            if (i % 2 === 1) return true;
+
+            return v === data[i / 2];
+          });
+
+          expect(originalElementsPresent).to.equal(true);
+        });
+
+
+        it('Result has interspersed values at correct positions ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var intersperseValue = ':';
+          var interspersed = intersperse(intersperseValue, data);
+          interspersed = splitIfNecessary(interspersed);
+          var interspersedCorrectly = interspersed.every(function(v, i) {
+            // the values at even indices were checked in the preceding test
+            if (i % 2 === 0) return true;
+
+            return v === intersperseValue;
+          });
+
+          expect(interspersedCorrectly).to.equal(true);
+        });
+      };
+
+
+      addTests('array (1)', [1, 2]);
+      addTests('array (2)', [1, 2, 3, 4]);
+      addTests('arrayLike (1)', makeArrayLike(2, 3));
+      addTests('arrayLike (2)', makeArrayLike(4, 5, 6, 7));
+      addTests('string (1)', 'ab');
+      addTests('string (2)', 'funkier');
+    });
+
+
+    var reverseSpec = {
+      name: 'reverse',
+      restrictions: [['arrayLike']],
+      validArguments: [[[1, 2], 'ab', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(reverseSpec, array.reverse, function(reverse) {
+      addReturnsEmptyOnEmptyTests(reverse, []);
+      addReturnsSameTypeTests(reverse, []);
+
+
+      var addTests = function(message, originalData) {
+        it('Returns value with same length as original for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var expected = data.length;
+          var result = reverse(data);
+
+          expect(result.length).to.equal(expected);
+        });
+
+
+        it('Returns correct result for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var originalLength = data.length - 1;
+          var reversed = reverse(data);
+          reversed = splitIfNecessary(reversed);
+          var result = reversed.every(function(v, i) {
+            return v === data[originalLength - i];
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTests('array', [{}, {}]);
+      addTests('arrayLike', makeArrayLike(1, 2));
+      addTests('string', 'funkier');
+      addTests('single element array', [1]);
+      addTests('single element arrayLike', makeArrayLike(3));
+      addTests('single element string', '');
+    });
+
+
+    /*
+     * The search and modification functions are not yet ready for implementation, until I get the API finalized.
+     *
+
+    var addFindTest = function(message, fnUnderTest, args, expected) {
+      var val = args[0];
+      var originalData = args[args.length - 1];
+
+      it(message, function() {
+        var data = sliceIfNecessary(originalData);
+        var argData = args.slice();
+        var result = fnUnderTest.apply(null, argData);
+
+        expect(result).to.equal(expected);
+        if (result !== -1) {
+          if (typeof(val) !== 'function') {
+            expect(data[result]).to.equal(val);
+          } else {
+            expect(val(data[result])).to.equal(true);
+          }
+        }
+      });
+    };
+
+
+    var findSpec = {
+      name: 'find',
+      restrictions: [[], ['arrayLike']],
+      validArguments: [[1], [[2, 3], '234', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(findSpec, array.find, function(find) {
+      var addEmpty = function(message, value) {
+        addFindTest('Works correctly for ' + message, find, [1, value], -1);
+      };
+      addEmptyTests(addEmpty);
+
+
+      // Each test's value should be such that the value at index 0 is duplicated in the value, the second and last
+      // values are not duplicated, and the number 0 does not appear anywhere in the value
+      var tests = [
+        {name: 'array', value: [1, 2, 3, 1, 4]},
+        {name: 'arrayLike', value: makeArrayLike(2, 4, 2, 6)},
+        {name: 'string', value: 'abacus'}
+      ];
+
+
+      tests.forEach(function(test) {
+        addFindTest('Works correctly for ' + test.name + ' (1)', find, [test.value[1], test.value], 1);
+        var len = test.value.length - 1;
+        addFindTest('Works correctly for ' + test.name + ' (2)', find, [test.value[len], test.value], len);
+        addFindTest('Returns first match for  ' + test.name, find, [test.value[0], test.value], 0);
+        addFindTest('Returns -1 when no match for ' + test.name, find, [0, test.value], -1);
+      });
+
+
+      var obj = {};
+      addFindTest('Tests with strict identity for array (1)', find, [obj, [{}, {}, {}]], -1);
+      addFindTest('Tests with strict identity for array (2)', find, [obj, [{}, obj, {}]], 1);
+      addFindTest('Tests with strict identity for arrayLike (1)', find, [obj, makeArrayLike({}, {}, {})], -1);
+      addFindTest('Tests with strict identity for arrayLike (2)', find, [obj, makeArrayLike({}, obj, {})], 1);
+    });
+
+
+    var findFromSpec = {
+      name: 'findFrom',
+      restrictions: [[], ['positive'], ['arrayLike']],
+      validArguments: [[1], [1], [[2, 3], '234', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(findFromSpec, array.findFrom, function(findFrom) {
+      var addEmpty = function(message, value) {
+        addFindTest('Works correctly for ' + message, findFrom, [0, 0, value], -1);
+      };
+      addEmptyTests(addEmpty);
+
+
+      // Each test's value should be such that:
+      //  - the value at index 3 is the same as that at index 0
+      //  - the values at index 1 and the last value occur only once
+      //  - the value at index 2 and the second last value are the same
+      //  - the number 0 does not appear anywhere in the value
+      var tests = [
+        {name: 'array', value: [1, 5, 6, 1, 6, 8]},
+        {name: 'arrayLike', value: makeArrayLike(2, 9, 7, 2, 7, 1)},
+        {name: 'string', value: 'bacbcd'}
+      ];
+
+
+      tests.forEach(function(test) {
+        var len = test.value.length - 1;
+        addFindTest('Works correctly for ' + test.name + ' (1)', findFrom, [test.value[1], 1, test.value], 1);
+        addFindTest('Works correctly for ' + test.name + ' (2)', findFrom, [test.value[len], 2, test.value], len);
+        addFindTest('Returns first match for ' + test.name, findFrom, [test.value[2], 3, test.value], len - 1);
+        addFindTest('Ignores earlier matches for ' + test.name, findFrom, [test.value[0], 1, test.value], 3);
+        addFindTest('Returns -1 when no match for ' + test.name, findFrom, [0, 1, test.value], -1);
+        addFindTest('Returns -1 when no match at position for ' + test.name, findFrom, [test.value[1], 2, test.value], -1);
+        addFindTest('Returns -1 when from === length for ' + test.name, findFrom, [0, len + 1, test.value], -1);
+        addFindTest('Returns -1 when from > length for ' + test.name, findFrom, [0, len + 2, test.value], -1);
+      });
+
+      var obj = {};
+      addFindTest('Tests with strict identity for array (1)', findFrom, [obj, 0, [{}, {}, {}]], -1);
+      addFindTest('Tests with strict identity for array (2)', findFrom, [obj, 1, [{}, {}, obj, {}]], 2);
+      addFindTest('Tests with strict identity for arrayLike (1)', findFrom, [obj, 1, makeArrayLike({}, {})], -1);
+      addFindTest('Tests with strict identity for arrayLike (2)', findFrom, [obj, 1, makeArrayLike({}, obj, {}, {})], 1);
+    });
+
+
+    var addFindPredicateCalledWithEveryNotFoundTest = function(fnUnderTest, fnArgs) {
+      var originalData = fnArgs[fnArgs.length - 1];
+      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
+
+
+      it('Function called with every element if not found (' + message + ')', function() {
+        // The function records every argument it is called with. This should equal the original data
+        var args = [];
+        var f = function(x) {args.push(x); return false;};
+
+        var from = fnArgs.length === 1 ? 0 : fnArgs[0];
+        var data = sliceIfNecessary(fnArgs[fnArgs.length - 1]);
+        var realFnArgs = [f].concat(fnArgs.slice(0, fnArgs.length - 1)).concat([data]);
+
+        var result = fnUnderTest.apply(null, realFnArgs);
+
+        var calledWithEvery = args.every(function(v, i) {
+          return v === data[i + from];
+        });
+
+        expect(args.length).to.equal(data.length - from);
+        expect(calledWithEvery).to.equal(true);
+      });
+    };
+
+
+    var addFindPredicateCalledOnlyAsOftenAsNecessaryTest = function(fnUnderTest, fnArgs) {
+      var originalData = fnArgs[fnArgs.length - 1];
+      var message = isArray(originalData) ? 'array' : typeof(originalData) === 'string' ? 'string' : 'object';
+
+
+      it('Function called only as often as necessary when found (' + message + ')', function() {
+        // Create a new predicate function that records the values it's called with, then defers to
+        // the supplied predicate. We can then confirm we iterated from left to right.
+        var args = [];
+        var predicate = fnArgs[0];
+        var f = function(x) {args.push(x); return predicate(x);};
+
+        var data = sliceIfNecessary(fnArgs[fnArgs.length - 1]);
+        var from = fnArgs.length === 2 ? 0 : fnArgs[1];
+        var realFnArgs = [f].concat(fnArgs.slice(1, fnArgs.length - 1)).concat([data]);
+        var index = fnUnderTest.apply(null, realFnArgs);
+
+        var iteratedOverValue = args.every(function(v, i) {
+          return v === data[from + i];
+        });
+
+        expect(args.length).to.equal(index + 1 - from);
+        expect(iteratedOverValue).to.equal(true);
+      });
+    };
+
+
+    var findWithSpec = {
+      name: 'findWith',
+      restrictions: [['function: arity 1'], ['arrayLike']],
+      validArguments: [[alwaysTrue], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(findWithSpec, array.findWith, function(findWith) {
+      addFuncCalledWithSpecificArityTests(findWith, 1);
+
+
+      var addEmpty = function(message, originalData) {
+        it('Function never called for ' + message, function() {
+          var called = false;
+          var f = function(x) {called = true; return true;};
+          var data = sliceIfNecessary(originalData);
+          findWith(f, data);
+
+          expect(called).to.equal(false);
+        });
+
+
+        it('Works correctly for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = findWith(alwaysTrue, data);
+
+          expect(result).to.equal(-1);
+        });
+      };
+
+
+      addEmptyTests(addEmpty);
+      addFindPredicateCalledWithEveryNotFoundTest(findWith, [[1, 2, 3]]);
+      addFindPredicateCalledWithEveryNotFoundTest(findWith, [makeArrayLike()]);
+      addFindPredicateCalledWithEveryNotFoundTest(findWith, ['funkier']);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith,
+                                              [fooIs42, [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]]);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith,
+                                                     [fooIs42, makeArrayLike({foo: 1}, {foo: 6}, {foo: 42}, {foo: 1})]);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findWith, [function(x) {return x < 'a';}, 'abCde']);
+
+
+      // Each test's value should be such that:
+      // - value1 should have one value that matches the predicate, at index 2
+      // - value2 should have two values that match the predicate, at indices 1 and 3
+      var tests = [
+        {name: 'array', predicate: fooIs42, value1: [{foo: 1}, {foo: 3}, {foo: 42}, {foo: 6}],
+                                            value2: [{foo: 2}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 7}]},
+        {name: 'arrayLike', predicate: fooIs42, value1: makeArrayLike({foo: 3}, {foo: 12}, {foo: 42}, {foo: 1}),
+                                                value2: makeArrayLike({foo: 0}, {foo: 42}, {foo: 10}, {foo: 42})},
+        {name: 'string', predicate: isDigit, value1: 'ab7def', value2: 'a1b2d'}
+      ];
+
+
+      tests.forEach(function(test) {
+        addFindTest('Returns -1 when value not found for ' + test.name, findWith, [alwaysFalse, test.value1], -1);
+        addFindTest('Works correctly for ' + test.name, findWith, [test.predicate, test.value1], 2);
+        addFindTest('Returns first match for ' + test.name, findWith, [test.predicate, test.value2], 1);
+      });
+    });
+
+
+    var findFromWithSpec = {
+      name: 'findFromWith',
+      restrictions: [['function: arity 1'], ['positive'], ['arrayLike']],
+      validArguments: [[alwaysTrue], [1], [[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(findFromWithSpec, array.findFromWith, function(findFromWith) {
+      addFuncCalledWithSpecificArityTests(findFromWith, 1, [1]);
+
+
+      var addEmpty = function(message, originalData) {
+        it('Function never called with ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var called = 0;
+          var f = function(x) {called += 1; return true;};
+          findFromWith(f, 1, data);
+
+          expect(called).to.equal(0);
+        });
+
+
+        it('Works correctly for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = findFromWith(alwaysTrue, 0, data);
+
+          expect(result).to.equal(-1);
+        });
+      };
+
+
+      // Each test's value should be such that:
+      // - value1 should have one value that matches the predicate, at index 2
+      // - value2 should have two values that match the predicate, at indices 1 and 3
+      var tests = [
+        {name: 'array', predicate: fooIs42, value1: [{foo: 1}, {foo: 3}, {foo: 42}, {foo: 6}, {foo: 8}],
+                                            value2: [{foo: 2}, {foo: 42}, {foo: 5}, {foo: 42}, {foo: 7}]},
+        {name: 'arrayLike', predicate: fooIs42, value1: makeArrayLike({foo: 3}, {foo: 12}, {foo: 42}, {foo: 1}, {foo: 9}),
+                                                value2: makeArrayLike({foo: 0}, {foo: 42}, {foo: 10}, {foo: 42})},
+        {name: 'string', predicate: isDigit, value1: 'ab7edef', value2: 'a1b2d'}
+      ];
+
+
+      tests.forEach(function(test) {
+        addFindTest('Returns -1 when value not found for ' + test.name, findFromWith,
+                                                                 [alwaysFalse, 1, test.value1], -1);
+        addFindTest('Returns -1 when value not found from position for ' + test.name, findFromWith,
+                                                                 [test.predicate, 3, test.value1], -1);
+        addFindTest('Returns -1 when index equals length for ' + test.name, findFromWith,
+                                                                 [test.predicate, test.value1.length, test.value1], -1);
+        addFindTest('Returns -1 when index > length for ' + test.name, findFromWith,
+                                                              [test.predicate, test.value1.length + 1, test.value1], -1);
+        addFindTest('Works correctly for ' + test.name, findFromWith, [test.predicate, 1, test.value1], 2);
+        addFindTest('Returns first match for ' + test.name, findFromWith, [test.predicate, 0, test.value2], 1);
+        addFindTest('Ignores earlier matches for ' + test.name, findFromWith, [test.predicate, 2, test.value2], 3);
+      });
+
+
+      addEmptyTests(addEmpty);
+      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [1, [1, 2, 3]]);
+      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [2, makeArrayLike(2, 3, 4, 5, 6)]);
+      addFindPredicateCalledWithEveryNotFoundTest(findFromWith, [3, 'funkier']);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith,
+                                           [fooIs42, 2, [{foo: 1}, {foo: 6}, {foo: 7}, {foo: 1}, {foo: 42}, {foo: 4}]]);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith,
+                                                  [fooIs42, 1, makeArrayLike({foo: 1}, {foo: 6}, {foo: 42}, {foo: 1})]);
+      addFindPredicateCalledOnlyAsOftenAsNecessaryTest(findFromWith, [function(x) {return x < 'a';}, 1, 'abdCde']);
+    });
+    */
+
+
+    var occurrencesSpec = {
+      name: 'occurrences',
+      restrictions: [[], ['arrayLike']],
+      validArguments: [[1], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(occurrencesSpec, array.occurrences, function(occurrences) {
+      addReturnsEmptyOnEmptyTests(occurrences, ['z'], true);
+
+
+      var addEmptyWhenNotFoundTest = function(val, data) {
+        var message = isArray(data) ? 'array' : typeof(data) === 'string' ? 'string' : 'arrayLike';
+
+
+        it('Returns empty array when value not found (' + message + ')', function() {
+          var result = occurrences(val, data);
+
+          expect(result).to.deep.equal([]);
+        });
+      };
+
+
+      addEmptyWhenNotFoundTest(1, [2, 3, 4]);
+      addEmptyWhenNotFoundTest(1, makeArrayLike(2, 3, 4));
+      addEmptyWhenNotFoundTest('a', 'bcd');
+
+
+      var addTest = function(message, val, originalData) {
+        it('Returns an array ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = occurrences(val, data);
+
+          expect(isArray(result)).to.equal(true);
+        });
+
+
+        it('Returned values are valid indices ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = occurrences(val, data).every(function(i) {
+            return i >= 0 && i < data.length && data[i] === val;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('No indices missing ' + message, function() {
+          var data = splitIfNecessary(originalData.slice());
+          var found = occurrences(val, data);
+          var result = data.every(function(v, i) {
+            if (found.indexOf(i) !== -1) return true;
+            return v !== val;
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTest('for array (1)', 1, [2, 1, 3]);
+      addTest('for array (2)', 1, [2, 1, 1, 3, 1]);
+      var obj = {};
+      addTest('for array (3)', obj, [{}, {}, {}]);
+      addTest('for array (4)', obj, [{}, obj, {}]);
+      addTest('for arrayLike (1)', 1, makeArrayLike(2, 1, 3, 1, 1));
+      addTest('for arrayLike (2)', obj, makeArrayLike({}, obj, obj, {}, obj));
+      addTest('for string (1)', 'a', 'ban');
+      addTest('for string (2)', 'a', 'banana');
+    });
+
+
+    var occurrencesWithSpec = {
+      name: 'occurrencesWith',
+      restrictions: [['function: arity 1'], ['arrayLike']],
+      validArguments: [[alwaysTrue], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(occurrencesWithSpec, array.occurrencesWith, function(occurrencesWith) {
+      addReturnsEmptyOnEmptyTests(occurrencesWith, [alwaysTrue], true);
+
+
+      var addTests = function(message, p, originalData, isNotFound) {
+        isNotFound = isNotFound || false;
+
+
+        it('Returns an array for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = occurrencesWith(p, data);
+
+          expect(isArray(result)).to.equal(true);
+        });
+
+
+        if (isNotFound) {
+          it('Returns empty array for ' + message, function() {
+            var data = sliceIfNecessary(originalData);
+            var result = occurrencesWith(alwaysFalse, data);
+
+            expect(result).to.deep.equal([]);
+          });
+        }
+
+
+        it('Function called for every element for ' + message, function() {
+          var args = [];
+          var f = function(x) {args.push(x); return p(x);};
+          var data = sliceIfNecessary(originalData);
+          occurrencesWith(f, data);
+
+          var calledWithEvery = args.every(function(v, i) {
+            return v === data[i];
+          });
+
+          expect(args.length).to.equal(data.length);
+          expect(calledWithEvery).to.equal(true);
+        });
+
+
+        it('Returned values are valid indices for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var indicesValid = occurrencesWith(p, data).every(function(i) {
+            return i >= 0 && i < data.length && p(data[i]);
+          });
+
+          expect(indicesValid).to.equal(true);
+        });
+
+
+        it('No indices missing for ' + message, function() {
+          var data = splitIfNecessary(originalData.slice());
+          var found = occurrencesWith(p, data);
+
+          var noneMissing = data.every(function(v, i) {
+            if (found.indexOf(i) !== -1) return true;
+            return p(v) === false;
+          });
+
+          expect(noneMissing).to.equal(true);
+        });
+      };
+
+
+      addTests('array when value not found', alwaysFalse, [1, 2, 3]);
+      addTests('arrayLike when value not found', alwaysFalse, makeArrayLike(2, 3, 4));
+      addTests('string when value not found', alwaysFalse, 'funkier');
+      addTests('array (1)', strictEquals(1), [2, 1, 3]);
+      addTests('array (2)', strictEquals(1), [2, 1, 1, 3, 1]);
+      addTests('array (3)', function(x) {return x.foo === 3;},
+              [{foo: 3}, {foo: 42}, {foo: 3}, {foo: 3}, {foo: undefined}]);
+      addTests('arrayLike (1)', strictEquals(2), [2, 1, 3]);
+      addTests('arrayLike (2)', strictEquals(2), [2, 1, 1, 2, 2]);
+      addTests('string (1)', strictEquals('a'), 'ban');
+      addTests('string (2)', function(x) {return x >= '0' && x <= '9';}, 'b01d22e34');
+    });
+
+
+    var zipSpec = {
+      name: 'zip',
+      restrictions: [['arrayLike'], ['arrayLike']],
+      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)], [[3, 4, 5], 'def', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(zipSpec, array.zip, function(zip) {
+      var addDegenerateTests = function(message, left, right) {
+        it('Works for ' + message, function() {
+          var result = zip(left, right);
+
+          expect(result).to.deep.equal([]);
+        });
+      };
+
+
+      var degenerateTests = [
+        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
+        {name: 'arrayLike', tests: [{type: 'empty', value: makeArrayLike()},
+                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
+        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
+      ];
+
+
+      degenerateTests.forEach(function(left) {
+        left.tests.forEach(function(leftTest) {
+          degenerateTests.forEach(function(right) {
+            right.tests.forEach(function(rightTest) {
+              if (leftTest.type === 'normal' && rightTest.type === 'normal')
+                return;
+
+              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
+              addDegenerateTests(message, leftTest.value, rightTest.value);
+            });
+          });
+        });
+      });
+
+
+      var addTests = function(message, left, right) {
+        it('Result is an array for ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var result = zip(l, r);
+
+          expect(isArray(result)).to.equal(true);
+        });
+
+
+        it('Result has correct length for ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var expectedLength = Math.min(l.length, r.length);
+          var length = zip(l, r).length;
+
+          expect(length).to.equal(expectedLength);
+        });
+
+
+        it('Every element is a pair for ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var allPairs = zip(l, r).every(function(p) {
+            return isPair(p);
+          });
+
+          expect(allPairs).to.equal(true);
+        });
+
+
+        it('First of every element is correct for ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var firstsCorrect = zip(l, r).every(function(p, i) {
+            return fst(p) === l[i];
+          });
+
+          expect(firstsCorrect).to.equal(true);
+        });
+
+
+        it('Second of every element is correct for ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var secondsCorrect = zip(l, r).every(function(p, i) {
+            return snd(p) === r[i];
+          });
+
+          expect(secondsCorrect).to.equal(true);
+        });
+      };
+
+
+      var tests = [
+        {name: 'array', tests: [{type: 'singleton', value: [3]}, {type: 'normal', value: [1, 2]}]},
+        {name: 'arrayLike', tests: [{type: 'singleton', value: makeArrayLike(5)},
+                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
+        {name: 'string', tests: [{type: 'singleton', value: 'a'}, {type: 'normal', value: 'funkier'}]}
+      ];
+
+
+      tests.forEach(function(left) {
+        left.tests.forEach(function(leftTest) {
+          tests.forEach(function(right) {
+            right.tests.forEach(function(rightTest) {
+              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
+              if (left.name === right.name)
+                message = ' ' + left.name + ' (' + message + ')';
+              else
+                message = ' mix (' + message + ')';
+
+              addTests(message, leftTest.value, rightTest.value);
+            });
+          });
+        });
+      });
+    });
+
+
+    var zipWithSpec = {
+      name: 'zipWith',
+      restrictions: [['function: minarity 2'], ['arrayLike'], ['arrayLike']],
+      validArguments: [[function(x, y) {return x + y;}], [[1, 2], 'abc', makeArrayLike(2, 3, 4)],
+                      [[3, 4, 5], 'def', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(zipWithSpec, array.zipWith, function(zipWith) {
+      addFuncCalledWithSpecificArityTests(zipWith, 2, [['a', 'b', 'c']]);
+
+
+      var addDegenerateTests = function(message, left, right) {
+        it('Works for ' + message, function() {
+          var result = zipWith(function(l, r) {return l;}, left, right);
+
+          expect(result).to.deep.equal([]);
+        });
+      };
+
+
+      var degenerateTests = [
+        {name: 'array', tests: [{type: 'empty', value: []}, {type: 'normal', value: [1, 2]}]},
+        {name: 'arrayLike', tests: [{type: 'empty', value: makeArrayLike()},
+                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
+        {name: 'string', tests: [{type: 'empty', value: ''}, {type: 'normal', value: 'funkier'}]}
+      ];
+
+
+      degenerateTests.forEach(function(left) {
+        left.tests.forEach(function(leftTest) {
+          degenerateTests.forEach(function(right) {
+            right.tests.forEach(function(rightTest) {
+              if (leftTest.type === 'normal' && rightTest.type === 'normal')
+                return;
+
+              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
+              addDegenerateTests(message, leftTest.value, rightTest.value);
+            });
+          });
+        });
+      });
+
+
+      var addTests = function(message, f, left, right) {
+        it('Result is an array ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var result = zipWith(f, l, r);
+
+          expect(isArray(result)).to.equal(true);
+        });
+
+
+        it('Result has correct length ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var expectedLength = Math.min(l.length, r.length);
+          var length = zipWith(f, l, r).length;
+
+          expect(length).to.equal(expectedLength);
+        });
+
+
+        it('Every element is correct ' + message, function() {
+          var l = left.slice();
+          var r = right.slice();
+          var elementsCorrect = zipWith(f, l, r).every(function(p, i) {
+            return p === f(l[i], r[i]);
+          });
+
+          expect(elementsCorrect).to.equal(true);
+        });
+      };
+
+
+      var tests = [
+        {name: 'array', tests: [{type: 'singleton', value: [3]}, {type: 'normal', value: [1, 2]}]},
+        {name: 'arrayLike', tests: [{type: 'singleton', value: makeArrayLike(5)},
+                                    {type: 'normal', value: makeArrayLike(2, 3, 4)}]},
+        {name: 'string', tests: [{type: 'singleton', value: 'a'}, {type: 'normal', value: 'funkier'}]}
+      ];
+
+
+      var addTwo = function(x, y) {return x + y;};
+      tests.forEach(function(left) {
+        left.tests.forEach(function(leftTest) {
+          tests.forEach(function(right) {
+            right.tests.forEach(function(rightTest) {
+              var message = ['LHS', leftTest.type, left.name, ',', 'RHS', rightTest.type, right.name].join(' ');
+              if (left.name === right.name)
+                message = ' ' + left.name + ' (' + message + ')';
+              else
+                message = ' mix (' + message + ')';
+
+              addTests(message, addTwo, leftTest.value, rightTest.value);
+            });
+          });
+        });
+      });
+    });
+
+
+    var addCommonNubTests = function(fnUnderTest, message, originalData, otherArgs, expectedLength) {
+      it('Length is correct for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var length = fnUnderTest.apply(null, otherArgs.concat([data])).length;
+
+        expect(length).to.equal(expectedLength);
+      });
+
+
+      it('Each value came from original for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var unique = fnUnderTest.apply(null, otherArgs.concat([data]));
+        unique = splitIfNecessary(unique);
+        var copiedFromSource = unique.every(function(val) {
+          return data.indexOf(val) !== -1;
+        });
+
+        expect(copiedFromSource).to.equal(true);
+      });
+
+
+      it('Ordering maintained from original for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var unique = fnUnderTest.apply(null, otherArgs.concat([data]));
+        unique = splitIfNecessary(unique);
+
+        var sameOrder = unique.every(function(val, i) {
+          if (i === 0) return true; // vacuously true
+
+          return data.indexOf(unique[i - 1]) < data.indexOf(val);
+        });
+
+        expect(sameOrder).to.equal(true);
+      });
+    };
+
+
+    var nubSpec = {
+      name: 'nub',
+      restrictions: [['arrayLike']],
+      validArguments: [[[1, 2], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(nubSpec, array.nub, function(nub) {
+      addReturnsEmptyOnEmptyTests(nub, []);
+      addNoModificationOfOriginalTests(nub, []);
+      addReturnsSameTypeTests(nub, []);
+
+
+      var addTests = function(message, originalData, expectedLength) {
+        addCommonNubTests(nub, message, originalData, [], expectedLength);
+
+
+        it('Each value only occurs once for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var unique = nub(data);
+          unique = splitIfNecessary(unique);
+          var allUnique = unique.every(function(val) {
+            return array.occurrences(val, unique).length === 1;
+          });
+
+          expect(allUnique).to.equal(true);
+        });
+      };
+
+
+      addTests('singleton array', [5], 1);
+      addTests('array with no duplicates', [2, 3, 4], 3);
+      addTests('array with one duplicate', [2, 3, 2, 4], 3);
+      addTests('array with multiple duplicates', [2, 3, 3, 4, 2, 4], 3);
+      addTests('singleton arrayLike', makeArrayLike(1), 1);
+      addTests('arrayLike with no duplicates', makeArrayLike(2, 3, 4), 3);
+      addTests('arrayLike with one duplicate', makeArrayLike(2, 3, 2, 4), 3);
+      addTests('arrayLike with multiple duplicates', makeArrayLike(2, 3, 2, 3, 4, 4), 3);
+      addTests('singleton string', 'a', 1);
+      addTests('string with no duplicates', 'abcd', 4);
+      addTests('string with one duplicate', 'mozilla', 6);
+      addTests('string with multiple duplicates', 'banana', 3);
+    });
+
+
+    var nubWithSpec = {
+      name: 'nubWith',
+      restrictions: [['function: arity 2'], ['arrayLike']],
+      validArguments: [[function(x, y) {return false;}], [[1, 2, 3], 'abcd', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(nubWithSpec, array.nubWith, function(nubWith) {
+      var alwaysFalse = function(x, y) {return false;};
+
+
+      addReturnsEmptyOnEmptyTests(nubWith, [alwaysFalse]);
+      addNoModificationOfOriginalTests(nubWith, [alwaysFalse]);
+      addReturnsSameTypeTests(nubWith, [alwaysFalse]);
+      addFuncCalledWithSpecificArityTests(nubWith, 2);
+
+
+      var addTests = function(message, f, originalData, expectedLength) {
+        addCommonNubTests(nubWith, message, originalData, [f], expectedLength);
+
+
+        it('Predicate function called as often as required for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var called = 0;
+          var p = function(x, y) {
+            called += 1;
+            return f(x, y);
+          };
+          nubWith(p, data);
+
+          expect(called).to.be.at.most(data.length * (data.length - 1) / 2);
+        });
+
+
+        it('Each value only occurs once for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var unique = nubWith(f, data);
+          unique = splitIfNecessary(unique);
+          var allUnique = unique.every(function(val, i) {
+            return unique.every(function(val2, j) {
+              if (i === j) return true;
+
+              if (j < i)
+                return f(val2, val) === false;
+
+              return f(val, val2) === false;
+            });
+          });
+
+          expect(allUnique).to.equal(true);
+        });
+      };
+
+
+      addTests('singleton array', alwaysFalse, [1], 1);
+      addTests('array with no duplicates', function(x, y) {return x + y === 4;}, [2, 3, 4], 3);
+      addTests('array with one duplicate', function(x, y) {return x + y === 4;}, [2, 3, 2, 4], 3);
+      addTests('array with multiple duplicates', function(x, y) {return x.foo === y.foo;},
+               [{foo: 1}, {foo: 2}, {foo: 1}, {foo: 3}, {foo: 2}], 3);
+      addTests('singleton arrayLike', alwaysFalse, makeArrayLike(2), 1);
+      addTests('arrayLike with no duplicates', function(x, y) {return x + y === 4;}, makeArrayLike(2, 3, 4), 3);
+      addTests('arrayLike with one duplicate', function(x, y) {return x + y === 4;}, makeArrayLike(2, 3, 2, 4), 3);
+      addTests('arrayLike with multiple duplicates', function(x, y) {return x.foo === y.foo;},
+               makeArrayLike({foo: 1}, {foo: 2}, {foo: 1}, {foo: 3}, {foo: 2}), 3);
+
+      var oneVowel = function(x, y) {return 'aeiou'.indexOf(x) !== -1 && 'aeiou'.indexOf(y) !== -1;};
+      addTests('singleton string', oneVowel, 'a', 1);
+      addTests('string with no duplicates', oneVowel, 'abcd', 4);
+      addTests('string with one duplicate', oneVowel, 'java', 3);
+      addTests('string with multiple duplicates', oneVowel, 'funkier', 5);
+    });
+
+
+    var sortSpec = {
+      name: 'sort',
+      restrictions: [['arrayLike']],
+      validArguments: [[[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(sortSpec, array.sort, function(sort) {
+      addReturnsEmptyOnEmptyTests(sort, []);
+      addNoModificationOfOriginalTests(sort, []);
+      addReturnsSameTypeTests(sort, []);
+
+
+      var addTests = function(message, originalData) {
+        addSameLengthTest(sort, message, [], originalData);
+
+
+        it('Each value came from original for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var sorted = sort(data);
+          sorted = splitIfNecessary(sorted);
+          var copiedFromSource = sorted.every(function(val) {
+            var ourOccurrences = array.occurrences(val, sorted).length;
+            var originalOccurrences = array.occurrences(val, data).length;
+
+            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+          });
+
+          expect(copiedFromSource).to.equal(true);
+        });
+
+
+        it('Ordering correct for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var sorted = sort(data);
+          sorted = splitIfNecessary(sorted);
+          var isSorted = sorted.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return sorted[i - 1] <= val;
+          });
+
+          expect(isSorted).to.equal(true);
+        });
+      };
+
+
+      addTests('singleton array', [1]);
+      addTests('array with no duplicates', [4, 2, 3]);
+      addTests('array with duplicate', [4, 2, 3, 2]);
+      addTests('already sorted array', [1, 2, 3]);
+      addTests('worst case array', [5, 4, 3, 2, 1]);
+
+      addTests('singleton arrayLike', makeArrayLike(1));
+      addTests('arrayLike with no duplicates', makeArrayLike(5, 7, 1));
+      addTests('arrayLike with duplicate', makeArrayLike(5, 7, 1, 7, 2));
+      addTests('already sorted arrayLike', makeArrayLike(1, 2, 3));
+      addTests('worst case arrayLike', makeArrayLike(5, 4, 3, 2, 1));
+
+      addTests('singleton string', 'a');
+      addTests('string with no duplicates', 'debc');
+      addTests('string with duplicate', 'dcebc');
+      addTests('already sorted string', '0123');
+      addTests('worst case string', 'zyxw');
+    });
+
+
+    var sortWithSpec = {
+      name: 'sortWith',
+      restrictions: [['function: arity 2'], ['arrayLike']],
+      validArguments: [[function(x, y) {return -1;}], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(sortWithSpec, array.sortWith, function(sortWith) {
+      var normalCompare = function(x, y) {return x - y;};
+      addReturnsEmptyOnEmptyTests(sortWith, [normalCompare]);
+      addNoModificationOfOriginalTests(sortWith, [normalCompare]);
+      addReturnsSameTypeTests(sortWith, [normalCompare]);
+      addFuncCalledWithSpecificArityTests(sortWith, 2);
+
+
+      var addTests = function(message, f, originalData) {
+        addSameLengthTest(sortWith, message, [f], originalData);
+
+
+        it('Each value came from original for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var sorted = sortWith(f, data);
+          sorted = splitIfNecessary(sorted);
+          var copiedFromSource = sorted.every(function(val) {
+            var ourOccurrences = array.occurrences(val, sorted).length;
+            var originalOccurrences = array.occurrences(val, data).length;
+
+            return data.indexOf(val) !== -1 && ourOccurrences === originalOccurrences;
+          });
+
+          expect(copiedFromSource).to.equal(true);
+        });
+
+
+        it('Ordering correct for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var sorted = sortWith(f, data);
+          sorted = splitIfNecessary(sorted);
+          var result = sorted.every(function(val, i) {
+            if (i === 0) return true; // vacuously true
+
+            return f(sorted[i - 1], val) <= 0;
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTests('singleton array', normalCompare, [1]);
+      addTests('array with no duplicates', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 3}, {foo: 2}]);
+      addTests('array with duplicate', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 3}, {foo: 1}, {foo: 3}]);
+      addTests('already sorted array', function(x, y) {return x.foo - y.foo;},
+                [{foo: 1}, {foo: 2}, {foo: 3}]);
+      addTests('worst case',  function(x, y) {return x.foo - y.foo;},
+                [{foo: 3}, {foo: 2}, {foo: 1}]);
+
+      addTests('singleton arrayLike', normalCompare, makeArrayLike(1));
+      addTests('arrayLike with no duplicates', function(x, y) {return x.foo - y.foo;},
+                makeArrayLike({foo: 1}, {foo: 3}, {foo: 2}));
+      addTests('arrayLike with duplicate', function(x, y) {return x.foo - y.foo;},
+                makeArrayLike({foo: 1}, {foo: 3}, {foo: 1}, {foo: 3}));
+      addTests('already sorted arrayLike', function(x, y) {return x.foo - y.foo;},
+                makeArrayLike({foo: 1}, {foo: 2}, {foo: 3}));
+      addTests('worst case',  function(x, y) {return x.foo - y.foo;},
+                makeArrayLike({foo: 3}, {foo: 2}, {foo: 1}));
+
+      var stringSort = function(x, y) {
+        return x.toUpperCase() < y.toUpperCase() ? -1 : x.toUpperCase() === y.toUpperCase() ? 0 : 1;
+      };
+      addTests('singleton string', stringSort, 'a');
+      addTests('string with no duplicates', stringSort, 'debc');
+      addTests('string with duplicate', stringSort, 'dcebc');
+      addTests('already sorted string', stringSort, '0123');
+      addTests('worst case', stringSort, 'zyxw');
+    });
+
+
+    var unzipSpec = {
+      name: 'unzip',
+      restrictions: [['strictarrayLike']],
+      validArguments: [[[Pair(1, 2)], makeArrayLike(Pair(2, 3), Pair(4, 5))]]
+    };
+
+
+    checkFunction(unzipSpec, array.unzip, function(unzip) {
+      var addThrowsWhenNotPairTest = function(bogus, message) {
+        it('Throws if any element is not a Pair ' + message, function() {
+          var fn = function() {
+            unzip(bogus);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addThrowsWhenNotPairTest('(1)', ['a', Pair(1, 2), Pair(3, 4)]);
+      addThrowsWhenNotPairTest('(2)', [Pair(1, 2), Pair(5, 6), 1, Pair(3, 4)]);
+      addThrowsWhenNotPairTest('(3)', [Pair(1, 2), Pair(5, 6), Pair(3, 4), []]);
+      addThrowsWhenNotPairTest('(4)', makeArrayLike('a', Pair(1, 2), Pair(3, 4)));
+
+
+      var addDegenerateTest = function(message, data) {
+        it('Works for degenerate ' + message + ' case', function() {
+          var result = unzip(data);
+
+          expect(isPair(result)).to.equal(true);
+          expect(fst(result)).to.deep.equal([]);
+          expect(snd(result)).to.deep.equal([]);
+        });
+      };
+
+
+      addDegenerateTest('array', []);
+      addDegenerateTest('arrayLike', makeArrayLike());
+
+
+      var addTests = function(message, originalData) {
+        it('Returns a pair for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = unzip(data);
+
+          expect(isPair(result)).to.equal(true);
+        });
+
+
+        it('First element is an array for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var firstIsArray = isArray(fst(unzip(data)));
+
+          expect(firstIsArray).to.equal(true);
+        });
+
+
+        it('Second element is an array for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var secondIsArray = isArray(snd(unzip(data)));
+
+          expect(secondIsArray).to.equal(true);
+        });
+
+
+        it('First element has correct length for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var length = fst(unzip(data)).length;
+
+          expect(length).to.equal(data.length);
+        });
+
+
+        it('Second element has correct length for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var length = snd(unzip(data)).length;
+
+          expect(length).to.equal(data.length);
+        });
+
+
+        it('Doesn\'t affect the original ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var originalUnaffected = unzip(data) !== data;
+
+          expect(originalUnaffected).to.equal(true);
+        });
+
+
+        it('First element correct for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var firstCorrect = fst(unzip(data)).every(function(val, i) {
+            return fst(data[i]) === val;
+          });
+
+          expect(firstCorrect).to.equal(true);
+        });
+
+
+        it('Second element correct for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var secondCorrect = snd(unzip(data)).every(function(val, i) {
+            return snd(data[i]) === val;
+          });
+
+          expect(secondCorrect).to.equal(true);
+        });
+      };
+
+
+      addTests('singleton array', [Pair(1, 2)]);
+      addTests('normal array', [Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})]);
+      addTests('singleton arrayLike', makeArrayLike(Pair(1, 2)));
+      addTests('normal arrayLike', makeArrayLike(Pair('a', true), Pair(3, null), Pair(1, 2), Pair({}, {})));
+    });
+
+
+    /*
+     * The search and modification functions are not yet ready for implementation, until I get the API finalized.
+     *
+    var insertSpec = {
+      name: 'insert',
+      restrictions: [['positive'], [], ['arrayLike']],
+      validArguments: [[0], ['1'], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(insertSpec, array.insert, function(insert) {
+      addNoModificationOfOriginalTests(insert, [0, 'a']);
+      addReturnsSameTypeTests(insert, [0, 'a']);
+
+
+      var addIndexTest = function(message, index, val, originalData, dontThrow) {
+        dontThrow = dontThrow || false;
+
+
+        it((!dontThrow ? 'Does not throw' : 'Throws') + ' when ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var fn = function() {
+            insert(index, val, data);
+          };
+
+          if (dontThrow)
+            expect(fn).to.not.throw(TypeError);
+          else
+            expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addIndexTest('index > length (array)', 4, 1, [1, 2]);
+      addIndexTest('index > length (arrayLike)', 5, 1, makeArrayLike(2, 3, 4));
+      addIndexTest('index > length (string)', 10, 'a', 'bcde');
+      addIndexTest('index === length (array)', 2, 1, [1, 2], true);
+      addIndexTest('index === length (arrayLike)', 2, 1, makeArrayLike(2, 3), true);
+      addIndexTest('index === length (string)', 4, 'a', 'bcde', true);
+
+
+      var addTests = function(message, index, val, originalData) {
+        addSameLengthTest(insert, 'Returned value is the correct length ' + message, [index, val], originalData, 1);
+
+
+        it('Returned value has correct elements ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var newVal = insert(index, val, data);
+          newVal = splitIfNecessary(newVal);
+          var elementsCorrect = newVal.every(function(v, i) {
+            if (i < index)
+              return v === data[i];
+
+            if (i === index)
+              return v === val;
+
+            return v === data[i - 1];
+          });
+
+          expect(elementsCorrect).to.equal(true);
+        });
+      };
+
+
+      addTests('for array', 1, 4, [1, 2, 3]);
+      addTests('for arrayLike', 1, 4, makeArrayLike(1, 2, 3));
+      addTests('for string', 1, 'd', 'abc');
+      addTests('for array when index === length', 3, 4, [1, 2, 3]);
+      addTests('for arrayLike when index === length', 3, 4, makeArrayLike(1, 2, 3));
+      addTests('for string when index === length', 3, 'd', 'abc');
+      addTests('for array when index === 0', 0, 4, [1, 2, 3]);
+      addTests('for arrayLike when index === 0', 0, 4, makeArrayLike(1, 2, 3));
+      addTests('for string when index === 0', 0, 'd', 'abc');
+      addTests('for empty array when index === 0', 0, 1, []);
+      addTests('for empty arrayLike when index === 0', 0, 1, makeArrayLike());
+      addTests('for empty string when index === 0', 0, 'a', '');
+
+
+      it('toString called when inserting non-string in string', function() {
+        var obj = {toString: function() {return 'funk';}};
+        var result = insert(0, obj, 'ier');
+
+        expect(result).to.equal('funkier');
+      });
+    });
+
+
+    // remove and replace both throw when index >= length
+    var addCommonRemoveReplaceTests = function(fnUnderTest, argsBetween) {
+      argsBetween = argsBetween || [];
+
+
+      var addTest = function(message, index, originalData) {
+        it('Throws if index >= length ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var args = [index].concat(argsBetween).concat([data]);
+          var fn = function() {
+            fnUnderTest.apply(null, args);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      };
+
+
+      addTest('for array (1)', 4, [1, 2, 3]);
+      addTest('for array (2)', 3, [2, 3, 4]);
+      addTest('for arrayLike (1)', 4, makeArrayLike(2, 3, 4));
+      addTest('for arrayLike (2)', 3, makeArrayLike(3, 4, 5));
+      addTest('for string (1)', 4, 'abc');
+      addTest('for string (2)', 3, 'bcd');
+    };
+
+
+    var removeSpec = {
+      name: 'remove',
+      restrictions: [['positive'], ['arrayLike']],
+      validArguments: [[0], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(removeSpec, array.remove, function(remove) {
+      addNoModificationOfOriginalTests(remove, [0]);
+      addReturnsSameTypeTests(remove, [0]);
+      addCommonRemoveReplaceTests(remove);
+
+
+      var addTests = function(message, index, originalData) {
+        addSameLengthTest(remove, 'Returned value is the correct length for ' + message, [index], originalData, -1);
+
+
+        it('Returned value has correct elements for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var newVal = remove(index, data);
+          newVal = splitIfNecessary(newVal);
+          var elementsCorrect = newVal.every(function(v, i) {
+            if (i < index)
+              return v === data[i];
+
+            return v === data[i + 1];
+          });
+
+          expect(elementsCorrect).to.equal(true);
+        });
+      };
+
+
+      addTests('array', 1, [1, 2, 3]);
+      addTests('arrayLike', 1, makeArrayLike(1, 2, 3));
+      addTests('string', 1, 'abc');
+      addTests('array when index === length - 1', 2, [1, 2, 3]);
+      addTests('arrayLike when index === length - 1', 1, makeArrayLike(2, 3));
+      addTests('string when index === length - 1', 2, 'abc');
+      addTests('array when index === 0', 0, [1, 2, 3]);
+      addTests('arrayLike when index === 0', 0, makeArrayLike(3, 4));
+      addTests('string when index === 0', 0, 'abc');
+      addTests('singleton array when index === 0', 0, [1]);
+      addTests('singleton arrayLike when index === 0', 0, makeArrayLike(2));
+      addTests('singleton string when index === 0', 0, 'a');
+    });
+
+
+    var replaceSpec = {
+      name: 'replace',
+      restrictions: [['positive'], [], ['arrayLike']],
+      validArguments: [[0], ['a'], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(replaceSpec, array.replace, function(replace) {
+      addNoModificationOfOriginalTests(replace, [0, 'a']);
+      addReturnsSameTypeTests(replace, [0, 'a']);
+      addCommonRemoveReplaceTests(replace, [1]);
+
+
+      var addTests = function(message, index, val, originalData) {
+        addSameLengthTest(replace, message, [index, val], originalData);
+
+
+        it('Returned value has correct elements for ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var newVal = replace(index, val, data);
+          newVal = splitIfNecessary(newVal);
+          var elementsCorrect = newVal.every(function(v, i) {
+            if (i !== index)
+              return v === data[i];
+
+            return v === val;
+          });
+
+          expect(elementsCorrect).to.equal(true);
+        });
+      };
+
+
+      addTests('array', 1, 0, [1, 2, 3]);
+      addTests('arrayLike', 1, 0, makeArrayLike(2, 3, 4, 5));
+      addTests('string', 1, 'd', 'abc');
+      addTests('array when index === length - 1', 2, 0, [1, 2, 3]);
+      addTests('arrayLike when index === length - 1', 3, 0, makeArrayLike(2, 3, 4, 5));
+      addTests('string when index === length - 1', 2, 'd', 'abc');
+      addTests('array when index === 0', 0, 0, [1, 2, 3]);
+      addTests('arrayLike when index === 0', 0, 0, makeArrayLike(2, 3));
+      addTests('string when index === 0', 0, 'd', 'abc');
+      addTests('singleton array when index === 0', 0, 0, [1]);
+      addTests('singleton arrayLike when index === 0', 0, 0, makeArrayLike(2));
+      addTests('singleton string when index === 0', 0, 'd', 'a');
+
+
+      it('toString called when replacement is non-string for string', function() {
+        var obj = {toString: function() {return 'funk';}};
+        var result = replace(0, obj, 'bier');
+
+        expect(result).to.equal('funkier');
+      });
+    });
+
+
+    var addCommonRemoveNotFoundTests = function(message, fnUnderTest, val, originalData) {
+      addSameLengthTest(fnUnderTest, message, [val], originalData);
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var newVal = fnUnderTest(val, data);
+        var elementsCorrect = newVal.every(function(v, i) {
+          return v === data[i];
+        });
+
+        expect(elementsCorrect).to.equal(true);
+      });
+    };
+
+
+    var addCommonRemoveValTests = function(testAdder, fnUnderTest) {
+      testAdder('array', 2, [1, 2, 3]);
+      testAdder('array when value matches last entry', 3, [1, 2, 3]);
+      testAdder('array when value matches first entry', 1, [1, 2, 3]);
+      testAdder('singleton array when value matches', 1, [1]);
+      testAdder('array with multiple matches', 1, [1, 2, 3, 1]);
+
+      testAdder('arrayLike', 2, makeArrayLike(1, 2, 3));
+      testAdder('arrayLike when value matches last entry', 3, makeArrayLike(1, 2, 3));
+      testAdder('arrayLike when value matches first entry', 1, makeArrayLike(1, 2, 3));
+      testAdder('singleton arrayLike when value matches', 1, makeArrayLike(1));
+      testAdder('arrayLike with multiple matches', 1, makeArrayLike(1, 2, 3, 1));
+
+      addCommonRemoveNotFoundTests('array when value not found', fnUnderTest, 4, [1, 2, 3]);
+      var obj = {foo: 42};
+      addCommonRemoveNotFoundTests('array when value not strictly equal', fnUnderTest, obj,
+                                    [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('array when value strictly equal', obj, [{foo: 1}, obj, {foo: 3}]);
+
+      addCommonRemoveNotFoundTests('arrayLike when value not found', fnUnderTest, 4, makeArrayLike(1, 2, 3));
+      addCommonRemoveNotFoundTests('arrayLike when value not strictly equal', fnUnderTest, obj,
+                                   makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
+      testAdder('arrayLike when value strictly equal', obj, makeArrayLike({foo: 1}, obj, {foo: 3}));
+    };
+
+
+    var addCommonRemoveWithTests = function(testAdder, fnUnderTest) {
+      testAdder('array', fooIs42, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('array when value matches last entry', function(x) {return x >= 3;}, [1, 2, 3]);
+      testAdder('array when value matches first entry', function(x) {return x < 2;}, [1, 2, 3]);
+      testAdder('singleton array when value matches', equals(1), [1]);
+      testAdder('array with multiple matches', function(x) {return x < 10;}, [1, 2, 3, 1]);
+
+      testAdder('arrayLike', fooIs42, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
+      testAdder('arrayLike when value matches last entry', function(x) {return x >= 3;}, makeArrayLike(1, 2, 3));
+      testAdder('arrayLike when value matches first entry', function(x) {return x < 2;}, makeArrayLike(1, 2, 3));
+      testAdder('singleton arrayLike when value matches', equals(1), makeArrayLike(1));
+      testAdder('arrayLike with multiple matches', function(x) {return x < 10;}, makeArrayLike(1, 2, 3, 1));
+
+      addCommonRemoveNotFoundTests('array when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addCommonRemoveNotFoundTests('arrayLike when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
+    };
+
+
+    var addCommonRemoveOneTests = function(fnUnderTest, message, val, originalData, isWith) {
+      addSameLengthTest(fnUnderTest, 'Returned value is the correct length for ' + message, [val], originalData, -1);
+      isWith = isWith || false;
+      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var newVal = fnUnderTest(val, data);
+
+        var f = isWith ? val : function(x) {return x === val;};
+        var deletionFound = false;
+        var elementsCorrect = newVal.every(function(v, i) {
+          if (deletionFound || f(data[i])) {
+            deletionFound = true;
+            return v === data[i + 1];
+          }
+
+          return v === data[i];
+        });
+
+        expect(elementsCorrect).to.equal(true);
+      });
+
+
+      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
+      // these behavious to be explicit
+      it('Returned value has one less occurrence of value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var originalCount = occurrencesFn(val, data).length;
+        var newVal = fnUnderTest(val, data);
+        var newCount = occurrencesFn(val, newVal).length;
+
+        expect(newCount).to.equal(originalCount - 1);
+      });
+
+
+      it('Removes first occurrence of value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var originalOcc = occurrencesFn(val, data);
+        var newVal = fnUnderTest(val, data);
+        var newOcc = occurrencesFn(val, newVal);
+
+        if (originalOcc.length === 1)
+          expect(newOcc).to.deep.equal([]);
+        else
+          expect(newOcc[0]).to.equal(originalOcc[1] - 1);
+      });
+    };
+
+
+    var removeOneSpec = {
+      name: 'removeOne',
+      restrictions: [[], ['strictarrayLike']],
+      validArguments: [[2], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(removeOneSpec, array.removeOne, function(removeOne) {
+      addNoModificationOfOriginalTests(removeOne, [0]);
+      addReturnsSameTypeTests(removeOne, [0], true);
+
+
+      var addTests = function(message, val, originalData) {
+        addCommonRemoveOneTests(removeOne, message, val, originalData);
+      };
+      addCommonRemoveValTests(addTests, removeOne);
+    });
+
+
+    var removeOneWithSpec = {
+      name: 'removeOneWith',
+      restrictions: [['function: arity 1'], ['strictarrayLike']],
+      validArguments: [[alwaysTrue], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(removeOneWithSpec, array.removeOneWith, function(removeOneWith) {
+      addNoModificationOfOriginalTests(removeOneWith, [alwaysTrue]);
+      addReturnsSameTypeTests(removeOneWith, [alwaysTrue], true);
+      addFuncCalledWithSpecificArityTests(removeOneWith, 1, [], true);
+
+
+      var addTests = function(message, f, originalData) {
+        addCommonRemoveOneTests(removeOneWith, message, f, originalData, true);
+      };
+      addCommonRemoveWithTests(addTests, removeOneWith);
+    });
+
+
+    var addCommonRemoveAllTests = function(fnUnderTest, message, val, originalData, isWith) {
+      isWith = isWith || false;
+      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
+
+
+      it('Returned value is the correct length for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var occurrences = occurrencesFn(val, data);
+        var length = fnUnderTest(val, data).length;
+
+        expect(length).to.equal(data.length - occurrences.length);
+      });
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var newVal = fnUnderTest(val, data);
+
+        var f = isWith ? val : function(x) {return x === val;};
+        var offset = 0;
+        var elementsCorrect = newVal.every(function(v, i) {
+          while (f(data[i + offset]))
+             offset += 1;
+
+          return data[i + offset] === v;
+        });
+
+        expect(elementsCorrect).to.equal(true);
+      });
+
+
+      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
+      // these behavious to be explicit
+      it('Returned value has no occurrences of value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var newVal = fnUnderTest(val, data);
+        var newCount = occurrencesFn(val, newVal).length;
+
+        expect(newCount).to.equal(0);
+      });
+    };
+
+
+    var removeAllSpec = {
+      name: 'removeAll',
+      restrictions: [[], ['strictarrayLike']],
+      validArguments: [[2], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(removeAllSpec, array.removeAll, function(removeAll) {
+      addNoModificationOfOriginalTests(removeAll, [0]);
+      addReturnsSameTypeTests(removeAll, [0], true);
+
+
+      var addTests = function(message, val, originalData) {
+        addCommonRemoveAllTests(removeAll, message, val, originalData);
+      };
+
+
+      addCommonRemoveValTests(addTests, removeAll);
+      addTests('array with all matches', 1, [1, 1, 1, 1]);
+      addTests('arrayLike with all matches', 1, makeArrayLike(1, 1, 1, 1));
+    });
+
+
+    var removeAllWithSpec = {
+      name: 'removeAllWith',
+      restrictions: [['function: arity 1'], ['strictarrayLike']],
+      validArguments: [[alwaysTrue], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(removeAllWithSpec, array.removeAllWith, function(removeAllWith) {
+      addNoModificationOfOriginalTests(removeAllWith, [alwaysTrue]);
+      addReturnsSameTypeTests(removeAllWith, [alwaysTrue], true);
+      addFuncCalledWithSpecificArityTests(removeAllWith, 1, [], true);
+
+
+      var addTests = function(message, f, originalData) {
+        addCommonRemoveAllTests(removeAllWith, message, f, originalData, true);
+      };
+
+
+      addCommonRemoveWithTests(addTests, removeAllWith);
+      addTests('array where every value matches', alwaysTrue, [1, 2, 3, 4]);
+      addTests('arrayLike where every value matches', alwaysTrue, makeArrayLike(1, 2, 3, 4));
+    });
+
+
+    var addCommonReplaceNotFoundTests = function(message, fnUnderTest, val, newVal, originalData) {
+      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var replaced = fnUnderTest(val, newVal, data);
+
+        // Can't use chai's deepEqual: it won't equal(true) for arrayLike
+        var allCorrect = replaced.every(function(v, i) {
+          return v === data[i];
+        });
+
+        expect(allCorrect).to.equal(true);
+      });
+    };
+
+
+    var addCommonReplaceValTests = function(testAdder, fnUnderTest) {
+      testAdder('array', 2, 4, [1, 2, 3]);
+      testAdder('array with multiple matches', 1, 4, [1, 2, 3, 1]);
+      testAdder('arrayLike', 2, 4, makeArrayLike(1, 2, 3));
+      testAdder('arrayLike with multiple matches', 1, 4, makeArrayLike(1, 2, 3, 1));
+
+      addCommonReplaceNotFoundTests('array when value not found', fnUnderTest, 4, 5, [1, 2, 3]);
+      var obj = {foo: 42};
+      addCommonReplaceNotFoundTests('array when value not strictly equal', fnUnderTest, obj, {foo: 52},
+                       [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('array when value strictly equal', obj, {foo: 62}, [{foo: 1}, obj, {foo: 3}]);
+
+      addCommonReplaceNotFoundTests('arrayLike when value not found', fnUnderTest, 4, 5, makeArrayLike(1, 2, 3));
+      addCommonReplaceNotFoundTests('arrayLike when value not strictly equal', fnUnderTest, obj, {foo: 52},
+                       makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
+      testAdder('arrayLike when value strictly equal', obj, {foo: 62}, makeArrayLike({foo: 1}, obj, {foo: 3}));
+    };
+
+
+    var addCommonReplaceWithTests = function(testAdder, fnUnderTest) {
+      testAdder('array', fooIs42, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      testAdder('array with multiple matches', function(x) {return x < 10;}, 11, [1, 2, 3, 1]);
+
+      testAdder('arrayLike', fooIs42, {foo: 52}, makeArrayLike({foo: 1}, {foo: 42}, {foo: 3}));
+      testAdder('arrayLike with multiple matches', function(x) {return x < 10;}, 11, makeArrayLike(1, 2, 3, 1));
+
+      addCommonReplaceNotFoundTests('array when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, {foo: 52}, [{foo: 1}, {foo: 42}, {foo: 3}]);
+      addCommonReplaceNotFoundTests('arrayLike when value not found', fnUnderTest,
+                             function(x) {return x.foo === 4;}, {foo: 52}, makeArrayLike({foo: 1}, {foo: 42}));
+    };
+
+
+    var addCommonReplaceOneTests = function(fnUnderTest, message, val, newVal, originalData, isWith) {
+      isWith = isWith || false;
+      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
+      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var replaced = fnUnderTest(val, newVal, data);
+
+        var found = false;
+        var f = isWith ? val : function(x) {return x === val;};
+        var elementsCorrect = replaced.every(function(v, i) {
+          if (!found && f(data[i])) {
+            found = true;
+            return v === newVal;
+          }
+
+          return v === data[i];
+        });
+
+        expect(elementsCorrect).to.equal(true);
+      });
+
+
+      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
+      // these behavious to be explicit
+      it('Returned value has one less occurrence of old value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var originalCount = occurrencesFn(val, data).length;
+        var replaced = fnUnderTest(val, newVal, data);
+        var newCount = occurrencesFn(val, replaced).length;
+
+        expect(newCount).to.equal(originalCount - 1);
+      });
+
+
+      it('Replaces first occurrence of value with new for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var originalOcc = occurrencesFn(val, data);
+        var replaced = fnUnderTest(val, newVal, data);
+        var newSearch = isWith ? base.strictEquals(newVal) : newVal;
+        var newOcc = occurrencesFn(newSearch, replaced);
+
+        expect(newOcc[0]).to.equal(originalOcc[0]);
+      });
+    };
+
+
+    var replaceOneSpec = {
+      name: 'replaceOne',
+      restrictions: [[], [], ['strictarrayLike']],
+      validArguments: [[2], [4], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(replaceOneSpec, array.replaceOne, function(replaceOne) {
+      addNoModificationOfOriginalTests(replaceOne, [0, 1]);
+      addReturnsSameTypeTests(replaceOne, [0, 1], true);
+
+
+      var addTests = function(message, val, newVal, originalData) {
+        addCommonReplaceOneTests(replaceOne, message, val, newVal, originalData);
+      };
+      addCommonReplaceValTests(addTests, replaceOne);
+    });
+
+
+    var replaceOneWithSpec = {
+      name: 'replaceOneWith',
+      restrictions: [['function: arity 1'], [], ['strictarrayLike']],
+      validArguments: [[alwaysTrue], [1], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(replaceOneWithSpec, array.replaceOneWith, function(replaceOneWith) {
+      addNoModificationOfOriginalTests(replaceOneWith, [alwaysTrue, 1]);
+      addReturnsSameTypeTests(replaceOneWith, [alwaysTrue, 'a'], true);
+      addFuncCalledWithSpecificArityTests(replaceOneWith, 1, ['a'], true);
+
+
+      var addTests = function(message, f, newVal, originalData) {
+        addCommonReplaceOneTests(replaceOneWith, message, f, newVal, originalData, true);
+      };
+      addCommonReplaceWithTests(addTests, replaceOneWith);
+    });
+
+
+    var addCommonReplaceAllTests = function(fnUnderTest, message, val, newVal, originalData, isWith) {
+      isWith = isWith || false;
+      var occurrencesFn = isWith ? array.occurrencesWith : array.occurrences;
+      addSameLengthTest(fnUnderTest, message, [val, newVal], originalData);
+
+
+      it('Returned value has correct elements for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var replaced = fnUnderTest(val, newVal, data);
+
+        var f = isWith ? val : function(x) {return x === val;};
+        var elementsCorrect = replaced.every(function(v, i) {
+          if (f(data[i]))
+             return v === newVal;
+
+          return data[i] === v;
+        });
+
+        expect(elementsCorrect).to.equal(true);
+      });
+
+
+      // Any errors that would be caught by the next two tests should be caught by the previous test, however I prefer
+      // these behavious to be explicit
+      it('Returned value has no occurrences of value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var replaced = fnUnderTest(val, newVal, data);
+        var newCount = occurrencesFn(val, replaced).length;
+
+        expect(newCount).to.equal(0);
+      });
+
+
+      it('Replaces all occurrences of value for ' + message, function() {
+        var data = sliceIfNecessary(originalData);
+        var originalOcc = occurrencesFn(val, data);
+        var replaced = fnUnderTest(val, newVal, data);
+        var newSearch = isWith ? base.strictEquals(newVal) : newVal;
+        var newOcc = occurrencesFn(newSearch, replaced);
+        var result = newOcc.every(function(idx, i) {
+          return idx === originalOcc[i];
+        });
+
+        expect(result).to.equal(true);
+      });
+    };
+
+
+    var replaceAllSpec = {
+      name: 'replaceAll',
+      restrictions: [[], [], ['strictarrayLike']],
+      validArguments: [[2], [4], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(replaceAllSpec, array.replaceAll, function(replaceAll) {
+      addNoModificationOfOriginalTests(replaceAll, [0, 1]);
+      addReturnsSameTypeTests(replaceAll, [0, 1], true);
+
+
+      var addTests = function(message, val, newVal, originalData) {
+        addCommonReplaceAllTests(replaceAll, message, val, newVal, originalData);
+      };
+      addCommonReplaceValTests(addTests, replaceAll);
+    });
+
+
+    var replaceAllWithSpec = {
+      name: 'replaceAllWith',
+      restrictions: [['function: arity 1'], [], ['strictarrayLike']],
+      validArguments: [[alwaysTrue], ['e'], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(replaceAllWithSpec, array.replaceAllWith, function(replaceAllWith) {
+      addNoModificationOfOriginalTests(replaceAllWith, [alwaysTrue, 'e']);
+      addReturnsSameTypeTests(replaceAllWith, [alwaysTrue, 'e'], true);
+      addFuncCalledWithSpecificArityTests(replaceAllWith, 1, ['e'], true);
+
+
+      var addTests = function(message, f, newVal, originalData) {
+        addCommonReplaceAllTests(replaceAllWith, message, f, newVal, originalData, true);
+      };
+      addCommonReplaceWithTests(addTests, replaceAllWith);
+
+      var lessThanFive = function(x) {return x < 5;};
+      addTests('array where every value matches', lessThanFive, 5, [1, 2, 3, 4]);
+      addTests('arrayLike where every value matches', lessThanFive, 5, makeArrayLike(1, 2, 3, 4));
+    });
+    */
+
+
+    var joinSpec = {
+      name: 'join',
+      restrictions: [[], ['strictarrayLike']],
+      validArguments: [[' '], [[1, 2, 3], makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(joinSpec, array.join, function(join) {
+      it('Works correctly for empty array', function() {
+        expect(join('-', [])).to.equal('');
+      });
+
+
+      it('Works correctly for empty arrayLike', function() {
+        expect(join('-', makeArrayLike())).to.equal('');
+      });
+
+
+      it('Works correctly for singleton array', function() {
+        var arr = [1];
+
+        expect(join('-', arr)).to.equal(arr[0].toString());
+      });
+
+
+      it('Works correctly for singleton arrayLike', function() {
+        var arr = makeArrayLike(2);
+
+        expect(join('-', arr)).to.equal(arr[0].toString());
+      });
+
+
+      var addTests = function(message, str, originalData) {
+        it('Returns a string ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = join(str, data);
+
+          expect(result).to.be.a('string');
+        });
+
+
+        it('Returned value is correct ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var joined = join(str, data);
+          var s = str.toString();
+          var l = s.length;
+          var offset = 0;
+
+          var result = data.every(function(val, i) {
+            var valString = val.toString();
+
+            if (joined.slice(offset, offset + valString.length) !== valString)
+              return false;
+
+            if (i === data.length - 1)
+              return true;
+
+            offset += valString.length;
+            if (joined.slice(offset, offset + l) !== s)
+              return false;
+
+            offset += l;
+            return true;
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addTests('in normal case (array)', ':', ['a', 'b', 'c']);
+      addTests('when array values are not strings', '_', [1, 2, 3]);
+      addTests('when join value is not a string (array)', {toString: function() {return '-';}}, [1, 2, 3]);
+      addTests('in normal case (arrayLike)', ':', makeArrayLike('a', 'b', 'c'));
+      addTests('when arrayLike values are not strings', '_', makeArrayLike(true, false, 1));
+      addTests('when join value is not a string (arrayLike)', {toString: function() {return '-';}}, makeArrayLike(1, 2, 3));
+    });
+
+
+    var flattenSpec = {
+      name: 'flatten',
+      restrictions: [['strictarrayLike']],
+      validArguments: [[[[1, 2], [3, 4]], makeArrayLike([1, 2], [3, 4])]]
+    };
+
+
+    checkFunction(flattenSpec, array.flatten, function(flatten) {
+      var notArray = [3, true, undefined, null, {}, function() {}];
+
+
+      notArray.forEach(function(val, i) {
+        var testBogus = function(type, arr, j) {
+          it('Throws if any element not an ' + type + ' (' + (3 * i + j + 1) + ')', function() {
+            var fn = function() {
+              flatten(arr);
+            };
+
+            expect(fn).to.throw(TypeError);
+          });
+        };
+
+
+        var bogusArr = [[val, [1, 2], [3, 4]],
+                        [[1, 2], val, [3, 4]],
+                        [[1, 2], [3, 4], val]];
+        var bogusArrLike = [makeArrayLike(val, [1, 2], [3, 4]),
+                            makeArrayLike([1, 2], val, [3, 4]),
+                            makeArrayLike([1, 2], [3, 4], val)];
+        bogusArr.forEach(testBogus.bind(null, 'array'));
+        bogusArr.forEach(testBogus.bind(null, 'arrayLike'));
+      });
+
+
+      it('Returns empty array when supplied empty array', function() {
+        expect(flatten([])).to.deep.equal([]);
+      });
+
+
+      it('Returns empty array when supplied empty arrayLike', function() {
+        expect(flatten(makeArrayLike())).to.deep.equal([]);
+      });
+
+
+      var addTests = function(message, originalData) {
+        it('Result is an array ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var result = flatten(data);
+
+          expect(isArray(result)).to.equal(true);
+        });
+
+
+        it('Result has correct length ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var expected = array.sum(array.map(array.length, data.slice()));
+          var flattened = flatten(data);
+
+          expect(flattened.length).to.equal(expected);
+        });
+
+
+        it('Result has correct contents ' + message, function() {
+          var data = sliceIfNecessary(originalData);
+          var flattened = flatten(data);
+          var offset = 0;
+
+          var result = data.every(function(val) {
+            val = splitIfNecessary(val);
+            var result = val.every(function(val2, j) {
+              return flattened[offset + j] === val2;
+            });
+
+            offset += val.length;
+            return result;
+          });
+        });
+      };
+
+
+      addTests('for normal case (array)', [[1, 2], [3, 4], [5, 6]]);
+      addTests('for singleton (array)', [[1]]);
+      addTests('when some values are strings for array', [[1, 2], 'abc', 'funkier', [5, 6]]);
+      addTests('when all values are strings for array', ['funkierJS', 'is', 'the', 'best']);
+      addTests('when some values are arrayLikes', [[1, 2], makeArrayLike(3, 4), makeArrayLike(5, 6), [7, 8]]);
+      addTests('when all values are arrayLikes', [makeArrayLike(1, 2), makeArrayLike(3, 4, 5)]);
+      addTests('for normal case (arrayLike)', makeArrayLike(makeArrayLike(1, 2), makeArrayLike(3, 4)));
+
+      // We can't make the singleton "arrayLike" in the normal fashion, as our makeArrayLike utility returns a copy if passed a single
+      // arrayLike
+      var arrayLikeSingleton = {'0': makeArrayLike(1), 'length': 1, slice: function() {return makeArrayLike(this);},
+                                every: function(p) {return [].every.call(this, p);}};
+      addTests('for singleton (arrayLike)', arrayLikeSingleton);
+      addTests('when some values are strings for arrayLike', makeArrayLike(makeArrayLike(1, 2), 'abc', 'funkier'));
+      addTests('when all values are strings for arrayLike', makeArrayLike('funkierJS', 'is', 'the', 'best'));
+      addTests('when some values are arrays', makeArrayLike([1, 2], makeArrayLike(3, 4), makeArrayLike(5, 6), [7, 8]));
+      addTests('when all values are arrays', makeArrayLike([1, 2], [3, 4], [5, 6, 7]));
+
+
+      var addOnlyRemovesOneLayerTest = function(message, data) {
+        it('Only removes one layer for ' + message, function() {
+          var flattened = flatten(data);
+          var result = flattened.every(function(val, i) {
+            var sameType = isArray(val) === isArray(data[0][0]) && typeof(val) === typeof(data[0][0]);
+            return sameType && val === data[Math.floor(i / 2)][i % 2];
+          });
+
+          expect(result).to.equal(true);
+        });
+      };
+
+
+      addOnlyRemovesOneLayerTest('array (1)', [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
+      addOnlyRemovesOneLayerTest('array (2)', [['funkier', 'is'], ['the', 'best']]);
+      addOnlyRemovesOneLayerTest('array (3)', [makeArrayLike(1, 4), makeArrayLike(2, 3)]);
+      addOnlyRemovesOneLayerTest('arrayLike (1)', makeArrayLike([[1, 2], [3, 4]], [[5, 6], [7, 8]]));
+      addOnlyRemovesOneLayerTest('arrayLike (2)', makeArrayLike(['funkier', 'is'], ['the', 'best']));
+      addOnlyRemovesOneLayerTest('arrayLike (3)', makeArrayLike(makeArrayLike(1, 5), makeArrayLike(2, 3)));
+    });
+
+
+    var flattenMapSpec = {
+      name: 'flattenMap',
+      restrictions: [['function: arity 1'], ['arrayLike']],
+      validArguments: [[array.replicate(2)], [[1, 2, 3], 'abc', makeArrayLike(2, 3, 4)]]
+    };
+
+
+    checkFunction(flattenMapSpec, array.flattenMap, function(flattenMap) {
+      var addTest = function(message, f, data) {
+        it('Works correctly ' + message, function() {
+          var result = flattenMap(f, data);
+
+          expect(result).to.deep.equal(array.flatten(array.map(f, data)));
+        });
+      };
+
+
+      addTest('(1)', array.range(1), [2, 3, 4, 5]);
+      addTest('(2)', array.replicate(2), 'abc');
+      addTest('(3)', array.range(2), makeArrayLike(4, 5, 6));
+      addTest('for singleton', array.replicate(1), [1]);
+
+
+      it('Throws if the function does not return an array/string', function() {
+        var fn = function() {
+          flattenMap(function(x) {return x + 1;}, [2, 3, 4]);
+        };
+
+        expect(fn).to.throw(TypeError);
+      });
+    });
+  });
+})();
+
+},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/components/types":21,"./testingUtilities":61,"chai":62}],46:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -28417,7 +32751,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"./testingUtilities":60,"chai":61}],46:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"./testingUtilities":61,"chai":62}],47:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -30775,7 +35109,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"./testingUtilities":60,"chai":61}],47:[function(require,module,exports){
+},{"../../lib/components/curry":12,"./testingUtilities":61,"chai":62}],48:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31179,7 +35513,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/date":12,"./testingUtilities":60,"chai":61}],48:[function(require,module,exports){
+},{"../../lib/components/date":13,"./testingUtilities":61,"chai":62}],49:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31801,7 +36135,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/fn":13,"./testingUtilities":60,"chai":61}],49:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/fn":14,"./testingUtilities":61,"chai":62}],50:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31979,7 +36313,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":21,"./testingUtilities":60,"chai":61}],50:[function(require,module,exports){
+},{"../../lib/funcUtils":22,"./testingUtilities":61,"chai":62}],51:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -32069,7 +36403,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32606,7 +36940,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],52:[function(require,module,exports){
+},{"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],53:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32811,7 +37145,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/logical":14,"./testingUtilities":60,"chai":61}],53:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/logical":15,"./testingUtilities":61,"chai":62}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -33102,7 +37436,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/maths":15,"./testingUtilities":60,"chai":61}],54:[function(require,module,exports){
+},{"../../lib/components/maths":16,"./testingUtilities":61,"chai":62}],55:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -33556,7 +37890,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":16,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],55:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],56:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -35775,7 +40109,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/maybe":16,"../../lib/components/object":17,"./testingUtilities":60,"chai":61,"deep-equal":25}],56:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/components/object":18,"./testingUtilities":61,"chai":62,"deep-equal":26}],57:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36185,7 +40519,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":11,"../../lib/components/pair":18,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],57:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],58:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36758,7 +41092,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":10,"../../lib/components/curry":11,"../../lib/components/result":19,"../../lib/internalUtilities":24,"./testingUtilities":60,"chai":61}],58:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/result":20,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],59:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -37822,7 +42156,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -38239,7 +42573,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/types":20,"./testingUtilities":60,"chai":61}],60:[function(require,module,exports){
+},{"../../lib/components/types":21,"./testingUtilities":61,"chai":62}],61:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -39246,10 +43580,10 @@ module.exports = (function() {
   return toExport;
 })();
 
-},{"../../lib/components/curry":11,"chai":61}],61:[function(require,module,exports){
+},{"../../lib/components/curry":12,"chai":62}],62:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":62}],62:[function(require,module,exports){
+},{"./lib/chai":63}],63:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -39338,7 +43672,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":63,"./chai/config":64,"./chai/core/assertions":65,"./chai/interface/assert":66,"./chai/interface/expect":67,"./chai/interface/should":68,"./chai/utils":79,"assertion-error":88}],63:[function(require,module,exports){
+},{"./chai/assertion":64,"./chai/config":65,"./chai/core/assertions":66,"./chai/interface/assert":67,"./chai/interface/expect":68,"./chai/interface/should":69,"./chai/utils":80,"assertion-error":89}],64:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -39470,7 +43804,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":64}],64:[function(require,module,exports){
+},{"./config":65}],65:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -39522,7 +43856,7 @@ module.exports = {
 
 };
 
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -40838,7 +45172,7 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41896,7 +46230,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41910,7 +46244,7 @@ module.exports = function (chai, util) {
 };
 
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -41990,7 +46324,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42103,7 +46437,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":64,"./flag":72,"./transferFlags":86}],70:[function(require,module,exports){
+},{"../config":65,"./flag":73,"./transferFlags":87}],71:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42148,7 +46482,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":64,"./flag":72}],71:[function(require,module,exports){
+},{"../config":65,"./flag":73}],72:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42190,7 +46524,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42224,7 +46558,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42244,7 +46578,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42271,7 +46605,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42322,7 +46656,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":72,"./getActual":73,"./inspect":80,"./objDisplay":81}],76:[function(require,module,exports){
+},{"./flag":73,"./getActual":74,"./inspect":81,"./objDisplay":82}],77:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42344,7 +46678,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42448,7 +46782,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42485,7 +46819,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -42601,7 +46935,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":69,"./addMethod":70,"./addProperty":71,"./flag":72,"./getActual":73,"./getMessage":75,"./getName":76,"./getPathValue":77,"./inspect":80,"./objDisplay":81,"./overwriteChainableMethod":82,"./overwriteMethod":83,"./overwriteProperty":84,"./test":85,"./transferFlags":86,"./type":87,"deep-eql":89}],80:[function(require,module,exports){
+},{"./addChainableMethod":70,"./addMethod":71,"./addProperty":72,"./flag":73,"./getActual":74,"./getMessage":76,"./getName":77,"./getPathValue":78,"./inspect":81,"./objDisplay":82,"./overwriteChainableMethod":83,"./overwriteMethod":84,"./overwriteProperty":85,"./test":86,"./transferFlags":87,"./type":88,"deep-eql":90}],81:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -42923,7 +47257,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":74,"./getName":76,"./getProperties":78}],81:[function(require,module,exports){
+},{"./getEnumerableProperties":75,"./getName":77,"./getProperties":79}],82:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -42974,7 +47308,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":64,"./inspect":80}],82:[function(require,module,exports){
+},{"../config":65,"./inspect":81}],83:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43029,7 +47363,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43082,7 +47416,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43138,7 +47472,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43166,7 +47500,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":72}],86:[function(require,module,exports){
+},{"./flag":73}],87:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43212,7 +47546,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43259,7 +47593,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -43371,10 +47705,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":90}],90:[function(require,module,exports){
+},{"./lib/eql":91}],91:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -43633,10 +47967,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":28,"type-detect":91}],91:[function(require,module,exports){
+},{"buffer":29,"type-detect":92}],92:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":92}],92:[function(require,module,exports){
+},{"./lib/type":93}],93:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>

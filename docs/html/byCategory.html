@@ -12,6 +12,7 @@
 <section class="categoryContents">
 <h2 class="categoryListHeader">Categories</h2>
 <ul class="categoryList">
+<li class="categoryListItem"><a href="#Array">Array</a></li>
 <li class="categoryListItem"><a href="#DataTypes">DataTypes</a></li>
 <li class="categoryListItem"><a href="#Date">Date</a></li>
 <li class="categoryListItem"><a href="#Function">Function</a></li>
@@ -20,6 +21,702 @@
 <li class="categoryListItem"><a href="#Object">Object</a></li>
 <li class="categoryListItem"><a href="#Types">Types</a></li>
 </ul>
+</section>
+<section class="categoryRef" id="Array">
+<h2 class="categoryName">Array</h2>
+<section class="functionRef" id="all">
+<h3 class="functionName">all</h3>
+<p class="see">See <a class="synonymLink" href="#every"><code class="synonymCode">every</code></a></p>
+</section>
+<section class="functionRef" id="any">
+<h3 class="functionName">any</h3>
+<p class="see">See <a class="synonymLink" href="#some"><code class="synonymCode">some</code></a></p>
+</section>
+<section class="functionRef" id="append">
+<h3 class="functionName">append</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = append(value, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">value: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.</p>
+<p>Throws a TypeError if the second argument is not an arrayLike.</p>
+<p>Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+get the result you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = [1, 2, 3];
+funkierJS.append(4, a); // =&gt; [1, 2, 3, 4]
+a; // =&gt; [1, 2, 3] (a is not changed)
+</code></pre></section>
+</section>
+<section class="functionRef" id="concat">
+<h3 class="functionName">concat</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = concat(arr1, arr2);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr1: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param">arr2: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes two arrays, arrayLikes or strings, and returns their concatenation.</p>
+<p>Throws a TypeError if either argument is not an arrayLike.</p>
+<p>If both arguments are the same type and are either arrays or strings, then the result will be the same type,
+otherwise it will be an array.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.concat([1, 2], [3, 4, 5]); // =&gt; [1, 2, 3, 4, 5]
+funkierJS.concat(&#39;abc&#39;, &#39;def&#39;); // =&gt; &#39;abcdef&#39;
+funkierJS.concat(&#39;abc&#39;, [1, 2, 3]); // =&gt; [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, 1, 2, 3]
+</code></pre></section>
+</section>
+<section class="functionRef" id="copy">
+<h3 class="functionName">copy</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = copy(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an arrayLike, and returns a new array which is a shallow copy.</p>
+<p>Throws a TypeError if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = [1, 2, 3];]
+var b = funkierJS.copy(a); // =&gt; [1, 2, 3]
+b === a; // =&gt; false
+</code></pre></section>
+</section>
+<section class="functionRef" id="drop">
+<h3 class="functionName">drop</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = drop(count, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">count: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+removed from the given arrayLike.</p>
+<p>Throws a TypeError if the count is not integral, or if the last argument is not an array or string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.drop(3, &#39;banana&#39;); // =&gt; &#39;anana&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="dropWhile">
+<h3 class="functionName">dropWhile</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = dropWhile(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
+the remaining members our source upon removing the initial elements for which the predicate function returned true.</p>
+<p>Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.dropWhile(even, [2, 4, 3, 5, 7]; // =&gt; [3, 5, 7
+</code></pre></section>
+</section>
+<section class="functionRef" id="each">
+<h3 class="functionName">each</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">each(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<p>Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
+returns undefined.</p>
+<p>Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.each(function(e) {console.log(e);}, [1, 2]); // =&gt; Logs 1 then 2 to the console
+</code></pre></section>
+</section>
+<section class="functionRef" id="element">
+<h3 class="functionName">element</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = element(val, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict
+identity) and false otherwise.</p>
+<p>Throws a TypeError if the second argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.element(&#39;a&#39;, &#39;cable&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="elementWith">
+<h3 class="functionName">elementWith</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = elementWith(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
+Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.</p>
+<p>Throws a TypeError if the first argument is not a function of arity 1, or the second argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var p = function(e) {return e.foo = 42;};
+funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="every">
+<h3 class="functionName">every</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">all</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = every(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+predicate with every element of the array or string, until either the predicate function returns false, or the end
+of the array or string is reached.</p>
+<p>Returns the last value returned by the predicate function.</p>
+<p>Throws a TypeError if p is not a function of arity 1, or if the second argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.every(even, [2, 4, 6]); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="filter">
+<h3 class="functionName">filter</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = filter(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
+those members of arr—in the same order as the original array—for which the predicate function returned true.</p>
+<p>Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.filter(even, [2, 3, 4, 5, 6]); // =&gt; [2, 4, 6]
+</code></pre></section>
+</section>
+<section class="functionRef" id="flatten">
+<h3 class="functionName">flatten</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = flatten(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes an array containing arrays or strings. Returns an array containing the concatenation of those arrays/strings.
+Note that flatten only strips off one layer.</p>
+<p>Throws a TypeError if the supplied value is not arrayLike, or if any of the values within it are not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.flatten([[1, 2], [3, 4]]); // =&gt; [1, 2, 3, 4]
+</code></pre></section>
+</section>
+<section class="functionRef" id="flattenMap">
+<h3 class="functionName">flattenMap</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = flattenMap(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and
+flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
+TypeError is thrown if this is not the case.</p>
+<p>A TypeError will also be thrown if the last argument is not arrayLike, or if the first argument is not a function.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var fn = function(n) {return [n, n * n];};
+funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
+</code></pre></section>
+</section>
+<section class="functionRef" id="foldl">
+<h3 class="functionName">foldl</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">reduce</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = foldl(f, initial, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">initial: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.
+Traverses the array or string from left to right, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and <code>foldl</code> returns the
+value returned by the final call. The first call&#39;s accumulation parameter will be the given initial value.</p>
+<p>Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an array or
+string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.foldl(function(soFar, current) {return soFar*10 + (current - 0);}, 0, &#39;123&#39;); // 123
+</code></pre></section>
+</section>
+<section class="functionRef" id="foldl1">
+<h3 class="functionName">foldl1</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">reduce1</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = foldl1(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array
+from left to right from the second element, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldl1 returns
+returns the value returned by the final call. The first call&#39;s accumulation parameter will be the first element of
+the array or string.</p>
+<p>Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an arrayLike,
+or if the arrayLike is empty.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.foldl1(multiply, [2, 3, 4]); // =&gt; 24
+</code></pre></section>
+</section>
+<section class="functionRef" id="foldr">
+<h3 class="functionName">foldr</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">reduceRight</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = foldr(f, initial, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">initial: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.
+Traverses the array or string from right to left, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldr returns the
+value returned by the final call. The first call&#39;s accumulation parameter willbe the given initial value.</p>
+<p>Throws a TypeError if the first parameter is not a function of arity 2, or if the last parameter is not an
+arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.foldr(subtract, 0, [2, 3, 4]); // =&gt; -9
+</code></pre></section>
+</section>
+<section class="functionRef" id="foldr1">
+<h3 class="functionName">foldr1</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">reduceRight1</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = foldr1(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from
+right to left from the penultimate element, calling the function with two arguments: the current accumulation
+value, and the current element. The value returned will form the next accumulation value, and foldr1 returns
+returns the value returned by the final call. The first call&#39;s accumulation parameter will be the last element of
+the array or string.</p>
+<p>Throws a TypeError if the first parameter is not a function of arity 2, if the last parameter is not an array or
+string, or if the array or string is empty.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.foldr1(function(soFar, current) {return current + soFar;}, &quot;banana&quot;); // =&gt; ananab
+</code></pre></section>
+</section>
+<section class="functionRef" id="getIndex">
+<h3 class="functionName">getIndex</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = getIndex(index, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">index: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a
+TypeError if the index is outside the range for the given object.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.getIndex(1, &quot;abcd&quot;); 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="head">
+<h3 class="functionName">head</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = head(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an
+empty arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.head([1, 2, 3]); // =&gt; 1
+</code></pre></section>
+</section>
+<section class="functionRef" id="init">
+<h3 class="functionName">init</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = init(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike. Returns an array or string containing every element except the last.</p>
+<p>Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.init([2, 3, 4, 5]); // =&gt; [2, 3, 4]
+</code></pre></section>
+</section>
+<section class="functionRef" id="inits">
+<h3 class="functionName">inits</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">prefixes</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = inits(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.</p>
+<p>Throws a TypeError if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.inits([2, 3]); // =&gt; [[], [2], [2, 3]]
+</code></pre></section>
+</section>
+<section class="functionRef" id="intersperse">
+<h3 class="functionName">intersperse</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = intersperse(val, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each
+pair of elements of the original.</p>
+<p>Note: if the second parameter is a string, the first parameter will be coerced to a string.</p>
+<p>Throws a TypeError if the second argument is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.intersperse(1, [2, 3, 4]); // =&gt; [2, 1, 3, 1, 4]
+</code></pre></section>
+</section>
+<section class="functionRef" id="isEmpty">
+<h3 class="functionName">isEmpty</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = isEmpty(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arraLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Returns true if the given array, arrayLike or string is empty, and false if not.</p>
+<p>Throws a TypeError if the argument is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.isEmpty([]); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="join">
+<h3 class="functionName">join</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = join(separator, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">separator: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Takes a separator value that can be coerced to a string, and an array. Returns a string, containing the toString
+of each element in the array, separated by the toString of the given separator.</p>
+<p>Throws a TypeError if the last element is not an array.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.join(&#39;-&#39;, [1, 2, 3]); // =&gt; &#39;1-2-3&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="last">
+<h3 class="functionName">last</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = last(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an
+empty arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.last([1, 2, 3]); // =&gt; 3
+</code></pre></section>
+</section>
+<section class="functionRef" id="length">
+<h3 class="functionName">length</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = length(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.length([1, 2, 3]); // =&gt; 3
+</code></pre></section>
+</section>
+<section class="functionRef" id="map">
+<h3 class="functionName">map</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = map(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
+we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
+have an arity of at least 1, or if the last argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.map(plus(1), [2, 3, 4]); // =&gt; [3, 4, 5]
+</code></pre></section>
+</section>
+<section class="functionRef" id="maximum">
+<h3 class="functionName">maximum</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = maximum(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the largest element of the given array, string or arrayLike.</p>
+<p>Throws a TypeError if the value is not an arrayLike, or it is empty.</p>
+<p>Note: this function is intended to be used with arrays containing numeric or character data. You are of course free
+to abuse it, but it will likely not do what you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.maximum([20, 10]); // =&gt; 20
+</code></pre></section>
+</section>
+<section class="functionRef" id="minimum">
+<h3 class="functionName">minimum</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = minimum(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
+<p>Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.</p>
+<p>Note: this function is intended to be used with arrays containing numeric or character data. You are of course
+free to abuse it, but it will likely not do what you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.minimum([20, 10]); // =&gt; 10
+</code></pre></section>
+</section>
+<section class="functionRef" id="nub">
+<h3 class="functionName">nub</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">uniq</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = nub(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict
+equality—removed. The order of elements is preserved.</p>
+<p>Throws a TypeError if the given argument is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.nub(&#39;banana&#39;); // &#39;ban&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="nubWith">
+<h3 class="functionName">nubWith</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">uniqWith</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = nubWith(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all
+duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when
+called with a previously encountered element and the element under consideration. The order of elements is
+preserved.</p>
+<p>Throws a TypeError if the first argument is not a function, or has an arity other than 2, or if the last argument
+is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var pred = function(x, y) { return x.foo === y.foo; };
+funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
+// =&gt; [{foo: 12}, {foo: 42}]
+</code></pre></section>
+</section>
+<section class="functionRef" id="occurrences">
+<h3 class="functionName">occurrences</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = occurrences(needle, haystack);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">needle: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li><li class="paramsItem"><code class="paramType type">`  
+haystack</code></li><li class="paramsItem"><code class="paramType type">arrayLike`</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested
+for strict equality—and returns an array containing all the indices into haystack where the values may be found.</p>
+<p>Throws a TypeError if the haystack parameter is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.occurrences(2, [1, 2, 2, 3, 2, 4]; // =&gt; [1, 2, 4]
+</code></pre></section>
+</section>
+<section class="functionRef" id="occurrencesWith">
+<h3 class="functionName">occurrencesWith</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = occurrencesWith(needle, haystack);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">needle: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li><li class="paramsItem"><code class="paramType type">`  
+haystack</code></li><li class="paramsItem"><code class="paramType type">arrayLike`</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the
+value—tested by the given predicate—and returns an array containing all the indices into haystack where the
+predicate holds.</p>
+<p>Throws a TypeError if pred is not a predicate function of arity 1, or if the haystack parameter is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var pred = function(e) {return e.foo === 42;};
+var arr = [{foo: 1}, {foo: 42}, {foo: 42}, {foo: 3}];
+funkierJS.occurrencesWith(pred, arr); // =&gt; [1, 2]
+</code></pre></section>
+</section>
+<section class="functionRef" id="prefixes">
+<h3 class="functionName">prefixes</h3>
+<p class="see">See <a class="synonymLink" href="#inits"><code class="synonymCode">inits</code></a></p>
+</section>
+<section class="functionRef" id="prepend">
+<h3 class="functionName">prepend</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = prepend(value, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">value: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.</p>
+<p>Throws a TypeError if the second argument is not an arrayLike.</p>
+<p>Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
+get the result you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var a = [1, 2, 3];
+funkierJS.prepend(4, a); // =&gt; [4, 1, 2, 3]
+a; // =&gt; [1, 2, 3] (a is not changed)
+</code></pre></section>
+</section>
+<section class="functionRef" id="product">
+<h3 class="functionName">product</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = product(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.</p>
+<p>Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+but it will likely not do what you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.product([20, 10]); // =&gt; 200
+</code></pre></section>
+</section>
+<section class="functionRef" id="range">
+<h3 class="functionName">range</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = range(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes two numbers, a and b. Returns an array containing the arithmetic sequence of elements from a up to but not
+including b, each element increasing by 1.</p>
+<p>Throws a TypeError if b &lt; a.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.range(2, 7); // =&gt; [2, 3, 4, 5, 6]
+</code></pre></section>
+</section>
+<section class="functionRef" id="rangeStep">
+<h3 class="functionName">rangeStep</h3>
+<p class="see">See <a class="synonymLink" href="#rangeStride"><code class="synonymCode">rangeStride</code></a></p>
+</section>
+<section class="functionRef" id="rangeStride">
+<h3 class="functionName">rangeStride</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">rangeStep</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = rangeStride(a, stride, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">stride: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes three numbers, a stride and b. Returns an array containing the arithmetic sequence of elements from a up to
+but not including b, each element increasing by stride.</p>
+<p>Throws a TypeError if the sequence will not terminate.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.rangeStep(2, 2, 7); // =&gt; [2, 4, 6]
+</code></pre></section>
+</section>
+<section class="functionRef" id="reduce">
+<h3 class="functionName">reduce</h3>
+<p class="see">See <a class="synonymLink" href="#foldl"><code class="synonymCode">foldl</code></a></p>
+</section>
+<section class="functionRef" id="reduce1">
+<h3 class="functionName">reduce1</h3>
+<p class="see">See <a class="synonymLink" href="#foldl1"><code class="synonymCode">foldl1</code></a></p>
+</section>
+<section class="functionRef" id="reduceRight">
+<h3 class="functionName">reduceRight</h3>
+<p class="see">See <a class="synonymLink" href="#foldr"><code class="synonymCode">foldr</code></a></p>
+</section>
+<section class="functionRef" id="reduceRight1">
+<h3 class="functionName">reduceRight1</h3>
+<p class="see">See <a class="synonymLink" href="#foldr1"><code class="synonymCode">foldr1</code></a></p>
+</section>
+<section class="functionRef" id="replicate">
+<h3 class="functionName">replicate</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = replicate(length, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">length: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws
+a TypeError if the given length is negative.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.replicate(5, 42); // =&gt; [42, 42, 42, 42, 42]
+</code></pre></section>
+</section>
+<section class="functionRef" id="reverse">
+<h3 class="functionName">reverse</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = reverse(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.</p>
+<p>Throws a TypeError if the argument is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.reverse(&#39;banana&#39;); &#39;ananab&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="slice">
+<h3 class="functionName">slice</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = slice(from, to, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">from: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">to: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the
+elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the
+object, then all values from &#39;from&#39; will be returned.</p>
+<p>Throws a TypeError if from or to are not positive integers, or if the last argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.slice(1, 3, [1, 2, 3, 4, 5]; // =&gt; [2, 3]
+</code></pre></section>
+</section>
+<section class="functionRef" id="some">
+<h3 class="functionName">some</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">any</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = some(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
+predicate with every element of the array or string, until either the predicate function returns true, or the end
+of the array or string is reached.</p>
+<p>Returns the last value returned by the predicate function.</p>
+<p>Throws a TypeError if p is not a function of arity 1, or if the second argument is not an array or string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.some(odd, [2, 4, 5, 6]; // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="sort">
+<h3 class="functionName">sort</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sort(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.</p>
+<p>Throws a TypeError if the given argument is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.sort([10, 1, 21, 2]); // =&gt; [1, 10, 2, 21]
+</code></pre></section>
+</section>
+<section class="functionRef" id="sortWith">
+<h3 class="functionName">sortWith</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sortWith(f, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the
+given function. The function should return a negative number if the first argument is &quot;less than&quot; the second, 0 if
+the two arguments are &quot;equal&quot;, and a positive number if the first argument is greater than the second.</p>
+<p>Throws a TypeError if the first argument is not a function of arity 2, or if the second is not arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var sortFn = function(x, y) {return x - y;};
+funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // =&gt; [1, 2, 10, 21]
+</code></pre></section>
+</section>
+<section class="functionRef" id="suffixes">
+<h3 class="functionName">suffixes</h3>
+<p class="see">See <a class="synonymLink" href="#tails"><code class="synonymCode">tails</code></a></p>
+</section>
+<section class="functionRef" id="sum">
+<h3 class="functionName">sum</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = sum(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
+arrayLike, or it is empty.</p>
+<p>Note: this function is intended to be used with arrays containing numeric data. You are of course free to abuse it,
+but it will likely not do what you expect.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.sum([20, 10]); // =&gt; 30
+</code></pre></section>
+</section>
+<section class="functionRef" id="tail">
+<h3 class="functionName">tail</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = tail(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike. Returns an array or string containing every element except the first.</p>
+<p>Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.tail(&#39;banana&#39;); // =&gt; &#39;anana&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="tails">
+<h3 class="functionName">tails</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">suffixes</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = tails(arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.</p>
+<p>Throws a TypeError if the given value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.tails([2, 3]); // =&gt; [[2, 3], [3], []]
+</code></pre></section>
+</section>
+<section class="functionRef" id="take">
+<h3 class="functionName">take</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = take(count, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">count: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
+of the given arrayLike.</p>
+<p>Throws a TypeError if the count is not integral, or if the last argument is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.take(3, &#39;banana&#39;); // =&gt; &#39;ban&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="takeWhile">
+<h3 class="functionName">takeWhile</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = takeWhile(pred, arr);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">pred: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">arr: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<p>Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
+string containing the initial members of the given arrayLike for which the predicate returned true.</p>
+<p>Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.takeWhile(even, [2, 4, 3, 5, 7]; // =&gt; [2, 4]
+</code></pre></section>
+</section>
+<section class="functionRef" id="uniq">
+<h3 class="functionName">uniq</h3>
+<p class="see">See <a class="synonymLink" href="#nub"><code class="synonymCode">nub</code></a></p>
+</section>
+<section class="functionRef" id="uniqWith">
+<h3 class="functionName">uniqWith</h3>
+<p class="see">See <a class="synonymLink" href="#nubWith"><code class="synonymCode">nubWith</code></a></p>
+</section>
+<section class="functionRef" id="unzip">
+<h3 class="functionName">unzip</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = unzip(source);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">source: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<p>Takes an array of Pairs, and returns a <a href="#Pair"><code>Pair</code></a>. The first element is an array containing the first element from each
+pair, and likewise the second element is an array containing the second elements.</p>
+<p>Throws a TypeError if the given argument is not an array, or if any element is not a Pair.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.unzip([Pair(1, 2), Pair(3, 4)]); // =&gt;  Pair([1, 3], [2, 4])
+</code></pre></section>
+</section>
+<section class="functionRef" id="zip">
+<h3 class="functionName">zip</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = zip(a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two
+arguments. Each element is a <a href="#Pair"><code>Pair</code></a> p, such that <code>fst(p) === a[i]</code> and <code>snd(p) === b[i]</code> for each position
+i in the result.</p>
+<p>Throws a TypeError if neither argument is arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.zip([1, 2], [3, 4]); // =&gt; [Pair(1, 3), Pair(2, 4)]
+</code></pre></section>
+</section>
+<section class="functionRef" id="zipWith">
+<h3 class="functionName">zipWith</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">zipWith(f, a, b);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param">a: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param">b: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<p>Returns array</p>
+<p>Takes a function of arity 2, and a two arrays/arrayLikes/strings, a and b, and returns a new array. The new array
+has the same length as the smaller of the two arguments. Each element is the result of calling the supplied
+function with the elements at the corresponding position in the original arrayLikes.</p>
+<p>Throws a TypeError if the first argument is not an argument of arity at least 2, or if neither of the last two
+arguments is arrayLike.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>var f = function(a, b) {return a + b;};
+funkierJS.zipWith(f, &#39;apple&#39;, &#39;banana&#39;); // =&gt; [&#39;ab&#39;, &#39;pa&#39;, &#39;pn&#39;, &#39;la&#39;, &#39;en&#39;]
+</code></pre></section>
 </section>
 <section class="categoryRef" id="DataTypes">
 <h2 class="categoryName">DataTypes</h2>
