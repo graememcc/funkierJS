@@ -2442,9 +2442,9 @@ first value is not a function of arity 1, or the second is not a known functor.
 The actions taken are as follows:
   - arrays/strings: the function is mapped over the array
   - Maybe: [`Just`](#Just) values yield a new Just value containing the result of applying the function to the
-           contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
+     contents of the Just. [`Nothing`](#Nothing) values yield Nothing.
   - Result: [`Ok`](#Ok) values yiels a new Ok value containing the result of applying the function to the contents
-            of the Ok. [`Err`](#Err) values yield the Err value unchanged.
+     of the Ok. [`Err`](#Err) values yield the Err value unchanged.
 
 #### Examples ####
     funkierJS.fmap(function(x) { return x + 1; }, Just(10)); => Just 11
@@ -4040,9 +4040,9 @@ If not null, the object has the following properties:
   - index: the index in the original string where the match was found
   - matchedText: the substring that matched the pattern
   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
-                    The substring matching the first parenthesised expression will be at position 0, the string
-                    matching the second at position 1, and so on. If the regular expression did not contain any
-                    parenthesised subexpressions, this array will be empty.
+     substring matching the first parenthesised expression will be at position 0, the string
+     matching the second at position 1, and so on. If the regular expression did not contain any
+     parenthesised subexpressions, this array will be empty.
 
 This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
 is not affected by and does not change the lastIndex property of the regular expression if it exists.
@@ -4066,12 +4066,13 @@ Finds the first match in a string for a given regular expression from a given in
 regular expression an index, and a string. Returns a single object or null.
 
 If not null, the object has the following properties:
+
   - index: the index in the original string where the match was found
   - matchedText: the substring that matched the pattern
   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
-                    The substring matching the first parenthesised expression will be at position 0, the string
-                    matching the second at position 1, and so on. If the regular expression did not contain any
-                    parenthesised subexpressions, this array will be empty.
+    The substring matching the first parenthesised expression will be at position 0, the string
+     the second at position 1, and so on. If the regular expression did not contain any
+     subexpressions, this array will be empty.
 
 This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
 is not affected by and does not change the lastIndex property of the regular expression if it exists.
@@ -4097,9 +4098,9 @@ Each object has the following properties:
   - index: the index in the original string where the match was found
   - matchedText: the substring that matched the pattern
   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
-                    The substring matching the first parenthesised expression will be at position 0, the string
-                    matching the second at position 1, and so on. If the regular expression did not contain any
-                    parenthesised subexpressions, this array will be empty.
+     The substring matching the first parenthesised expression will be at position 0, the string
+     matching the second at position 1, and so on. If the regular expression did not contain any
+     parenthesised subexpressions, this array will be empty.
 
 This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
 is not affected by and does not change the lastIndex property of the regular expression if it exists.
@@ -4128,9 +4129,9 @@ Each object has the following properties:
   - index: the index in the original string where the match was found
   - matchedText: the substring that matched the pattern
   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
-                    The substring matching the first parenthesised expression will be at position 0, the string
-                    matching the second at position 1, and so on. If the regular expression did not contain any
-                    parenthesised subexpressions, this array will be empty.
+     The substring matching the first parenthesised expression will be at position 0, the string
+     matching the second at position 1, and so on. If the regular expression did not contain any
+     parenthesised subexpressions, this array will be empty.
 
 This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
 is not affected by and does not change the lastIndex property of the regular expression if it exists.

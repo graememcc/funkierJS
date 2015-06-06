@@ -35,8 +35,16 @@ module.exports = (function() {
    * - dest:  The filename where output will be written. If not present, the type of output in question will not be
    *          generated
    *
-   * - pre:   (Optional) Either a string filename whose contents should be read and prepended, or an array of strings
-   *          to prepend
+   * - pre:    (Optional) Either a string filename whose contents should be read and prepended, or an array of strings
+   *           to prepend
+   *
+   * - post:   (Optional) Either a string filename whose contents should be read and appended, or an array of strings
+   *           to append
+   *
+   * HTML entries options can also contain the following options:
+   *
+   * - listNames: (Optional) When present, output a div containing the relevant names i.e. the function names for
+   *              standard output, or the category names for category output, suitable for a sidebar
    *
    * When generating HTML "by name", lines denoting the category a value belongs to will contain a link to the "by
    * category" documentation. This imposes some additional requirements when generating HTML A-Z documentation. One
@@ -234,8 +242,21 @@ module.exports = (function() {
 
     var pre = readSurroundingFile(data.pre);
     var post = readSurroundingFile(data.post);
+
+    var categories = collated.getCategories();
+    var names = collated.getNames();
+
     if (generationOptions.isCategory) {
-      var categories = collated.getCategories();
+      if (data.listNames) {
+        pre.push('<div class="contentsSidebar">\n');
+        pre.push('<ul class="sidebarList">\n');
+        pre = pre.concat(categories.map(function(cat) {
+          return '<li class="sidebarListItem"><a class="sidebarLink" href="#' + cat + '">' + cat + '</a></li>\n';
+        }));
+        pre.push('</ul>\n');
+        pre.push('</div>\n');
+      }
+
       pre.push('<section class="categoryContents">\n');
       pre.push('<h2 class="categoryListHeader">Categories</h2>\n');
       pre.push('<ul class="categoryList">\n');
@@ -246,6 +267,16 @@ module.exports = (function() {
       pre.push('</section>\n');
 
       post = ['</section>'].concat(post);
+    } else {
+      if (data.listNames) {
+        pre.push('<div class="contentsSidebar">\n');
+        pre.push('<ul class="sidebarList">\n');
+        pre = pre.concat(names.map(function(name) {
+          return '<li class="sidebarListItem"><a class="sidebarLink" href="#' + name + '">' + name + '</a></li>\n';
+        }));
+        pre.push('</ul>\n');
+        pre.push('</div>\n');
+      }
     }
 
     var categoryFile = null;

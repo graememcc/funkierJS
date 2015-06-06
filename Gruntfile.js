@@ -63,6 +63,7 @@ module.exports = function(grunt) {
         html: {
           byName: {
             dest: 'docs/html/index.html',
+            listNames: true,
             pre: '<%= templateDir %>/html/pre.html',
             preReplace: [{search: /TITLE/,   replace: 'funkierJS API'},
                          {search: /HEADING/, replace: 'funkierJS API'}],
@@ -71,6 +72,7 @@ module.exports = function(grunt) {
 
           byCategory: {
             dest: 'docs/html/byCategory.html',
+            listNames: true,
             pre: '<%= templateDir %>/html/pre.html',
             preReplace: [{search: /TITLE/,   replace: 'funkierJS API: By Category'},
                          {search: /HEADING/, replace: 'funkierJS API: By Category'}],
@@ -103,6 +105,7 @@ module.exports = function(grunt) {
         html: {
           byName: {
             dest: 'docs/<%= pkg.version %>/html/index.html',
+            listNames: true,
             pre: '<%= templateDir %>/html/pre.html',
             preReplace: [{search: /TITLE/,   replace: 'funkierJS API (version <%= pkg.version %>)'},
                          {search: /HEADING/, replace: 'funkierJS API (version <%= pkg.version %>)'}],
@@ -111,6 +114,7 @@ module.exports = function(grunt) {
 
           byCategory: {
             dest: 'docs/<%= pkg.version %>/html/byCategory.html',
+            listNames: true,
             pre: '<%= templateDir %>/html/pre.html',
             preReplace: [{search: /TITLE/,   replace: 'funkierJS API: By Category (version <%= pkg.version %>)'},
                          {search: /HEADING/, replace: 'funkierJS API: By Category (version <%= pkg.version %>)'}],
