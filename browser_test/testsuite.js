@@ -33,7 +33,7 @@ module.exports = (function() {
   var testTypes = require('../test/funkierJS/testTypes');
 })();
 
-},{"../test/docgen/CPTestDataHelper":34,"../test/docgen/testAPIFunction":35,"../test/docgen/testAPIObject":36,"../test/docgen/testAPIPrototype":37,"../test/docgen/testCPTestDataHelper":38,"../test/docgen/testCollator":39,"../test/docgen/testCommentProcessor":40,"../test/docgen/testLineProcessor":41,"../test/docgen/testMarkdownCreator":42,"../test/docgen/testMarkdownRenderer":43,"../test/funkierJS/testAPI":44,"../test/funkierJS/testArray":45,"../test/funkierJS/testBase":46,"../test/funkierJS/testCurry":47,"../test/funkierJS/testDate":48,"../test/funkierJS/testFn":49,"../test/funkierJS/testFuncUtils":50,"../test/funkierJS/testFunkier":51,"../test/funkierJS/testInternalUtilities":52,"../test/funkierJS/testLogical":53,"../test/funkierJS/testMaths":54,"../test/funkierJS/testMaybe":55,"../test/funkierJS/testObject":56,"../test/funkierJS/testPair":57,"../test/funkierJS/testResult":58,"../test/funkierJS/testString":59,"../test/funkierJS/testTypes":60,"../test/funkierJS/testingUtilities":61}],2:[function(require,module,exports){
+},{"../test/docgen/CPTestDataHelper":35,"../test/docgen/testAPIFunction":36,"../test/docgen/testAPIObject":37,"../test/docgen/testAPIPrototype":38,"../test/docgen/testCPTestDataHelper":39,"../test/docgen/testCollator":40,"../test/docgen/testCommentProcessor":41,"../test/docgen/testLineProcessor":42,"../test/docgen/testMarkdownCreator":43,"../test/docgen/testMarkdownRenderer":44,"../test/funkierJS/testAPI":45,"../test/funkierJS/testArray":46,"../test/funkierJS/testBase":47,"../test/funkierJS/testCurry":48,"../test/funkierJS/testDate":49,"../test/funkierJS/testFn":50,"../test/funkierJS/testFuncUtils":51,"../test/funkierJS/testFunkier":52,"../test/funkierJS/testInternalUtilities":53,"../test/funkierJS/testLogical":54,"../test/funkierJS/testMaths":55,"../test/funkierJS/testMaybe":56,"../test/funkierJS/testObject":57,"../test/funkierJS/testPair":58,"../test/funkierJS/testResult":59,"../test/funkierJS/testString":60,"../test/funkierJS/testTypes":61,"../test/funkierJS/testingUtilities":62}],2:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -1587,7 +1587,7 @@ module.exports = (function() {
   return makeMarkdownRenderer;
 })();
 
-},{"marked":33}],10:[function(require,module,exports){
+},{"marked":34}],10:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -3873,7 +3873,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"../internalUtilities":25,"./base":11,"./curry":12,"./logical":15,"./object":18,"./pair":19,"./types":21}],11:[function(require,module,exports){
+},{"../funcUtils":23,"../internalUtilities":26,"./base":11,"./curry":12,"./logical":15,"./object":18,"./pair":19,"./types":22}],11:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -4214,7 +4214,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],12:[function(require,module,exports){
+},{"../funcUtils":23,"../internalUtilities":26,"./curry":12}],12:[function(require,module,exports){
 module.exports = (function () {
   "use strict";
 
@@ -4864,7 +4864,7 @@ module.exports = (function () {
   };
 })();
 
-},{"../internalUtilities":25}],13:[function(require,module,exports){
+},{"../internalUtilities":26}],13:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6633,7 +6633,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],15:[function(require,module,exports){
+},{"../funcUtils":23,"../internalUtilities":26,"./curry":12}],15:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -6909,7 +6909,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"./curry":12}],16:[function(require,module,exports){
+},{"../funcUtils":23,"./curry":12}],16:[function(require,module,exports){
 module.exports = (function() {
 "use strict";
 
@@ -7904,7 +7904,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],18:[function(require,module,exports){
+},{"../funcUtils":23,"../internalUtilities":26,"./curry":12}],18:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
   /* jshint -W001 */
@@ -9069,7 +9069,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":25,"./base":11,"./curry":12,"./maybe":17}],19:[function(require,module,exports){
+},{"../internalUtilities":26,"./base":11,"./curry":12,"./maybe":17}],19:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9278,7 +9278,7 @@ module.exports = (function() {
   };
 })();
 
-},{"../internalUtilities":25,"./curry":12}],20:[function(require,module,exports){
+},{"../internalUtilities":26,"./curry":12}],20:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -9615,7 +9615,799 @@ module.exports = (function() {
   };
 })();
 
-},{"../funcUtils":22,"../internalUtilities":25,"./curry":12}],21:[function(require,module,exports){
+},{"../funcUtils":23,"../internalUtilities":26,"./curry":12}],21:[function(require,module,exports){
+module.exports = (function() {
+  "use strict";
+
+
+  var curryModule = require('./curry');
+  var curry = curryModule.curry;
+
+  var internalUtilities = require('../internalUtilities');
+  var defineValue = internalUtilities.defineValue;
+  var checkIntegral = internalUtilities.checkIntegral;
+
+  var base = require('./base');
+  var flip = base.flip;
+
+  var object = require('./object');
+  var callProp = object.callProp;
+  var callPropWithArity = object.callPropWithArity;
+
+  var funcUtils = require('../funcUtils');
+  var checkFunction = funcUtils.checkFunction;
+
+
+  /*
+   * <apifunction>
+   *
+   * toString
+   *
+   * Category: string
+   *
+   * Parameter: val: any
+   *
+   * Calls val's `toString` property, and returns the result.
+   *
+   * Examples:
+   *   funkierJS.toString({}); // => '[object Object]'
+   *
+   */
+
+  var toString = curry(function(val) {
+    return val.toString();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * toLocaleString
+   *
+   * Category: string
+   *
+   * Parameter: val: any
+   * Returns: string
+   *
+   * Calls val's `toLocaleString` property, and returns the result.
+   *
+   * Examples:
+   *   funkierJS.toLocaleString(1000); // => '1000' (in some environments)
+   */
+
+  var toLocaleString = curry(function(val) {
+    return val.toLocaleString();
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * toCharCode
+   *
+   * Category: string
+   *
+   * Parameter: i: number
+   * Parameter: s: string
+   * Returns: number
+   *
+   * A curried wrapper around `String.charCodeAt`. Takes an index i, and a string s, and returns the Unicode value of
+   * the character at the given index in s.
+   *
+   * Examples:
+   *   funkierJS.toCharCode(2, 'funkier'); // => 117
+   *
+   */
+
+  var toCharCode = callPropWithArity('charCodeAt', 1);
+
+
+  /*
+   * <apifunction>
+   *
+   * ord
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   *
+   * Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to `toCharCode(0, s)`.
+   *
+   * Examples:
+   *   funkierJS.ord('A'); // => 65
+   *
+   */
+
+  var ord = toCharCode(0);
+
+
+  /*
+   * <apifunction>
+   *
+   * chr
+   *
+   * Category: string
+   *
+   * Parameter: n: number
+   * Returns: string
+   *
+   * Equivalent to `String.fromCharCode`. Takes a number n, and returns the character whose Unicode value is that
+   * number.
+   *
+   * Examples:
+   *   funkierJS.chr(69); // => 'E'
+   *
+   */
+
+  var chr = curry(function(c) {
+    return String.fromCharCode(c);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * toLowerCase
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   * Returns: string
+   *
+   * Equivalent to `String.prototype.toLowerCase`. Takes a string s, and returns a lowercase version of s.
+   *
+   * Examples:
+   *   funkierJS.toLowerCase('I LIKE TO SHOUT'); // => 'i like to shout'
+   *
+   */
+
+  var toLowerCase = callProp('toLowerCase');
+
+
+  /*
+   * <apifunction>
+   *
+   * toLocaleLowerCase
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   * Returns: string
+   *
+   * Equivalent to `String.prototype.toLocaleLowerCase`. Takes a string s, and returns a lowercase version of s,
+   * converted following locale conventions.
+   *
+   * Examples:
+   *   funkierJS.toLocaleLowerCase('I LIKE TO SHOUT'); // => 'i like to shout'
+   *
+   */
+
+  var toLocaleLowerCase = callProp('toLocaleLowerCase');
+
+
+  /*
+   * <apifunction>
+   *
+   * toUpperCase
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   * Returns: string
+   *
+   * Equivalent to `String.prototype.toUpperCase`. Takes a string s, and returns a uppercase version of s.
+   *
+   * Examples:
+   *   funkierJS.oUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
+   *
+   */
+
+  var toUpperCase = callProp('toUpperCase');
+
+
+  /*
+   * <apifunction>
+   *
+   * toLocaleUpperCase
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   *
+   * Equivalent to `String.prototype.toLocaleUpperCase`. Takes a string s, and returns a uppercase version of s,
+   * converted following locale conventions.
+   *
+   * Examples:
+   *   funkierJS.toLocaleUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
+   *
+   */
+
+  var toLocaleUpperCase = callProp('toLocaleUpperCase');
+
+
+  /*
+   * <apifunction>
+   *
+   * split
+   *
+   * Category: string
+   *
+   * Parameter: delimiter: string
+   * Parameter: s: string
+   * Returns: array
+   *
+   * A curried wrapper around `String.prototype.split`. Takes a string delimiter, and a target string s, and returns an
+   * array containing the substrings of s that were separated by the given delimiter.
+   *
+   * Throws a TypeError if either parameter is not a string.
+   *
+   * To specify the delimiter as a RegExp, use [`regExpSplit`](#regExpSplit).
+   * To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+   *
+   * Examples:
+   *   funkierJS.split('|', '1|2|3'); // => ['1', '2', '3']
+   *
+   */
+
+  var split = curry(function(delimiter, s) {
+    if (typeof(s) !== 'string' || typeof(delimiter) !== 'string')
+      throw new TypeError('Delimiter and string must be strings');
+
+    return s.split(delimiter);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * regExpSplit
+   *
+   * Category: string
+   *
+   * Parameter: delimiter: RegExp
+   * Parameter: s: string
+   * Returns: array
+   *
+   * Synonyms: splitRegExp
+   *
+   * A curried wrapper around `String.prototype.split`. Takes a pattern regexp, and a target string s, and returns an
+   * array containing the substrings of s that were separated by substrings matching the given pattern.
+   *
+   * Throws a TypeError if the first parameter is not a RegExp or if the second parameter is not a string.
+   *
+   * To specify the delimiter as a string, use [`split`](#split).
+   * To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+   *
+   * Examples:
+   *   regExpSplit/a/, 'banana'); // => ['b', 'n', 'n']
+   *
+   */
+
+  var regExpSplit = curry(function(delimiter, s) {
+    if (typeof(s) !== 'string')
+      throw new TypeError('Value to split must be a string');
+    if (!(delimiter instanceof RegExp))
+      throw new TypeError('Pattern to split on must be a RegExp');
+
+    return s.split(delimiter);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * splitMax
+   *
+   * Category: string
+   *
+   * Parameter: delimiter: string
+   * Parameter: limit: natural
+   * Parameter: s: string
+   * Returns: array
+   *
+   * Synonyms: splitLimit | splitCount
+   *
+   * A curried wrapper around `String.prototype.split`. Takes a string delimiter, a count, and a target string s, and
+   * returns an array containing the substrings of s that were separated by the given delimiter, the returned array
+   * containing at most limit such substrings.
+   *
+   * Throws a TypeError if the first or last parameter is not a string, or if limit is not integral.
+   *
+   * To specify the delimiter as a RegExp, use [`regExpSplitMax`](#regExpSplitMax).
+   * To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+   *
+   * Examples:
+   *   funkierJS.split('|', 2, '1|2|3'); // => ['1', '2']
+   *
+   */
+
+  var splitMax = curry(function(delimiter, limit, s) {
+    limit = checkIntegral(limit);
+
+    if (typeof(s) !== 'string' || typeof(delimiter) !== 'string')
+      throw new TypeError('Delimiter and string must be strings');
+
+    return s.split(delimiter, limit);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * regExpSplitMax
+   *
+   * Category: string
+   *
+   * Parameter: delimiter: RegExp
+   * Parameter: limit: natural
+   * Parameter: s: string
+   * Returns: array
+   *
+   * Synonyms: regExpSplitLimit | regExpSplitCount
+   *
+   * A curried wrapper around `String.prototype.split`. Takes a RegExp delimiter, a count, and a target string s, and
+   * returns an array containing the substrings of s that were separated by strings matching the given delimiter, the
+   * returned array containing at most limit such substrings.
+   *
+   * Throws a TypeError if the first parameter is not a RegExp, if the limit count is not integral, or if the last
+   * parameter is not a string.
+   *
+   * To specify the delimiter as a string, use [`splitMax`](#splitMax).
+   * To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+   *
+   *   funkierJS.splitRegExpLimit(/a/, 2, 'banana'); // => ['b', 'n']
+   *
+   */
+
+  var regExpSplitMax = curry(function(delimiter, limit, s) {
+    limit = checkIntegral(limit);
+
+    if (typeof(s) !== 'string')
+      throw new TypeError('Value to split must be a string');
+    if (!(delimiter instanceof RegExp))
+      throw new TypeError('Pattern to split on must be a RegExp');
+
+    return s.split(delimiter, limit);
+  });
+
+
+  /*
+   * Modification functions are not yet ready for implementation.
+   *
+  var replaceOneString = defineValue(
+   *
+   * replaceOneString
+   *
+   * Category: string
+   *
+   * Parameter: regexp: RegExp, replacement: string, s: string
+   *
+   * Takes 3 parameters:
+   *   - regexp: a pattern to be replaced
+   *   - replacement: the value to replace regexp with
+   *   - s: the string to be searched
+   * and replaces the first occurrence of regexp with replacement, and returns the new
+   * string.
+   *
+   * The following sequences have special meaning: if replacement contains these, then
+   * when the match is replaced, these patterns will be replaced by the values they
+   * represent:
+   *   - $1, $2, ... $99: the text matching the parenthesized subpatterns
+   *   - $& refers to the text that was matched
+   *   - $` refers to the text before the match
+   *   - $\' refers to the text after the match
+   *
+   * Throws a TypeError if regexp is not a RegExp, or if replacement is not a string.
+   *
+   * Note: this function ignores the global flag of the given RegExp.
+   *
+   * To specify a function to be called with the match, use [[replaceOneStringWith]].
+   * To replace all matches, use [[replaceString]]/[[replaceStringWith]].
+   *
+   * Examples:
+   * var s = replaceOneString(/a/, \'i\', \'banana\'); // s => \'binana\'
+    curry(function(regexp, replacement, s) {
+      if (!(regexp instanceof RegExp) || typeof(replacement) !== 'string')
+        throw new TypeError('replaceOneString called with invalid types');
+
+      var r = new RegExp(regexp.source);
+      return s.replace(r, replacement);
+    })
+  );
+
+
+  var replaceString = defineValue(
+   * replaceString
+   *
+   * Category: string
+   *
+   * Parameter: regexp: RegExp, replacement: string, s: string
+   *
+   * Takes 3 parameters:
+   *   - regexp: a pattern to be replaced
+   *   - replacement: the value to replace regexp with
+   *   - s: the string to be searched
+   * and replaces all occurrences of regexp with replacement, and returns the new
+   * string.
+   * The following sequences have special meaning: if replacement contains these, then
+   * when the match is replaced, these patterns will be replaced by the values they
+   * represent:
+   *   - $1, $2, ... $99: the text matching the parenthesized subpatterns
+   *   - $& refers to the text that was matched
+   *   - $` refers to the text before the match
+   *   - $\' refers to the text after the match
+   *
+   * Throws a TypeError if regexp is not a RegExp, or if replacement is not a string.
+   *
+   * Note: this function ignores the global flag of the given RegExp.
+   *
+   * To specify a function to be called with the match, use [[replaceStringWith]].
+   * To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].
+   *
+   * Examples:
+   * var s = replaceString(/a/, \'i\', \'banana\'); // s => \'binini\'
+    curry(function(regexp, replacement, s) {
+      if (!(regexp instanceof RegExp) || typeof(replacement) !== 'string')
+        throw new TypeError('replaceString called with invalid types');
+
+      var r = new RegExp(regexp.source, 'g');
+      return s.replace(r, replacement);
+    })
+  );
+
+
+  var replaceOneStringWith = defineValue(
+   * replaceOneStringWith
+   *
+   * Category: string
+   *
+   * Parameter: regexp: RegExp, f: function, s: string
+   *
+   * Takes 3 parameters:
+   *   - regexp: a pattern to be replaced
+   *   - f: a function to call that will return the replacement text
+   *   - s: the string to be searched
+   * and replaces the first occurrence of substr with the value returned by f, and
+   * returns the new string.
+   *
+   * The function f will be called with 3 or more parameters: the matched text,
+   * followed by an argument for each parenthesized expression, each such argument
+   * containing the text that the subexpression matched. The penultimate argument
+   * will be the index of the start of the match, and the last argument will be the
+   * original string. If f returns a non-string value, it will be coerced to a string.
+   *
+   * Throws a TypeError if regexp is not a RegExp, if f is not a function, or if f
+   * has arity 0.
+   *
+   * Note: this function ignores the global flag of the given RegExp.
+   *
+   * To specify a string to be replace the match, use [[replaceOneString]].
+   * To replace all matches, use [[replaceString]]/[[replaceStringWith]].
+   *
+   * Examples:
+   * var f = function(match, paren, i, s) {return paren + i;};
+   * var s = replaceOneStringWith(/(a)/, f, \'banana\'); // s => \'ba1nana\'
+    curry(function(regexp, f, s) {
+      f = checkFunction(f, {arity: 1, minimum: true, message: 'to must be a function of arity at least 1'});
+      if (!(regexp instanceof RegExp))
+        throw new TypeError('replaceOneStringWith called with invalid types');
+
+      var r = new RegExp(regexp.source);
+      return s.replace(r, f);
+    })
+  );
+
+
+  var replaceStringWith = defineValue(
+   * replaceStringWith
+   *
+   * Category: string
+   *
+   * Parameter: regexp: RegExp, f: function, s: string
+   *
+   * Takes 3 parameters:
+   *   - regexp: a pattern to be replaced
+   *   - f: a function to call that will return the replacement text
+   *   - s: the string to be searched
+   * and replaces all occurrences of substr with the value returned by f, and returns
+   * the new string.
+   *
+   * The function f will be called with 3 or more parameters: the matched text,
+   * followed by an argument for each parenthesized expression, each such argument
+   * containing the text that the subexpression matched. The penultimate argument will
+   * be the index of the start of the match, and the last argument will be the original
+   * string. If f returns a non-string value, it will be coerced to a string.
+   *
+   * Throws a TypeError if regexp is not a RegExp, if f is not a function, or if f
+   * has arity 0.
+   *
+   * Note: this function ignores the global flag of the given RegExp.
+   *
+   * To specify a string to be replace the match, use [[replaceString]].
+   * To replace only the first match, use [[replaceOneString]]/[[replaceOneStringWith]].
+   *
+   * Examples:
+   * var f = function(match, paren, i, s) {return paren + i;};
+   * var s = replaceOneStringWith(/(a)/, f, \'banana\'); // s => \'ba1na2na3\'
+    curry(function(regexp, f, s) {
+      f = checkFunction(f, {arity: 1, minimum: true, message: 'to must be a function of arity at least 1'});
+      if (!(regexp instanceof RegExp))
+        throw new TypeError('replaceStringWith called with invalid types');
+
+      var r = new RegExp(regexp.source, 'g');
+      return s.replace(r, f);
+    })
+  );
+  */
+
+
+  /*
+   * <apifunction>
+   *
+   * test
+   *
+   * Category: string
+   *
+   * Parameter: regexp: RegExp
+   * Parameter: s: string
+   * Returns: boolean
+   *
+   * A curried wrapper around `RegExp.prototype.test`. Takes a regexp, and a string s, and returns true if the string
+   * contains a substring matching the given pattern, and false otherwise.
+   *
+   * Throws a TypeError if regexp is not a RegExp, or if s is not a string.
+   *
+   * Examples:
+   *   funkierJS.test(/a/, 'banana'); // => true
+   *
+   */
+
+  var test = curry(function(regexp, s) {
+    if (!(regexp instanceof RegExp) || typeof(s) !== 'string')
+      throw new TypeError('test called with invalid types');
+    return regexp.test(s);
+  });
+
+
+  // Helper function for the various match functions
+  var makeMatchResult = function(reResult) {
+    return {
+      index: reResult.index,
+      matchedText: reResult[0],
+      subexpressions: reResult.slice(1)
+    };
+  };
+
+
+  /*
+   * <apifunction>
+   *
+   * matches
+   *
+   * Category: string
+   *
+   * Parameter: r: Regexp
+   * Parameter: s: string
+   * Returns: array
+   *
+   * Finds all matches within a string for a given regular expression. Takes two parameters: a regular expression and a
+   * string. Returns an array of objects, one object per match.
+   *
+   * Each object has the following properties:
+   *   - index: the index in the original string where the match was found
+   *   - matchedText: the substring that matched the pattern
+   *   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+   *                     The substring matching the first parenthesised expression will be at position 0, the string
+   *                     matching the second at position 1, and so on. If the regular expression did not contain any
+   *                     parenthesised subexpressions, this array will be empty.
+   *
+   * This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+   * is not affected by and does not change the lastIndex property of the regular expression if it exists.
+   *
+   * Throws a TypeError if the first parameter is not a regular expression.
+   *
+   * Examples:
+   *   funkierJS.matches(/a/, 'banana');
+   *   // a => [{index: 1, matchedText: 'a', []}, {index: 3, matchedText: 'a', []},
+   *   //       {index: 5, matchedText: 'a', []}]
+   *
+   */
+
+  var matches = curry(function(regexp, s) {
+    if (!(regexp instanceof RegExp))
+      throw new TypeError('Pattern is not a regular expression');
+
+    regexp = new RegExp(regexp.source, 'g');
+    var result = [];
+    var next = regexp.exec(s);
+
+    while (next !== null) {
+      result.push(makeMatchResult(next));
+      next = regexp.exec(s);
+    }
+
+    return result;
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * matchesFrom
+   *
+   * Category: string
+   *
+   * Parameter: r: Regexp
+   * Parameter: index: number
+   * Parameter: s: string
+   * Returns: array
+   *
+   * Finds all matches within a string for a given regular expression from the given index. Takes three parameters: a
+   * regular expression, an index and a string. Returns an array of objects, one object per match.
+   *
+   * Each object has the following properties:
+   *   - index: the index in the original string where the match was found
+   *   - matchedText: the substring that matched the pattern
+   *   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+   *                     The substring matching the first parenthesised expression will be at position 0, the string
+   *                     matching the second at position 1, and so on. If the regular expression did not contain any
+   *                     parenthesised subexpressions, this array will be empty.
+   *
+   * This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+   * is not affected by and does not change the lastIndex property of the regular expression if it exists.
+   *
+   * If the index is negative, it is taken as an offset from the end of the string.
+   *
+   * Throws a TypeError if the first parameter is not a regular expression.
+   *
+   * Examples:
+   *  funkierJS.matchesFrom(/a/, 2, 'banana');
+   *  // => [{index: 3, matchedText: 'a', []}, {index: 5, matchedText: 'a', []}]
+   *
+   */
+
+  var matchesFrom = curry(function(regexp, index, s) {
+    return matches(regexp, s.slice(index));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * firstMatch
+   *
+   * Category: string
+   *
+   * Parameter: r: Regexp
+   * Parameter: s: string
+   * Returns: object | null
+   *
+   * Finds the first match in a string for a given regular expression. Takes two parameters: a regular expression and a
+   * string. Returns a single object or null.
+   *
+   * If not null, the object has the following properties:
+   *   - index: the index in the original string where the match was found
+   *   - matchedText: the substring that matched the pattern
+   *   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+   *                     The substring matching the first parenthesised expression will be at position 0, the string
+   *                     matching the second at position 1, and so on. If the regular expression did not contain any
+   *                     parenthesised subexpressions, this array will be empty.
+   *
+   * This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+   * is not affected by and does not change the lastIndex property of the regular expression if it exists.
+   *
+   * Throws a TypeError if the first parameter is not a regular expression.
+   *
+   * Examples:
+   *   funkierJS.firstMatch(/a/, \'banana\'); // => {index: 3, matchedText: \'a\', []}
+   *
+   */
+
+  var firstMatch = curry(function(regexp, s) {
+    if (!(regexp instanceof RegExp))
+      throw new TypeError('Pattern is not a regular expression');
+
+    regexp = new RegExp(regexp.source, 'g');
+    var result = regexp.exec(s);
+    return result === null ? result : makeMatchResult(result);
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * firstMatchFrom
+   *
+   * Category: string
+   *
+   * Parameter: r: Regexp
+   * Parameter: index: natural
+   * Parameter: s: string
+   * Returns: object | null
+   *
+   * Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
+   * regular expression an index, and a string. Returns a single object or null.
+   *
+   * If not null, the object has the following properties:
+   *   - index: the index in the original string where the match was found
+   *   - matchedText: the substring that matched the pattern
+   *   - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+   *                     The substring matching the first parenthesised expression will be at position 0, the string
+   *                     matching the second at position 1, and so on. If the regular expression did not contain any
+   *                     parenthesised subexpressions, this array will be empty.
+   *
+   * This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+   * is not affected by and does not change the lastIndex property of the regular expression if it exists.
+   *
+   * Throws a TypeError if the first parameter is not a regular expression.
+   *
+   * Examples:
+   *   funkierJS.firstMatchFrom(/a/, 4, 'banana'); // => {index: 5, matchedText: 'a', []}
+   *
+   */
+
+  var firstMatchFrom = curry(function(regexp, index, s) {
+    return firstMatch(regexp, s.slice(index));
+  });
+
+
+  /*
+   * <apifunction>
+   *
+   * trim
+   *
+   * Category: string
+   *
+   * Parameter: s: string
+   * Returns: string
+   *
+   * Returns a string containing the contents of the original string, less any leading and trailing whitespace.
+   *
+   * Examples:
+   *   funkierJS.trim(' abc   '); // 'abc'
+   *
+   */
+
+  var trim = curry(function(s) {
+    return s.trim();
+  });
+
+
+  return {
+    chr: chr,
+    firstMatch: firstMatch,
+    firstMatchFrom: firstMatchFrom,
+    matches: matches,
+    matchesFrom: matchesFrom,
+    ord: ord,
+    regExpSplit: regExpSplit,
+    regExpSplitCount: regExpSplitMax,
+    regExpSplitLimit: regExpSplitMax,
+    regExpSplitMax: regExpSplitMax,
+    /*
+    replaceOneString: replaceOneString,
+    replaceOneStringWith: replaceOneStringWith,
+    replaceString: replaceString,
+    replaceStringWith: replaceStringWith,
+    */
+    split: split,
+    splitCount: splitMax,
+    splitLimit: splitMax,
+    splitRegExp: regExpSplit,
+    splitMax: splitMax,
+    test: test,
+    toCharCode: toCharCode,
+    toLocaleLowerCase: toLocaleLowerCase,
+    toLocaleString: toLocaleString,
+    toLocaleUpperCase: toLocaleUpperCase,
+    toLowerCase: toLowerCase,
+    toUpperCase: toUpperCase,
+    toString: toString,
+    trim: trim
+  };
+})();
+
+},{"../funcUtils":23,"../internalUtilities":26,"./base":11,"./curry":12,"./object":18}],22:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10102,7 +10894,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./curry":12}],22:[function(require,module,exports){
+},{"./curry":12}],23:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10163,7 +10955,7 @@ module.exports = (function() {
   };
 })();
 
-},{"./components/curry":12}],23:[function(require,module,exports){
+},{"./components/curry":12}],24:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10183,6 +10975,7 @@ module.exports = (function() {
     maybe: require('./components/maybe'),
     pair: require('./components/pair'),
     result: require('./components/result'),
+    string: require('./components/string'),
     types: require('./components/types')
   };
 
@@ -10245,7 +11038,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{"./components/array":10,"./components/base":11,"./components/curry":12,"./components/date":13,"./components/fn":14,"./components/logical":15,"./components/maths":16,"./components/maybe":17,"./components/object":18,"./components/pair":19,"./components/result":20,"./components/types":21,"./help":24}],24:[function(require,module,exports){
+},{"./components/array":10,"./components/base":11,"./components/curry":12,"./components/date":13,"./components/fn":14,"./components/logical":15,"./components/maths":16,"./components/maybe":17,"./components/object":18,"./components/pair":19,"./components/result":20,"./components/string":21,"./components/types":22,"./help":25}],25:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -10544,6 +11337,18 @@ module.exports = (function() {
           console.log('Usage: var x = callPropWithArity(prop, arity)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#callpropwitharity');
+          break;
+
+        case funkier.chr:
+          console.log('chr:');
+          console.log('');
+          console.log('Equivalent to String.fromCharCode. Takes a number n, and returns the character whose Unicode value is that');
+          console.log('number.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = chr(n)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#chr');
           break;
 
         case funkier.clone:
@@ -11015,6 +11820,30 @@ module.exports = (function() {
           console.log('Usage: var x = filter(pred, arr)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#filter');
+          break;
+
+        case funkier.firstMatch:
+          console.log('firstMatch:');
+          console.log('');
+          console.log('Finds the first match in a string for a given regular expression. Takes two parameters: a regular expression and a');
+          console.log('string. Returns a single object or null.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = firstMatch(r, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#firstmatch');
+          break;
+
+        case funkier.firstMatchFrom:
+          console.log('firstMatchFrom:');
+          console.log('');
+          console.log('Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a');
+          console.log('regular expression an index, and a string. Returns a single object or null.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = firstMatchFrom(r, index, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#firstmatchfrom');
           break;
 
         case funkier.flatten:
@@ -12013,6 +12842,30 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#map');
           break;
 
+        case funkier.matches:
+          console.log('matches:');
+          console.log('');
+          console.log('Finds all matches within a string for a given regular expression. Takes two parameters: a regular expression and a');
+          console.log('string. Returns an array of objects, one object per match.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = matches(r, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#matches');
+          break;
+
+        case funkier.matchesFrom:
+          console.log('matchesFrom:');
+          console.log('');
+          console.log('Finds all matches within a string for a given regular expression from the given index. Takes three parameters: a');
+          console.log('regular expression, an index and a string. Returns an array of objects, one object per match.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = matchesFrom(r, index, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#matchesfrom');
+          break;
+
         case funkier.max:
           console.log('max:');
           console.log('');
@@ -12263,6 +13116,17 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#orpred');
           break;
 
+        case funkier.ord:
+          console.log('ord:');
+          console.log('');
+          console.log('Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to toCharCode(0, s).');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = ord(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#ord');
+          break;
+
         case funkier.parseInt:
           console.log('parseInt:');
           console.log('');
@@ -12389,6 +13253,35 @@ module.exports = (function() {
           console.log('Usage: var x = rangeStride(a, stride, b)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#rangestride');
+          break;
+
+        case funkier.regExpSplit:
+          console.log('regExpSplit:');
+          console.log('');
+          console.log('Synonyms: splitRegExp');
+          console.log('');
+          console.log('A curried wrapper around String.prototype.split. Takes a pattern regexp, and a target string s, and returns an');
+          console.log('array containing the substrings of s that were separated by substrings matching the given pattern.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = regExpSplit(delimiter, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#regexpsplit');
+          break;
+
+        case funkier.regExpSplitMax:
+          console.log('regExpSplitMax:');
+          console.log('');
+          console.log('Synonyms: regExpSplitLimit, regExpSplitCount');
+          console.log('');
+          console.log('A curried wrapper around String.prototype.split. Takes a RegExp delimiter, a count, and a target string s, and');
+          console.log('returns an array containing the substrings of s that were separated by strings matching the given delimiter, the');
+          console.log('returned array containing at most limit such substrings.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = regExpSplitMax(delimiter, limit, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#regexpsplitmax');
           break;
 
         case funkier.rem:
@@ -12825,6 +13718,33 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#sortwith');
           break;
 
+        case funkier.split:
+          console.log('split:');
+          console.log('');
+          console.log('A curried wrapper around String.prototype.split. Takes a string delimiter, and a target string s, and returns an');
+          console.log('array containing the substrings of s that were separated by the given delimiter.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = split(delimiter, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#split');
+          break;
+
+        case funkier.splitMax:
+          console.log('splitMax:');
+          console.log('');
+          console.log('Synonyms: splitLimit, splitCount');
+          console.log('');
+          console.log('A curried wrapper around String.prototype.split. Takes a string delimiter, a count, and a target string s, and');
+          console.log('returns an array containing the substrings of s that were separated by the given delimiter, the returned array');
+          console.log('containing at most limit such substrings.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = splitMax(delimiter, limit, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#splitmax');
+          break;
+
         case funkier.strictEquals:
           console.log('strictEquals:');
           console.log('');
@@ -12935,6 +13855,18 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#takewhile');
           break;
 
+        case funkier.test:
+          console.log('test:');
+          console.log('');
+          console.log('A curried wrapper around RegExp.prototype.test. Takes a regexp, and a string s, and returns true if the string');
+          console.log('contains a substring matching the given pattern, and false otherwise.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = test(regexp, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#test');
+          break;
+
         case funkier.toBaseAndString:
           console.log('toBaseAndString:');
           console.log('');
@@ -12947,6 +13879,18 @@ module.exports = (function() {
           console.log('Usage: var x = toBaseAndString(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tobaseandstring');
+          break;
+
+        case funkier.toCharCode:
+          console.log('toCharCode:');
+          console.log('');
+          console.log('A curried wrapper around String.charCodeAt. Takes an index i, and a string s, and returns the Unicode value of');
+          console.log('the character at the given index in s.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toCharCode(i, s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tocharcode');
           break;
 
         case funkier.toDateString:
@@ -13023,6 +13967,52 @@ module.exports = (function() {
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocaledatestring');
           break;
 
+        case funkier.toLocaleLowerCase:
+          console.log('toLocaleLowerCase:');
+          console.log('');
+          console.log('Equivalent to String.prototype.toLocaleLowerCase. Takes a string s, and returns a lowercase version of s,');
+          console.log('converted following locale conventions.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toLocaleLowerCase(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocalelowercase');
+          break;
+
+        case funkier.toLocaleString:
+          console.log('toLocaleString:');
+          console.log('');
+          console.log('Calls val\'s toLocaleString property, and returns the result.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toLocaleString(val)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocalestring');
+          break;
+
+        case funkier.toLocaleUpperCase:
+          console.log('toLocaleUpperCase:');
+          console.log('');
+          console.log('Equivalent to String.prototype.toLocaleUpperCase. Takes a string s, and returns a uppercase version of s,');
+          console.log('converted following locale conventions.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toLocaleUpperCase(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolocaleuppercase');
+          break;
+
+        case funkier.toLowerCase:
+          console.log('toLowerCase:');
+          console.log('');
+          console.log('Equivalent to String.prototype.toLowerCase. Takes a string s, and returns a lowercase version of s.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toLowerCase(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tolowercase');
+          break;
+
         case funkier.toPrecision:
           console.log('toPrecision:');
           console.log('');
@@ -13034,6 +14024,17 @@ module.exports = (function() {
           console.log('Usage: var x = toPrecision(x, y)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toprecision');
+          break;
+
+        case funkier.toString:
+          console.log('toString:');
+          console.log('');
+          console.log('Calls val\'s toString property, and returns the result.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toString(val)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#tostring');
           break;
 
         case funkier.toTimeString:
@@ -13058,6 +14059,28 @@ module.exports = (function() {
           console.log('Usage: var x = toUTCString(d)');
           console.log('');
           console.log('See https://graememcc.github.io/funkierJS/docs/index.html#toutcstring');
+          break;
+
+        case funkier.toUpperCase:
+          console.log('toUpperCase:');
+          console.log('');
+          console.log('Equivalent to String.prototype.toUpperCase. Takes a string s, and returns a uppercase version of s.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = toUpperCase(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#touppercase');
+          break;
+
+        case funkier.trim:
+          console.log('trim:');
+          console.log('');
+          console.log('Returns a string containing the contents of the original string, less any leading and trailing whitespace.');
+          console.log('');
+          console.log('');
+          console.log('Usage: var x = trim(s)');
+          console.log('');
+          console.log('See https://graememcc.github.io/funkierJS/docs/index.html#trim');
           break;
 
         case funkier.unzip:
@@ -13142,7 +14165,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -13326,7 +14349,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -13422,7 +14445,7 @@ function objEquiv(a, b, opts) {
   return typeof a === typeof b;
 }
 
-},{"./lib/is_arguments.js":27,"./lib/keys.js":28}],27:[function(require,module,exports){
+},{"./lib/is_arguments.js":28,"./lib/keys.js":29}],28:[function(require,module,exports){
 var supportsArgumentsClass = (function(){
   return Object.prototype.toString.call(arguments)
 })() == '[object Arguments]';
@@ -13444,7 +14467,7 @@ function unsupported(object){
     false;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 exports = module.exports = typeof Object.keys === 'function'
   ? Object.keys : shim;
 
@@ -13455,7 +14478,7 @@ function shim (obj) {
   return keys;
 }
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -14871,7 +15894,7 @@ function decodeUtf8Char (str) {
   }
 }
 
-},{"base64-js":30,"ieee754":31,"is-array":32}],30:[function(require,module,exports){
+},{"base64-js":31,"ieee754":32,"is-array":33}],31:[function(require,module,exports){
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
@@ -14997,7 +16020,7 @@ var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 	exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m,
       eLen = nBytes * 8 - mLen - 1,
@@ -15083,7 +16106,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 
 /**
  * isArray
@@ -15118,7 +16141,7 @@ module.exports = isArray || function (val) {
   return !! val && '[object Array]' == str.call(val);
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -16394,7 +17417,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -16657,7 +17680,7 @@ module.exports = (function() {
   };
 })();
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17070,7 +18093,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":62}],36:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIPrototype":4,"chai":63}],37:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17285,7 +18308,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":62}],37:[function(require,module,exports){
+},{"../../docgen/APIObject":3,"../../docgen/APIPrototype":4,"chai":63}],38:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -17539,7 +18562,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIPrototype":4,"chai":62}],38:[function(require,module,exports){
+},{"../../docgen/APIPrototype":4,"chai":63}],39:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -18654,7 +19677,7 @@ module.exports = (function() {
   });
 })();
 
-},{"./CPTestDataHelper":34,"chai":62}],39:[function(require,module,exports){
+},{"./CPTestDataHelper":35,"chai":63}],40:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -18904,7 +19927,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":62}],40:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/collator":5,"chai":63}],41:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -20143,7 +21166,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":34,"chai":62}],41:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/commentProcessor":6,"./CPTestDataHelper":35,"chai":63}],42:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -20400,7 +21423,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/lineProcessor":7,"chai":62}],42:[function(require,module,exports){
+},{"../../docgen/lineProcessor":7,"chai":63}],43:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -20662,7 +21685,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":62}],43:[function(require,module,exports){
+},{"../../docgen/APIFunction":2,"../../docgen/APIObject":3,"../../docgen/markdownCreator":8,"chai":63}],44:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -20952,7 +21975,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../docgen/markdownRenderer":9,"chai":62,"marked":33}],44:[function(require,module,exports){
+},{"../../docgen/markdownRenderer":9,"chai":63,"marked":34}],45:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -21597,6 +22620,34 @@ module.exports = (function() {
 
       it('callPropWithArity is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.callPropWithArity)).to.equal(true);
+      });
+    });
+
+
+    describe('chr', function() {
+      it('chr exists', function() {
+        expect(funkier).to.have.a.property('chr');
+      });
+
+
+      it('funkierJS\'s chr is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.chr).to.equal(module.chr);
+      });
+
+
+      it('chr is a function', function() {
+        expect(funkier.chr).to.be.a('function');
+      });
+
+
+      it('chr has documented arity', function() {
+        expect(funkier.arityOf(funkier.chr)).to.equal(1);
+      });
+
+
+      it('chr is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.chr)).to.equal(true);
       });
     });
 
@@ -22641,6 +23692,62 @@ module.exports = (function() {
 
       it('first is a synonym for fst', function() {
         expect(funkier.first).to.equal(funkier.fst);
+      });
+    });
+
+
+    describe('firstMatch', function() {
+      it('firstMatch exists', function() {
+        expect(funkier).to.have.a.property('firstMatch');
+      });
+
+
+      it('funkierJS\'s firstMatch is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.firstMatch).to.equal(module.firstMatch);
+      });
+
+
+      it('firstMatch is a function', function() {
+        expect(funkier.firstMatch).to.be.a('function');
+      });
+
+
+      it('firstMatch has documented arity', function() {
+        expect(funkier.arityOf(funkier.firstMatch)).to.equal(2);
+      });
+
+
+      it('firstMatch is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.firstMatch)).to.equal(true);
+      });
+    });
+
+
+    describe('firstMatchFrom', function() {
+      it('firstMatchFrom exists', function() {
+        expect(funkier).to.have.a.property('firstMatchFrom');
+      });
+
+
+      it('funkierJS\'s firstMatchFrom is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.firstMatchFrom).to.equal(module.firstMatchFrom);
+      });
+
+
+      it('firstMatchFrom is a function', function() {
+        expect(funkier.firstMatchFrom).to.be.a('function');
+      });
+
+
+      it('firstMatchFrom has documented arity', function() {
+        expect(funkier.arityOf(funkier.firstMatchFrom)).to.equal(3);
+      });
+
+
+      it('firstMatchFrom is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.firstMatchFrom)).to.equal(true);
       });
     });
 
@@ -24973,6 +26080,62 @@ module.exports = (function() {
     });
 
 
+    describe('matches', function() {
+      it('matches exists', function() {
+        expect(funkier).to.have.a.property('matches');
+      });
+
+
+      it('funkierJS\'s matches is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.matches).to.equal(module.matches);
+      });
+
+
+      it('matches is a function', function() {
+        expect(funkier.matches).to.be.a('function');
+      });
+
+
+      it('matches has documented arity', function() {
+        expect(funkier.arityOf(funkier.matches)).to.equal(2);
+      });
+
+
+      it('matches is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.matches)).to.equal(true);
+      });
+    });
+
+
+    describe('matchesFrom', function() {
+      it('matchesFrom exists', function() {
+        expect(funkier).to.have.a.property('matchesFrom');
+      });
+
+
+      it('funkierJS\'s matchesFrom is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.matchesFrom).to.equal(module.matchesFrom);
+      });
+
+
+      it('matchesFrom is a function', function() {
+        expect(funkier.matchesFrom).to.be.a('function');
+      });
+
+
+      it('matchesFrom has documented arity', function() {
+        expect(funkier.arityOf(funkier.matchesFrom)).to.equal(3);
+      });
+
+
+      it('matchesFrom is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.matchesFrom)).to.equal(true);
+      });
+    });
+
+
     describe('max', function() {
       it('max exists', function() {
         expect(funkier).to.have.a.property('max');
@@ -25613,6 +26776,34 @@ module.exports = (function() {
     });
 
 
+    describe('ord', function() {
+      it('ord exists', function() {
+        expect(funkier).to.have.a.property('ord');
+      });
+
+
+      it('funkierJS\'s ord is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.ord).to.equal(module.ord);
+      });
+
+
+      it('ord is a function', function() {
+        expect(funkier.ord).to.be.a('function');
+      });
+
+
+      it('ord has documented arity', function() {
+        expect(funkier.arityOf(funkier.ord)).to.equal(1);
+      });
+
+
+      it('ord is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.ord)).to.equal(true);
+      });
+    });
+
+
     describe('parseInt', function() {
       it('parseInt exists', function() {
         expect(funkier).to.have.a.property('parseInt');
@@ -25969,6 +27160,86 @@ module.exports = (function() {
 
       it('reduceRight1 is a synonym for foldr1', function() {
         expect(funkier.reduceRight1).to.equal(funkier.foldr1);
+      });
+    });
+
+
+    describe('regExpSplit', function() {
+      it('regExpSplit exists', function() {
+        expect(funkier).to.have.a.property('regExpSplit');
+      });
+
+
+      it('funkierJS\'s regExpSplit is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.regExpSplit).to.equal(module.regExpSplit);
+      });
+
+
+      it('regExpSplit is a function', function() {
+        expect(funkier.regExpSplit).to.be.a('function');
+      });
+
+
+      it('regExpSplit has documented arity', function() {
+        expect(funkier.arityOf(funkier.regExpSplit)).to.equal(2);
+      });
+
+
+      it('regExpSplit is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.regExpSplit)).to.equal(true);
+      });
+    });
+
+
+    describe('regExpSplitCount', function() {
+      it('regExpSplitCount exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitCount');
+      });
+
+
+      it('regExpSplitCount is a synonym for regExpSplitMax', function() {
+        expect(funkier.regExpSplitCount).to.equal(funkier.regExpSplitMax);
+      });
+    });
+
+
+    describe('regExpSplitLimit', function() {
+      it('regExpSplitLimit exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitLimit');
+      });
+
+
+      it('regExpSplitLimit is a synonym for regExpSplitMax', function() {
+        expect(funkier.regExpSplitLimit).to.equal(funkier.regExpSplitMax);
+      });
+    });
+
+
+    describe('regExpSplitMax', function() {
+      it('regExpSplitMax exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitMax');
+      });
+
+
+      it('funkierJS\'s regExpSplitMax is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.regExpSplitMax).to.equal(module.regExpSplitMax);
+      });
+
+
+      it('regExpSplitMax is a function', function() {
+        expect(funkier.regExpSplitMax).to.be.a('function');
+      });
+
+
+      it('regExpSplitMax has documented arity', function() {
+        expect(funkier.arityOf(funkier.regExpSplitMax)).to.equal(3);
+      });
+
+
+      it('regExpSplitMax is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.regExpSplitMax)).to.equal(true);
       });
     });
 
@@ -26977,6 +28248,98 @@ module.exports = (function() {
     });
 
 
+    describe('split', function() {
+      it('split exists', function() {
+        expect(funkier).to.have.a.property('split');
+      });
+
+
+      it('funkierJS\'s split is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.split).to.equal(module.split);
+      });
+
+
+      it('split is a function', function() {
+        expect(funkier.split).to.be.a('function');
+      });
+
+
+      it('split has documented arity', function() {
+        expect(funkier.arityOf(funkier.split)).to.equal(2);
+      });
+
+
+      it('split is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.split)).to.equal(true);
+      });
+    });
+
+
+    describe('splitCount', function() {
+      it('splitCount exists', function() {
+        expect(funkier).to.have.a.property('splitCount');
+      });
+
+
+      it('splitCount is a synonym for splitMax', function() {
+        expect(funkier.splitCount).to.equal(funkier.splitMax);
+      });
+    });
+
+
+    describe('splitLimit', function() {
+      it('splitLimit exists', function() {
+        expect(funkier).to.have.a.property('splitLimit');
+      });
+
+
+      it('splitLimit is a synonym for splitMax', function() {
+        expect(funkier.splitLimit).to.equal(funkier.splitMax);
+      });
+    });
+
+
+    describe('splitMax', function() {
+      it('splitMax exists', function() {
+        expect(funkier).to.have.a.property('splitMax');
+      });
+
+
+      it('funkierJS\'s splitMax is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.splitMax).to.equal(module.splitMax);
+      });
+
+
+      it('splitMax is a function', function() {
+        expect(funkier.splitMax).to.be.a('function');
+      });
+
+
+      it('splitMax has documented arity', function() {
+        expect(funkier.arityOf(funkier.splitMax)).to.equal(3);
+      });
+
+
+      it('splitMax is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.splitMax)).to.equal(true);
+      });
+    });
+
+
+    describe('splitRegExp', function() {
+      it('splitRegExp exists', function() {
+        expect(funkier).to.have.a.property('splitRegExp');
+      });
+
+
+      it('splitRegExp is a synonym for regExpSplit', function() {
+        expect(funkier.splitRegExp).to.equal(funkier.regExpSplit);
+      });
+    });
+
+
     describe('strictEquals', function() {
       it('strictEquals exists', function() {
         expect(funkier).to.have.a.property('strictEquals');
@@ -27277,6 +28640,34 @@ module.exports = (function() {
     });
 
 
+    describe('test', function() {
+      it('test exists', function() {
+        expect(funkier).to.have.a.property('test');
+      });
+
+
+      it('funkierJS\'s test is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.test).to.equal(module.test);
+      });
+
+
+      it('test is a function', function() {
+        expect(funkier.test).to.be.a('function');
+      });
+
+
+      it('test has documented arity', function() {
+        expect(funkier.arityOf(funkier.test)).to.equal(2);
+      });
+
+
+      it('test is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.test)).to.equal(true);
+      });
+    });
+
+
     describe('toBaseAndRadix', function() {
       it('toBaseAndRadix exists', function() {
         expect(funkier).to.have.a.property('toBaseAndRadix');
@@ -27313,6 +28704,34 @@ module.exports = (function() {
 
       it('toBaseAndString is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toBaseAndString)).to.equal(true);
+      });
+    });
+
+
+    describe('toCharCode', function() {
+      it('toCharCode exists', function() {
+        expect(funkier).to.have.a.property('toCharCode');
+      });
+
+
+      it('funkierJS\'s toCharCode is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toCharCode).to.equal(module.toCharCode);
+      });
+
+
+      it('toCharCode is a function', function() {
+        expect(funkier.toCharCode).to.be.a('function');
+      });
+
+
+      it('toCharCode has documented arity', function() {
+        expect(funkier.arityOf(funkier.toCharCode)).to.equal(2);
+      });
+
+
+      it('toCharCode is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toCharCode)).to.equal(true);
       });
     });
 
@@ -27485,6 +28904,118 @@ module.exports = (function() {
     });
 
 
+    describe('toLocaleLowerCase', function() {
+      it('toLocaleLowerCase exists', function() {
+        expect(funkier).to.have.a.property('toLocaleLowerCase');
+      });
+
+
+      it('funkierJS\'s toLocaleLowerCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleLowerCase).to.equal(module.toLocaleLowerCase);
+      });
+
+
+      it('toLocaleLowerCase is a function', function() {
+        expect(funkier.toLocaleLowerCase).to.be.a('function');
+      });
+
+
+      it('toLocaleLowerCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleLowerCase)).to.equal(1);
+      });
+
+
+      it('toLocaleLowerCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleLowerCase)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleString', function() {
+      it('toLocaleString exists', function() {
+        expect(funkier).to.have.a.property('toLocaleString');
+      });
+
+
+      it('funkierJS\'s toLocaleString is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleString).to.equal(module.toLocaleString);
+      });
+
+
+      it('toLocaleString is a function', function() {
+        expect(funkier.toLocaleString).to.be.a('function');
+      });
+
+
+      it('toLocaleString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleString)).to.equal(1);
+      });
+
+
+      it('toLocaleString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleString)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleUpperCase', function() {
+      it('toLocaleUpperCase exists', function() {
+        expect(funkier).to.have.a.property('toLocaleUpperCase');
+      });
+
+
+      it('funkierJS\'s toLocaleUpperCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleUpperCase).to.equal(module.toLocaleUpperCase);
+      });
+
+
+      it('toLocaleUpperCase is a function', function() {
+        expect(funkier.toLocaleUpperCase).to.be.a('function');
+      });
+
+
+      it('toLocaleUpperCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleUpperCase)).to.equal(1);
+      });
+
+
+      it('toLocaleUpperCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleUpperCase)).to.equal(true);
+      });
+    });
+
+
+    describe('toLowerCase', function() {
+      it('toLowerCase exists', function() {
+        expect(funkier).to.have.a.property('toLowerCase');
+      });
+
+
+      it('funkierJS\'s toLowerCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLowerCase).to.equal(module.toLowerCase);
+      });
+
+
+      it('toLowerCase is a function', function() {
+        expect(funkier.toLowerCase).to.be.a('function');
+      });
+
+
+      it('toLowerCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLowerCase)).to.equal(1);
+      });
+
+
+      it('toLowerCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLowerCase)).to.equal(true);
+      });
+    });
+
+
     describe('toPrecision', function() {
       it('toPrecision exists', function() {
         expect(funkier).to.have.a.property('toPrecision');
@@ -27509,6 +29040,34 @@ module.exports = (function() {
 
       it('toPrecision is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
+      });
+    });
+
+
+    describe('toString', function() {
+      it('toString exists', function() {
+        expect(funkier).to.have.a.property('toString');
+      });
+
+
+      it('funkierJS\'s toString is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toString).to.equal(module.toString);
+      });
+
+
+      it('toString is a function', function() {
+        expect(funkier.toString).to.be.a('function');
+      });
+
+
+      it('toString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toString)).to.equal(1);
+      });
+
+
+      it('toString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toString)).to.equal(true);
       });
     });
 
@@ -27565,6 +29124,62 @@ module.exports = (function() {
 
       it('toUTCString is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toUTCString)).to.equal(true);
+      });
+    });
+
+
+    describe('toUpperCase', function() {
+      it('toUpperCase exists', function() {
+        expect(funkier).to.have.a.property('toUpperCase');
+      });
+
+
+      it('funkierJS\'s toUpperCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toUpperCase).to.equal(module.toUpperCase);
+      });
+
+
+      it('toUpperCase is a function', function() {
+        expect(funkier.toUpperCase).to.be.a('function');
+      });
+
+
+      it('toUpperCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toUpperCase)).to.equal(1);
+      });
+
+
+      it('toUpperCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toUpperCase)).to.equal(true);
+      });
+    });
+
+
+    describe('trim', function() {
+      it('trim exists', function() {
+        expect(funkier).to.have.a.property('trim');
+      });
+
+
+      it('funkierJS\'s trim is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.trim).to.equal(module.trim);
+      });
+
+
+      it('trim is a function', function() {
+        expect(funkier.trim).to.be.a('function');
+      });
+
+
+      it('trim has documented arity', function() {
+        expect(funkier.arityOf(funkier.trim)).to.equal(1);
+      });
+
+
+      it('trim is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.trim)).to.equal(true);
       });
     });
 
@@ -27770,38 +29385,41 @@ module.exports = (function() {
       documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'all', 'and',
          'andPred', 'any', 'append', 'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext',
          'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp',
-         'callPropWithArity', 'clone', 'compose', 'composeMany', 'composeOn', 'concat', 'constant', 'constant0',
+         'callPropWithArity', 'chr', 'clone', 'compose', 'composeMany', 'composeOn', 'concat', 'constant', 'constant0',
          'copy', 'createObject', 'createObjectWithProps', 'createProp', 'curry', 'curryOwn', 'curryWithArity',
          'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty', 'deleteProp', 'descriptors',
          'div', 'divide', 'drop', 'dropWhile', 'each', 'either', 'element', 'elementWith', 'equals', 'even', 'every',
-         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'flatten', 'flattenMap',
-         'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst', 'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek',
-         'getErrValue', 'getFullYear', 'getHours', 'getIndex', 'getJustValue', 'getMilliseconds', 'getMinutes',
-         'getMonth', 'getOkValue', 'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getSeconds',
-         'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
-         'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'greaterThan', 'greaterThanEqual',
-         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'head', 'id', 'init', 'inits', 'instanceOf',
-         'intersperse', 'is', 'isArray', 'isBoolean', 'isEmpty', 'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull',
-         'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf', 'isRealObject', 'isResult', 'isString',
-         'isUndefined', 'join', 'keyValues', 'keys', 'last', 'leftShift', 'length', 'lessThan', 'lessThanEqual', 'log',
-         'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate', 'makeHourDate',
-         'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate', 'makeResultReturner',
-         'makeSecondDate', 'map', 'max', 'maximum', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
-         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'minimum', 'modify', 'modifyProp',
-         'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'nub', 'nubWith', 'objectCurry',
-         'objectCurryWithArity', 'occurrences', 'occurrencesWith', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase',
-         'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'prefixes', 'prepend', 'product', 'range',
-         'rangeStep', 'rangeStride', 'reduce', 'reduce1', 'reduceRight', 'reduceRight1', 'rem', 'replicate', 'reverse',
+         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'firstMatch',
+         'firstMatchFrom', 'flatten', 'flattenMap', 'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst',
+         'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getIndex',
+         'getJustValue', 'getMilliseconds', 'getMinutes', 'getMonth', 'getOkValue', 'getOwnPropertyDescriptor',
+         'getOwnPropertyNames', 'getSeconds', 'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek',
+         'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds',
+         'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'head', 'id',
+         'init', 'inits', 'instanceOf', 'intersperse', 'is', 'isArray', 'isBoolean', 'isEmpty', 'isErr', 'isJust',
+         'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf', 'isRealObject',
+         'isResult', 'isString', 'isUndefined', 'join', 'keyValues', 'keys', 'last', 'leftShift', 'length', 'lessThan',
+         'lessThanEqual', 'log', 'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate',
+         'makeHourDate', 'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate',
+         'makeResultReturner', 'makeSecondDate', 'map', 'matches', 'matchesFrom', 'max', 'maximum', 'maybeCreate',
+         'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
+         'min', 'minimum', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'nub',
+         'nubWith', 'objectCurry', 'objectCurryWithArity', 'occurrences', 'occurrencesWith', 'odd', 'or', 'orPred',
+         'ord', 'parseInt', 'parseIntInBase', 'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'prefixes',
+         'prepend', 'product', 'range', 'rangeStep', 'rangeStride', 'reduce', 'reduce1', 'reduceRight', 'reduceRight1',
+         'regExpSplit', 'regExpSplitCount', 'regExpSplitLimit', 'regExpSplitMax', 'rem', 'replicate', 'reverse',
          'rightShift', 'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp',
          'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
          'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
          'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
          'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'slice', 'snd', 'some',
-         'sort', 'sortWith', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt',
-         'subtract', 'suffixes', 'sum', 'tail', 'tails', 'take', 'takeWhile', 'tap', 'toBaseAndRadix',
-         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
-         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'uniq', 'uniqWith', 'unzip', 'wrap',
-         'xor', 'xorPred', 'zip', 'zipWith'];
+         'sort', 'sortWith', 'split', 'splitCount', 'splitLimit', 'splitMax', 'splitRegExp', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'suffixes', 'sum', 'tail',
+         'tails', 'take', 'takeWhile', 'tap', 'test', 'toBaseAndRadix', 'toBaseAndString', 'toCharCode',
+         'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString', 'toLocaleDateString',
+         'toLocaleLowerCase', 'toLocaleString', 'toLocaleUpperCase', 'toLowerCase', 'toPrecision', 'toString',
+         'toTimeString', 'toUTCString', 'toUpperCase', 'trim', 'uniq', 'uniqWith', 'unzip', 'wrap', 'xor', 'xorPred',
+         'zip', 'zipWith'];
     });
 
 
@@ -27818,7 +29436,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/date":13,"../../lib/components/fn":14,"../../lib/components/logical":15,"../../lib/components/maths":16,"../../lib/components/maybe":17,"../../lib/components/object":18,"../../lib/components/pair":19,"../../lib/components/result":20,"../../lib/components/types":21,"../../lib/funkier":23,"chai":62}],45:[function(require,module,exports){
+},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/date":13,"../../lib/components/fn":14,"../../lib/components/logical":15,"../../lib/components/maths":16,"../../lib/components/maybe":17,"../../lib/components/object":18,"../../lib/components/pair":19,"../../lib/components/result":20,"../../lib/components/string":21,"../../lib/components/types":22,"../../lib/funkier":24,"chai":63}],46:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -31925,7 +33543,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/components/types":21,"./testingUtilities":61,"chai":62}],46:[function(require,module,exports){
+},{"../../lib/components/array":10,"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/components/types":22,"./testingUtilities":62,"chai":63}],47:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -32751,7 +34369,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":11,"../../lib/components/curry":12,"./testingUtilities":61,"chai":62}],47:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"./testingUtilities":62,"chai":63}],48:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -35109,7 +36727,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":12,"./testingUtilities":61,"chai":62}],48:[function(require,module,exports){
+},{"../../lib/components/curry":12,"./testingUtilities":62,"chai":63}],49:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -35513,7 +37131,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/date":13,"./testingUtilities":61,"chai":62}],49:[function(require,module,exports){
+},{"../../lib/components/date":13,"./testingUtilities":62,"chai":63}],50:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36135,7 +37753,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/fn":14,"./testingUtilities":61,"chai":62}],50:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/fn":14,"./testingUtilities":62,"chai":63}],51:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36313,7 +37931,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/funcUtils":22,"./testingUtilities":61,"chai":62}],51:[function(require,module,exports){
+},{"../../lib/funcUtils":23,"./testingUtilities":62,"chai":63}],52:[function(require,module,exports){
 //(function() {
 //  "use strict";
 //
@@ -36403,7 +38021,7 @@ module.exports = (function() {
 //  }
 //})();
 
-},{}],52:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -36940,7 +38558,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],53:[function(require,module,exports){
+},{"../../lib/internalUtilities":26,"./testingUtilities":62,"chai":63}],54:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37145,7 +38763,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":11,"../../lib/components/logical":15,"./testingUtilities":61,"chai":62}],54:[function(require,module,exports){
+},{"../../lib/components/base":11,"../../lib/components/logical":15,"./testingUtilities":62,"chai":63}],55:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37436,7 +39054,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/maths":16,"./testingUtilities":61,"chai":62}],55:[function(require,module,exports){
+},{"../../lib/components/maths":16,"./testingUtilities":62,"chai":63}],56:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -37890,7 +39508,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],56:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/internalUtilities":26,"./testingUtilities":62,"chai":63}],57:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -40109,7 +41727,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/components/object":18,"./testingUtilities":61,"chai":62,"deep-equal":26}],57:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/maybe":17,"../../lib/components/object":18,"./testingUtilities":62,"chai":63,"deep-equal":27}],58:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -40519,7 +42137,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],58:[function(require,module,exports){
+},{"../../lib/components/curry":12,"../../lib/components/pair":19,"../../lib/internalUtilities":26,"./testingUtilities":62,"chai":63}],59:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -41092,1071 +42710,997 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/result":20,"../../lib/internalUtilities":25,"./testingUtilities":61,"chai":62}],59:[function(require,module,exports){
-//(function() {
-//  "use strict";
-//
-//
-//  var testFixture = function(require, exports) {
-//    var chai = require('chai');
-//    var expect = chai.expect;
-//
-//    var string = require('../../string');
-//
-//    var base = require('../../base');
-//
-//    // Import utility functions
-//    var testUtils = require('./testUtils');
-//    var describeModule = testUtils.describeModule;
-//    var describeFunction = testUtils.describeFunction;
-//    var testCurriedFunction = testUtils.testCurriedFunction;
-//
-//
-//    var expectedObjects = [];
-//    var expectedFunctions = ['toString', 'toCharCode', 'ord', 'chr', 'toLowerCase',
-//                             'toLocaleLowerCase', 'toUpperCase', 'toLocaleUpperCase', 'split', 'splitRegExp',
-//                             'splitLimit', 'splitRegExpLimit', 'replaceOneString', 'replaceString',
-//                             'replaceOneStringWith', 'replaceStringWith','test', 'matches', 'matchesFrom', 'firstMatch',
-//                             'firstMatchFrom', 'toLocaleString', 'trim'];
-//    describeModule('string', string, expectedObjects, expectedFunctions);
-//
-//
-//    var toStringTests = [
-//      {name: 'number', value: 1000},
-//      {name: 'string', value: 'a'},
-//      {name: 'boolean', value: true},
-//      {name: 'function', value: function() {}},
-//      {name: 'object', value: {}},
-//      {name: 'array', value: [1]},
-//      {name: 'date', value: new Date(2000, 0, 0)}
-//    ];
-//
-//
-//    var tsSpec = {
-//      name: 'toString',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(tsSpec, string.toString, function(toString) {
-//      var makeToStringTest = function(val) {
-//        return function() {
-//          expect(toString(val)).to.equal(val.toString());
-//        };
-//      };
-//
-//
-//      toStringTests.forEach(function(test) {
-//        it('Works correctly for ' + test.name, makeToStringTest(test.value));
-//      });
-//
-//
-//      it('Works correctly for object with custom toString', function() {
-//        var a = {toString: function() {return 'foo';}};
-//
-//        expect(toString(a)).to.equal(a.toString());
-//      });
-//    });
-//
-//
-//    var toLocaleStringSpec = {
-//      name: 'toLocaleString',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(toLocaleStringSpec, string.toLocaleString, function(toLocaleString) {
-//      var makeToLocaleStringTest = function(val) {
-//        return function() {
-//          expect(toLocaleString(val)).to.equal(val.toLocaleString());
-//        };
-//      };
-//
-//
-//      toStringTests.forEach(function(test) {
-//        it('Works correctly for ' + test.name, makeToLocaleStringTest(test.value));
-//      });
-//
-//
-//      it('Works correctly for object with custom toLocaleString', function() {
-//        var a = {toLocaleString: function() {return 'foo';}};
-//
-//        expect(toLocaleString(a)).to.equal(a.toLocaleString());
-//      });
-//    });
-//
-//
-//    var tccSpec = {
-//      name: 'toCharCode',
-//      arity: 2
-//    };
-//
-//
-//    describeFunction(tccSpec, string.toCharCode, function(toCharCode) {
-//      it('Works correctly (1)', function() {
-//        var a = 'abc';
-//        var l = a.length;
-//
-//        for (var i = 0; i < l; i++)
-//          expect(toCharCode(i, a)).to.equal(a.charCodeAt(i));
-//      });
-//
-//
-//      it('Works correctly (2)', function() {
-//        var a = 'abc';
-//
-//        expect(isNaN(toCharCode(10, a))).to.equal(true);
-//      });
-//
-//
-//      testCurriedFunction(toCharCode, [1, 'abc']);
-//    });
-//
-//
-//    var ordSpec = {
-//      name: 'ord',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(ordSpec, string.ord, function(ord) {
-//      var addWorksTest = function(message, str) {
-//        it('Works correctly ' + message, function() {
-//          expect(ord(str)).to.equal(str.charCodeAt(0));
-//        });
-//      };
-//
-//
-//      addWorksTest('(1)', 'a');
-//      addWorksTest('(2)', 'F');
-//      addWorksTest('(3)', 'funkier');
-//
-//
-//      it('Works correctly (4)', function() {
-//        var a = '';
-//
-//        expect(isNaN(ord(a))).to.equal(true);
-//      });
-//    });
-//
-//
-//    var chrSpec = {
-//      name: 'chr',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(chrSpec, string.chr, function(chr) {
-//      var ord = string.ord;
-//
-//
-//      var addWorksTest = function(message, str) {
-//        it('Works correctly ' + message, function() {
-//          var code = ord(str);
-//
-//          expect(chr(code)).to.equal(str);
-//        });
-//      };
-//
-//
-//      addWorksTest('(1)', 'a');
-//      addWorksTest('(1)', 'F');
-//
-//
-//      it('Discards superfluous arguments', function() {
-//        var a = 'a';
-//        var aCode = ord(a);
-//        var bCode = ord('b');
-//        var cCode = ord('c');
-//
-//        expect(chr(aCode, bCode, cCode)).to.equal(a);
-//      });
-//    });
-//
-//
-//    var makeStringCaseTest = function(desc, fnUnderTest, verifier) {
-//      var spec = {
-//        name: desc,
-//        arity: 1
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var addWorksTest = function(message, str) {
-//          it('Works correctly ' + message, function() {
-//            var result = fnUnderTest(str);
-//
-//            expect(result).to.equal(str[verifier]());
-//          });
-//        };
-//
-//
-//        addWorksTest('(1)', 'abc');
-//        addWorksTest('(1)', 'ABC');
-//        addWorksTest('(1)', 'AbC');
-//      });
-//    };
-//
-//
-//    makeStringCaseTest('toLowerCase', string.toLowerCase, 'toLowerCase');
-//    makeStringCaseTest('toLocaleLowerCase', string.toLocaleLowerCase, 'toLocaleLowerCase');
-//    makeStringCaseTest('toUpperCase', string.toUpperCase, 'toUpperCase');
-//    makeStringCaseTest('toLocaleUpperCase', string.toLocaleUpperCase, 'toLocaleUpperCase');
-//
-//
-//    var splitSpec = {
-//      name: 'split',
-//      arity: 2,
-//      restrictions: [['string'], ['string']],
-//      validArguments: [['a'], ['banana']]
-//    };
-//
-//
-//    describeFunction(splitSpec, string.split, function(split) {
-//      var addReturnsArrayTest = function(message, splitStr, str) {
-//        it('Returns an array ' + message, function() {
-//          var result = split(splitStr, str);
-//
-//          expect(base.isArray(result)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addReturnsArrayTest('(1)', '-', 'a-b-c');
-//      addReturnsArrayTest('(2)', '*', 'a-b-c');
-//
-//
-//      it('Splitting string not present in results (1)', function() {
-//        var s = 'a-b-c';
-//        var result = split('-', s).every(function(sp) {
-//          return sp !== '-';
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Splitting string not present in results (2)', function() {
-//        var s = 'a-b-c';
-//        var result = split('-', s).every(function(sp) {
-//          return sp.indexOf('-') === -1;
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      var addWorksCorrectlyTest = function(message, splitStr, str) {
-//        it('Works correctly ' + message, function() {
-//          var result = split(splitStr, str);
-//
-//          expect(result).to.deep.equal(str.split(splitStr));
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTest('(1)', '-', 'd-e-f-g');
-//      addWorksCorrectlyTest('(2)', '*', 'd-e-f-g');
-//      addWorksCorrectlyTest('(3)', '--', 'd--e--f--g');
-//      addWorksCorrectlyTest('(4)', '', 'defg');
-//      addWorksCorrectlyTest('(5)', '--', 'd--e--f--g');
-//
-//
-//      testCurriedFunction(split, ['*', 'a*b']);
-//    });
-//
-//
-//    var splitRegExpSpec = {
-//      name: 'splitRegExp',
-//      arity: 2,
-//      restrictions: [[RegExp], ['string']],
-//      validArguments: [[/a/], ['banana']]
-//    };
-//
-//
-//    describeFunction(splitRegExpSpec, string.splitRegExp, function(splitRegExp) {
-//      var addReturnsArrayTest = function(message, pattern, str) {
-//        it('Returns an array ' + message, function() {
-//          var result = splitRegExp(pattern, str);
-//
-//          expect(base.isArray(result)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addReturnsArrayTest('(1)', /-/, 'a-b-c');
-//      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
-//
-//
-//      it('Matched pattern not present in results (1)', function() {
-//        var s = 'a-b-c';
-//        var result = splitRegExp(/-/, s).every(function(sp) {
-//          return sp !== '-';
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Matched pattern not present in results (2)', function() {
-//        var s = 'a-b-c';
-//        var result = splitRegExp(/-/, s).every(function(sp) {
-//          return sp.indexOf('-') === -1;
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      var addWorksCorrectlyTest = function(message, pattern, str) {
-//        it('Works correctly ' + message, function() {
-//          var result = splitRegExp(pattern, str);
-//
-//          expect(result).to.deep.equal(str.split(pattern));
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTest('(1)', /-/, 'd-e-f-g');
-//      addWorksCorrectlyTest('(2)', /\*/, 'd-e-f-g');
-//      addWorksCorrectlyTest('(3)', /-{1}/, 'd--e--f--g');
-//
-//
-//      testCurriedFunction(splitRegExp, [/-+/, 'a--b']);
-//    });
-//
-//
-//    var splitLimitSpec = {
-//      name: 'splitLimit',
-//      arity: 3,
-//      restrictions: [['string'], ['integer'], ['string']],
-//      validArguments: [['a'], [2], ['banana']]
-//    };
-//
-//
-//    describeFunction(splitLimitSpec, string.splitLimit, function(splitLimit) {
-//      var addReturnsArrayTest = function(message, splitStr, str) {
-//        it('Returns an array ' + message, function() {
-//          var result = splitLimit(splitStr, 1, str);
-//
-//          expect(base.isArray(result)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addReturnsArrayTest('(1)', '-', 'a-b-c');
-//      addReturnsArrayTest('(2)', '*', 'a-b-c');
-//
-//
-//      it('Splitting string not present in results (1)', function() {
-//        var s = 'a-b-c';
-//        var result = splitLimit('-', 10, s).every(function(sp) {
-//          return sp !== '-';
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Splitting string not present in results (2)', function() {
-//        var s = 'a-b-c';
-//        var result = splitLimit('-', 10, s).every(function(sp) {
-//          return sp.indexOf('-') === -1;
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      var addWorksCorrectlyTest = function(message, splitStr, limit, str) {
-//        it('Works correctly ' + message, function() {
-//          var result = splitLimit(splitStr, limit, str);
-//
-//          expect(result).to.deep.equal(str.split(splitStr, limit));
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTest('(1)', '-', 10, 'd-e-f-g');
-//      addWorksCorrectlyTest('(2)', '-', 1, 'd-e-f-g');
-//      addWorksCorrectlyTest('(3)', '*', 2, 'd-e-f-g');
-//      addWorksCorrectlyTest('(4)', '--', 4, 'd--e--f--g');
-//      addWorksCorrectlyTest('(5)', '', 2, 'defg');
-//
-//
-//      testCurriedFunction(splitLimit, ['*', 1, 'a*b']);
-//    });
-//
-//
-//    var splitRegExpLimitSpec = {
-//      name: 'splitRegExpLimit',
-//      arity: 3,
-//      restrictions: [[RegExp], ['integer'], ['string']],
-//      validArguments: [[/a/], [10], ['banana']]
-//    };
-//
-//
-//    describeFunction(splitRegExpLimitSpec, string.splitRegExpLimit, function(splitRegExpLimit) {
-//      var addReturnsArrayTest = function(message, pattern, str) {
-//        it('Returns an array ' + message, function() {
-//          var result = splitRegExpLimit(pattern, 10, str);
-//
-//          expect(base.isArray(result)).to.equal(true);
-//        });
-//      };
-//
-//
-//      addReturnsArrayTest('(1)', /-/, 'a-b-c');
-//      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
-//
-//
-//      it('Matched pattern not present in results (1)', function() {
-//        var s = 'a-b-c';
-//        var result = splitRegExpLimit(/-/, 10, s).every(function(sp) {
-//          return sp !== '-';
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      it('Matched pattern not present in results (2)', function() {
-//        var s = 'a-b-c';
-//        var result = splitRegExpLimit(/-/, 10, s).every(function(sp) {
-//          return sp.indexOf('-') === -1;
-//        });
-//
-//        expect(result).to.equal(true);
-//      });
-//
-//
-//      var addWorksCorrectlyTest = function(message, pattern, limit, str) {
-//        it('Works correctly ' + message, function() {
-//          var result = splitRegExpLimit(pattern, limit, str);
-//
-//          expect(result).to.deep.equal(str.split(pattern, limit));
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTest('(1)', /-/, 10, 'd-e-f-g');
-//      addWorksCorrectlyTest('(2)', /-/, 2, 'd-e-f-g');
-//      addWorksCorrectlyTest('(3)', /\*/, 4, 'd-e-f-g');
-//      addWorksCorrectlyTest('(4)', /-{1}/, 3, 'd--e--f--g');
-//
-//
-//      testCurriedFunction(splitRegExpLimit, [/-+/, 10, 'a--b']);
-//    });
-//
-//
-//    var makeReplaceTest = function(desc, fnUnderTest, fn, once) {
-//      var spec = {
-//        name: desc,
-//        arity: 3
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        var invalids = [
-//          {name: 'number', value: 42},
-//          {name: 'boolean', value: false},
-//          {name: 'null', value: null},
-//          {name: 'undefined', value: undefined},
-//          {name: 'object', value: {}},
-//          {name: 'array', value: []}
-//        ];
-//
-//
-//        var nonRegExpes = invalids.concat([
-//          {name: 'string', value: 'abc'},
-//          {name: 'function', value: function() {}}
-//        ]);
-//
-//        nonRegExpes.forEach(function(test) {
-//          it('Throws if from is a ' + test.name, function() {
-//            var s = 'funkier';
-//            var to = fn ? function(s) {return 'h';} : 'h';
-//            var f = function() {
-//              fnUnderTest(test.value, to, s);
-//            };
-//
-//            expect(f).to.throw(TypeError);
-//          });
-//        });
-//
-//
-//        if (!fn) {
-//          var nonStrings = invalids.concat([
-//            {name: 'function', value: function() {return 'abc';}}
-//          ]);
-//
-//          nonStrings.forEach(function(test) {
-//            it('Throws if replacement is a ' + test.name, function() {
-//              var s = 'funkier';
-//              var from = /u/;
-//              var f = function() {
-//                fnUnderTest(from, test.value, s);
-//              };
-//
-//              expect(f).to.throw(TypeError);
-//            });
-//          });
-//
-//
-//          // If argument 2 isn't a function, then it's a string. Test the various
-//          //  special characters.
-//
-//          it('Respects meaning of $1 in replacement', function() {
-//            var s = 'bana';
-//            var from = /(na)/;
-//            var to = '$1$1';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('banana');
-//          });
-//
-//
-//          it('Respects meaning of $& in replacement', function() {
-//            var s = 'ba';
-//            var from = /ba/;
-//            var to = 'ab$&';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('abba');
-//          });
-//
-//
-//          it('Respects meaning of $` in replacement', function() {
-//            var s = 'can-';
-//            var from = /-/;
-//            var to = '-$`';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('can-can');
-//          });
-//
-//
-//          it('Respects meaning of $\' in replacement', function() {
-//            var s = 'bana';
-//            var from = /ba/;
-//            var to = 'ba$\'';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('banana');
-//          });
-//
-//
-//          it('Respects meaning of $$ in replacement', function() {
-//            var s = 'let\'s make some dollar';
-//            var from = /dollar/;
-//            var to = '$$';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('let\'s make some $');
-//          });
-//        } else {
-//          var nonFunctions = invalids.concat([
-//            {name: 'string', value: 'abc'}
-//          ]);
-//
-//          nonFunctions.forEach(function(test) {
-//            it('Throws if replacement is a ' + test.name, function() {
-//              var s = 'funkier';
-//              var from = /u/;
-//              var f = function() {
-//                fnUnderTest(from, test.value, s);
-//              };
-//
-//              expect(f).to.throw(TypeError);
-//            });
-//          });
-//
-//
-//          it('Calls replacement function with matched groups', function() {
-//            var s = 'a111b222c';
-//            var from = /(\d+)b(\d+)/;
-//            var to = function(s, a, b) {to.arg1 = a; to.arg2 = b; return '';};
-//            to.arg1 = null;
-//            to.arg2 = null;
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(to.arg1).to.equal('111');
-//            expect(to.arg2).to.equal('222');
-//          });
-//
-//
-//          it('Calls replacement function with matched substring', function() {
-//            var s = 'funkier';
-//            var from = /f/;
-//            var to = function(s) {to.s = s; return 'g';};
-//            to.s = null;
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(to.s).to.equal('f');
-//          });
-//        }
-//
-//
-//        it('Returns original string when no matches found', function() {
-//          var s = 'funkier';
-//          var from = /g/;
-//          var to = fn ? function(s) {return 'h';} : 'h';
-//          var result = fnUnderTest(from, to, s);
-//
-//          expect(result).to.equal(s);
-//        });
-//
-//
-//        it('Works correctly', function() {
-//          var s = 'funkier';
-//          var from = /f/;
-//          var to = fn ? function(s) {return 'g';} : 'g';
-//          var result = fnUnderTest(from, to, s);
-//
-//          expect(result).to.equal('gunkier');
-//        });
-//
-//
-//        it('Replaces leftmost', function() {
-//          var s = 'bannna';
-//          var from = /nn/;
-//          var to = fn ? function(s) {return 'na';} : 'na';
-//          var result = fnUnderTest(from, to, s);
-//
-//          expect(result).to.equal('banana');
-//        });
-//
-//
-//        it('Deletes if replacement is empty', function() {
-//          var s = 'funkier';
-//          var from = /u/;
-//          var to = fn ? function(s) {return '';} : '';
-//          var result = fnUnderTest(from, to, s);
-//
-//          expect(result).to.equal('fnkier');
-//        });
-//
-//
-//        if (once) {
-//          it('Replaces exactly one instance when found', function() {
-//            var s = 'banana';
-//            var from = /a/;
-//            var to = fn ? function(s) {return 'i';} : 'i';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('binana');
-//          });
-//
-//
-//          it('Ignores global flag on regexp', function() {
-//            var s = 'banana';
-//            var from = /a/g;
-//            var to = fn ? function(s) {return 'i';} : 'i';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('binana');
-//          });
-//        } else {
-//          it('Replaces all instances found', function() {
-//            var s = 'banana';
-//            var from = /a/g;
-//            var to = fn ? function(s) {return 'i';} : 'i';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('binini');
-//          });
-//
-//
-//          it('Works correctly when replacement text matches', function() {
-//            var s = 'banana';
-//            var from = /a/g;
-//            var to = fn ? function(s) {return 'ai';} : 'ai';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('bainainai');
-//          });
-//
-//
-//          it('Works irrespective of regexp global flag', function() {
-//            var s = 'banana';
-//            var from = /a/;
-//            var to = fn ? function(s) {return 'i';} : 'i';
-//            var result = fnUnderTest(from, to, s);
-//
-//            expect(result).to.equal('binini');
-//          });
-//        }
-//
-//        var from = /a/g;
-//        var to = fn ? function(s) {return 'i';} : 'i';
-//        testCurriedFunction(fnUnderTest, [from, to, 'banana']);
-//      });
-//    };
-//
-//    makeReplaceTest('replaceOneString', string.replaceOneString, false, true);
-//    makeReplaceTest('replaceString', string.replaceString, false, false);
-//    makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, true, true);
-//    makeReplaceTest('replaceStringWith', string.replaceStringWith, true, false);
-//
-//
-//    var testSpec = {
-//      name: 'test',
-//      arity: 2,
-//      restrictions: [[RegExp], []],
-//      validArguments: [[/a/], ['a']]
-//    };
-//
-//
-//    describeFunction(testSpec, string.test, function(test) {
-//      var invalids = [
-//        {name: 'number', value: 42},
-//        {name: 'boolean', value: false},
-//        {name: 'null', value: null},
-//        {name: 'undefined', value: undefined},
-//        {name: 'object', value: {}},
-//        {name: 'array', value: []},
-//        {name: 'function', value: function() {}}
-//      ];
-//
-//
-//      var nonRegExpes = invalids.concat([
-//        {name: 'string', value: 'abc'},
-//      ]);
-//
-//      nonRegExpes.forEach(function(test) {
-//        it('Throws when first parameter is a ' + test.name, function() {
-//          var fn = function() {
-//            test(test.value, 'foo');
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      });
-//
-//
-//      invalids.forEach(function(test) {
-//        it('Throws when second parameter is a ' + test.name, function() {
-//          var fn = function() {
-//            test(/a/, test.value);
-//          };
-//
-//          expect(fn).to.throw(TypeError);
-//        });
-//      });
-//
-//
-//      var addReturnsBooleanTest = function(message, str) {
-//        it('Returns a boolean (1)', function() {
-//          var result = test(/a/, str);
-//
-//          expect(result).to.be.a('boolean');
-//        });
-//      };
-//
-//
-//      addReturnsBooleanTest('(1)', 'b');
-//      addReturnsBooleanTest('(2)', 'a');
-//
-//
-//      var addWorksTest = function(message, str, expected) {
-//        it('Works correctly (1)', function() {
-//          var result = test(/a/, str);
-//
-//          expect(result).to.equal(expected);
-//        });
-//      };
-//
-//
-//      addReturnsBooleanTest('(1)', 'b', false);
-//      addReturnsBooleanTest('(2)', 'a', true);
-//
-//
-//      testCurriedFunction(test, [/na/, 'na']);
-//    });
-//
-//
-//    // Helper for the various match tests
-//    var resultIsCorrectShape = function(result) {
-//      // The match functions don't return a constructed object,
-//      // just a bare object with certain properties attached.
-//
-//      var keys = Object.keys(result);
-//      var expectedKeys = ['index', 'matchedText', 'subexpressions'];
-//
-//      if (keys.length !== expectedKeys.length)
-//        return false;
-//
-//      return keys.every(function(k) {
-//        return expectedKeys.indexOf(k) !== -1;
-//      });
-//    };
-//
-//
-//    var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
-//      var spec = {
-//        name: desc,
-//        arity: isFrom ? 3 : 2,
-//        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
-//        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        it('Returns an empty array when there are no results', function() {
-//          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result).to.be.an('array');
-//          expect(result.length).to.equal(0);
-//        });
-//
-//
-//        it('Returns an array of correct length (1)', function() {
-//          var s = 'a cat hat mat';
-//          // Our search string has 4 results: the from function should pick up 2 of them
-//          // based on the start position
-//          var expectedResults = isFrom ? 2 : 4;
-//          var r = /a/g;
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result.length).to.equal(expectedResults);
-//        });
-//
-//
-//        it('All results have correct form (1)', function() {
-//          var s = 'a cat hat mat';
-//          var r = /a/g;
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct matched text (1)', function() {
-//          var s = 'a cat hat mat';
-//          var r = /a/g;
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(function(obj) {
-//            return obj.matchedText === 'a';
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct index (1)', function() {
-//          var s = 'a cat hat mat';
-//          var r = /a/g;
-//          var indices = [0, 3, 7, 11];
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
-//            return obj.index === (isFrom ? indices[i + 2]  - 5 : indices[i]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct subexpressions (1)', function() {
-//          // This search has no subexpressions: the result should be an empty array
-//          var s = 'a cat hat mat';
-//          var r = /a/g;
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(function(res) {
-//            return Array.isArray(res.subexpressions) &&
-//                   res.subexpressions.length === 0;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Returns an array of correct length (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          // Our search string has 4 results: the from function should pick up 2 of them
-//          // based on the start position
-//          var expectedResults = isFrom ? 2 : 4;
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result.length).to.equal(expectedResults);
-//        });
-//
-//
-//        it('All results have correct form (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct matched text (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var isDigit = function(c) {
-//            return c.length === 1 && c >= '0' && c <= '9';
-//          };
-//          var result = fnUnderTest.apply(null, args).every(function(obj) {
-//            return obj.matchedText.length === 4 &&
-//                   obj.matchedText[0] === 'a' && isDigit(obj.matchedText[1]) &&
-//                   isDigit(obj.matchedText[1]) && isDigit(obj.matchedText[2]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct index (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var indices = [0, 7, 15, 22];
-//          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
-//            return obj.index === (isFrom ? indices[i + 2] - 8 : indices[i]);
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('All results have correct subexpressions (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args).every(function(res, i) {
-//            var subs = res.subexpressions;
-//            var sub0 = '' + (isFrom ? i + 2 : i);
-//            var sub1 = '' + (isFrom ? i + 3 : i + 1);
-//            var sub2 = '' + (isFrom ? i + 4 : i + 2);
-//            return Array.isArray(subs) && subs.length === 3 && subs[0] === sub0 &&
-//                   subs[1] === sub1 && subs[2] === sub2;
-//          });
-//
-//          expect(result).to.equal(true);
-//        });
-//
-//
-//        it('Works correctly when RegExp has no global flag', function () {
-//          var s = 'banana';
-//          var r = /n/;
-//          var args = isFrom ? [r, 0, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result.length).to.equal(2);
-//        });
-//
-//
-//        var args = isFrom ? [/a/, 0, 'banana'] : [/a/, 'banana'];
-//        testCurriedFunction(fnUnderTest, args);
-//      });
-//    };
-//
-//
-//    var makeSingleMatcherTests = function(desc, fnUnderTest, isFrom, multiEquivalent) {
-//      var spec = {
-//        name: desc,
-//        arity: isFrom ? 3 : 2,
-//        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
-//        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
-//      };
-//
-//
-//      describeFunction(spec, fnUnderTest, function(fnUnderTest) {
-//        it('Returns null when there are no results', function() {
-//          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result).to.equal(null);
-//        });
-//
-//
-//        it('Works correctly (1)', function() {
-//          var s = 'a cat hat mat';
-//          var r = /a/g;
-//          var args = isFrom ? [r, 5, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
-//        });
-//
-//
-//        it('Works correctly (2)', function() {
-//          var s = 'a012 bca123 defa234 gha345';
-//          var r = /a(\d)(\d)(\d)/g;
-//          var args = isFrom ? [r, 8, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
-//        });
-//
-//
-//        it('Works correctly when RegExp has global flag', function () {
-//          var s = 'banana';
-//          var r = /n/g;
-//          var args = isFrom ? [r, 0, s] : [r, s];
-//          var result = fnUnderTest.apply(null, args);
-//
-//          expect(result).to.not.equal(null);
-//          expect(result.index).to.equal(2);
-//        });
-//
-//
-//        var args = isFrom ? [/a/, 4, 'banana'] : [/a/, 'banana'];
-//        testCurriedFunction(fnUnderTest, args);
-//      });
-//    };
-//
-//
-//    makeMultiMatcherTests('matches', string.matches, false);
-//    makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
-//    makeSingleMatcherTests('firstMatch', string.firstMatch, false, string.matches);
-//    makeSingleMatcherTests('firstMatchFrom', string.firstMatchFrom, true, string.matchesFrom);
-//
-//
-//    var trimSpec = {
-//      name: 'trim',
-//      arity: 1
-//    };
-//
-//
-//    describeFunction(trimSpec, string.trim, function(trim) {
-//      var addWorksCorrectlyTest = function(message, str) {
-//        it('Works correctly ' + message, function() {
-//          var result = trim(str);
-//
-//          expect(result).to.equal(str.trim());
-//        });
-//      };
-//
-//
-//      addWorksCorrectlyTest('(1)', 'abc');
-//      addWorksCorrectlyTest('(2)', '  abc');
-//      addWorksCorrectlyTest('(3)', 'abc  ');
-//      addWorksCorrectlyTest('(4)', '  abc  ');
-//
-//      testCurriedFunction(trim, [' abc ']);
-//    });
-//  };
-//
-//
-//  // AMD/CommonJS foo: aim to allow running testsuite in browser with require.js (TODO)
-//  if (typeof(define) === "function") {
-//    define(function(require, exports, module) {
-//      testFixture(require, exports, module);
-//    });
-//  } else {
-//    testFixture(require, exports, module);
-//  }
-//})();
+},{"../../lib/components/base":11,"../../lib/components/curry":12,"../../lib/components/result":20,"../../lib/internalUtilities":26,"./testingUtilities":62,"chai":63}],60:[function(require,module,exports){
+(function() {
+  "use strict";
 
-},{}],60:[function(require,module,exports){
+
+  var expect = require('chai').expect;
+
+  var string = require('../../lib/components/string');
+
+  var types = require('../../lib/components/types');
+  var isArray = types.isArray;
+
+  var testingUtilities = require('./testingUtilities');
+  var checkModule = testingUtilities.checkModule;
+  var checkFunction = testingUtilities.checkFunction;
+
+  describe('string', function() {
+    var expectedObjects = [];
+    var expectedFunctions = ['chr', 'firstMatch', 'firstMatchFrom', 'matches', 'matchesFrom', 'ord', 'regExpSplit',
+                             'regExpSplitMax',  /*'replaceOneString', 'replaceOneStringWith', 'replaceString',
+                             'replaceStringWith',*/ 'split', 'splitMax', 'test', 'toCharCode', 'toLocaleLowerCase',
+                             'toLocaleString', 'toLocaleUpperCase', 'toLowerCase', 'toString', 'toUpperCase', 'trim'];
+    checkModule('string', string, expectedObjects, expectedFunctions);
+
+
+    var toStringTests = [
+      {name: 'number', value: 1000},
+      {name: 'string', value: 'a'},
+      {name: 'boolean', value: true},
+      {name: 'function', value: function() {}},
+      {name: 'object', value: {}},
+      {name: 'array', value: [1]},
+      {name: 'date', value: new Date(2000, 0, 0)}
+    ];
+
+
+    describe('toString', function() {
+      var toString = string.toString;
+
+
+      var makeToStringTest = function(val) {
+        return function() {
+          expect(toString(val)).to.equal(val.toString());
+        };
+      };
+
+
+      toStringTests.forEach(function(test) {
+        it('Works correctly for ' + test.name, makeToStringTest(test.value));
+      });
+
+
+      it('Works correctly for object with custom toString', function() {
+        var a = {toString: function() {return 'foo';}};
+
+        expect(toString(a)).to.equal(a.toString());
+      });
+    });
+
+
+    describe('toLocaleString', function() {
+      var toLocaleString = string.toLocaleString;
+
+
+      var makeToLocaleStringTest = function(val) {
+        return function() {
+          expect(toLocaleString(val)).to.equal(val.toLocaleString());
+        };
+      };
+
+
+      toStringTests.forEach(function(test) {
+        it('Works correctly for ' + test.name, makeToLocaleStringTest(test.value));
+      });
+
+
+      it('Works correctly for object with custom toLocaleString', function() {
+        var a = {toLocaleString: function() {return 'foo';}};
+
+        expect(toLocaleString(a)).to.equal(a.toLocaleString());
+      });
+    });
+
+
+    describe('toCharCode', function() {
+      var toCharCode = string.toCharCode;
+
+
+      it('Works correctly (1)', function() {
+        var a = 'abc';
+        var l = a.length;
+
+        for (var i = 0; i < l; i++)
+          expect(toCharCode(i, a)).to.equal(a.charCodeAt(i));
+      });
+
+
+      it('Works correctly (2)', function() {
+        var a = 'abc';
+
+        expect(isNaN(toCharCode(10, a))).to.equal(true);
+      });
+    });
+
+
+    describe('ord', function() {
+      var ord = string.ord;
+
+
+      var addWorksTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          expect(ord(str)).to.equal(str.charCodeAt(0));
+        });
+      };
+
+
+      addWorksTest('(1)', 'a');
+      addWorksTest('(2)', 'F');
+      addWorksTest('(3)', 'funkier');
+
+
+      it('Works correctly (4)', function() {
+        var a = '';
+
+        expect(isNaN(ord(a))).to.equal(true);
+      });
+    });
+
+
+    describe('chr', function() {
+      var ord = string.ord;
+      var chr = string.chr;
+
+
+      var addWorksTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          var code = ord(str);
+
+          expect(chr(code)).to.equal(str);
+        });
+      };
+
+
+      addWorksTest('(1)', 'a');
+      addWorksTest('(1)', 'F');
+
+
+      it('Discards superfluous arguments', function() {
+        var a = 'a';
+        var aCode = ord(a);
+        var bCode = ord('b');
+        var cCode = ord('c');
+
+        expect(chr(aCode, bCode, cCode)).to.equal(a);
+      });
+    });
+
+
+    var makeStringCaseTest = function(desc, fnUnderTest, verifier) {
+      describe(desc, function() {
+        var addWorksTest = function(message, str) {
+          it('Works correctly ' + message, function() {
+            var result = fnUnderTest(str);
+
+            expect(result).to.equal(str[verifier]());
+          });
+        };
+
+
+        addWorksTest('(1)', 'abc');
+        addWorksTest('(1)', 'ABC');
+        addWorksTest('(1)', 'AbC');
+      });
+    };
+
+
+    makeStringCaseTest('toLowerCase', string.toLowerCase, 'toLowerCase');
+    makeStringCaseTest('toLocaleLowerCase', string.toLocaleLowerCase, 'toLocaleLowerCase');
+    makeStringCaseTest('toUpperCase', string.toUpperCase, 'toUpperCase');
+    makeStringCaseTest('toLocaleUpperCase', string.toLocaleUpperCase, 'toLocaleUpperCase');
+
+
+    var splitSpec = {
+      name: 'split',
+      restrictions: [['string'], ['string']],
+      validArguments: [['a'], ['banana']]
+    };
+
+
+    checkFunction(splitSpec, string.split, function(split) {
+      var addReturnsArrayTest = function(message, splitStr, str) {
+        it('Returns an array ' + message, function() {
+          var result = split(splitStr, str);
+
+          expect(isArray(result)).to.equal(true);
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', '-', 'a-b-c');
+      addReturnsArrayTest('(2)', '*', 'a-b-c');
+
+
+      it('Splitting string not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = split('-', s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Splitting string not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = split('-', s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      var addWorksCorrectlyTest = function(message, splitStr, str) {
+        it('Works correctly ' + message, function() {
+          var result = split(splitStr, str);
+
+          expect(result).to.deep.equal(str.split(splitStr));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', '-', 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', '*', 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', '--', 'd--e--f--g');
+      addWorksCorrectlyTest('(4)', '', 'defg');
+      addWorksCorrectlyTest('(5)', '--', 'd--e--f--g');
+    });
+
+
+    var regExpSplitSpec = {
+      name: 'regExpSplit',
+      restrictions: [[RegExp], ['string']],
+      validArguments: [[/a/], ['banana']]
+    };
+
+
+    checkFunction(regExpSplitSpec, string.regExpSplit, function(regExpSplit) {
+      var addReturnsArrayTest = function(message, pattern, str) {
+        it('Returns an array ' + message, function() {
+          var result = regExpSplit(pattern, str);
+
+          expect(isArray(result)).to.equal(true);
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', /-/, 'a-b-c');
+      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
+
+
+      it('Matched pattern not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = regExpSplit(/-/, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Matched pattern not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = regExpSplit(/-/, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      var addWorksCorrectlyTest = function(message, pattern, str) {
+        it('Works correctly ' + message, function() {
+          var result = regExpSplit(pattern, str);
+
+          expect(result).to.deep.equal(str.split(pattern));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', /-/, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', /\*/, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', /-{1}/, 'd--e--f--g');
+    });
+
+
+    var splitMaxSpec = {
+      name: 'splitMax',
+      restrictions: [['string'], ['integer'], ['string']],
+      validArguments: [['a'], [2], ['banana']]
+    };
+
+
+    checkFunction(splitMaxSpec, string.splitMax, function(splitMax) {
+      var addReturnsArrayTest = function(message, splitStr, str) {
+        it('Returns an array ' + message, function() {
+          var result = splitMax(splitStr, 1, str);
+
+          expect(isArray(result)).to.equal(true);
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', '-', 'a-b-c');
+      addReturnsArrayTest('(2)', '*', 'a-b-c');
+
+
+      it('Splitting string not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = splitMax('-', 10, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Splitting string not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = splitMax('-', 10, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      var addWorksCorrectlyTest = function(message, splitStr, limit, str) {
+        it('Works correctly ' + message, function() {
+          var result = splitMax(splitStr, limit, str);
+
+          expect(result).to.deep.equal(str.split(splitStr, limit));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', '-', 10, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', '-', 1, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', '*', 2, 'd-e-f-g');
+      addWorksCorrectlyTest('(4)', '--', 4, 'd--e--f--g');
+      addWorksCorrectlyTest('(5)', '', 2, 'defg');
+    });
+
+
+    var regExpSplitMaxSpec = {
+      name: 'regExpSplitMax',
+      restrictions: [[RegExp], ['integer'], ['string']],
+      validArguments: [[/a/], [10], ['banana']]
+    };
+
+
+    checkFunction(regExpSplitMaxSpec, string.regExpSplitMax, function(regExpSplitMax) {
+      var addReturnsArrayTest = function(message, pattern, str) {
+        it('Returns an array ' + message, function() {
+          var result = regExpSplitMax(pattern, 10, str);
+
+          expect(isArray(result)).to.equal(true);
+        });
+      };
+
+
+      addReturnsArrayTest('(1)', /-/, 'a-b-c');
+      addReturnsArrayTest('(2)', /\*/, 'a-b-c');
+
+
+      it('Matched pattern not present in results (1)', function() {
+        var s = 'a-b-c';
+        var result = regExpSplitMax(/-/, 10, s).every(function(sp) {
+          return sp !== '-';
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      it('Matched pattern not present in results (2)', function() {
+        var s = 'a-b-c';
+        var result = regExpSplitMax(/-/, 10, s).every(function(sp) {
+          return sp.indexOf('-') === -1;
+        });
+
+        expect(result).to.equal(true);
+      });
+
+
+      var addWorksCorrectlyTest = function(message, pattern, limit, str) {
+        it('Works correctly ' + message, function() {
+          var result = regExpSplitMax(pattern, limit, str);
+
+          expect(result).to.deep.equal(str.split(pattern, limit));
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', /-/, 10, 'd-e-f-g');
+      addWorksCorrectlyTest('(2)', /-/, 2, 'd-e-f-g');
+      addWorksCorrectlyTest('(3)', /\*/, 4, 'd-e-f-g');
+      addWorksCorrectlyTest('(4)', /-{1}/, 3, 'd--e--f--g');
+    });
+
+
+    /*
+     * The search and modification tests are not yet ready for implementation: the API needs to be finalized
+
+    var makeReplaceTest = function(desc, fnUnderTest, fn, once) {
+      var spec = {
+        name: desc,
+        arity: 3
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        var invalids = [
+          {name: 'number', value: 42},
+          {name: 'boolean', value: false},
+          {name: 'null', value: null},
+          {name: 'undefined', value: undefined},
+          {name: 'object', value: {}},
+          {name: 'array', value: []}
+        ];
+
+
+        var nonRegExpes = invalids.concat([
+          {name: 'string', value: 'abc'},
+          {name: 'function', value: function() {}}
+        ]);
+
+        nonRegExpes.forEach(function(test) {
+          it('Throws if from is a ' + test.name, function() {
+            var s = 'funkier';
+            var to = fn ? function(s) {return 'h';} : 'h';
+            var f = function() {
+              fnUnderTest(test.value, to, s);
+            };
+
+            expect(f).to.throw(TypeError);
+          });
+        });
+
+
+        if (!fn) {
+          var nonStrings = invalids.concat([
+            {name: 'function', value: function() {return 'abc';}}
+          ]);
+
+          nonStrings.forEach(function(test) {
+            it('Throws if replacement is a ' + test.name, function() {
+              var s = 'funkier';
+              var from = /u/;
+              var f = function() {
+                fnUnderTest(from, test.value, s);
+              };
+
+              expect(f).to.throw(TypeError);
+            });
+          });
+
+
+          // If argument 2 isn't a function, then it's a string. Test the various
+          //  special characters.
+
+          it('Respects meaning of $1 in replacement', function() {
+            var s = 'bana';
+            var from = /(na)/;
+            var to = '$1$1';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('banana');
+          });
+
+
+          it('Respects meaning of $& in replacement', function() {
+            var s = 'ba';
+            var from = /ba/;
+            var to = 'ab$&';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('abba');
+          });
+
+
+          it('Respects meaning of $` in replacement', function() {
+            var s = 'can-';
+            var from = /-/;
+            var to = '-$`';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('can-can');
+          });
+
+
+          it('Respects meaning of $\' in replacement', function() {
+            var s = 'bana';
+            var from = /ba/;
+            var to = 'ba$\'';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('banana');
+          });
+
+
+          it('Respects meaning of $$ in replacement', function() {
+            var s = 'let\'s make some dollar';
+            var from = /dollar/;
+            var to = '$$';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('let\'s make some $');
+          });
+        } else {
+          var nonFunctions = invalids.concat([
+            {name: 'string', value: 'abc'}
+          ]);
+
+          nonFunctions.forEach(function(test) {
+            it('Throws if replacement is a ' + test.name, function() {
+              var s = 'funkier';
+              var from = /u/;
+              var f = function() {
+                fnUnderTest(from, test.value, s);
+              };
+
+              expect(f).to.throw(TypeError);
+            });
+          });
+
+
+          it('Calls replacement function with matched groups', function() {
+            var s = 'a111b222c';
+            var from = /(\d+)b(\d+)/;
+            var to = function(s, a, b) {to.arg1 = a; to.arg2 = b; return '';};
+            to.arg1 = null;
+            to.arg2 = null;
+            var result = fnUnderTest(from, to, s);
+
+            expect(to.arg1).to.equal('111');
+            expect(to.arg2).to.equal('222');
+          });
+
+
+          it('Calls replacement function with matched substring', function() {
+            var s = 'funkier';
+            var from = /f/;
+            var to = function(s) {to.s = s; return 'g';};
+            to.s = null;
+            var result = fnUnderTest(from, to, s);
+
+            expect(to.s).to.equal('f');
+          });
+        }
+
+
+        it('Returns original string when no matches found', function() {
+          var s = 'funkier';
+          var from = /g/;
+          var to = fn ? function(s) {return 'h';} : 'h';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal(s);
+        });
+
+
+        it('Works correctly', function() {
+          var s = 'funkier';
+          var from = /f/;
+          var to = fn ? function(s) {return 'g';} : 'g';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('gunkier');
+        });
+
+
+        it('Replaces leftmost', function() {
+          var s = 'bannna';
+          var from = /nn/;
+          var to = fn ? function(s) {return 'na';} : 'na';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('banana');
+        });
+
+
+        it('Deletes if replacement is empty', function() {
+          var s = 'funkier';
+          var from = /u/;
+          var to = fn ? function(s) {return '';} : '';
+          var result = fnUnderTest(from, to, s);
+
+          expect(result).to.equal('fnkier');
+        });
+
+
+        if (once) {
+          it('Replaces exactly one instance when found', function() {
+            var s = 'banana';
+            var from = /a/;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binana');
+          });
+
+
+          it('Ignores global flag on regexp', function() {
+            var s = 'banana';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binana');
+          });
+        } else {
+          it('Replaces all instances found', function() {
+            var s = 'banana';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binini');
+          });
+
+
+          it('Works correctly when replacement text matches', function() {
+            var s = 'banana';
+            var from = /a/g;
+            var to = fn ? function(s) {return 'ai';} : 'ai';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('bainainai');
+          });
+
+
+          it('Works irrespective of regexp global flag', function() {
+            var s = 'banana';
+            var from = /a/;
+            var to = fn ? function(s) {return 'i';} : 'i';
+            var result = fnUnderTest(from, to, s);
+
+            expect(result).to.equal('binini');
+          });
+        }
+      });
+    };
+
+    makeReplaceTest('replaceOneString', string.replaceOneString, false, true);
+    makeReplaceTest('replaceString', string.replaceString, false, false);
+    makeReplaceTest('replaceOneStringWith', string.replaceOneStringWith, true, true);
+    makeReplaceTest('replaceStringWith', string.replaceStringWith, true, false);
+    */
+
+
+    var testSpec = {
+      name: 'test',
+      restrictions: [[RegExp], []],
+      validArguments: [[/a/], ['a']]
+    };
+
+
+    checkFunction(testSpec, string.test, function(test) {
+      var invalids = [
+        {name: 'number', value: 42},
+        {name: 'boolean', value: false},
+        {name: 'null', value: null},
+        {name: 'undefined', value: undefined},
+        {name: 'object', value: {}},
+        {name: 'array', value: []},
+        {name: 'function', value: function() {}}
+      ];
+
+
+      var nonRegExpes = invalids.concat([
+        {name: 'string', value: 'abc'},
+      ]);
+
+      nonRegExpes.forEach(function(test) {
+        it('Throws when first parameter is a ' + test.name, function() {
+          var fn = function() {
+            test(test.value, 'foo');
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      invalids.forEach(function(test) {
+        it('Throws when second parameter is a ' + test.name, function() {
+          var fn = function() {
+            test(/a/, test.value);
+          };
+
+          expect(fn).to.throw(TypeError);
+        });
+      });
+
+
+      var addReturnsBooleanTest = function(message, str) {
+        it('Returns a boolean (1)', function() {
+          var result = test(/a/, str);
+
+          expect(result).to.be.a('boolean');
+        });
+      };
+
+
+      addReturnsBooleanTest('(1)', 'b');
+      addReturnsBooleanTest('(2)', 'a');
+
+
+      var addWorksTest = function(message, str, expected) {
+        it('Works correctly (1)', function() {
+          var result = test(/a/, str);
+
+          expect(result).to.equal(expected);
+        });
+      };
+
+
+      addReturnsBooleanTest('(1)', 'b', false);
+      addReturnsBooleanTest('(2)', 'a', true);
+    });
+
+
+    // Helper for the various match tests
+    var resultIsCorrectShape = function(result) {
+      // The match functions don't return a constructed object,
+      // just a bare object with certain properties attached.
+
+      var keys = Object.keys(result);
+      var expectedKeys = ['index', 'matchedText', 'subexpressions'];
+
+      if (keys.length !== expectedKeys.length)
+        return false;
+
+      return keys.every(function(k) {
+        return expectedKeys.indexOf(k) !== -1;
+      });
+    };
+
+
+    var makeMultiMatcherTests = function(desc, fnUnderTest, isFrom) {
+      var spec = {
+        name: desc,
+        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
+        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Returns an empty array when there are no results', function() {
+          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.be.an('array');
+          expect(result.length).to.equal(0);
+        });
+
+
+        it('Returns an array of correct length (1)', function() {
+          var s = 'a cat hat mat';
+          // Our search string has 4 results: the from function should pick up 2 of them
+          // based on the start position
+          var expectedResults = isFrom ? 2 : 4;
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(expectedResults);
+        });
+
+
+        it('All results have correct form (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct matched text (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(obj) {
+            return obj.matchedText === 'a';
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct index (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var indices = [0, 3, 7, 11];
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
+            return obj.index === (isFrom ? indices[i + 2]  - 5 : indices[i]);
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct subexpressions (1)', function() {
+          // This search has no subexpressions: the result should be an empty array
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(res) {
+            return Array.isArray(res.subexpressions) &&
+                   res.subexpressions.length === 0;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Returns an array of correct length (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          // Our search string has 4 results: the from function should pick up 2 of them
+          // based on the start position
+          var expectedResults = isFrom ? 2 : 4;
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(expectedResults);
+        });
+
+
+        it('All results have correct form (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(resultIsCorrectShape);
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct matched text (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var isDigit = function(c) {
+            return c.length === 1 && c >= '0' && c <= '9';
+          };
+          var result = fnUnderTest.apply(null, args).every(function(obj) {
+            return obj.matchedText.length === 4 &&
+                   obj.matchedText[0] === 'a' && isDigit(obj.matchedText[1]) &&
+                   isDigit(obj.matchedText[1]) && isDigit(obj.matchedText[2]);
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct index (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var indices = [0, 7, 15, 22];
+          var result = fnUnderTest.apply(null, args).every(function(obj, i) {
+            return obj.index === (isFrom ? indices[i + 2] - 8 : indices[i]);
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('All results have correct subexpressions (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args).every(function(res, i) {
+            var subs = res.subexpressions;
+            var sub0 = '' + (isFrom ? i + 2 : i);
+            var sub1 = '' + (isFrom ? i + 3 : i + 1);
+            var sub2 = '' + (isFrom ? i + 4 : i + 2);
+            return Array.isArray(subs) && subs.length === 3 && subs[0] === sub0 &&
+                   subs[1] === sub1 && subs[2] === sub2;
+          });
+
+          expect(result).to.equal(true);
+        });
+
+
+        it('Works correctly when RegExp has no global flag', function () {
+          var s = 'banana';
+          var r = /n/;
+          var args = isFrom ? [r, 0, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result.length).to.equal(2);
+        });
+      });
+    };
+
+
+    var makeSingleMatcherTests = function(desc, fnUnderTest, isFrom, multiEquivalent) {
+      var spec = {
+        name: desc,
+        arity: isFrom ? 3 : 2,
+        restrictions: isFrom ? [[RegExp], [], []] : [[RegExp], []],
+        validArguments: isFrom ? [[/a/], [1], ['abc']] : [[/a/], ['abc']]
+      };
+
+
+      checkFunction(spec, fnUnderTest, function(fnUnderTest) {
+        it('Returns null when there are no results', function() {
+          var args = isFrom ? [/a/, 0, 'b'] : [/a/, 'b'];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.equal(null);
+        });
+
+
+        it('Works correctly (1)', function() {
+          var s = 'a cat hat mat';
+          var r = /a/g;
+          var args = isFrom ? [r, 5, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+        });
+
+
+        it('Works correctly (2)', function() {
+          var s = 'a012 bca123 defa234 gha345';
+          var r = /a(\d)(\d)(\d)/g;
+          var args = isFrom ? [r, 8, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.deep.equal(multiEquivalent.apply(null, args)[0]);
+        });
+
+
+        it('Works correctly when RegExp has global flag', function () {
+          var s = 'banana';
+          var r = /n/g;
+          var args = isFrom ? [r, 0, s] : [r, s];
+          var result = fnUnderTest.apply(null, args);
+
+          expect(result).to.not.equal(null);
+          expect(result.index).to.equal(2);
+        });
+      });
+    };
+
+
+    makeMultiMatcherTests('matches', string.matches, false);
+    makeMultiMatcherTests('matchesFrom', string.matchesFrom, true);
+    makeSingleMatcherTests('firstMatch', string.firstMatch, false, string.matches);
+    makeSingleMatcherTests('firstMatchFrom', string.firstMatchFrom, true, string.matchesFrom);
+
+
+    describe('trim', function() {
+      var trim = string.trim;
+
+
+      var addWorksCorrectlyTest = function(message, str) {
+        it('Works correctly ' + message, function() {
+          var result = trim(str);
+
+          expect(result).to.equal(str.trim());
+        });
+      };
+
+
+      addWorksCorrectlyTest('(1)', 'abc');
+      addWorksCorrectlyTest('(2)', '  abc');
+      addWorksCorrectlyTest('(3)', 'abc  ');
+      addWorksCorrectlyTest('(4)', '  abc  ');
+    });
+  });
+})();
+
+},{"../../lib/components/string":21,"../../lib/components/types":22,"./testingUtilities":62,"chai":63}],61:[function(require,module,exports){
 (function() {
   "use strict";
 
@@ -42573,7 +44117,7 @@ module.exports = (function() {
   });
 })();
 
-},{"../../lib/components/types":21,"./testingUtilities":61,"chai":62}],61:[function(require,module,exports){
+},{"../../lib/components/types":22,"./testingUtilities":62,"chai":63}],62:[function(require,module,exports){
 module.exports = (function() {
   "use strict";
 
@@ -43580,10 +45124,10 @@ module.exports = (function() {
   return toExport;
 })();
 
-},{"../../lib/components/curry":12,"chai":62}],62:[function(require,module,exports){
+},{"../../lib/components/curry":12,"chai":63}],63:[function(require,module,exports){
 module.exports = require('./lib/chai');
 
-},{"./lib/chai":63}],63:[function(require,module,exports){
+},{"./lib/chai":64}],64:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -43672,7 +45216,7 @@ exports.use(should);
 var assert = require('./chai/interface/assert');
 exports.use(assert);
 
-},{"./chai/assertion":64,"./chai/config":65,"./chai/core/assertions":66,"./chai/interface/assert":67,"./chai/interface/expect":68,"./chai/interface/should":69,"./chai/utils":80,"assertion-error":89}],64:[function(require,module,exports){
+},{"./chai/assertion":65,"./chai/config":66,"./chai/core/assertions":67,"./chai/interface/assert":68,"./chai/interface/expect":69,"./chai/interface/should":70,"./chai/utils":81,"assertion-error":90}],65:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -43804,7 +45348,7 @@ module.exports = function (_chai, util) {
   });
 };
 
-},{"./config":65}],65:[function(require,module,exports){
+},{"./config":66}],66:[function(require,module,exports){
 module.exports = {
 
   /**
@@ -43856,7 +45400,7 @@ module.exports = {
 
 };
 
-},{}],66:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 /*!
  * chai
  * http://chaijs.com
@@ -45172,7 +46716,7 @@ module.exports = function (chai, _) {
   });
 };
 
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46230,7 +47774,7 @@ module.exports = function (chai, util) {
   ('Throw', 'throws');
 };
 
-},{}],68:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46244,7 +47788,7 @@ module.exports = function (chai, util) {
 };
 
 
-},{}],69:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46324,7 +47868,7 @@ module.exports = function (chai, util) {
   chai.Should = loadShould;
 };
 
-},{}],70:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
 /*!
  * Chai - addChainingMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46437,7 +47981,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   });
 };
 
-},{"../config":65,"./flag":73,"./transferFlags":87}],71:[function(require,module,exports){
+},{"../config":66,"./flag":74,"./transferFlags":88}],72:[function(require,module,exports){
 /*!
  * Chai - addMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46482,7 +48026,7 @@ module.exports = function (ctx, name, method) {
   };
 };
 
-},{"../config":65,"./flag":73}],72:[function(require,module,exports){
+},{"../config":66,"./flag":74}],73:[function(require,module,exports){
 /*!
  * Chai - addProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46524,7 +48068,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],73:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46558,7 +48102,7 @@ module.exports = function (obj, key, value) {
   }
 };
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 /*!
  * Chai - getActual utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46578,7 +48122,7 @@ module.exports = function (obj, args) {
   return args.length > 4 ? args[4] : obj._obj;
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 /*!
  * Chai - getEnumerableProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46605,7 +48149,7 @@ module.exports = function getEnumerableProperties(object) {
   return result;
 };
 
-},{}],76:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 /*!
  * Chai - message composition utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46656,7 +48200,7 @@ module.exports = function (obj, args) {
   return flagMsg ? flagMsg + ': ' + msg : msg;
 };
 
-},{"./flag":73,"./getActual":74,"./inspect":81,"./objDisplay":82}],77:[function(require,module,exports){
+},{"./flag":74,"./getActual":75,"./inspect":82,"./objDisplay":83}],78:[function(require,module,exports){
 /*!
  * Chai - getName utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46678,7 +48222,7 @@ module.exports = function (func) {
   return match && match[1] ? match[1] : "";
 };
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /*!
  * Chai - getPathValue utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46782,7 +48326,7 @@ function _getPathValue (parsed, obj) {
   return res;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 /*!
  * Chai - getProperties utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -46819,7 +48363,7 @@ module.exports = function getProperties(object) {
   return result;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 /*!
  * chai
  * Copyright(c) 2011 Jake Luer <jake@alogicalparadox.com>
@@ -46935,7 +48479,7 @@ exports.addChainableMethod = require('./addChainableMethod');
 exports.overwriteChainableMethod = require('./overwriteChainableMethod');
 
 
-},{"./addChainableMethod":70,"./addMethod":71,"./addProperty":72,"./flag":73,"./getActual":74,"./getMessage":76,"./getName":77,"./getPathValue":78,"./inspect":81,"./objDisplay":82,"./overwriteChainableMethod":83,"./overwriteMethod":84,"./overwriteProperty":85,"./test":86,"./transferFlags":87,"./type":88,"deep-eql":90}],81:[function(require,module,exports){
+},{"./addChainableMethod":71,"./addMethod":72,"./addProperty":73,"./flag":74,"./getActual":75,"./getMessage":77,"./getName":78,"./getPathValue":79,"./inspect":82,"./objDisplay":83,"./overwriteChainableMethod":84,"./overwriteMethod":85,"./overwriteProperty":86,"./test":87,"./transferFlags":88,"./type":89,"deep-eql":91}],82:[function(require,module,exports){
 // This is (almost) directly from Node.js utils
 // https://github.com/joyent/node/blob/f8c335d0caf47f16d31413f89aa28eda3878e3aa/lib/util.js
 
@@ -47257,7 +48801,7 @@ function objectToString(o) {
   return Object.prototype.toString.call(o);
 }
 
-},{"./getEnumerableProperties":75,"./getName":77,"./getProperties":79}],82:[function(require,module,exports){
+},{"./getEnumerableProperties":76,"./getName":78,"./getProperties":80}],83:[function(require,module,exports){
 /*!
  * Chai - flag utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47308,7 +48852,7 @@ module.exports = function (obj) {
   }
 };
 
-},{"../config":65,"./inspect":81}],83:[function(require,module,exports){
+},{"../config":66,"./inspect":82}],84:[function(require,module,exports){
 /*!
  * Chai - overwriteChainableMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47363,7 +48907,7 @@ module.exports = function (ctx, name, method, chainingBehavior) {
   };
 };
 
-},{}],84:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 /*!
  * Chai - overwriteMethod utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47416,7 +48960,7 @@ module.exports = function (ctx, name, method) {
   }
 };
 
-},{}],85:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /*!
  * Chai - overwriteProperty utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47472,7 +49016,7 @@ module.exports = function (ctx, name, getter) {
   });
 };
 
-},{}],86:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 /*!
  * Chai - test utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47500,7 +49044,7 @@ module.exports = function (obj, args) {
   return negate ? !expr : expr;
 };
 
-},{"./flag":73}],87:[function(require,module,exports){
+},{"./flag":74}],88:[function(require,module,exports){
 /*!
  * Chai - transferFlags utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47546,7 +49090,7 @@ module.exports = function (assertion, object, includeAll) {
   }
 };
 
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 /*!
  * Chai - type utility
  * Copyright(c) 2012-2014 Jake Luer <jake@alogicalparadox.com>
@@ -47593,7 +49137,7 @@ module.exports = function (obj) {
   return typeof obj;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 /*!
  * assertion-error
  * Copyright(c) 2013 Jake Luer <jake@qualiancy.com>
@@ -47705,10 +49249,10 @@ AssertionError.prototype.toJSON = function (stack) {
   return props;
 };
 
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports = require('./lib/eql');
 
-},{"./lib/eql":91}],91:[function(require,module,exports){
+},{"./lib/eql":92}],92:[function(require,module,exports){
 /*!
  * deep-eql
  * Copyright(c) 2013 Jake Luer <jake@alogicalparadox.com>
@@ -47967,10 +49511,10 @@ function objectEqual(a, b, m) {
   return true;
 }
 
-},{"buffer":29,"type-detect":92}],92:[function(require,module,exports){
+},{"buffer":30,"type-detect":93}],93:[function(require,module,exports){
 module.exports = require('./lib/type');
 
-},{"./lib/type":93}],93:[function(require,module,exports){
+},{"./lib/type":94}],94:[function(require,module,exports){
 /*!
  * type-detect
  * Copyright(c) 2013 jake luer <jake@alogicalparadox.com>

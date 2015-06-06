@@ -646,6 +646,34 @@
     });
 
 
+    describe('chr', function() {
+      it('chr exists', function() {
+        expect(funkier).to.have.a.property('chr');
+      });
+
+
+      it('funkierJS\'s chr is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.chr).to.equal(module.chr);
+      });
+
+
+      it('chr is a function', function() {
+        expect(funkier.chr).to.be.a('function');
+      });
+
+
+      it('chr has documented arity', function() {
+        expect(funkier.arityOf(funkier.chr)).to.equal(1);
+      });
+
+
+      it('chr is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.chr)).to.equal(true);
+      });
+    });
+
+
     describe('clone', function() {
       it('clone exists', function() {
         expect(funkier).to.have.a.property('clone');
@@ -1686,6 +1714,62 @@
 
       it('first is a synonym for fst', function() {
         expect(funkier.first).to.equal(funkier.fst);
+      });
+    });
+
+
+    describe('firstMatch', function() {
+      it('firstMatch exists', function() {
+        expect(funkier).to.have.a.property('firstMatch');
+      });
+
+
+      it('funkierJS\'s firstMatch is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.firstMatch).to.equal(module.firstMatch);
+      });
+
+
+      it('firstMatch is a function', function() {
+        expect(funkier.firstMatch).to.be.a('function');
+      });
+
+
+      it('firstMatch has documented arity', function() {
+        expect(funkier.arityOf(funkier.firstMatch)).to.equal(2);
+      });
+
+
+      it('firstMatch is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.firstMatch)).to.equal(true);
+      });
+    });
+
+
+    describe('firstMatchFrom', function() {
+      it('firstMatchFrom exists', function() {
+        expect(funkier).to.have.a.property('firstMatchFrom');
+      });
+
+
+      it('funkierJS\'s firstMatchFrom is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.firstMatchFrom).to.equal(module.firstMatchFrom);
+      });
+
+
+      it('firstMatchFrom is a function', function() {
+        expect(funkier.firstMatchFrom).to.be.a('function');
+      });
+
+
+      it('firstMatchFrom has documented arity', function() {
+        expect(funkier.arityOf(funkier.firstMatchFrom)).to.equal(3);
+      });
+
+
+      it('firstMatchFrom is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.firstMatchFrom)).to.equal(true);
       });
     });
 
@@ -4018,6 +4102,62 @@
     });
 
 
+    describe('matches', function() {
+      it('matches exists', function() {
+        expect(funkier).to.have.a.property('matches');
+      });
+
+
+      it('funkierJS\'s matches is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.matches).to.equal(module.matches);
+      });
+
+
+      it('matches is a function', function() {
+        expect(funkier.matches).to.be.a('function');
+      });
+
+
+      it('matches has documented arity', function() {
+        expect(funkier.arityOf(funkier.matches)).to.equal(2);
+      });
+
+
+      it('matches is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.matches)).to.equal(true);
+      });
+    });
+
+
+    describe('matchesFrom', function() {
+      it('matchesFrom exists', function() {
+        expect(funkier).to.have.a.property('matchesFrom');
+      });
+
+
+      it('funkierJS\'s matchesFrom is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.matchesFrom).to.equal(module.matchesFrom);
+      });
+
+
+      it('matchesFrom is a function', function() {
+        expect(funkier.matchesFrom).to.be.a('function');
+      });
+
+
+      it('matchesFrom has documented arity', function() {
+        expect(funkier.arityOf(funkier.matchesFrom)).to.equal(3);
+      });
+
+
+      it('matchesFrom is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.matchesFrom)).to.equal(true);
+      });
+    });
+
+
     describe('max', function() {
       it('max exists', function() {
         expect(funkier).to.have.a.property('max');
@@ -4658,6 +4798,34 @@
     });
 
 
+    describe('ord', function() {
+      it('ord exists', function() {
+        expect(funkier).to.have.a.property('ord');
+      });
+
+
+      it('funkierJS\'s ord is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.ord).to.equal(module.ord);
+      });
+
+
+      it('ord is a function', function() {
+        expect(funkier.ord).to.be.a('function');
+      });
+
+
+      it('ord has documented arity', function() {
+        expect(funkier.arityOf(funkier.ord)).to.equal(1);
+      });
+
+
+      it('ord is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.ord)).to.equal(true);
+      });
+    });
+
+
     describe('parseInt', function() {
       it('parseInt exists', function() {
         expect(funkier).to.have.a.property('parseInt');
@@ -5014,6 +5182,86 @@
 
       it('reduceRight1 is a synonym for foldr1', function() {
         expect(funkier.reduceRight1).to.equal(funkier.foldr1);
+      });
+    });
+
+
+    describe('regExpSplit', function() {
+      it('regExpSplit exists', function() {
+        expect(funkier).to.have.a.property('regExpSplit');
+      });
+
+
+      it('funkierJS\'s regExpSplit is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.regExpSplit).to.equal(module.regExpSplit);
+      });
+
+
+      it('regExpSplit is a function', function() {
+        expect(funkier.regExpSplit).to.be.a('function');
+      });
+
+
+      it('regExpSplit has documented arity', function() {
+        expect(funkier.arityOf(funkier.regExpSplit)).to.equal(2);
+      });
+
+
+      it('regExpSplit is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.regExpSplit)).to.equal(true);
+      });
+    });
+
+
+    describe('regExpSplitCount', function() {
+      it('regExpSplitCount exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitCount');
+      });
+
+
+      it('regExpSplitCount is a synonym for regExpSplitMax', function() {
+        expect(funkier.regExpSplitCount).to.equal(funkier.regExpSplitMax);
+      });
+    });
+
+
+    describe('regExpSplitLimit', function() {
+      it('regExpSplitLimit exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitLimit');
+      });
+
+
+      it('regExpSplitLimit is a synonym for regExpSplitMax', function() {
+        expect(funkier.regExpSplitLimit).to.equal(funkier.regExpSplitMax);
+      });
+    });
+
+
+    describe('regExpSplitMax', function() {
+      it('regExpSplitMax exists', function() {
+        expect(funkier).to.have.a.property('regExpSplitMax');
+      });
+
+
+      it('funkierJS\'s regExpSplitMax is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.regExpSplitMax).to.equal(module.regExpSplitMax);
+      });
+
+
+      it('regExpSplitMax is a function', function() {
+        expect(funkier.regExpSplitMax).to.be.a('function');
+      });
+
+
+      it('regExpSplitMax has documented arity', function() {
+        expect(funkier.arityOf(funkier.regExpSplitMax)).to.equal(3);
+      });
+
+
+      it('regExpSplitMax is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.regExpSplitMax)).to.equal(true);
       });
     });
 
@@ -6022,6 +6270,98 @@
     });
 
 
+    describe('split', function() {
+      it('split exists', function() {
+        expect(funkier).to.have.a.property('split');
+      });
+
+
+      it('funkierJS\'s split is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.split).to.equal(module.split);
+      });
+
+
+      it('split is a function', function() {
+        expect(funkier.split).to.be.a('function');
+      });
+
+
+      it('split has documented arity', function() {
+        expect(funkier.arityOf(funkier.split)).to.equal(2);
+      });
+
+
+      it('split is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.split)).to.equal(true);
+      });
+    });
+
+
+    describe('splitCount', function() {
+      it('splitCount exists', function() {
+        expect(funkier).to.have.a.property('splitCount');
+      });
+
+
+      it('splitCount is a synonym for splitMax', function() {
+        expect(funkier.splitCount).to.equal(funkier.splitMax);
+      });
+    });
+
+
+    describe('splitLimit', function() {
+      it('splitLimit exists', function() {
+        expect(funkier).to.have.a.property('splitLimit');
+      });
+
+
+      it('splitLimit is a synonym for splitMax', function() {
+        expect(funkier.splitLimit).to.equal(funkier.splitMax);
+      });
+    });
+
+
+    describe('splitMax', function() {
+      it('splitMax exists', function() {
+        expect(funkier).to.have.a.property('splitMax');
+      });
+
+
+      it('funkierJS\'s splitMax is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.splitMax).to.equal(module.splitMax);
+      });
+
+
+      it('splitMax is a function', function() {
+        expect(funkier.splitMax).to.be.a('function');
+      });
+
+
+      it('splitMax has documented arity', function() {
+        expect(funkier.arityOf(funkier.splitMax)).to.equal(3);
+      });
+
+
+      it('splitMax is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.splitMax)).to.equal(true);
+      });
+    });
+
+
+    describe('splitRegExp', function() {
+      it('splitRegExp exists', function() {
+        expect(funkier).to.have.a.property('splitRegExp');
+      });
+
+
+      it('splitRegExp is a synonym for regExpSplit', function() {
+        expect(funkier.splitRegExp).to.equal(funkier.regExpSplit);
+      });
+    });
+
+
     describe('strictEquals', function() {
       it('strictEquals exists', function() {
         expect(funkier).to.have.a.property('strictEquals');
@@ -6322,6 +6662,34 @@
     });
 
 
+    describe('test', function() {
+      it('test exists', function() {
+        expect(funkier).to.have.a.property('test');
+      });
+
+
+      it('funkierJS\'s test is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.test).to.equal(module.test);
+      });
+
+
+      it('test is a function', function() {
+        expect(funkier.test).to.be.a('function');
+      });
+
+
+      it('test has documented arity', function() {
+        expect(funkier.arityOf(funkier.test)).to.equal(2);
+      });
+
+
+      it('test is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.test)).to.equal(true);
+      });
+    });
+
+
     describe('toBaseAndRadix', function() {
       it('toBaseAndRadix exists', function() {
         expect(funkier).to.have.a.property('toBaseAndRadix');
@@ -6358,6 +6726,34 @@
 
       it('toBaseAndString is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toBaseAndString)).to.equal(true);
+      });
+    });
+
+
+    describe('toCharCode', function() {
+      it('toCharCode exists', function() {
+        expect(funkier).to.have.a.property('toCharCode');
+      });
+
+
+      it('funkierJS\'s toCharCode is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toCharCode).to.equal(module.toCharCode);
+      });
+
+
+      it('toCharCode is a function', function() {
+        expect(funkier.toCharCode).to.be.a('function');
+      });
+
+
+      it('toCharCode has documented arity', function() {
+        expect(funkier.arityOf(funkier.toCharCode)).to.equal(2);
+      });
+
+
+      it('toCharCode is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toCharCode)).to.equal(true);
       });
     });
 
@@ -6530,6 +6926,118 @@
     });
 
 
+    describe('toLocaleLowerCase', function() {
+      it('toLocaleLowerCase exists', function() {
+        expect(funkier).to.have.a.property('toLocaleLowerCase');
+      });
+
+
+      it('funkierJS\'s toLocaleLowerCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleLowerCase).to.equal(module.toLocaleLowerCase);
+      });
+
+
+      it('toLocaleLowerCase is a function', function() {
+        expect(funkier.toLocaleLowerCase).to.be.a('function');
+      });
+
+
+      it('toLocaleLowerCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleLowerCase)).to.equal(1);
+      });
+
+
+      it('toLocaleLowerCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleLowerCase)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleString', function() {
+      it('toLocaleString exists', function() {
+        expect(funkier).to.have.a.property('toLocaleString');
+      });
+
+
+      it('funkierJS\'s toLocaleString is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleString).to.equal(module.toLocaleString);
+      });
+
+
+      it('toLocaleString is a function', function() {
+        expect(funkier.toLocaleString).to.be.a('function');
+      });
+
+
+      it('toLocaleString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleString)).to.equal(1);
+      });
+
+
+      it('toLocaleString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleString)).to.equal(true);
+      });
+    });
+
+
+    describe('toLocaleUpperCase', function() {
+      it('toLocaleUpperCase exists', function() {
+        expect(funkier).to.have.a.property('toLocaleUpperCase');
+      });
+
+
+      it('funkierJS\'s toLocaleUpperCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLocaleUpperCase).to.equal(module.toLocaleUpperCase);
+      });
+
+
+      it('toLocaleUpperCase is a function', function() {
+        expect(funkier.toLocaleUpperCase).to.be.a('function');
+      });
+
+
+      it('toLocaleUpperCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLocaleUpperCase)).to.equal(1);
+      });
+
+
+      it('toLocaleUpperCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLocaleUpperCase)).to.equal(true);
+      });
+    });
+
+
+    describe('toLowerCase', function() {
+      it('toLowerCase exists', function() {
+        expect(funkier).to.have.a.property('toLowerCase');
+      });
+
+
+      it('funkierJS\'s toLowerCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toLowerCase).to.equal(module.toLowerCase);
+      });
+
+
+      it('toLowerCase is a function', function() {
+        expect(funkier.toLowerCase).to.be.a('function');
+      });
+
+
+      it('toLowerCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toLowerCase)).to.equal(1);
+      });
+
+
+      it('toLowerCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toLowerCase)).to.equal(true);
+      });
+    });
+
+
     describe('toPrecision', function() {
       it('toPrecision exists', function() {
         expect(funkier).to.have.a.property('toPrecision');
@@ -6554,6 +7062,34 @@
 
       it('toPrecision is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toPrecision)).to.equal(true);
+      });
+    });
+
+
+    describe('toString', function() {
+      it('toString exists', function() {
+        expect(funkier).to.have.a.property('toString');
+      });
+
+
+      it('funkierJS\'s toString is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toString).to.equal(module.toString);
+      });
+
+
+      it('toString is a function', function() {
+        expect(funkier.toString).to.be.a('function');
+      });
+
+
+      it('toString has documented arity', function() {
+        expect(funkier.arityOf(funkier.toString)).to.equal(1);
+      });
+
+
+      it('toString is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toString)).to.equal(true);
       });
     });
 
@@ -6610,6 +7146,62 @@
 
       it('toUTCString is curried', function() {
         expect(funkier.arityOf._isCurried(funkier.toUTCString)).to.equal(true);
+      });
+    });
+
+
+    describe('toUpperCase', function() {
+      it('toUpperCase exists', function() {
+        expect(funkier).to.have.a.property('toUpperCase');
+      });
+
+
+      it('funkierJS\'s toUpperCase is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.toUpperCase).to.equal(module.toUpperCase);
+      });
+
+
+      it('toUpperCase is a function', function() {
+        expect(funkier.toUpperCase).to.be.a('function');
+      });
+
+
+      it('toUpperCase has documented arity', function() {
+        expect(funkier.arityOf(funkier.toUpperCase)).to.equal(1);
+      });
+
+
+      it('toUpperCase is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.toUpperCase)).to.equal(true);
+      });
+    });
+
+
+    describe('trim', function() {
+      it('trim exists', function() {
+        expect(funkier).to.have.a.property('trim');
+      });
+
+
+      it('funkierJS\'s trim is indeed the documented value', function() {
+        var module = require('../../lib/components/string');
+        expect(funkier.trim).to.equal(module.trim);
+      });
+
+
+      it('trim is a function', function() {
+        expect(funkier.trim).to.be.a('function');
+      });
+
+
+      it('trim has documented arity', function() {
+        expect(funkier.arityOf(funkier.trim)).to.equal(1);
+      });
+
+
+      it('trim is curried', function() {
+        expect(funkier.arityOf._isCurried(funkier.trim)).to.equal(true);
       });
     });
 
@@ -6815,38 +7407,41 @@
       documentedNames = ['help', 'Err', 'Just', 'Maybe', 'Nothing', 'Ok', 'Pair', 'Result', 'add', 'all', 'and',
          'andPred', 'any', 'append', 'apply', 'arity', 'arityOf', 'asArray', 'bind', 'bindWithContext',
          'bindWithContextAndArity', 'bitwiseAnd', 'bitwiseNot', 'bitwiseOr', 'bitwiseXor', 'callProp',
-         'callPropWithArity', 'clone', 'compose', 'composeMany', 'composeOn', 'concat', 'constant', 'constant0',
+         'callPropWithArity', 'chr', 'clone', 'compose', 'composeMany', 'composeOn', 'concat', 'constant', 'constant0',
          'copy', 'createObject', 'createObjectWithProps', 'createProp', 'curry', 'curryOwn', 'curryWithArity',
          'deepEqual', 'deepEquals', 'defaultTap', 'defineProperties', 'defineProperty', 'deleteProp', 'descriptors',
          'div', 'divide', 'drop', 'dropWhile', 'each', 'either', 'element', 'elementWith', 'equals', 'even', 'every',
-         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'flatten', 'flattenMap',
-         'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst', 'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek',
-         'getErrValue', 'getFullYear', 'getHours', 'getIndex', 'getJustValue', 'getMilliseconds', 'getMinutes',
-         'getMonth', 'getOkValue', 'getOwnPropertyDescriptor', 'getOwnPropertyNames', 'getSeconds',
-         'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek', 'getUTCFullYear', 'getUTCHours',
-         'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds', 'greaterThan', 'greaterThanEqual',
-         'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'head', 'id', 'init', 'inits', 'instanceOf',
-         'intersperse', 'is', 'isArray', 'isBoolean', 'isEmpty', 'isErr', 'isJust', 'isMaybe', 'isNothing', 'isNull',
-         'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf', 'isRealObject', 'isResult', 'isString',
-         'isUndefined', 'join', 'keyValues', 'keys', 'last', 'leftShift', 'length', 'lessThan', 'lessThanEqual', 'log',
-         'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate', 'makeHourDate',
-         'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate', 'makeResultReturner',
-         'makeSecondDate', 'map', 'max', 'maximum', 'maybeCreate', 'maybeDelete', 'maybeExtract', 'maybeModify',
-         'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap', 'min', 'minimum', 'modify', 'modifyProp',
-         'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'nub', 'nubWith', 'objectCurry',
-         'objectCurryWithArity', 'occurrences', 'occurrencesWith', 'odd', 'or', 'orPred', 'parseInt', 'parseIntInBase',
-         'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'prefixes', 'prepend', 'product', 'range',
-         'rangeStep', 'rangeStride', 'reduce', 'reduce1', 'reduceRight', 'reduceRight1', 'rem', 'replicate', 'reverse',
+         'exp', 'extend', 'extendOwn', 'extract', 'extractOrDefault', 'filter', 'first', 'firstMatch',
+         'firstMatchFrom', 'flatten', 'flattenMap', 'flip', 'foldl', 'foldl1', 'foldr', 'foldr1', 'fst',
+         'getCurrentTimeString', 'getDayOfMonth', 'getDayOfWeek', 'getErrValue', 'getFullYear', 'getHours', 'getIndex',
+         'getJustValue', 'getMilliseconds', 'getMinutes', 'getMonth', 'getOkValue', 'getOwnPropertyDescriptor',
+         'getOwnPropertyNames', 'getSeconds', 'getTimezoneOffset', 'getType', 'getUTCDayOfMonth', 'getUTCDayOfWeek',
+         'getUTCFullYear', 'getUTCHours', 'getUTCMilliseconds', 'getUTCMinutes', 'getUTCMonth', 'getUTCSeconds',
+         'greaterThan', 'greaterThanEqual', 'gt', 'gte', 'hasOwnProperty', 'hasProperty', 'hasType', 'head', 'id',
+         'init', 'inits', 'instanceOf', 'intersperse', 'is', 'isArray', 'isBoolean', 'isEmpty', 'isErr', 'isJust',
+         'isMaybe', 'isNothing', 'isNull', 'isNumber', 'isObject', 'isOk', 'isPair', 'isPrototypeOf', 'isRealObject',
+         'isResult', 'isString', 'isUndefined', 'join', 'keyValues', 'keys', 'last', 'leftShift', 'length', 'lessThan',
+         'lessThanEqual', 'log', 'lt', 'lte', 'makeDateFromMilliseconds', 'makeDateFromString', 'makeDayDate',
+         'makeHourDate', 'makeMaybeReturner', 'makeMillisecondDate', 'makeMinuteDate', 'makeMonthDate',
+         'makeResultReturner', 'makeSecondDate', 'map', 'matches', 'matchesFrom', 'max', 'maximum', 'maybeCreate',
+         'maybeDelete', 'maybeExtract', 'maybeModify', 'maybeModifyProp', 'maybeSet', 'maybeSetProp', 'maybeTap',
+         'min', 'minimum', 'modify', 'modifyProp', 'multiply', 'not', 'notEqual', 'notEquals', 'notPred', 'nub',
+         'nubWith', 'objectCurry', 'objectCurryWithArity', 'occurrences', 'occurrencesWith', 'odd', 'or', 'orPred',
+         'ord', 'parseInt', 'parseIntInBase', 'permuteLeft', 'permuteRight', 'plus', 'post', 'pow', 'pre', 'prefixes',
+         'prepend', 'product', 'range', 'rangeStep', 'rangeStride', 'reduce', 'reduce1', 'reduceRight', 'reduceRight1',
+         'regExpSplit', 'regExpSplitCount', 'regExpSplitLimit', 'regExpSplitMax', 'rem', 'replicate', 'reverse',
          'rightShift', 'rightShiftZero', 'rotateLeft', 'rotateRight', 'safeCreateProp', 'safeDeleteProp',
          'safeExtract', 'safeModify', 'safeModifyProp', 'safeSet', 'safeSetProp', 'safeTap', 'second', 'sectionLeft',
          'sectionRight', 'set', 'setDayOfMonth', 'setFullYear', 'setHours', 'setMilliseconds', 'setMinutes',
          'setMonth', 'setProp', 'setSeconds', 'setTimeSinceEpoch', 'setUTCDayOfMonth', 'setUTCFullYear', 'setUTCHours',
          'setUTCMilliseconds', 'setUTCMinutes', 'setUTCMonth', 'setUTCSeconds', 'shallowClone', 'slice', 'snd', 'some',
-         'sort', 'sortWith', 'strictEquals', 'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt',
-         'subtract', 'suffixes', 'sum', 'tail', 'tails', 'take', 'takeWhile', 'tap', 'toBaseAndRadix',
-         'toBaseAndString', 'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString',
-         'toLocaleDateString', 'toPrecision', 'toTimeString', 'toUTCString', 'uniq', 'uniqWith', 'unzip', 'wrap',
-         'xor', 'xorPred', 'zip', 'zipWith'];
+         'sort', 'sortWith', 'split', 'splitCount', 'splitLimit', 'splitMax', 'splitRegExp', 'strictEquals',
+         'strictInequality', 'strictNotEqual', 'strictNotEquals', 'stringToInt', 'subtract', 'suffixes', 'sum', 'tail',
+         'tails', 'take', 'takeWhile', 'tap', 'test', 'toBaseAndRadix', 'toBaseAndString', 'toCharCode',
+         'toDateString', 'toEpochMilliseconds', 'toExponential', 'toFixed', 'toISOString', 'toLocaleDateString',
+         'toLocaleLowerCase', 'toLocaleString', 'toLocaleUpperCase', 'toLowerCase', 'toPrecision', 'toString',
+         'toTimeString', 'toUTCString', 'toUpperCase', 'trim', 'uniq', 'uniqWith', 'unzip', 'wrap', 'xor', 'xorPred',
+         'zip', 'zipWith'];
     });
 
 

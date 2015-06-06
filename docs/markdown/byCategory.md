@@ -3896,6 +3896,377 @@ See `clone`
 ### tap ###
 See `extract`
 ***
+## String##
+### chr ###
+**Usage:** `var result = chr(n);`
+
+Parameters:  
+n `number`
+
+Returns: `string`
+
+Equivalent to `String.fromCharCode`. Takes a number n, and returns the character whose Unicode value is that
+number.
+
+#### Examples ####
+    funkierJS.chr(69); // => 'E'
+***
+### firstMatch ###
+**Usage:** `var result = firstMatch(r, s);`
+
+Parameters:  
+r `Regexp`  
+s `string`
+
+Returns: `object` | `null`
+
+Finds the first match in a string for a given regular expression. Takes two parameters: a regular expression and a
+string. Returns a single object or null.
+
+If not null, the object has the following properties:
+  - index: the index in the original string where the match was found
+  - matchedText: the substring that matched the pattern
+  - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+                    The substring matching the first parenthesised expression will be at position 0, the string
+                    matching the second at position 1, and so on. If the regular expression did not contain any
+                    parenthesised subexpressions, this array will be empty.
+
+This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.
+
+Throws a TypeError if the first parameter is not a regular expression.
+
+#### Examples ####
+    funkierJS.firstMatch(/a/, \'banana\'); // => {index: 3, matchedText: \'a\', []}
+***
+### firstMatchFrom ###
+**Usage:** `var result = firstMatchFrom(r, index, s);`
+
+Parameters:  
+r `Regexp`  
+index `natural`  
+s `string`
+
+Returns: `object` | `null`
+
+Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
+regular expression an index, and a string. Returns a single object or null.
+
+If not null, the object has the following properties:
+  - index: the index in the original string where the match was found
+  - matchedText: the substring that matched the pattern
+  - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+                    The substring matching the first parenthesised expression will be at position 0, the string
+                    matching the second at position 1, and so on. If the regular expression did not contain any
+                    parenthesised subexpressions, this array will be empty.
+
+This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.
+
+Throws a TypeError if the first parameter is not a regular expression.
+
+#### Examples ####
+    funkierJS.firstMatchFrom(/a/, 4, 'banana'); // => {index: 5, matchedText: 'a', []}
+***
+### matches ###
+**Usage:** `var result = matches(r, s);`
+
+Parameters:  
+r `Regexp`  
+s `string`
+
+Returns: `array`
+
+Finds all matches within a string for a given regular expression. Takes two parameters: a regular expression and a
+string. Returns an array of objects, one object per match.
+
+Each object has the following properties:
+  - index: the index in the original string where the match was found
+  - matchedText: the substring that matched the pattern
+  - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+                    The substring matching the first parenthesised expression will be at position 0, the string
+                    matching the second at position 1, and so on. If the regular expression did not contain any
+                    parenthesised subexpressions, this array will be empty.
+
+This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.
+
+Throws a TypeError if the first parameter is not a regular expression.
+
+#### Examples ####
+    funkierJS.matches(/a/, 'banana');
+    // a => [{index: 1, matchedText: 'a', []}, {index: 3, matchedText: 'a', []},
+    //       {index: 5, matchedText: 'a', []}]
+***
+### matchesFrom ###
+**Usage:** `var result = matchesFrom(r, index, s);`
+
+Parameters:  
+r `Regexp`  
+index `number`  
+s `string`
+
+Returns: `array`
+
+Finds all matches within a string for a given regular expression from the given index. Takes three parameters: a
+regular expression, an index and a string. Returns an array of objects, one object per match.
+
+Each object has the following properties:
+  - index: the index in the original string where the match was found
+  - matchedText: the substring that matched the pattern
+  - subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.
+                    The substring matching the first parenthesised expression will be at position 0, the string
+                    matching the second at position 1, and so on. If the regular expression did not contain any
+                    parenthesised subexpressions, this array will be empty.
+
+This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.
+
+If the index is negative, it is taken as an offset from the end of the string.
+
+Throws a TypeError if the first parameter is not a regular expression.
+
+#### Examples ####
+    funkierJS.matchesFrom(/a/, 2, 'banana');
+    // => [{index: 3, matchedText: 'a', []}, {index: 5, matchedText: 'a', []}]
+***
+### ord ###
+**Usage:** `ord(s);`
+
+Parameters:  
+s `string`
+
+Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to `toCharCode(0, s)`.
+
+#### Examples ####
+    funkierJS.ord('A'); // => 65
+***
+### regExpSplit ###
+*Synonyms:* `splitRegExp`
+
+**Usage:** `var result = regExpSplit(delimiter, s);`
+
+Parameters:  
+delimiter `RegExp`  
+s `string`
+
+Returns: `array`
+
+A curried wrapper around `String.prototype.split`. Takes a pattern regexp, and a target string s, and returns an
+array containing the substrings of s that were separated by substrings matching the given pattern.
+
+Throws a TypeError if the first parameter is not a RegExp or if the second parameter is not a string.
+
+To specify the delimiter as a string, use [`split`](#split).
+To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+
+#### Examples ####
+    regExpSplit/a/, 'banana'); // => ['b', 'n', 'n']
+***
+### regExpSplitCount ###
+See `regExpSplitMax`
+***
+### regExpSplitLimit ###
+See `regExpSplitMax`
+***
+### regExpSplitMax ###
+*Synonyms:* `regExpSplitLimit` | `regExpSplitCount`
+
+**Usage:** `var result = regExpSplitMax(delimiter, limit, s);`
+
+Parameters:  
+delimiter `RegExp`  
+limit `natural`  
+s `string`
+
+Returns: `array`
+
+A curried wrapper around `String.prototype.split`. Takes a RegExp delimiter, a count, and a target string s, and
+returns an array containing the substrings of s that were separated by strings matching the given delimiter, the
+returned array containing at most limit such substrings.
+
+Throws a TypeError if the first parameter is not a RegExp, if the limit count is not integral, or if the last
+parameter is not a string.
+
+To specify the delimiter as a string, use [`splitMax`](#splitMax).
+To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+
+  funkierJS.splitRegExpLimit(/a/, 2, 'banana'); // => ['b', 'n']
+***
+### split ###
+**Usage:** `var result = split(delimiter, s);`
+
+Parameters:  
+delimiter `string`  
+s `string`
+
+Returns: `array`
+
+A curried wrapper around `String.prototype.split`. Takes a string delimiter, and a target string s, and returns an
+array containing the substrings of s that were separated by the given delimiter.
+
+Throws a TypeError if either parameter is not a string.
+
+To specify the delimiter as a RegExp, use [`regExpSplit`](#regExpSplit).
+To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+
+#### Examples ####
+    funkierJS.split('|', '1|2|3'); // => ['1', '2', '3']
+***
+### splitCount ###
+See `splitMax`
+***
+### splitLimit ###
+See `splitMax`
+***
+### splitMax ###
+*Synonyms:* `splitLimit` | `splitCount`
+
+**Usage:** `var result = splitMax(delimiter, limit, s);`
+
+Parameters:  
+delimiter `string`  
+limit `natural`  
+s `string`
+
+Returns: `array`
+
+A curried wrapper around `String.prototype.split`. Takes a string delimiter, a count, and a target string s, and
+returns an array containing the substrings of s that were separated by the given delimiter, the returned array
+containing at most limit such substrings.
+
+Throws a TypeError if the first or last parameter is not a string, or if limit is not integral.
+
+To specify the delimiter as a RegExp, use [`regExpSplitMax`](#regExpSplitMax).
+To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+
+#### Examples ####
+    funkierJS.split('|', 2, '1|2|3'); // => ['1', '2']
+***
+### splitRegExp ###
+See `regExpSplit`
+***
+### test ###
+**Usage:** `var result = test(regexp, s);`
+
+Parameters:  
+regexp `RegExp`  
+s `string`
+
+Returns: `boolean`
+
+A curried wrapper around `RegExp.prototype.test`. Takes a regexp, and a string s, and returns true if the string
+contains a substring matching the given pattern, and false otherwise.
+
+Throws a TypeError if regexp is not a RegExp, or if s is not a string.
+
+#### Examples ####
+    funkierJS.test(/a/, 'banana'); // => true
+***
+### toCharCode ###
+**Usage:** `var result = toCharCode(i, s);`
+
+Parameters:  
+i `number`  
+s `string`
+
+Returns: `number`
+
+A curried wrapper around `String.charCodeAt`. Takes an index i, and a string s, and returns the Unicode value of
+the character at the given index in s.
+
+#### Examples ####
+    funkierJS.toCharCode(2, 'funkier'); // => 117
+***
+### toLocaleLowerCase ###
+**Usage:** `var result = toLocaleLowerCase(s);`
+
+Parameters:  
+s `string`
+
+Returns: `string`
+
+Equivalent to `String.prototype.toLocaleLowerCase`. Takes a string s, and returns a lowercase version of s,
+converted following locale conventions.
+
+#### Examples ####
+    funkierJS.toLocaleLowerCase('I LIKE TO SHOUT'); // => 'i like to shout'
+***
+### toLocaleString ###
+**Usage:** `var result = toLocaleString(val);`
+
+Parameters:  
+val `any`
+
+Returns: `string`
+
+Calls val's `toLocaleString` property, and returns the result.
+
+#### Examples ####
+    funkierJS.toLocaleString(1000); // => '1000' (in some environments)
+***
+### toLocaleUpperCase ###
+**Usage:** `toLocaleUpperCase(s);`
+
+Parameters:  
+s `string`
+
+Equivalent to `String.prototype.toLocaleUpperCase`. Takes a string s, and returns a uppercase version of s,
+converted following locale conventions.
+
+#### Examples ####
+    funkierJS.toLocaleUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
+***
+### toLowerCase ###
+**Usage:** `var result = toLowerCase(s);`
+
+Parameters:  
+s `string`
+
+Returns: `string`
+
+Equivalent to `String.prototype.toLowerCase`. Takes a string s, and returns a lowercase version of s.
+
+#### Examples ####
+    funkierJS.toLowerCase('I LIKE TO SHOUT'); // => 'i like to shout'
+***
+### toString ###
+**Usage:** `toString(val);`
+
+Parameters:  
+val `any`
+
+Calls val's `toString` property, and returns the result.
+
+#### Examples ####
+    funkierJS.toString({}); // => '[object Object]'
+***
+### toUpperCase ###
+**Usage:** `var result = toUpperCase(s);`
+
+Parameters:  
+s `string`
+
+Returns: `string`
+
+Equivalent to `String.prototype.toUpperCase`. Takes a string s, and returns a uppercase version of s.
+
+#### Examples ####
+    funkierJS.oUpperCase('i like to whisper'); // => 'I LIKE TO WHISPER'
+***
+### trim ###
+**Usage:** `var result = trim(s);`
+
+Parameters:  
+s `string`
+
+Returns: `string`
+
+Returns a string containing the contents of the original string, less any leading and trailing whitespace.
+
+#### Examples ####
+    funkierJS.trim(' abc   '); // 'abc'
+***
 ## Types##
 ### composeMany ###
 **Usage:** `var result = composeMany(fns);`

@@ -19,6 +19,7 @@
 <li class="categoryListItem"><a href="#Logical">Logical</a></li>
 <li class="categoryListItem"><a href="#Maths">Maths</a></li>
 <li class="categoryListItem"><a href="#Object">Object</a></li>
+<li class="categoryListItem"><a href="#String">String</a></li>
 <li class="categoryListItem"><a href="#Types">Types</a></li>
 </ul>
 </section>
@@ -3057,6 +3058,301 @@ a.foo // =&gt; 42
 <section class="functionRef" id="tap">
 <h3 class="functionName">tap</h3>
 <p class="see">See <a class="synonymLink" href="#extract"><code class="synonymCode">extract</code></a></p>
+</section>
+<section class="categoryRef" id="String">
+<h2 class="categoryName">String</h2>
+<section class="functionRef" id="chr">
+<h3 class="functionName">chr</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = chr(n);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">n: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Equivalent to <code>String.fromCharCode</code>. Takes a number n, and returns the character whose Unicode value is that
+number.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.chr(69); // =&gt; &#39;E&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="firstMatch">
+<h3 class="functionName">firstMatch</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = firstMatch(r, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li><li class="returnItem"><code class="returnType type">null</code></li></ul></div>
+<p>Finds the first match in a string for a given regular expression. Takes two parameters: a regular expression and a
+string. Returns a single object or null.</p>
+<p>If not null, the object has the following properties:</p>
+<ul>
+<li>index: the index in the original string where the match was found</li>
+<li>matchedText: the substring that matched the pattern</li>
+<li>subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.<pre><code>            The substring matching the first parenthesised expression will be at position 0, the string
+            matching the second at position 1, and so on. If the regular expression did not contain any
+            parenthesised subexpressions, this array will be empty.
+</code></pre></section>
+</li>
+</ul>
+<p>This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.</p>
+<p>Throws a TypeError if the first parameter is not a regular expression.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.firstMatch(/a/, \&#39;banana\&#39;); // =&gt; {index: 3, matchedText: \&#39;a\&#39;, []}
+</code></pre></section>
+</section>
+<section class="functionRef" id="firstMatchFrom">
+<h3 class="functionName">firstMatchFrom</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = firstMatchFrom(r, index, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param">index: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li><li class="returnItem"><code class="returnType type">null</code></li></ul></div>
+<p>Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
+regular expression an index, and a string. Returns a single object or null.</p>
+<p>If not null, the object has the following properties:</p>
+<ul>
+<li>index: the index in the original string where the match was found</li>
+<li>matchedText: the substring that matched the pattern</li>
+<li>subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.<pre><code>            The substring matching the first parenthesised expression will be at position 0, the string
+            matching the second at position 1, and so on. If the regular expression did not contain any
+            parenthesised subexpressions, this array will be empty.
+</code></pre></section>
+</li>
+</ul>
+<p>This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.</p>
+<p>Throws a TypeError if the first parameter is not a regular expression.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.firstMatchFrom(/a/, 4, &#39;banana&#39;); // =&gt; {index: 5, matchedText: &#39;a&#39;, []}
+</code></pre></section>
+</section>
+<section class="functionRef" id="matches">
+<h3 class="functionName">matches</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = matches(r, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Finds all matches within a string for a given regular expression. Takes two parameters: a regular expression and a
+string. Returns an array of objects, one object per match.</p>
+<p>Each object has the following properties:</p>
+<ul>
+<li>index: the index in the original string where the match was found</li>
+<li>matchedText: the substring that matched the pattern</li>
+<li>subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.<pre><code>            The substring matching the first parenthesised expression will be at position 0, the string
+            matching the second at position 1, and so on. If the regular expression did not contain any
+            parenthesised subexpressions, this array will be empty.
+</code></pre></section>
+</li>
+</ul>
+<p>This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.</p>
+<p>Throws a TypeError if the first parameter is not a regular expression.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.matches(/a/, &#39;banana&#39;);
+// a =&gt; [{index: 1, matchedText: &#39;a&#39;, []}, {index: 3, matchedText: &#39;a&#39;, []},
+//       {index: 5, matchedText: &#39;a&#39;, []}]
+</code></pre></section>
+</section>
+<section class="functionRef" id="matchesFrom">
+<h3 class="functionName">matchesFrom</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = matchesFrom(r, index, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">r: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param">index: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>Finds all matches within a string for a given regular expression from the given index. Takes three parameters: a
+regular expression, an index and a string. Returns an array of objects, one object per match.</p>
+<p>Each object has the following properties:</p>
+<ul>
+<li>index: the index in the original string where the match was found</li>
+<li>matchedText: the substring that matched the pattern</li>
+<li>subexpressions: an array of substrings that matched the parenthesed expressions in the regular expressions.<pre><code>            The substring matching the first parenthesised expression will be at position 0, the string
+            matching the second at position 1, and so on. If the regular expression did not contain any
+            parenthesised subexpressions, this array will be empty.
+</code></pre></section>
+</li>
+</ul>
+<p>This function is not affected by the presence or absence of a global flag in the supplied regular expression. It
+is not affected by and does not change the lastIndex property of the regular expression if it exists.</p>
+<p>If the index is negative, it is taken as an offset from the end of the string.</p>
+<p>Throws a TypeError if the first parameter is not a regular expression.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.matchesFrom(/a/, 2, &#39;banana&#39;);
+// =&gt; [{index: 3, matchedText: &#39;a&#39;, []}, {index: 5, matchedText: &#39;a&#39;, []}]
+</code></pre></section>
+</section>
+<section class="functionRef" id="ord">
+<h3 class="functionName">ord</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">ord(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<p>Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to <code>toCharCode(0, s)</code>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.ord(&#39;A&#39;); // =&gt; 65
+</code></pre></section>
+</section>
+<section class="functionRef" id="regExpSplit">
+<h3 class="functionName">regExpSplit</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">splitRegExp</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = regExpSplit(delimiter, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">delimiter: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">RegExp</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A curried wrapper around <code>String.prototype.split</code>. Takes a pattern regexp, and a target string s, and returns an
+array containing the substrings of s that were separated by substrings matching the given pattern.</p>
+<p>Throws a TypeError if the first parameter is not a RegExp or if the second parameter is not a string.</p>
+<p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
+To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
+</code></pre></section>
+</section>
+<section class="functionRef" id="regExpSplitCount">
+<h3 class="functionName">regExpSplitCount</h3>
+<p class="see">See <a class="synonymLink" href="#regExpSplitMax"><code class="synonymCode">regExpSplitMax</code></a></p>
+</section>
+<section class="functionRef" id="regExpSplitLimit">
+<h3 class="functionName">regExpSplitLimit</h3>
+<p class="see">See <a class="synonymLink" href="#regExpSplitMax"><code class="synonymCode">regExpSplitMax</code></a></p>
+</section>
+<section class="functionRef" id="regExpSplitMax">
+<h3 class="functionName">regExpSplitMax</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">regExpSplitLimit</code></li><li class="synonym"><code class="synonymName">regExpSplitCount</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = regExpSplitMax(delimiter, limit, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">delimiter: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">RegExp</code></li></ul></li><li class="param">limit: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A curried wrapper around <code>String.prototype.split</code>. Takes a RegExp delimiter, a count, and a target string s, and
+returns an array containing the substrings of s that were separated by strings matching the given delimiter, the
+returned array containing at most limit such substrings.</p>
+<p>Throws a TypeError if the first parameter is not a RegExp, if the limit count is not integral, or if the last
+parameter is not a string.</p>
+<p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
+To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
+<p>  funkierJS.splitRegExpLimit(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
+</section>
+<section class="functionRef" id="split">
+<h3 class="functionName">split</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = split(delimiter, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">delimiter: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A curried wrapper around <code>String.prototype.split</code>. Takes a string delimiter, and a target string s, and returns an
+array containing the substrings of s that were separated by the given delimiter.</p>
+<p>Throws a TypeError if either parameter is not a string.</p>
+<p>To specify the delimiter as a RegExp, use <a href="#regExpSplit"><code>regExpSplit</code></a>.
+To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.split(&#39;|&#39;, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]
+</code></pre></section>
+</section>
+<section class="functionRef" id="splitCount">
+<h3 class="functionName">splitCount</h3>
+<p class="see">See <a class="synonymLink" href="#splitMax"><code class="synonymCode">splitMax</code></a></p>
+</section>
+<section class="functionRef" id="splitLimit">
+<h3 class="functionName">splitLimit</h3>
+<p class="see">See <a class="synonymLink" href="#splitMax"><code class="synonymCode">splitMax</code></a></p>
+</section>
+<section class="functionRef" id="splitMax">
+<h3 class="functionName">splitMax</h3>
+<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym"><code class="synonymName">splitLimit</code></li><li class="synonym"><code class="synonymName">splitCount</code></li></ul></div>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = splitMax(delimiter, limit, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">delimiter: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param">limit: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
+<p>A curried wrapper around <code>String.prototype.split</code>. Takes a string delimiter, a count, and a target string s, and
+returns an array containing the substrings of s that were separated by the given delimiter, the returned array
+containing at most limit such substrings.</p>
+<p>Throws a TypeError if the first or last parameter is not a string, or if limit is not integral.</p>
+<p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
+To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.split(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
+</code></pre></section>
+</section>
+<section class="functionRef" id="splitRegExp">
+<h3 class="functionName">splitRegExp</h3>
+<p class="see">See <a class="synonymLink" href="#regExpSplit"><code class="synonymCode">regExpSplit</code></a></p>
+</section>
+<section class="functionRef" id="test">
+<h3 class="functionName">test</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = test(regexp, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">regexp: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">RegExp</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
+<p>A curried wrapper around <code>RegExp.prototype.test</code>. Takes a regexp, and a string s, and returns true if the string
+contains a substring matching the given pattern, and false otherwise.</p>
+<p>Throws a TypeError if regexp is not a RegExp, or if s is not a string.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.test(/a/, &#39;banana&#39;); // =&gt; true
+</code></pre></section>
+</section>
+<section class="functionRef" id="toCharCode">
+<h3 class="functionName">toCharCode</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toCharCode(i, s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">i: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
+<p>A curried wrapper around <code>String.charCodeAt</code>. Takes an index i, and a string s, and returns the Unicode value of
+the character at the given index in s.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toCharCode(2, &#39;funkier&#39;); // =&gt; 117
+</code></pre></section>
+</section>
+<section class="functionRef" id="toLocaleLowerCase">
+<h3 class="functionName">toLocaleLowerCase</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toLocaleLowerCase(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Equivalent to <code>String.prototype.toLocaleLowerCase</code>. Takes a string s, and returns a lowercase version of s,
+converted following locale conventions.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toLocaleLowerCase(&#39;I LIKE TO SHOUT&#39;); // =&gt; &#39;i like to shout&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toLocaleString">
+<h3 class="functionName">toLocaleString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toLocaleString(val);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Calls val&#39;s <code>toLocaleString</code> property, and returns the result.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toLocaleString(1000); // =&gt; &#39;1000&#39; (in some environments)
+</code></pre></section>
+</section>
+<section class="functionRef" id="toLocaleUpperCase">
+<h3 class="functionName">toLocaleUpperCase</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">toLocaleUpperCase(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<p>Equivalent to <code>String.prototype.toLocaleUpperCase</code>. Takes a string s, and returns a uppercase version of s,
+converted following locale conventions.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toLocaleUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toLowerCase">
+<h3 class="functionName">toLowerCase</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toLowerCase(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Equivalent to <code>String.prototype.toLowerCase</code>. Takes a string s, and returns a lowercase version of s.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toLowerCase(&#39;I LIKE TO SHOUT&#39;); // =&gt; &#39;i like to shout&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toString">
+<h3 class="functionName">toString</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">toString(val);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">val: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
+<p>Calls val&#39;s <code>toString</code> property, and returns the result.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.toString({}); // =&gt; &#39;[object Object]&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="toUpperCase">
+<h3 class="functionName">toUpperCase</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = toUpperCase(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Equivalent to <code>String.prototype.toUpperCase</code>. Takes a string s, and returns a uppercase version of s.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.oUpperCase(&#39;i like to whisper&#39;); // =&gt; &#39;I LIKE TO WHISPER&#39;
+</code></pre></section>
+</section>
+<section class="functionRef" id="trim">
+<h3 class="functionName">trim</h3>
+<p class="usage"><strong>Usage:</strong> <code class="usageCode">var result = trim(s);</code></p>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param">s: <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem"><code class="returnType type">string</code></li></ul></div>
+<p>Returns a string containing the contents of the original string, less any leading and trailing whitespace.</p>
+<section class="examples"><h4>Examples</h4>
+<pre><code>funkierJS.trim(&#39; abc   &#39;); // &#39;abc&#39;
+</code></pre></section>
 </section>
 <section class="categoryRef" id="Types">
 <h2 class="categoryName">Types</h2>
