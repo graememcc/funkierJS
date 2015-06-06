@@ -12,16 +12,17 @@
 
   var object = require('../../lib/components/object');
 
+  var maybe = require('../../lib/components/maybe');
+  var isJust = maybe.isJust;
+  var isNothing = maybe.isNothing;
+  var getJustValue = maybe.getJustValue;
+
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;
   var checkFunction = testingUtilities.checkFunction;
   var testCurriedFunction = testingUtilities.testCurriedFunction;
   var NO_RESTRICTIONS = testingUtilities.NO_RESTRICTIONS;
 
-  var maybe = require('../../lib/components/maybe');
-  var isJust = maybe.isJust;
-  var isNothing = maybe.isNothing;
-  var getJustValue = maybe.getJustValue;
 
   describe('Object', function() {
     var expectedObjects = [];

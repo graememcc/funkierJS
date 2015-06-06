@@ -2,8 +2,10 @@
   "use strict";
 
 
-  var internalUtilities = require('../../lib/internalUtilities');
   var expect = require('chai').expect;
+
+  var internalUtilities = require('../../lib/internalUtilities');
+
   var checkModule = require('./testingUtilities').checkModule;
 
 

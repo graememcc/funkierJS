@@ -3,6 +3,7 @@
 
 
   var expect = require('chai').expect;
+
   var maths = require('../../lib/components/maths');
 
   var testUtils = require('./testingUtilities');

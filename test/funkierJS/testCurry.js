@@ -3,9 +3,9 @@
 
 
   var expect = require('chai').expect;
+
   var curryModule = require('../../lib/components/curry');
 
-  // Import utility functions
   var testUtils = require('./testingUtilities');
   var ANYVALUE = testUtils.ANYVALUE;
   var checkModule = testUtils.checkModule;

@@ -33726,8 +33726,13 @@ module.exports = (function() {
 
 
   var expect = require('chai').expect;
-  var base = require('../../lib/components/base');
 
+  var curryModule = require('../../lib/components/curry');
+  var curry = curryModule.curry;
+  var objectCurry = curryModule.objectCurry;
+  var arityOf = curryModule.arityOf;
+
+  var base = require('../../lib/components/base');
 
   var testUtils = require('./testingUtilities');
   var checkModule = testUtils.checkModule;
@@ -33736,12 +33741,6 @@ module.exports = (function() {
   var NO_RESTRICTIONS = testUtils.NO_RESTRICTIONS;
   var addCurryStyleTests = testUtils.addCurryStyleTests;
   var addDoubleCurryStyleTests = testUtils.addDoubleCurryStyleTests;
-
-
-  var curryModule = require('../../lib/components/curry');
-  var curry = curryModule.curry;
-  var objectCurry = curryModule.objectCurry;
-  var arityOf = curryModule.arityOf;
 
 
   describe('base', function() {
@@ -34552,9 +34551,9 @@ module.exports = (function() {
 
 
   var expect = require('chai').expect;
+
   var curryModule = require('../../lib/components/curry');
 
-  // Import utility functions
   var testUtils = require('./testingUtilities');
   var ANYVALUE = testUtils.ANYVALUE;
   var checkModule = testUtils.checkModule;
@@ -36913,7 +36912,6 @@ module.exports = (function() {
 
   var date = require('../../lib/components/date');
 
-  // Import utility functions
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;
   var checkFunction = testingUtilities.checkFunction;
@@ -37315,9 +37313,7 @@ module.exports = (function() {
 
   var expect = require('chai').expect;
 
-
   var fn = require('../../lib/components/fn');
-
 
   var curryModule = require('../../lib/components/curry');
   var curry = curryModule.curry;
@@ -37326,10 +37322,8 @@ module.exports = (function() {
   var objectCurry = curryModule.objectCurry;
   var arityOf = curryModule.arityOf;
 
-
   var base = require('../../lib/components/base');
   var id = base.id;
-
 
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;
@@ -38203,8 +38197,10 @@ module.exports = (function() {
   "use strict";
 
 
-  var internalUtilities = require('../../lib/internalUtilities');
   var expect = require('chai').expect;
+
+  var internalUtilities = require('../../lib/internalUtilities');
+
   var checkModule = require('./testingUtilities').checkModule;
 
 
@@ -38974,6 +38970,7 @@ module.exports = (function() {
 
 
   var expect = require('chai').expect;
+
   var maths = require('../../lib/components/maths');
 
   var testUtils = require('./testingUtilities');
@@ -39740,16 +39737,16 @@ module.exports = (function() {
 
   var object = require('../../lib/components/object');
 
+  var maybe = require('../../lib/components/maybe');
+  var isJust = maybe.isJust;
+  var isNothing = maybe.isNothing;
+  var getJustValue = maybe.getJustValue;
+
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;
   var checkFunction = testingUtilities.checkFunction;
   var testCurriedFunction = testingUtilities.testCurriedFunction;
   var NO_RESTRICTIONS = testingUtilities.NO_RESTRICTIONS;
-
-  var maybe = require('../../lib/components/maybe');
-  var isJust = maybe.isJust;
-  var isNothing = maybe.isNothing;
-  var getJustValue = maybe.getJustValue;
 
   describe('Object', function() {
     var expectedObjects = [];
@@ -44352,7 +44349,6 @@ module.exports = (function() {
 
 
   var expect = require('chai').expect;
-
 
   var curryModule = require('../../lib/components/curry');
   var arityOf = curryModule.arityOf;

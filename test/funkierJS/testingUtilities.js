@@ -4,7 +4,6 @@ module.exports = (function() {
 
   var expect = require('chai').expect;
 
-
   var curryModule = require('../../lib/components/curry');
   var arityOf = curryModule.arityOf;
   var curry = curryModule.curry;

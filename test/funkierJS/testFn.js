@@ -4,9 +4,7 @@
 
   var expect = require('chai').expect;
 
-
   var fn = require('../../lib/components/fn');
-
 
   var curryModule = require('../../lib/components/curry');
   var curry = curryModule.curry;
@@ -15,10 +13,8 @@
   var objectCurry = curryModule.objectCurry;
   var arityOf = curryModule.arityOf;
 
-
   var base = require('../../lib/components/base');
   var id = base.id;
-
 
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;

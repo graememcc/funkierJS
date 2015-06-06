@@ -6,7 +6,6 @@
 
   var date = require('../../lib/components/date');
 
-  // Import utility functions
   var testingUtilities = require('./testingUtilities');
   var checkModule = testingUtilities.checkModule;
   var checkFunction = testingUtilities.checkFunction;
