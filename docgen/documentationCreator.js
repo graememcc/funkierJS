@@ -24,7 +24,7 @@ module.exports = (function() {
    *
    *   - toLink:     an optional array of strings that, if their lowercase equivalents are found in a list of types when
    *                 generating HTML documentation, will trigger creation of links to a named anchor '#s' on the page
-   *                 being generated, where s is the lowercase equivalent of the matching string. Note: it is not 
+   *                 being generated, where s is the lowercase equivalent of the matching string. Note: it is not
    *                 currently possible to modify case sensitivity of the matching, or to link to locations other than
    *                 the page being generated. As a convenience, all documented functions and objects will be linked,
    *                 so there is no need to provide those names in this array.
@@ -172,12 +172,10 @@ module.exports = (function() {
     var categories = collatedObjects.getCategories();
     var fileContents = [];
 
-    categories.forEach(function(cat) {
-      var fns = collatedObjects.byName();
+    var fns = collatedObjects.byName();
 
-      fns.forEach(function(fn) {
-        fileContents = fileContents.concat(markdownCreator(fn, {includeCategory: true}).split('\n'));
-      });
+    fns.forEach(function(fn) {
+      fileContents = fileContents.concat(markdownCreator(fn, {includeCategory: true}).split('\n'));
     });
 
     return fileContents;
