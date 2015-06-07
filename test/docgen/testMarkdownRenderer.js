@@ -160,7 +160,7 @@
 
 
     it('Return type rendered correctly when linkables provided but don\'t match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['string']});
+      var renderer = makeMarkdownRenderer(['String'], {});
       var text = 'Returns: `number`';
       var expected = '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' +
                      '<code class="returnType type">number</code></li></ul></div>\n';
@@ -170,7 +170,7 @@
 
 
     it('Return type rendered correctly when linkables provided and match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['number']});
+      var renderer = makeMarkdownRenderer(['number'], {});
       var text = 'Returns: `number`';
       var expected = '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' +
                      '<a class="typeLink" href="#number">' +
@@ -181,13 +181,13 @@
 
 
     it('Return type rendered correctly when linkables provided and some match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['string', 'Foo']});
+      var renderer = makeMarkdownRenderer(['string', 'Foo'], {});
       var text = 'Returns: `number` | `string` | `Foo`';
       var expected = '<div class="returns"><span class="returnsStart">Returns: ' +
                      '</span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code>' +
                      '</li><li class="returnItem"><a class="typeLink" href="#string">' +
                      '<code class="returnType type">string</code></a></li><li class="returnItem">' +
-                     '<a class="typeLink" href="#foo"><code class="returnType type">Foo</code></a></li></ul></div>\n';
+                     '<a class="typeLink" href="#Foo"><code class="returnType type">Foo</code></a></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -218,7 +218,7 @@
 
 
     it('Parameters rendered correctly when linkables provided but none match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['string']});
+      var renderer = makeMarkdownRenderer(['string'], {});
       var text = 'Parameters:  \nf `function`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
                      '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
@@ -230,7 +230,7 @@
 
 
     it('Parameters rendered correctly when linkables provided and match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['string']});
+      var renderer = makeMarkdownRenderer(['string'], {});
       var text = 'Parameters:  \nf `string`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
                      '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
@@ -242,13 +242,13 @@
 
 
     it('Parameters rendered correctly when linkables provided and some match', function() {
-      var renderer = makeMarkdownRenderer([], {toLink: ['Bar']});
+      var renderer = makeMarkdownRenderer(['Bar'], {});
       var text = 'Parameters:  \nf `function`  \ng `Bar`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
                      '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">function</code></li></ul>' +
                      '</li><li class="param">g<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
-                     '<a class="typeLink" href="#bar"><code class="paramType type">Bar' +
+                     '<a class="typeLink" href="#Bar"><code class="paramType type">Bar' +
                      '</code></a></li></ul></li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
