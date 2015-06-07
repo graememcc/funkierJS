@@ -7,6 +7,31 @@
     <title>TITLE</title>
   </head>
   <body>
+    <div id="page">
+    <div id="wrapper">
+    <header>
+      <nav id="headerNav">
+        <div class="navHeading">
+          <h1>funkierJS</h1>
+        </div>
+        <ul class="navUL">
+          <li><a href="https://graememcc.github.io/funkierJS/">Home</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/get.html">Download</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/docs">Docs</a></li>
+          <li><a href="https://github.com/graememcc/funkierJS">Github</a></li>
+        </ul>
+      </nav>
+    </header>
     <section>
-      <h1>HEADING</h1>
+      <h1 class="pageHeading">HEADING</h1>
+      <p>In the documentation that follows, reference is made to some typeclasses. They are defined below. Generally, if a typeclass appears both in the parameter list and the signature, this
+indicates that the result will be of the same type as the value supplied.</p>
+      <dl>
+        <dt id="arrayLike"><code>arrayLike</code></dt><dd>Something with a numeric <code>length</code> property, and numeric properties in the range <code>0 - (length - 1)</code>. For example,
+        <dt id="natural"><code>natural</code></dt><dd>Either an integral value greater than or equal to zero, or something that can coerce to the same.</dd>
+        <dt id="objectLike"><code>objectLike</code></dt><dd>Something to which properties can be attached: an object or function an array, string, or <code>HTMLCollection</code>.</dd>
+        <dt id="objectLikeOrNull"><code>objectLikeOrNull</code></dt><dd>As for <a href="#objectLike"><code>objectLike</code></a>, additionally admitting the possibility of <code>null</code>.</dd>
+        <dt id="strictArrayLike"><code>strictArrayLike</code></dt><dd>As for <a href="#arrayLike"><code>arrayLikes</code></a>, except excluding the possibility of strings.</dd>
+        <dt id="strictNatural"><code>strictNatural</code></dt><dd>An integral value greater than or equal to zero, excluding objects that can coerce to the same.</dd>
+      </dl>
       <main>

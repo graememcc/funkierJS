@@ -7,8 +7,33 @@
     <title>funkierJS API: By Category</title>
   </head>
   <body>
+    <div id="page">
+    <div id="wrapper">
+    <header>
+      <nav id="headerNav">
+        <div class="navHeading">
+          <h1>funkierJS</h1>
+        </div>
+        <ul class="navUL">
+          <li><a href="https://graememcc.github.io/funkierJS/">Home</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/get.html">Download</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/docs">Docs</a></li>
+          <li><a href="https://github.com/graememcc/funkierJS">Github</a></li>
+        </ul>
+      </nav>
+    </header>
     <section>
-      <h1>funkierJS API: By Category</h1>
+      <h1 class="pageHeading">funkierJS API: By Category</h1>
+      <p>In the documentation that follows, reference is made to some typeclasses. They are defined below. Generally, if a typeclass appears both in the parameter list and the signature, this
+indicates that the result will be of the same type as the value supplied.</p>
+      <dl>
+        <dt id="arrayLike"><code>arrayLike</code></dt><dd>Something with a numeric <code>length</code> property, and numeric properties in the range <code>0 - (length - 1)</code>. For example,
+        <dt id="natural"><code>natural</code></dt><dd>Either an integral value greater than or equal to zero, or something that can coerce to the same.</dd>
+        <dt id="objectLike"><code>objectLike</code></dt><dd>Something to which properties can be attached: an object or function an array, string, or <code>HTMLCollection</code>.</dd>
+        <dt id="objectLikeOrNull"><code>objectLikeOrNull</code></dt><dd>As for <a href="#objectLike"><code>objectLike</code></a>, additionally admitting the possibility of <code>null</code>.</dd>
+        <dt id="strictArrayLike"><code>strictArrayLike</code></dt><dd>As for <a href="#arrayLike"><code>arrayLikes</code></a>, except excluding the possibility of strings.</dd>
+        <dt id="strictNatural"><code>strictNatural</code></dt><dd>An integral value greater than or equal to zero, excluding objects that can coerce to the same.</dd>
+      </dl>
       <main>
 
 <div class="contentsSidebar">
@@ -38,8 +63,8 @@
 <section class="functionRef" id="append">
 <div class="funcHeading"><h3 class="functionName">append</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = append(value, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>value</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>value</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value appended.</p>
 <p>Throws a TypeError if the second argument is not an arrayLike.</p>
 <p>Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
@@ -53,8 +78,8 @@ a; // =&gt; [1, 2, 3] (a is not changed)
 <section class="functionRef" id="concat">
 <div class="funcHeading"><h3 class="functionName">concat</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = concat(arr1, arr2);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param"><code>arr2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li><li class="param"><code>arr2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes two arrays, arrayLikes or strings, and returns their concatenation.</p>
 <p>Throws a TypeError if either argument is not an arrayLike.</p>
 <p>If both arguments are the same type and are either arrays or strings, then the result will be the same type,
@@ -68,8 +93,8 @@ funkierJS.concat(&#39;abc&#39;, [1, 2, 3]); // =&gt; [&#39;a&#39;, &#39;b&#39;, 
 <section class="functionRef" id="copy">
 <div class="funcHeading"><h3 class="functionName">copy</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = copy(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an arrayLike, and returns a new array which is a shallow copy.</p>
 <p>Throws a TypeError if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -81,8 +106,8 @@ b === a; // =&gt; false
 <section class="functionRef" id="drop">
 <div class="funcHeading"><h3 class="functionName">drop</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = drop(count, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>count</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>count</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
 removed from the given arrayLike.</p>
 <p>Throws a TypeError if the count is not integral, or if the last argument is not an array or string.</p>
@@ -93,8 +118,8 @@ removed from the given arrayLike.</p>
 <section class="functionRef" id="dropWhile">
 <div class="funcHeading"><h3 class="functionName">dropWhile</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = dropWhile(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a predicate function p, and source, an array, string or arrayLike. Returns a new array or string containing
 the remaining members our source upon removing the initial elements for which the predicate function returned true.</p>
 <p>Throws a TypeError if p is not a function of arity 1, or if the given value is not an arrayLike.</p>
@@ -108,7 +133,7 @@ supplied to this function.</p>
 <section class="functionRef" id="each">
 <div class="funcHeading"><h3 class="functionName">each</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">each(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <p>Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
 returns undefined.</p>
 <p>Throws a TypeError if the first argument is not a function, or if the second is not an arrayLike.</p>
@@ -122,7 +147,7 @@ to this function.</p>
 <section class="functionRef" id="element">
 <div class="funcHeading"><h3 class="functionName">element</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = element(val, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>Takes a value and an array, string or arrayLike. Returns true if the value is in the arrayLike (checked for strict
 identity) and false otherwise.</p>
@@ -134,7 +159,7 @@ identity) and false otherwise.</p>
 <section class="functionRef" id="elementWith">
 <div class="funcHeading"><h3 class="functionName">elementWith</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = elementWith(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>A generalised version of element. Takes a predicate function p of one argument, and an array, string or arrayLike.
 Returns true if there is an element in the arrayLike for which p returns true, and returns false otherwise.</p>
@@ -151,7 +176,7 @@ funkierJS.elementWith(p, [{foo: 1}, {foo: 42}]); // =&gt; true
 <div class="funcHeading"><h3 class="functionName">every</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">all</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = every(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
 predicate with every element of the array or string, until either the predicate function returns false, or the end
@@ -168,8 +193,8 @@ to this function.</p>
 <section class="functionRef" id="filter">
 <div class="funcHeading"><h3 class="functionName">filter</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = filter(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a predicate function pred, and an array, string or arrayLike arr. Returns an array or string containing
 those members of arr—in the same order as the original array—for which the predicate function returned true.</p>
 <p>Throws a TypeError if pred does not have arity 1, or if arr is not an arrayLike.</p>
@@ -195,7 +220,7 @@ Note that flatten only strips off one layer.</p>
 <section class="functionRef" id="flattenMap">
 <div class="funcHeading"><h3 class="functionName">flattenMap</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = flattenMap(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a function of arity 1, and an array, string or arrayLike. Maps the function over the array/string and
 flattens the result. The supplied function must be of arity 1, as it is expected to return an array or string; a
@@ -213,7 +238,7 @@ funkierJS.flattenMap(fn, [1, 2, 3]); // =&gt; Returns [1, 1, 2, 4, 3, 9]
 <div class="funcHeading"><h3 class="functionName">foldl</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">reduce</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = foldl(f, initial, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>initial</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>initial</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike.
 Traverses the array or string from left to right, calling the function with two arguments: the current accumulation
@@ -232,7 +257,7 @@ to this function.</p>
 <div class="funcHeading"><h3 class="functionName">foldl1</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">reduce1</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = foldl1(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes two parameters: a function f of two arguments, and an array, string or arrayLike value. Traverses the array
 from left to right from the second element, calling the function with two arguments: the current accumulation
@@ -252,7 +277,7 @@ to this function.</p>
 <div class="funcHeading"><h3 class="functionName">foldr</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">reduceRight</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = foldr(f, initial, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>initial</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>initial</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes three parameters: a function f of two arguments, an initial value, and an array, string or arrayLike value.
 Traverses the array or string from right to left, calling the function with two arguments: the current accumulation
@@ -271,7 +296,7 @@ to this function.</p>
 <div class="funcHeading"><h3 class="functionName">foldr1</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">reduceRight1</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = foldr1(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes two parameters: a function f of two arguments, and an array, string or arrayLike. Traverses the array from
 right to left from the penultimate element, calling the function with two arguments: the current accumulation
@@ -290,7 +315,7 @@ to this function.</p>
 <section class="functionRef" id="getIndex">
 <div class="funcHeading"><h3 class="functionName">getIndex</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getIndex(index, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>index</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>index</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes an index and an array, string or other arrayLike value and returns the element at the given index. Throws a
 TypeError if the index is outside the range for the given object.</p>
@@ -301,7 +326,7 @@ TypeError if the index is outside the range for the given object.</p>
 <section class="functionRef" id="head">
 <div class="funcHeading"><h3 class="functionName">head</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = head(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes an array, string or other arrayLike value and returns the first element. Throws a TypeError when given an
 empty arrayLike.</p>
@@ -312,8 +337,8 @@ empty arrayLike.</p>
 <section class="functionRef" id="init">
 <div class="funcHeading"><h3 class="functionName">init</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = init(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike. Returns an array or string containing every element except the last.</p>
 <p>Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -324,8 +349,8 @@ empty arrayLike.</p>
 <div class="funcHeading"><h3 class="functionName">inits</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">prefixes</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = inits(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike. Returns all the prefixes of the given arrayLike.</p>
 <p>Throws a TypeError if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -335,8 +360,8 @@ empty arrayLike.</p>
 <section class="functionRef" id="intersperse">
 <div class="funcHeading"><h3 class="functionName">intersperse</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = intersperse(val, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the value in between each
 pair of elements of the original.</p>
 <p>Note: if the second parameter is a string, the first parameter will be coerced to a string.</p>
@@ -371,7 +396,7 @@ of each element in the array, separated by the toString of the given separator.<
 <section class="functionRef" id="last">
 <div class="funcHeading"><h3 class="functionName">last</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = last(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes an array, string or other arrayLike value, and returns the last element. Throws a TypeError when given an
 empty arrayLike.</p>
@@ -382,7 +407,7 @@ empty arrayLike.</p>
 <section class="functionRef" id="length">
 <div class="funcHeading"><h3 class="functionName">length</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = length(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>Takes an array, string or other arrayLike value, and returns its length. Throws a TypeError if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -392,7 +417,7 @@ empty arrayLike.</p>
 <section class="functionRef" id="map">
 <div class="funcHeading"><h3 class="functionName">map</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = map(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a function f, and an array,string or other arrayLike. Returns an array arr2 where, for each element arr2[i],
 we have arr2[i] === f(arr[i]). Throws a TypeError if the first argument is not a function, if the function does not
@@ -407,7 +432,7 @@ this function.</p>
 <section class="functionRef" id="maximum">
 <div class="funcHeading"><h3 class="functionName">maximum</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = maximum(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the largest element of the given array, string or arrayLike.</p>
 <p>Throws a TypeError if the value is not an arrayLike, or it is empty.</p>
@@ -420,7 +445,7 @@ to abuse it, but it will likely not do what you expect.</p>
 <section class="functionRef" id="minimum">
 <div class="funcHeading"><h3 class="functionName">minimum</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = minimum(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the smallest element of the given array, string or arrayLike. Throws a TypeError if the value is not an
 arrayLike, or it is empty.</p>
@@ -434,8 +459,8 @@ free to abuse it, but it will likely not do what you expect.</p>
 <div class="funcHeading"><h3 class="functionName">nub</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">uniq</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = nub(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike. Returns a new array/string, with all duplicate elements—tested for strict
 equality—removed. The order of elements is preserved.</p>
 <p>Throws a TypeError if the given argument is not arrayLike.</p>
@@ -447,8 +472,8 @@ equality—removed. The order of elements is preserved.</p>
 <div class="funcHeading"><h3 class="functionName">nubWith</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">uniqWith</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = nubWith(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a predicate function of arity 2, and an array, string or arrayLike. Returns a new array/string, with all
 duplicate elements removed. A duplicate is defined as a value for which the predicate function returned true when
 called with a previously encountered element and the element under consideration. The order of elements is
@@ -467,7 +492,7 @@ funkierJS.nubWith(pred, [{foo: 12}, {foo: 42}, {foo: 42}, {foo: 12}]);
 <section class="functionRef" id="occurrences">
 <div class="funcHeading"><h3 class="functionName">occurrences</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = occurrences(needle, haystack);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>needle</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>haystack</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>needle</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>haystack</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a value—needle—and haystack, an array, arrayLike or string. Searches for all occurrences of the value—tested
 for strict equality—and returns an array containing all the indices into haystack where the values may be found.</p>
@@ -479,7 +504,7 @@ for strict equality—and returns an array containing all the indices into hayst
 <section class="functionRef" id="occurrencesWith">
 <div class="funcHeading"><h3 class="functionName">occurrencesWith</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = occurrencesWith(needle, haystack);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>needle</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>haystack</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>needle</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>haystack</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a predicate function pred, and haystack, an array, arrayLike or string. Searches for all occurrences of the
 value—tested by the given predicate—and returns an array containing all the indices into haystack where the
@@ -501,8 +526,8 @@ funkierJS.occurrencesWith(pred, arr); // =&gt; [1, 2]
 <section class="functionRef" id="prepend">
 <div class="funcHeading"><h3 class="functionName">prepend</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = prepend(value, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>value</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>value</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a value, and an array, string or arrayLike, and returns a new array or string with the given value prepended.</p>
 <p>Throws a TypeError if the second argument is not an arrayLike.</p>
 <p>Note: if the second argument is a string and the first is not, the value will be coerced to a string; you may not
@@ -516,7 +541,7 @@ a; // =&gt; [1, 2, 3] (a is not changed)
 <section class="functionRef" id="product">
 <div class="funcHeading"><h3 class="functionName">product</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = product(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>Returns the product of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
 arrayLike, or it is empty.</p>
@@ -574,7 +599,7 @@ but not including b, each element increasing by stride.</p>
 <section class="functionRef" id="replicate">
 <div class="funcHeading"><h3 class="functionName">replicate</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = replicate(length, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>length</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>length</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a length and a value, and returns an array of the given length, where each element is the given value. Throws
 a TypeError if the given length is negative.</p>
@@ -585,8 +610,8 @@ a TypeError if the given length is negative.</p>
 <section class="functionRef" id="reverse">
 <div class="funcHeading"><h3 class="functionName">reverse</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = reverse(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike, and returns a new array or string that is the reverse of the original.</p>
 <p>Throws a TypeError if the argument is not arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -596,8 +621,8 @@ a TypeError if the given length is negative.</p>
 <section class="functionRef" id="slice">
 <div class="funcHeading"><h3 class="functionName">slice</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = slice(from, to, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>from</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>to</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>from</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>to</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes two numbers, from and to, and an array, string or arrayLike. Returns the subarray or string containing the
 elements between these two points (inclusive at from, exclusive at to). If to is greater than the length of the
 object, then all values from &#39;from&#39; will be returned.</p>
@@ -610,7 +635,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 <div class="funcHeading"><h3 class="functionName">some</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">any</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = some(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>Takes two parameters: a predicate function p that takes one argument, and an array, string or arrayLike. Calls the
 predicate with every element of the array or string, until either the predicate function returns true, or the end
@@ -627,8 +652,8 @@ to this function.</p>
 <section class="functionRef" id="sort">
 <div class="funcHeading"><h3 class="functionName">sort</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = sort(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike, and returns a new array, sorted in lexicographical order.</p>
 <p>Throws a TypeError if the given argument is not arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -638,8 +663,8 @@ to this function.</p>
 <section class="functionRef" id="sortWith">
 <div class="funcHeading"><h3 class="functionName">sortWith</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = sortWith(f, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a function of two arguments, and an array, string or arrayLike. Returns a new array/string, sorted per the
 given function. The function should return a negative number if the first argument is &quot;less than&quot; the second, 0 if
 the two arguments are &quot;equal&quot;, and a positive number if the first argument is greater than the second.</p>
@@ -659,7 +684,7 @@ funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // =&gt; [1, 2, 10, 21]
 <section class="functionRef" id="sum">
 <div class="funcHeading"><h3 class="functionName">sum</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = sum(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code></li></ul></div>
 <p>Returns the sum of the elements of the given array, or arrayLike. Throws a TypeError if the value is not an
 arrayLike, or it is empty.</p>
@@ -672,8 +697,8 @@ but it will likely not do what you expect.</p>
 <section class="functionRef" id="tail">
 <div class="funcHeading"><h3 class="functionName">tail</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = tail(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike. Returns an array or string containing every element except the first.</p>
 <p>Throws a TypeError if the arrayLike is empty, or if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -684,8 +709,8 @@ but it will likely not do what you expect.</p>
 <div class="funcHeading"><h3 class="functionName">tails</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">suffixes</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = tails(arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes an array, string or arrayLike. Returns all the suffixes of the given arrayLike.</p>
 <p>Throws a TypeError if the given value is not an arrayLike.</p>
 <section class="examples"><h4>Examples</h4>
@@ -695,8 +720,8 @@ but it will likely not do what you expect.</p>
 <section class="functionRef" id="take">
 <div class="funcHeading"><h3 class="functionName">take</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = take(count, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>count</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>count</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">number</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a count, and an array, string or arrayLike. Returns an array or string containing the first count elements
 of the given arrayLike.</p>
 <p>Throws a TypeError if the count is not integral, or if the last argument is not an arrayLike.</p>
@@ -707,8 +732,8 @@ of the given arrayLike.</p>
 <section class="functionRef" id="takeWhile">
 <div class="funcHeading"><h3 class="functionName">takeWhile</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = takeWhile(pred, arr);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">arrayLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>pred</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>arr</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#arrayLike"><code class="returnType type">arrayLike</code></a></li></ul></div>
 <p>Takes a predicate function pred, and source, which should be an array, string or arrayLike. Returns a new array or
 string containing the initial members of the given arrayLike for which the predicate returned true.</p>
 <p>Throws a TypeError if pred is not a function of arity 1, or if the source value is not an arrayLike.</p>
@@ -731,7 +756,7 @@ supplied to this function.</p>
 <div class="funcHeading"><h3 class="functionName">unzip</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = unzip(source);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Pair"><code class="returnType type">Pair</code></a></li></ul></div>
 <p>Takes an array of Pairs, and returns a <a href="#Pair"><code>Pair</code></a>. The first element is an array containing the first element from each
 pair, and likewise the second element is an array containing the second elements.</p>
 <p>Throws a TypeError if the given argument is not an array, or if any element is not a Pair.</p>
@@ -742,7 +767,7 @@ pair, and likewise the second element is an array containing the second elements
 <section class="functionRef" id="zip">
 <div class="funcHeading"><h3 class="functionName">zip</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = zip(a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes two arrayLikes, a and b, and returns a new array. The new array has the same length as the smaller of the two
 arguments. Each element is a <a href="#Pair"><code>Pair</code></a> p, such that <code>fst(p) === a[i]</code> and <code>snd(p) === b[i]</code> for each position
@@ -755,7 +780,7 @@ i in the result.</p>
 <section class="functionRef" id="zipWith">
 <div class="funcHeading"><h3 class="functionName">zipWith</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">zipWith(f, a, b);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">arrayLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#arrayLike"><code class="paramType type">arrayLike</code></a></li></ul></li></ol></section>
 <p>Returns array</p>
 <p>Takes a function of arity 2, and a two arrays/arrayLikes/strings, a and b, and returns a new array. The new array
 has the same length as the smaller of the two arguments. Each element is the result of calling the supplied
@@ -777,7 +802,7 @@ funkierJS.zipWith(f, &#39;apple&#39;, &#39;banana&#39;); // =&gt; [&#39;ab&#39;,
 <div class="funcHeading"><h3 class="functionName">Err</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Err(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Just"><code class="returnType type">Just</code></a></li></ul></div>
 <p>An Err is a type of <a href="#Result"><code>Result</code></a> representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments</p>
 <section class="examples"><h4>Examples</h4>
@@ -788,7 +813,7 @@ Throws if called without any arguments</p>
 <div class="funcHeading"><h3 class="functionName">Just</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Just(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Just"><code class="returnType type">Just</code></a></li></ul></div>
 <p>A Just is a type of <a href="#Maybe"><code>Maybe</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
@@ -813,7 +838,7 @@ operator.</p>
 <div class="funcHeading"><h3 class="functionName">Ok</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Ok(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Ok</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Ok"><code class="returnType type">Ok</code></a></li></ul></div>
 <p>An Ok is a type of <a href="#Result"><code>Result</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
@@ -824,7 +849,7 @@ Throws when called with no arguments.</p>
 <div class="funcHeading"><h3 class="functionName">Pair</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Pair(a, b);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Pair"><code class="returnType type">Pair</code></a></li></ul></div>
 <p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
 new immutable tuple. The contents of the tuple can be accessed with the accessor functions <a href="#fst"><code>fst</code></a> and
 <a href="#snd"><code>snd</code></a> respectively. The constructor is new-agnostic.</p>
@@ -849,7 +874,7 @@ var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
 <section class="functionRef" id="asArray">
 <div class="funcHeading"><h3 class="functionName">asArray</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = asArray(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a pair, and returns a 2-element array containing the values contained in the given <a href="#Pair"><code>Pair</code></a> p.
 Specifically, if the resulting array is named arr, then we have <code>arr[0] === fst(p)</code> and <code>arr[1] === snd(p)</code>.
@@ -861,7 +886,7 @@ Throws a TypeError if p is not a pair.</p>
 <section class="functionRef" id="either">
 <div class="funcHeading"><h3 class="functionName">either</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = either(f1, f2, r);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>f2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Result</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>f2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Result"><code class="paramType type">Result</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Takes two functions of arity 1 or greater, and a <a href="#Result"><code>Result</code></a>. If the <a href="#Result"><code>Result</code></a> is an <a href="#Ok"><code>Ok</code></a>
 value, the first function f1 will be called with the unwrapped value.  Otherwise, if the <a href="#Result"><code>Result</code></a> is an
@@ -886,7 +911,7 @@ f(funkierJS.Err(&#39;:(&#39;)); // logs &#39;Bad: :(&#39; to the console
 <div class="funcHeading"><h3 class="functionName">fst</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = fst(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the first value that was supplied to the <a href="#Pair"><code>Pair</code></a>
 constructor. Throws if called with a non-pair value.</p>
@@ -898,7 +923,7 @@ funkierJS.fst(p); // =&gt; 2&#39;,
 <section class="functionRef" id="getErrValue">
 <div class="funcHeading"><h3 class="functionName">getErrValue</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getErrValue(e);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>e</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Err</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>e</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Err"><code class="paramType type">Err</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Err"><code>Err</code></a> instance e. Throws a TypeError if called with anything other
 than an <a href="#Err"><code>Err</code></a>.</p>
@@ -909,7 +934,7 @@ than an <a href="#Err"><code>Err</code></a>.</p>
 <section class="functionRef" id="getJustValue">
 <div class="funcHeading"><h3 class="functionName">getJustValue</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getJustValue(j);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>j</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Just</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>j</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Just"><code class="paramType type">Just</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Just"><code>Just</code></a> instance j. Throws a TypeError if called with anything other
 than a <a href="#Just"><code>Just</code></a>.</p>
@@ -920,7 +945,7 @@ than a <a href="#Just"><code>Just</code></a>.</p>
 <section class="functionRef" id="getOkValue">
 <div class="funcHeading"><h3 class="functionName">getOkValue</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getOkValue(o);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Ok</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Ok"><code class="paramType type">Ok</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Ok"><code>Ok</code></a> instance o. Throws a TypeError if called with anything other
 than an <a href="#Ok"><code>Ok</code></a>.</p>
@@ -1050,7 +1075,7 @@ f(5); // =&gt; Err(Error(&#39;Bad value&#39;);
 <div class="funcHeading"><h3 class="functionName">snd</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = snd(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the second value that was supplied to the <a href="#Pair"><code>Pair</code></a>
 constructor. Throws if called with a non-pair value.</p>
@@ -1611,7 +1636,7 @@ the amount of arguments not yet supplied will be returned.</p>
 <div class="funcHeading"><h3 class="functionName">bind</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">bindWithContext</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = bind(ctx, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>ctx</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>ctx</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectlike"><code class="paramType type">objectlike</code></a></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given an object and function, returns a curried function with the same arity as the original, and whose execution
 context is permanently bound to the supplied object. The function will be called when sufficient arguments have
@@ -1661,7 +1686,7 @@ var err = funkierJS.bind({foo: 1}, g); // throws: execution contexts don&#39;t m
 <section class="functionRef" id="bindWithContextAndArity">
 <div class="funcHeading"><h3 class="functionName">bindWithContextAndArity</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = bindWithContextAndArity(n, ctx, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param"><code>ctx</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectlike</code></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#strictNatural"><code class="paramType type">strictNatural</code></a></li></ul></li><li class="param"><code>ctx</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectlike"><code class="paramType type">objectlike</code></a></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given an arity, object and function, returns a curried function whose execution context is permanently bound to
 the supplied object, and whose arity equals the arity given. The supplied arity need not equal the function&#39;s
@@ -1823,7 +1848,7 @@ funkierJS.curry(g) === g;  // =&gt; true
 <section class="functionRef" id="curryWithArity">
 <div class="funcHeading"><h3 class="functionName">curryWithArity</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = curryWithArity(n, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#strictNatural"><code class="paramType type">strictNatural</code></a></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Curries the given function f to the supplied arity, which need not equal the function&#39;s length. The function will
 be called when that number of arguments have been supplied. Superfluous arguments are discarded. The original
@@ -1964,7 +1989,7 @@ err(1, 2);  // =&gt; throws
 <section class="functionRef" id="objectCurryWithArity">
 <div class="funcHeading"><h3 class="functionName">objectCurryWithArity</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = objectCurryWithArity(n, f);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">strictNatural</code></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>n</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#strictNatural"><code class="paramType type">strictNatural</code></a></li></ul></li><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given an arity and function, returns a curried function which calls the underlying with the execution context
 active when the first arguments are supplied. This means that when partially applying the function, the
@@ -2646,7 +2671,7 @@ var callReturn42(myObj); // =&gt; 42
 <section class="functionRef" id="callPropWithArity">
 <div class="funcHeading"><h3 class="functionName">callPropWithArity</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = callPropWithArity(prop, arity);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>arity</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>arity</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Given a property name and an arity, returns a curried function taking arity + 1 arguments. The new function
 requires all the original arguments in their original order, and an object as its final parameter. The returned
@@ -2664,8 +2689,8 @@ myFoldr(f, initialValue, arr); // =&gt; arr.reduceRight(f, initialValue);
 <div class="funcHeading"><h3 class="functionName">clone</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">shallowClone</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = clone(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Returns a shallow clone of the given object. All enumerable and non-enumerable properties from the given object
 and its prototype chain will be copied, and will be enumerable or non-enumerable as appropriate. Note that values
 from <code>Object.prototype</code>, <code>Array.prototype</code>, will not be copied, but those prototypes will be in the prototype chain
@@ -2678,7 +2703,7 @@ corresponding property in the original.</p>
 <section class="functionRef" id="createObject">
 <div class="funcHeading"><h3 class="functionName">createObject</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = createObject(protoObject);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
 <p>Returns a new object whose internal prototype property is the given object protoObject.</p>
 <p>Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
@@ -2692,7 +2717,7 @@ funkierJS.isPrototypeOf(obj, newObj); // =&gt; true
 <section class="functionRef" id="createObjectWithProps">
 <div class="funcHeading"><h3 class="functionName">createObjectWithProps</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = createObjectWithProps(protoObject, descriptorsObject);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param"><code>descriptorsObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li><li class="param"><code>descriptorsObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
 <p>Creates an object whose internal prototype property is protoObj, and which has the additional properties described
 in the given property descriptor object descriptorsObject. The property descriptor object is expected to be of the
@@ -2708,8 +2733,8 @@ funkierJS.hasOwnProperty(&#39;prop&#39;, newObj); // =&gt; true&#39;,
 <section class="functionRef" id="createProp">
 <div class="funcHeading"><h3 class="functionName">createProp</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = createProp(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Creates the given property to the given value on the given object, returning the object. Equivalent to evaluating
 <code>o[prop] = value</code>. The property will be not be modified if it already exists; in that case this method will throw.
 Additionally, it throws when the object is frozen, sealed, or cannot be extended. The property will be
@@ -2727,8 +2752,8 @@ a.bar // =&gt; 42
 <section class="functionRef" id="curryOwn">
 <div class="funcHeading"><h3 class="functionName">curryOwn</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = curryOwn(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Takes an object, and providing every enumerable function is writable, (i.e. the function has not been configured as
 writable: false), then curries the member functions of the object using the <a href="#objectCurry"><code>objectCurry</code></a> method.
 If any member functions are found that do not meet this requirement, then the object is left unchanged. Only the
@@ -2751,8 +2776,8 @@ obj.foo(2)(3); // =&gt; 15
 <section class="functionRef" id="defineProperties">
 <div class="funcHeading"><h3 class="functionName">defineProperties</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = defineProperties(descriptors, o);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>descriptors</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>descriptors</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>A curried wrapper around <code>Object.defineProperties</code>. Takes an object whose own properties map to property
 descriptors, and an object o. Returns the object o, after having defined the relevant properties named by the
 properties of the descriptors parameter, and whose values are dictated by the descriptor parameter.</p>
@@ -2766,8 +2791,8 @@ funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
 <section class="functionRef" id="defineProperty">
 <div class="funcHeading"><h3 class="functionName">defineProperty</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = defineProperty(prop, descriptor, o);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>descriptor</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>descriptor</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>A curried wrapper around <code>Object.defineProperty</code>. Takes a property name string, a property descriptor object and
 the object that the property hould be defined on. Returns the object o, after having defined the relevant property
 per the descriptor. Throws a TypeError if the descriptor is not an object.</p>
@@ -2781,8 +2806,8 @@ funkierJS.hasOwnProperty(&#39;foo&#39;, a); // =&gt; true
 <section class="functionRef" id="deleteProp">
 <div class="funcHeading"><h3 class="functionName">deleteProp</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = deleteProp(prop, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Deletes the given property from the given the given object, returning the object. Equivalent to evaluating
 <code>delete o[prop]</code>. Throws when the property is not configurable, including when the object is frozen or sealed.</p>
 <p>Alternatively, one can use <a href="#safeDeleteProp"><code>safeDeleteProp</code></a> that will return the appropriate Maybe value
@@ -2796,7 +2821,7 @@ a.foo // =&gt; undefined
 <section class="functionRef" id="descriptors">
 <div class="funcHeading"><h3 class="functionName">descriptors</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = descriptors(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
 of a property from the object, and the second element is its property descriptor. This function only returns
@@ -2810,8 +2835,8 @@ is not defined.</p>
 <section class="functionRef" id="extend">
 <div class="funcHeading"><h3 class="functionName">extend</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = extend(source, dest);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param"><code>dest</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li><li class="param"><code>dest</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Takes two objects, source and dest, and walks the prototype chain of source, copying all enumerable properties
 into dest. Any extant properties with the same name are overwritten. Returns the modified dest object. All
 properties are shallow-copied: in other words, if <code>foo</code> is a property of source whose value is an object, then
@@ -2824,8 +2849,8 @@ funkierJS.extend(a, {foo: 42}); // =&gt; a === {foo: 42, bar: 1}
 <section class="functionRef" id="extendOwn">
 <div class="funcHeading"><h3 class="functionName">extendOwn</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = extendOwn(source, dest);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param"><code>dest</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li><li class="param"><code>dest</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Takes two objects, source and dest, and copies all enumerable properties from source into dest. Properties from
 source&#39;s prototype chain are not copied. Any extant properties with the same name are overwritten.
 Returns the modified dest object. All properties are shallow-copied: in other words, if <code>foo</code> is a property of
@@ -2863,7 +2888,7 @@ chain, in which case the specified default value is returned.</p>
 <section class="functionRef" id="getOwnPropertyDescriptor">
 <div class="funcHeading"><h3 class="functionName">getOwnPropertyDescriptor</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getOwnPropertyDescriptor(prop, o);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
 <p>A curried wrapper around <code>Object.getOwnPropertyDescriptor</code>. Takes a property name and an object. If the object
 itself has the given property, then the object&#39;s property descriptor for the given object is returned, otherwise
@@ -2878,7 +2903,7 @@ funkierJS.getOwnPropertyDescriptor(&#39;toString&#39;, a); // =&gt; undefined&#3
 <section class="functionRef" id="getOwnPropertyNames">
 <div class="funcHeading"><h3 class="functionName">getOwnPropertyNames</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getOwnPropertyNames(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>A wrapper around <code>Object.getOwnPropertyNames</code>. Takes an object, and returns an array containing the names of the
 object&#39;s own properties, including non-enumerable properties. Returns an empty array for non-objects. The order of
@@ -2891,7 +2916,7 @@ the property names is not defined.</p>
 <section class="functionRef" id="hasOwnProperty">
 <div class="funcHeading"><h3 class="functionName">hasOwnProperty</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = hasOwnProperty(prop, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>A curried wrapper around <code>Object.prototype.hasOwnProperty</code>. Takes a string representing a property name and an
 object, and returns true if the given object itself (i.e. not objects in the prototype chain) has the specified
@@ -2904,7 +2929,7 @@ funkierJS.hasOwnProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; false
 <section class="functionRef" id="hasProperty">
 <div class="funcHeading"><h3 class="functionName">hasProperty</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = hasProperty(prop, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>A curried wrapper around the <code>in</code> operator. Takes a string representing a property name and an object, and
 returns true if the given object or some object in the prototype chain has the specified property.</p>
@@ -2916,7 +2941,7 @@ funkierJS.hasProperty(&#39;toString&#39;, {funkier: 1}); // =&gt; true
 <section class="functionRef" id="instanceOf">
 <div class="funcHeading"><h3 class="functionName">instanceOf</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = instanceOf(constructor, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>constructor</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>constructor</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>A curried wrapper around the <code>instanceof</code> operator. Takes a constructor function and an object, and returns true
 if the function&#39;s prototype property is in the prototype chain of the given object.</p>
@@ -2929,7 +2954,7 @@ funkierJS.instanceOf(Function, {}); // =&gt; false
 <section class="functionRef" id="isPrototypeOf">
 <div class="funcHeading"><h3 class="functionName">isPrototypeOf</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = isPrototypeOf(protoObject, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>protoObject</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">boolean</code></li></ul></div>
 <p>A curried wrapper around <code>Object.prototype.isPrototypeOf</code>. Takes two objects: the prototype object, and the object
 whose prototype chain you wish to check.  Returns true if protoObj is in the prototype chain of o.</p>
@@ -2942,7 +2967,7 @@ funkierJS.isPrototypeOf(Function.prototype, {}); // =&gt; false
 <section class="functionRef" id="keyValues">
 <div class="funcHeading"><h3 class="functionName">keyValues</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = keyValues(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes an object, and returns an array containing 2-element arrays. The first element of each sub-array is the name
 of a property from the object, and the second element is the value of the property. This function only returns
@@ -2956,7 +2981,7 @@ is not defined.</p>
 <section class="functionRef" id="keys">
 <div class="funcHeading"><h3 class="functionName">keys</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = keys(obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>A wrapper around <code>Object.keys</code>. Takes an object, and returns an array containing the names of the object&#39;s own
 properties. Returns an empty array for non-objects.</p>
@@ -2978,7 +3003,7 @@ properties. Returns an empty array for non-objects.</p>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">safeExtract</code></li><li class="synonym"><code class="synonymName">maybeTap</code></li><li class="synonym"><code class="synonymName">safeTap</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = maybeExtract(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Extracts the given property from the given object, and wraps it in a <a href="#Just"><code>Just</code></a> value. When the property is
 not present, either in the object, or its prototype chain, then <a href="#Nothing"><code>Nothing</code></a> is returned.</p>
 <section class="examples"><h4>Examples</h4>
@@ -3009,8 +3034,8 @@ not present, either in the object, or its prototype chain, then <a href="#Nothin
 <div class="funcHeading"><h3 class="functionName">modify</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">modifyProp</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = modify(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Sets the given property to the given value on the given object, providing it exists, and returns the object.
 Equivalent to evaluating <code>o[prop] = value</code>. The property will not be created when it doesn&#39;t exist on the object.
 Throws when the property is not writable, when it has no setter function, or when the object is frozen.</p>
@@ -3032,8 +3057,8 @@ a.foo // =&gt; 42
 <div class="funcHeading"><h3 class="functionName">safeCreateProp</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeCreate</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeCreateProp(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Creates the given property to the given value on the given object, returning the object wrapped in a Just.
 Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in
 that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or
@@ -3054,8 +3079,8 @@ a.foo // =&gt; undefined
 <div class="funcHeading"><h3 class="functionName">safeDeleteProp</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeDelete</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeDeleteProp(prop, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Deletes the given property from the given the given object, returning the object wrapped as a <a href="#Just"><code>Just</code></a>
 value. Equivalent to evaluating <code>delete o[prop]</code>. When the property is not configurable (either due to the
 individual descriptor or the object being frozen or sealed) then <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
@@ -3073,8 +3098,8 @@ funkierJS.delete(&#39;foo&#39;,  a); // =&gt; returns Nothing
 <div class="funcHeading"><h3 class="functionName">safeModify</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeModify</code></li><li class="synonym"><code class="synonymName">maybeModifyProp</code></li><li class="synonym"><code class="synonymName">safeModifyProp</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeModify(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Sets the given property to the given value on the given object, providing it exists, and returns the object,
 wrapped in a <a href="#Just"><code>Just</code></a> value when successful. Equivalent to evaluating <code>o[prop] = value</code>. The property will
 not be created when it doesn&#39;t exist on the object; nor will it be amended when the property is not writable, when
@@ -3098,8 +3123,8 @@ a.foo // =&gt; 1
 <div class="funcHeading"><h3 class="functionName">safeSet</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeSet</code></li><li class="synonym"><code class="synonymName">maybeSetProp</code></li><li class="synonym"><code class="synonymName">safeSetProp</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeSet(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Sets the given property to the given value on the given object, returning the object wrapped in a <a href="#Just"><code>Just</code></a>
 value when successful. Equivalent to evaluating <code>o[prop] = value</code>. The property will be created if it doesn&#39;t exist
 on the object. If unable to modify or create the property, then <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
@@ -3126,8 +3151,8 @@ a.foo // =&gt; 1
 <div class="funcHeading"><h3 class="functionName">set</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">setProp</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = set(prop, val, obj);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">objectLike</code></li></ul></div>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#objectLike"><code class="paramType type">objectLike</code></a></li></ul></li></ol></section>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#objectLike"><code class="returnType type">objectLike</code></a></li></ul></div>
 <p>Sets the given property to the given value on the given object, returning the object. Equivalent to evaluating
 <code>o[prop] = value</code>. The property will be created if it doesn&#39;t exist on the object. Throws when the property is
 not writable, when it has no setter function, when the object is frozen, or when it is sealed and the property
@@ -3194,7 +3219,7 @@ is not affected by and does not change the lastIndex property of the regular exp
 <section class="functionRef" id="firstMatchFrom">
 <div class="funcHeading"><h3 class="functionName">firstMatchFrom</h3></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = firstMatchFrom(r, index, s);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param"><code>index</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param"><code>index</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li><li class="returnItem"><code class="returnType type">null</code></li></ul></div>
 <p>Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
 regular expression an index, and a string. Returns a single object or null.</p>
@@ -3300,7 +3325,7 @@ To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a
 <div class="funcHeading"><h3 class="functionName">regExpSplitMax</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">regExpSplitLimit</code></li><li class="synonym"><code class="synonymName">regExpSplitCount</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = regExpSplitMax(delimiter, limit, s);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>delimiter</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">RegExp</code></li></ul></li><li class="param"><code>limit</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>delimiter</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">RegExp</code></li></ul></li><li class="param"><code>limit</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>A curried wrapper around <code>String.prototype.split</code>. Takes a RegExp delimiter, a count, and a target string s, and
 returns an array containing the substrings of s that were separated by strings matching the given delimiter, the
@@ -3337,7 +3362,7 @@ To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a
 <div class="funcHeading"><h3 class="functionName">splitMax</h3></div>
 <div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">splitLimit</code></li><li class="synonym"><code class="synonymName">splitCount</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = splitMax(delimiter, limit, s);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>delimiter</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>limit</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">natural</code></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>delimiter</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>limit</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>A curried wrapper around <code>String.prototype.split</code>. Takes a string delimiter, a count, and a target string s, and
 returns an array containing the substrings of s that were separated by the given delimiter, the returned array
@@ -3662,6 +3687,13 @@ and <code>funkierJS.isNull(a) === false</code> and <code>funkierJS.isArray(a) ==
 </div>
       </main>
     </section>
+   </div> 
+   <footer>
+     <div id="footerWrapper">
+     <h1>Brought to you by <a rel="author" href="https://www.graememcc.co.uk">Graeme McCutcheon (graememcc)</a></h1>
+     </div>
+   </footer>
+   </div>
   </body>
 </html>
 

@@ -7,8 +7,33 @@
     <title>funkierJS API (version 0.0.0)</title>
   </head>
   <body>
+    <div id="page">
+    <div id="wrapper">
+    <header>
+      <nav id="headerNav">
+        <div class="navHeading">
+          <h1>funkierJS</h1>
+        </div>
+        <ul class="navUL">
+          <li><a href="https://graememcc.github.io/funkierJS/">Home</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/get.html">Download</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/docs">Docs</a></li>
+          <li><a href="https://github.com/graememcc/funkierJS">Github</a></li>
+        </ul>
+      </nav>
+    </header>
     <section>
-      <h1>funkierJS API (version 0.0.0)</h1>
+      <h1 class="pageHeading">funkierJS API (version 0.0.0)</h1>
+      <p>In the documentation that follows, reference is made to some typeclasses. They are defined below. Generally, if a typeclass appears both in the parameter list and the signature, this
+indicates that the result will be of the same type as the value supplied.</p>
+      <dl>
+        <dt id="arrayLike"><code>arrayLike</code></dt><dd>Something with a numeric <code>length</code> property, and numeric properties in the range <code>0 - (length - 1)</code>. For example,
+        <dt id="natural"><code>natural</code></dt><dd>Either an integral value greater than or equal to zero, or something that can coerce to the same.</dd>
+        <dt id="objectLike"><code>objectLike</code></dt><dd>Something to which properties can be attached: an object or function an array, string, or <code>HTMLCollection</code>.</dd>
+        <dt id="objectLikeOrNull"><code>objectLikeOrNull</code></dt><dd>As for <a href="#objectLike"><code>objectLike</code></a>, additionally admitting the possibility of <code>null</code>.</dd>
+        <dt id="strictArrayLike"><code>strictArrayLike</code></dt><dd>As for <a href="#arrayLike"><code>arrayLikes</code></a>, except excluding the possibility of strings.</dd>
+        <dt id="strictNatural"><code>strictNatural</code></dt><dd>An integral value greater than or equal to zero, excluding objects that can coerce to the same.</dd>
+      </dl>
       <main>
 
 <div class="contentsSidebar">
@@ -24,7 +49,6 @@
 <li class="sidebarListItem"><a class="sidebarLink" href="#all">all</a></li>
 <li class="sidebarListItem"><a class="sidebarLink" href="#and">and</a></li>
 <li class="sidebarListItem"><a class="sidebarLink" href="#andPred">andPred</a></li>
-<li class="sidebarListItem"><a class="sidebarLink" href="#any">any</a></li>
 <li class="sidebarListItem"><a class="sidebarLink" href="#append">append</a></li>
 <li class="sidebarListItem"><a class="sidebarLink" href="#apply">apply</a></li>
 <li class="sidebarListItem"><a class="sidebarLink" href="#arity">arity</a></li>
@@ -317,7 +341,7 @@
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Err(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Just"><code class="returnType type">Just</code></a></li></ul></div>
 <p>An Err is a type of <a href="#Result"><code>Result</code></a> representing a unsuccessful computation. The constructor is new-agnostic.
 Throws if called without any arguments</p>
 <section class="examples"><h4>Examples</h4>
@@ -329,7 +353,7 @@ Throws if called without any arguments</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Just(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Just</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Just"><code class="returnType type">Just</code></a></li></ul></div>
 <p>A Just is a type of <a href="#Maybe"><code>Maybe</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
@@ -357,7 +381,7 @@ operator.</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Ok(a);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Ok</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Ok"><code class="returnType type">Ok</code></a></li></ul></div>
 <p>An Ok is a type of <a href="#Result"><code>Result</code></a> representing a successful computation. The constructor is new-agnostic.
 Throws when called with no arguments.</p>
 <section class="examples"><h4>Examples</h4>
@@ -369,7 +393,7 @@ Throws when called with no arguments.</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = Pair(a, b);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>a</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>b</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Pair"><code class="returnType type">Pair</code></a></li></ul></div>
 <p>A Pair represents an immutable tuple. The constructor function takes two elements, first and second. and returns a
 new immutable tuple. The contents of the tuple can be accessed with the accessor functions <a href="#fst"><code>fst</code></a> and
 <a href="#snd"><code>snd</code></a> respectively. The constructor is new-agnostic.</p>
@@ -500,7 +524,7 @@ the amount of arguments not yet supplied will be returned.</p>
 <div class="funcHeading"><h3 class="functionName">asArray</h3>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = asArray(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">array</code></li></ul></div>
 <p>Takes a pair, and returns a 2-element array containing the values contained in the given <a href="#Pair"><code>Pair</code></a> p.
 Specifically, if the resulting array is named arr, then we have <code>arr[0] === fst(p)</code> and <code>arr[1] === snd(p)</code>.
@@ -1163,7 +1187,7 @@ to this function.</p>
 <div class="funcHeading"><h3 class="functionName">either</h3>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = either(f1, f2, r);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>f2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Result</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f1</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>f2</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Result"><code class="paramType type">Result</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">function</code></li></ul></div>
 <p>Takes two functions of arity 1 or greater, and a <a href="#Result"><code>Result</code></a>. If the <a href="#Result"><code>Result</code></a> is an <a href="#Ok"><code>Ok</code></a>
 value, the first function f1 will be called with the unwrapped value.  Otherwise, if the <a href="#Result"><code>Result</code></a> is an
@@ -1549,7 +1573,7 @@ to this function.</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">first</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = fst(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the first value that was supplied to the <a href="#Pair"><code>Pair</code></a>
 constructor. Throws if called with a non-pair value.</p>
@@ -1596,7 +1620,7 @@ funkierJS.getDayOfWeek(a); // =&gt; 2
 <div class="funcHeading"><h3 class="functionName">getErrValue</h3>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getErrValue(e);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>e</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Err</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>e</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Err"><code class="paramType type">Err</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Err"><code>Err</code></a> instance e. Throws a TypeError if called with anything other
 than an <a href="#Err"><code>Err</code></a>.</p>
@@ -1646,7 +1670,7 @@ TypeError if the index is outside the range for the given object.</p>
 <div class="funcHeading"><h3 class="functionName">getJustValue</h3>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getJustValue(j);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>j</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Just</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>j</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Just"><code class="paramType type">Just</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Just"><code>Just</code></a> instance j. Throws a TypeError if called with anything other
 than a <a href="#Just"><code>Just</code></a>.</p>
@@ -1697,7 +1721,7 @@ funkierJS.getMonth(a); // =&gt; 1
 <div class="funcHeading"><h3 class="functionName">getOkValue</h3>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = getOkValue(o);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Ok</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>o</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Ok"><code class="paramType type">Ok</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Returns the value wrapped by the given <a href="#Ok"><code>Ok</code></a> instance o. Throws a TypeError if called with anything other
 than an <a href="#Ok"><code>Ok</code></a>.</p>
@@ -2562,7 +2586,7 @@ to abuse it, but it will likely not do what you expect.</p>
 </div><div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">safeExtract</code></li><li class="synonym"><code class="synonymName">maybeTap</code></li><li class="synonym"><code class="synonymName">safeTap</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = maybeExtract(prop, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">object</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Extracts the given property from the given object, and wraps it in a <a href="#Just"><code>Just</code></a> value. When the property is
 not present, either in the object, or its prototype chain, then <a href="#Nothing"><code>Nothing</code></a> is returned.</p>
 <section class="examples"><h4>Examples</h4>
@@ -3217,7 +3241,7 @@ a TypeError if the given length is negative.</p>
 </div><div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeCreate</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeCreateProp(prop, val, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Creates the given property to the given value on the given object, returning the object wrapped in a Just.
 Equivalent to evaluating o[prop] = value. The property will be not be modified if it already exists; in
 that case Nothing will be returned. Additionally, Nothing will be returned when the object is frozen, sealed, or
@@ -3286,7 +3310,7 @@ a.foo // =&gt; 1
 </div><div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">maybeSet</code></li><li class="synonym"><code class="synonymName">maybeSetProp</code></li><li class="synonym"><code class="synonymName">safeSetProp</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = safeSet(prop, val, obj);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>prop</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li><li class="param"><code>val</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li><li class="param"><code>obj</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">objectLike</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Maybe</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Maybe"><code class="returnType type">Maybe</code></a></li></ul></div>
 <p>Sets the given property to the given value on the given object, returning the object wrapped in a <a href="#Just"><code>Just</code></a>
 value when successful. Equivalent to evaluating <code>o[prop] = value</code>. The property will be created if it doesn&#39;t exist
 on the object. If unable to modify or create the property, then <a href="#Nothing"><code>Nothing</code></a> will be returned.</p>
@@ -3590,7 +3614,7 @@ object, then all values from &#39;from&#39; will be returned.</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catDataTypes" href="byCategory.html#DataTypes">DataTypes</a></p>
 </div><div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym"><code class="synonymName">second</code></li></ul></div>
 <p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = snd(p);</code></p>
-<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Pair</code></li></ul></li></ol></section>
+<section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>p</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#Pair"><code class="paramType type">Pair</code></a></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Accessor function for <a href="#Pair"><code>Pair</code></a> tuples. Returns the second value that was supplied to the <a href="#Pair"><code>Pair</code></a>
 constructor. Throws if called with a non-pair value.</p>
@@ -4057,7 +4081,7 @@ equivalent date in UTC.</p>
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catArray" href="byCategory.html#Array">Array</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = unzip(source);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>source</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">array</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">Pair</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><a class="typeLink" href="#Pair"><code class="returnType type">Pair</code></a></li></ul></div>
 <p>Takes an array of Pairs, and returns a <a href="#Pair"><code>Pair</code></a>. The first element is an array containing the first element from each
 pair, and likewise the second element is an array containing the second elements.</p>
 <p>Throws a TypeError if the given argument is not an array, or if any element is not a Pair.</p>
@@ -4166,6 +4190,13 @@ funkierJS.zipWith(f, &#39;apple&#39;, &#39;banana&#39;); // =&gt; [&#39;ab&#39;,
 </div>
       </main>
     </section>
+   </div> 
+   <footer>
+     <div id="footerWrapper">
+     <h1>Brought to you by <a rel="author" href="https://www.graememcc.co.uk">Graeme McCutcheon (graememcc)</a></h1>
+     </div>
+   </footer>
+   </div>
   </body>
 </html>
 
