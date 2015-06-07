@@ -50,18 +50,18 @@ dl {
 }
 
 
-.contentsSidebar, .functionRef, a.categoryLink, h2.categoryBanner {
+.feature, .contentsSidebar, .functionRef, a.categoryLink, h2.categoryBanner {
   border-radius: 5px;
 }
 
 
 .contentsSidebar {
-  background-color: dodgerblue;
+  background-color: #3CB371;
   width: 20%
 }
 
 .contentsSidebar a:hover {
-  background-color: #1ec0ff;
+  background-color: #3c8371;
 }
 
 
@@ -163,7 +163,7 @@ dl {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  border-bottom: 1px solid #663399;
+  border-bottom: 1px solid #2f4f4f;
   font-family: 'Chunkfive';
 }
 
@@ -237,7 +237,7 @@ h2.categoryBanner:first-of-type {
 
 
 .catMaths {
-  background-color: #663399;
+  background-color: #2f4f4f;
 }
 
 
@@ -266,7 +266,7 @@ h2.categoryBanner:first-of-type {
 h1 {
   font-size: 48px;
   font-weight: normal;
-  color: #663399;
+  color: #2f4f4f;
 }
 
 .navHeading {
@@ -285,7 +285,7 @@ h1 {
 
 footer {
   font-weight: normal;
-  background-color: #663399;
+  background-color: #2f4f4f;
   color: white;
   height: 100px;
   width: 100%;
@@ -301,7 +301,6 @@ footer {
 #footerWrapper {
   bottom: 0;
   left: 0;
-  width: 90%;
   padding-top: 15px;
 }
 
@@ -322,4 +321,57 @@ footer {
   .functionRef  {
     border: none;
   }
+}
+
+
+main.noflex {
+  display: block;
+}
+
+.feature {
+  background-color: white;
+  border: 1px solid grey;
+  padding: 15px;
+  margin: 15px;
+}
+
+.feature h2 {
+   font-family: 'Chunkfive', sans-serif;
+   font-weight: normal;
+   color: cornflowerblue;
+  border-bottom: 1px solid grey;
+} 
+.right {
+  text-align: right;
+}
+
+.getIt {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.getIt a, .getIt a:visited {
+  color: white;
+  text-decoration: none;
+  font-family: 'Chunkfive', sans-serif;
+  font-size: 24px;
+  background-color: green;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.helpme {
+  border: 1px dotted red;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: lightyellow;
+  padding: 20px;
+}
+
+.getInstructions {
+  text-align: center;
 }

@@ -2,46 +2,80 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>funkierJS: A functional library for Javascript</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/style.css">
+    <title>funkierJS: The functional toolbox for Javascript</title>
   </head>
   <body>
+    <div id="page">
+    <div id="wrapper">
+    <header>
+      <nav id="headerNav">
+        <div class="navHeading">
+          <h1>funkierJS</h1>
+        </div>
+        <ul class="navUL">
+          <li><a href="https://graememcc.github.io/funkierJS/get.html">Download</a></li>
+          <li><a href="https://graememcc.github.io/funkierJS/docs">Docs</a></li>
+          <li><a href="https://github.com/graememcc/funkierJS">Github</a></li>
+        </ul>
+      </nav>
+    </header>
     <section>
-      <header>
-        <h1>funkierJS</h1>
-        <h2>A functional library for Javascript</h2>
-        <div>
-          <nav>
-            <ul>
-              <li>API</li>
-              <li>Github</li>
-            </ul>
-          <nav>
-        </div>
-      <header>
-    <section>
-    <main>
-      <section>
-        <div>
-          <ul>
-            <li>Pragmatic curried functions</li>
-            <li>Common functional primitives</li>
-            <li>Consistent type signatures</li>
-          <ul>
-        </div>
-        <div>
-          <h2>Download now</h2>
-          Node:
-          Browser:
-        </div>
+      <h2 class="pageHeading">The functional toolbox for Javascript</h2>
+      <ul class="featureSplash">
+        <li>Pragmatic curried functions—<strong>everywhere</strong></li>
+        <li>Curried implementations of much of the standard Javascript library, leaving you free to concentrate on what matters</li>
+        <li>Type-checking when appropriate</li>
+        <li>In-library help</li>
+      </ul>
+      <main class="noflex">
+      <p>funkierJS is the toolbox you need to quickly start programming in a functional style in Javascript, wherever you need it: on Node or in the browser. Utterly pragmatic, it provides useful currying mechanisms to allow you to build your own functions, which also let you choose how to manage the reality of working in a non-pure environment. Its curried implementations of much of the ES5 standard library leave you free to concentrate on your business logic, rather than reinventing the wheel, whilst simultaneously removing some trip-hazards, and enabling functional idioms like treating strings as lists of characters. Its in-library help ensures you don't need to slow down to reach for API documentation—instead pull up a quick summary in your REPL!
+      </p>
+      <section class="feature">
+        <h2 class="left">Pragmatic curried functions</h2>
         <p>
-          <em>funkierJS</em> is the functional Javascript library I always wanted. XXX
+          funkierJS works in terms of curried functions: where every function that takes more than one argument is notionally regarded as a function of 1 argument which returns a new function awaiting the remaining arguments. Whilst simple currying can be quickly emulated using Javascript's native <code>Function.prototype.bind</code>, one quickly drowns in a sea of parentheses as one translates calling a function of 3 arguments to <code>f(1)(2)(3)</code>.
         </p>
-        <h3>Pragmatic curried functions</h3>
         <p>
-          Functional languages like Haskell support curried functions.
+          funkierJS provides pragmatic curried functions: yes, you can call funkierJS's pragmatic curried functions one argument at a time, but if you have more arguments available, then you can supply them all at once. Your three argument function can now be called using any of <code>f(1)(2)(3), f(1, 2)(3), f(1)(2, 3)</code> as well as plain old <code>f(1, 2, 3)</code>.
+        </p>
         <p>
+        funkierJS will keep you in the world of curried functions as much as possible. As well as supplying the means for you to curry your own functions, funkierJS always returns curried functions from its methods.
+        </p>
+        <p>
+        Furthermore, funkierJS lets you choose how to handle state. Purity is something to strive for, but we cannot deny the reality that Javascript is not a pure, functional language. funkierJS's currying choices let you specify how your functions handle the state of the world: curry them with <strong>curry</strong> when you are aiming for purity: <code>this</code> will be null inside such functions. Curry them with <strong>bind</strong> when you want to fix the value of <code>this</code>, regardless of what later partial applications try to do. Finally, curry methods on an object prototype with <strong>objectCurry</strong>, and you can enjoy all the benefits of partial application with your object methods, with functions that permanently bind the value of <code>this</code> on each first partial application. (In some circumstances, <code>objectCurry</code> can curry constructors too!)
+       </p>
       </section>
-    <main>
+      <section class="feature">
+        <h2 class="right">Everything you need to be productive</h2>
+        <p>
+        Many libraries provide you with the most basic building blocks, but still leave you needing to build too much scaffolding before you can get down to business. Not so with funkierJS. It provides curried implementations of most of the ECMAScript Standard mandated functions, and wrappers around other common operations. This enables you to quickly get to work on the tasks that are important to you. In doing so, funkierJS also provides other benefits, in particular blunting some sharp edges in the Standard. Functions with optional arguments become different functions with different signatures in funkierJS. Ever called Javascript's native <code>map</code> with <code>parseInt</code>? With funkierJS's reimplementations, such problems melt away. funkierJS takes a pragmatic approach to type-checking, not getting in your way unnecessarily, whilst alerting you when you were unlikely to be wanting a coercion. Finally, funkierJS's reimplementations enable common functional idioms, for example, allowing you to easily map, filter and reduce over both arrays and strings with its API functions.
+       </p>
+      </section>
+      <section class="feature">
+        <h2 class="left">In-library help</h2>
+        <p>
+        funkierJS aims to make your life easier. To that end, it minimises your need to context-switch, and provides a <code>help</code> function, which accepts any of its API functions, and provides a quick summary of usage, right there in your REPL or web console. You can quickly find the information you need, and then get back to more interesting problems!
+        </p>
+      </section>
+      <section class="feature">
+        <h2 class="right">An open-source library</h2>
+        <p>
+        funkierJS is open-source, and available on <a href="https://github.com/graememcc/funkierJS">Github</a>. You're welcome to contribute and drive funkierJS forward!
+        </p>
+      </section>
+      <div class="getIt">
+      <a href="get.html">Get funkierJS now</a>
+      </div>
+      </main>
+    </section>
+   </div> 
+   <footer>
+     <div id="footerWrapper">
+     <h1>Brought to you by <a rel="author" href="https://www.graememcc.co.uk">Graeme McCutcheon (graememcc)</a></h1>
+     </div>
+   </footer>
+   </div>
   </body>
-  <script async="true" src="temp.js"></script>
 </html>
