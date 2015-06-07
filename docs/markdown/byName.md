@@ -158,17 +158,17 @@ functions with the given argument, and logically and their results, returning th
 argument is not a function of arity 1.
 
 Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+produced by one of the [`objectCurry`](#objectCurry) variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
-in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+also be bound to the same context. Otherwise, the function will be curried with [`curry`](#curry). (This is only
+provided in case you need to give the resulting function to one of the `withArity` functions to change the arity).
 
 #### Examples ####
-    var c = funkierJS.constant(true);',
-    var d = funkierJS.constant(false);',
-    var f = funkierJS.andPred(c, d);',
-    f("foo"); // => false',
+    var c = funkierJS.constant(true);
+    var d = funkierJS.constant(false);
+    var f = funkierJS.andPred(c, d);
+    f("foo"); // => false
 ***
 ### any ###
 See `some`
@@ -544,8 +544,8 @@ The functions will be curried (using the standard [`curry`](#curry) if required.
 real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
-If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
+If `g` was curried by one of the [`objectCurry`](#objectCurry) variants, then the returned function will be too, and it will
+supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`](#bind), then the returned
 function will also be considered as having been curried that way, with the correct bound context.
 
 #### Examples ####
@@ -567,7 +567,7 @@ Repeatedly composes the given array of functions, from right to left. All functi
 Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
 zero, or if the value supplied is not an array.
 
-The result of calling composeMany([f1, f2, f3](x) is equal to f1(f2(f3(x))).
+The result of calling composeMany(\[f1, f2, f3\](x) is equal to f1(f2(f3(x))).
 
 #### Examples ####
     var square = function(x) {return x * x;};
@@ -597,9 +597,9 @@ The functions will be curried (using the standard [`curry`](#curry) if required.
 real arity of `arityOf(f)`. Note in particular, that if `g` has arity 1, it will be partially applied with 1
 argument: `f` will recieve a partially applied `g`, and any remaining arguments.
 
-If `g` was curried by one of the [`objectCurry`] variants, then the returned function will be too, and it will
-supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`], then the returned
-function will also be considered as having been curried that way, with the correct bound context.
+If `g` was curried by one of the [`objectCurry`](#objectCurry) variants, then the returned function will be too,
+and it will supply `g` with the context the first time it is invoked. If `g` was curried by [`bind`](#bind), then
+the returned function will also be considered as having been curried that way, with the correct bound context.
 
 This function is intended to afford an approximation of writing functions in a point-free style.
 
@@ -697,7 +697,7 @@ Returns: `object`
 Returns a new object whose internal prototype property is the given object protoObject.
 
 Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
-to the created object, use [createObjectWithProps](#createObjectWithProps).
+to the created object, use [`createObjectWithProps`](#createObjectWithProps).
 
 #### Examples ####
     var obj = {};
@@ -1389,7 +1389,7 @@ is not affected by and does not change the lastIndex property of the regular exp
 Throws a TypeError if the first parameter is not a regular expression.
 
 #### Examples ####
-    funkierJS.firstMatch(/a/, \'banana\'); // => {index: 3, matchedText: \'a\', []}
+    funkierJS.firstMatch(/a/, 'banana'); // => {index: 3, matchedText: 'a', []}
 ***
 ### firstMatchFrom ###
 Category: String
@@ -1401,7 +1401,7 @@ Parameters:
 `index` `natural`  
 `s` `string`
 
-Returns: `object` | `null`
+Returns: `object/null`
 
 Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
 regular expression an index, and a string. Returns a single object or null.
@@ -1501,7 +1501,7 @@ Parameters:
 Returns: `any`
 
 Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
-[`Maybes`](#Maybe) and [`Results](#Result), although this may change in future versions. Throws if the
+[`Maybes`](#Maybe) and [`Results`](#Result), although this may change in future versions. Throws if the
 first value is not a function of arity 1, or the second is not a known functor.
 
 The actions taken are as follows:
@@ -3174,14 +3174,14 @@ function with the given argument, and return the negated result. Throws if f is 
 arity other than 1.
 
 If the supplied predicate has been previously curried, then the resulting function will replicate the currying
-style. In particular, if the original function was curried with one of the [`objectCurry'](#objectCurry) variants,
+style. In particular, if the original function was curried with one of the [`objectCurry`](#objectCurry) variants,
 then the resulting function will be too, and where necessary will supply the execution context to the wrapped
 function.
 
 #### Examples ####
-    var c = funkierJS.constant(true);',
-    var f = funkierJS.notPred(c);',
-    f("foo"); // => false',
+    var c = funkierJS.constant(true);
+    var f = funkierJS.notPred(c);
+    f("foo"); // => false
 ***
 ### nub ###
 Category: Array
@@ -3271,6 +3271,10 @@ will curry the result in the same manner as the supplied functions, or otherwise
 when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
 This limitation may be removed in future versions of the library.
 
+In certain cases, `objectCurry` can be used to curry constructors; the requirement is that the constructor is
+**not** new-agnostic. (This may be fixed in future versions). Note that the instanceof relation will not hold
+for any partially applied functions created along the way.
+
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
 
@@ -3333,6 +3337,10 @@ will curry the result in the same manner as the supplied functions, or otherwise
 [`curry`](#curry). As noted above, functions curried by `curry` cannot then be recurried by this function. Thus
 when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
 This limitation may be removed in future versions of the library.
+
+In certain cases, `objectCurryWithArity` can be used to curry constructors; the requirement is that the
+constructor is **not** new-agnostic. (This may be fixed in future versions). Note that the instanceof relation
+will not hold for any partially applied functions created along the way.
 
 Unfortunately, funkierJS has no visibility into functions bound with the native `bind` method; attempting to
 curry such functions won't throw, but they will not work as expected.
@@ -3451,14 +3459,14 @@ Where possible, funkierJS will aim to replicate the currying style of the functi
 produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
-in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+also be bound to the same context. Otherwise, the function will be curried with [`curry`](#curry). (This is only
+provided in case you need to give the resulting function to one of the `withArity` functions to change the arity).
 
 #### Examples ####
-    var c = funkierJS.constant(true);',
-    var d = funkierJS.constant(false);',
-    var f = funkierJS.orPred(c, d);',
-    f("foo"); // => true',
+    var c = funkierJS.constant(true);
+    var d = funkierJS.constant(false);
+    var f = funkierJS.orPred(c, d);
+    f("foo"); // => true
 ***
 ### ord ###
 Category: String
@@ -3723,7 +3731,7 @@ array containing the substrings of s that were separated by substrings matching 
 Throws a TypeError if the first parameter is not a RegExp or if the second parameter is not a string.
 
 To specify the delimiter as a string, use [`split`](#split).
-To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+To specify an upper bound, use [`splitMax`](#splitMax`)/[`regExpSplitMax`](#regExpSplitMax).
 
 #### Examples ####
     funkierJS.regExpSplit/a/, 'banana'); // => ['b', 'n', 'n']
@@ -3756,7 +3764,7 @@ Throws a TypeError if the first parameter is not a RegExp, if the limit count is
 parameter is not a string.
 
 To specify the delimiter as a string, use [`splitMax`](#splitMax).
-To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+To split without an upper bound, use [`split`](#split)/[`regExpSplit`](#regExpSplit).
 
   funkierJS.regExpSplitMax(/a/, 2, 'banana'); // => ['b', 'n']
 ***
@@ -4454,7 +4462,7 @@ array containing the substrings of s that were separated by the given delimiter.
 Throws a TypeError if either parameter is not a string.
 
 To specify the delimiter as a RegExp, use [`regExpSplit`](#regExpSplit).
-To specify an upper bound, use [`splitMax`](#splitMax')/[`regExpSplitMax`](#regExpSplitMax).
+To specify an upper bound, use [`splitMax`](#splitMax`)/[`regExpSplitMax`](#regExpSplitMax).
 
 #### Examples ####
     funkierJS.split('|', '1|2|3'); // => ['1', '2', '3']
@@ -4486,7 +4494,7 @@ containing at most limit such substrings.
 Throws a TypeError if the first or last parameter is not a string, or if limit is not integral.
 
 To specify the delimiter as a RegExp, use [`regExpSplitMax`](#regExpSplitMax).
-To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpSplit).
+To split without an upper bound, use [`split`](#split)/[`regExpSplit`](#regExpSplit).
 
 #### Examples ####
     funkierJS.splitMax('|', 2, '1|2|3'); // => ['1', '2']
@@ -5067,17 +5075,17 @@ functions with the given argument, and logically xor their results, returning th
 argument is not a function of arity 1.
 
 Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the [`objectCurry'](#objectCurry) variants, then the resulting function will also be object
+produced by one of the [`objectCurry`](#objectCurry) variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the [`bind`](#bind) variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [`curry`]. (This is only provided
-in case you need to give the resulting function to one of the `withArity` functions to change the arity).
+also be bound to the same context. Otherwise, the function will be curried with [`curry`](#curry). (This is only
+provided in case you need to give the resulting function to one of the `withArity` functions to change the arity).
 
 #### Examples ####
-    var c = funkierJS.constant(true);',
-    var d = funkierJS.constant(true);',
-    var f = funkierJS.xorPred(c, d);',
-    f("foo"); // false',
+    var c = funkierJS.constant(true);
+    var d = funkierJS.constant(true);
+    var f = funkierJS.xorPred(c, d);
+    f("foo"); // false
 ***
 ### zip ###
 Category: Array

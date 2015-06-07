@@ -453,16 +453,16 @@ var pairs = funkierJS.map(funkierJS.new Pair(3), [4, 5, 6]);
 functions with the given argument, and logically and their results, returning that value. Throws if either
 argument is not a function of arity 1.</p>
 <p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+produced by one of the <a href="#objectCurry"><code>objectCurry</code></a> variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+also be bound to the same context. Otherwise, the function will be curried with <a href="#curry"><code>curry</code></a>. (This is only
+provided in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.andPred(c, d);&#39;,
-f(&quot;foo&quot;); // =&gt; false&#39;,
+<pre><code>var c = funkierJS.constant(true);
+var d = funkierJS.constant(false);
+var f = funkierJS.andPred(c, d);
+f(&quot;foo&quot;); // =&gt; false
 </code></pre></section>
 </section>
 <section class="functionRef" id="any">
@@ -754,8 +754,8 @@ has arity 0.</p>
 <p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
 real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
 argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
-<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned
+<p>If <code>g</code> was curried by one of the <a href="#objectCurry"><code>objectCurry</code></a> variants, then the returned function will be too, and it will
+supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by <a href="#bind"><code>bind</code></a>, then the returned
 function will also be considered as having been curried that way, with the correct bound context.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f1 = function(a) {return a + 1;};
@@ -772,7 +772,7 @@ var f = funkierJS.compose(f1, f2); // =&gt; f(x) = 2(x + 1)&#39;,
 <p>Repeatedly composes the given array of functions, from right to left. All functions are curried where necessary.
 Functions are curried from right to left. Throws an Error if any array member is not a function, if it has arity
 zero, or if the value supplied is not an array.</p>
-<p>The result of calling composeMany(<a href="x">f1, f2, f3</a> is equal to f1(f2(f3(x))).</p>
+<p>The result of calling composeMany([f1, f2, f3](x) is equal to f1(f2(f3(x))).</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var square = function(x) {return x * x;};
 var double = function(x) {return 2 * x;};
@@ -794,9 +794,9 @@ has arity 0.</p>
 <p>The functions will be curried (using the standard <a href="#curry"><code>curry</code></a> if required. The resulting function will have
 real arity of <code>arityOf(f)</code>. Note in particular, that if <code>g</code> has arity 1, it will be partially applied with 1
 argument: <code>f</code> will recieve a partially applied <code>g</code>, and any remaining arguments.</p>
-<p>If <code>g</code> was curried by one of the [<code>objectCurry</code>] variants, then the returned function will be too, and it will
-supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by [<code>bind</code>], then the returned
-function will also be considered as having been curried that way, with the correct bound context.</p>
+<p>If <code>g</code> was curried by one of the <a href="#objectCurry"><code>objectCurry</code></a> variants, then the returned function will be too,
+and it will supply <code>g</code> with the context the first time it is invoked. If <code>g</code> was curried by <a href="#bind"><code>bind</code></a>, then
+the returned function will also be considered as having been curried that way, with the correct bound context.</p>
 <p>This function is intended to afford an approximation of writing functions in a point-free style.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var f1 = function(a) {return a(2);};
@@ -867,7 +867,7 @@ b === a; // =&gt; false
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li></ul></div>
 <p>Returns a new object whose internal prototype property is the given object protoObject.</p>
 <p>Note: this is an unary function that discards excess arguments. If you need to simultaneously add new properties
-to the created object, use <a href="#createObjectWithProps">createObjectWithProps</a>.</p>
+to the created object, use <a href="#createObjectWithProps"><code>createObjectWithProps</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>var obj = {};
 var newObj = funkierJS.createObject(obj);
@@ -1390,7 +1390,7 @@ string. Returns a single object or null.</p>
 is not affected by and does not change the lastIndex property of the regular expression if it exists.</p>
 <p>Throws a TypeError if the first parameter is not a regular expression.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>funkierJS.firstMatch(/a/, \&#39;banana\&#39;); // =&gt; {index: 3, matchedText: \&#39;a\&#39;, []}
+<pre><code>funkierJS.firstMatch(/a/, &#39;banana&#39;); // =&gt; {index: 3, matchedText: &#39;a&#39;, []}
 </code></pre></section>
 </section>
 <section class="functionRef" id="firstMatchFrom">
@@ -1398,7 +1398,7 @@ is not affected by and does not change the lastIndex property of the regular exp
 <p class="category"><span class="catStart">Category: </span><a class="categoryLink catString" href="byCategory.html#String">String</a></p>
 </div><p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">var result = firstMatchFrom(r, index, s);</code></p>
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>r</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">Regexp</code></li></ul></li><li class="param"><code>index</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><a class="typeLink" href="#natural"><code class="paramType type">natural</code></a></li></ul></li><li class="param"><code>s</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">string</code></li></ul></li></ol></section>
-<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object</code></li><li class="returnItem"><code class="returnType type">null</code></li></ul></div>
+<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">object/null</code></li></ul></div>
 <p>Finds the first match in a string for a given regular expression from a given index. Takes three parameters: a
 regular expression an index, and a string. Returns a single object or null.</p>
 <p>If not null, the object has the following properties:</p>
@@ -1472,7 +1472,7 @@ backwards(2, 3); // =&gt; 1
 <section class="parameters"><h4 class="parametersHeader">Parameters</h4><ol class="parameterList"><li class="param"><code>f</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">function</code></li></ul></li><li class="param"><code>g</code><code>:</code> <ul class="paramTypes"><li class="paramsItem"><code class="paramType type">any</code></li></ul></li></ol></section>
 <div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">any</code></li></ul></div>
 <p>Takes a known Functor, and maps the given function over it. Known functors are currently arrays, strings,
-<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result">`Results</a>, although this may change in future versions. Throws if the
+<a href="#Maybe"><code>Maybes</code></a> and <a href="#Result"><code>Results</code></a>, although this may change in future versions. Throws if the
 first value is not a function of arity 1, or the second is not a known functor.</p>
 <p>The actions taken are as follows:</p>
 <ul>
@@ -2710,13 +2710,13 @@ a.foo // =&gt; 42
 function with the given argument, and return the negated result. Throws if f is not a function, or has an
 arity other than 1.</p>
 <p>If the supplied predicate has been previously curried, then the resulting function will replicate the currying
-style. In particular, if the original function was curried with one of the <a href="#objectCurry">`objectCurry&#39;</a> variants,
+style. In particular, if the original function was curried with one of the <a href="#objectCurry"><code>objectCurry</code></a> variants,
 then the resulting function will be too, and where necessary will supply the execution context to the wrapped
 function.</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var f = funkierJS.notPred(c);&#39;,
-f(&quot;foo&quot;); // =&gt; false&#39;,
+<pre><code>var c = funkierJS.constant(true);
+var f = funkierJS.notPred(c);
+f(&quot;foo&quot;); // =&gt; false
 </code></pre></section>
 </section>
 <section class="functionRef" id="nub">
@@ -2785,6 +2785,9 @@ will curry the result in the same manner as the supplied functions, or otherwise
 <a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
 when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
 This limitation may be removed in future versions of the library.</p>
+<p>In certain cases, <code>objectCurry</code> can be used to curry constructors; the requirement is that the constructor is
+<strong>not</strong> new-agnostic. (This may be fixed in future versions). Note that the instanceof relation will not hold
+for any partially applied functions created along the way.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -2838,6 +2841,9 @@ will curry the result in the same manner as the supplied functions, or otherwise
 <a href="#curry"><code>curry</code></a>. As noted above, functions curried by <code>curry</code> cannot then be recurried by this function. Thus
 when performing such manipulations, one must curry them in the desired manner first, before manipulating them.
 This limitation may be removed in future versions of the library.</p>
+<p>In certain cases, <code>objectCurryWithArity</code> can be used to curry constructors; the requirement is that the
+constructor is <strong>not</strong> new-agnostic. (This may be fixed in future versions). Note that the instanceof relation
+will not hold for any partially applied functions created along the way.</p>
 <p>Unfortunately, funkierJS has no visibility into functions bound with the native <code>bind</code> method; attempting to
 curry such functions won&#39;t throw, but they will not work as expected.</p>
 <section class="examples"><h4>Examples</h4>
@@ -2927,13 +2933,13 @@ argument is not a function of arity 1.</p>
 produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+also be bound to the same context. Otherwise, the function will be curried with <a href="#curry"><code>curry</code></a>. (This is only
+provided in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(false);&#39;,
-var f = funkierJS.orPred(c, d);&#39;,
-f(&quot;foo&quot;); // =&gt; true&#39;,
+<pre><code>var c = funkierJS.constant(true);
+var d = funkierJS.constant(false);
+var f = funkierJS.orPred(c, d);
+f(&quot;foo&quot;); // =&gt; true
 </code></pre></section>
 </section>
 <section class="functionRef" id="ord">
@@ -3141,7 +3147,7 @@ but not including b, each element increasing by stride.</p>
 array containing the substrings of s that were separated by substrings matching the given pattern.</p>
 <p>Throws a TypeError if the first parameter is not a RegExp or if the second parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#split"><code>split</code></a>.
-To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
+To specify an upper bound, use <a href="#splitMax`"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.regExpSplit/a/, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;, &#39;n&#39;]
 </code></pre></section>
@@ -3167,7 +3173,7 @@ returned array containing at most limit such substrings.</p>
 <p>Throws a TypeError if the first parameter is not a RegExp, if the limit count is not integral, or if the last
 parameter is not a string.</p>
 <p>To specify the delimiter as a string, use <a href="#splitMax"><code>splitMax</code></a>.
-To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
+To split without an upper bound, use <a href="#split"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <p>  funkierJS.regExpSplitMax(/a/, 2, &#39;banana&#39;); // =&gt; [&#39;b&#39;, &#39;n&#39;]</p>
 </section>
 <section class="functionRef" id="rem">
@@ -3682,7 +3688,7 @@ funkierJS.sortWith(sortFn, [10, 1, 21, 2]); // =&gt; [1, 2, 10, 21]
 array containing the substrings of s that were separated by the given delimiter.</p>
 <p>Throws a TypeError if either parameter is not a string.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplit"><code>regExpSplit</code></a>.
-To specify an upper bound, use <a href="#splitMax&#39;"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
+To specify an upper bound, use <a href="#splitMax`"><code>splitMax</code></a>/<a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.split(&#39;|&#39;, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]
 </code></pre></section>
@@ -3707,7 +3713,7 @@ returns an array containing the substrings of s that were separated by the given
 containing at most limit such substrings.</p>
 <p>Throws a TypeError if the first or last parameter is not a string, or if limit is not integral.</p>
 <p>To specify the delimiter as a RegExp, use <a href="#regExpSplitMax"><code>regExpSplitMax</code></a>.
-To split without an upper bound, use <a href="#split&#39;"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
+To split without an upper bound, use <a href="#split"><code>split</code></a>/<a href="#regExpSplit"><code>regExpSplit</code></a>.</p>
 <section class="examples"><h4>Examples</h4>
 <pre><code>funkierJS.splitMax(&#39;|&#39;, 2, &#39;1|2|3&#39;); // =&gt; [&#39;1&#39;, &#39;2&#39;]
 </code></pre></section>
@@ -4141,16 +4147,16 @@ loggedPlus(2, 2); // =&gt; outputs &#39;plus called with 2, 2&#39; and &#39;plus
 functions with the given argument, and logically xor their results, returning that value. Throws if either
 argument is not a function of arity 1.</p>
 <p>Where possible, funkierJS will aim to replicate the currying style of the function. If either function was
-produced by one of the <a href="#objectCurry">`objectCurry&#39;</a> variants, then the resulting function will also be object
+produced by one of the <a href="#objectCurry"><code>objectCurry</code></a> variants, then the resulting function will also be object
 curried, and supply the correct execution context to the supplied functions. If neither was curried in that
 manner, but one or more was curried with one of the <a href="#bind"><code>bind</code></a> variants, then the resulting function will
-also be bound to the same context. Otherwise, the function will be curried with [<code>curry</code>]. (This is only provided
-in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
+also be bound to the same context. Otherwise, the function will be curried with <a href="#curry"><code>curry</code></a>. (This is only
+provided in case you need to give the resulting function to one of the <code>withArity</code> functions to change the arity).</p>
 <section class="examples"><h4>Examples</h4>
-<pre><code>var c = funkierJS.constant(true);&#39;,
-var d = funkierJS.constant(true);&#39;,
-var f = funkierJS.xorPred(c, d);&#39;,
-f(&quot;foo&quot;); // false&#39;,
+<pre><code>var c = funkierJS.constant(true);
+var d = funkierJS.constant(true);
+var f = funkierJS.xorPred(c, d);
+f(&quot;foo&quot;); // false
 </code></pre></section>
 </section>
 <section class="functionRef" id="zip">
