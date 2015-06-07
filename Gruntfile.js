@@ -138,7 +138,7 @@ module.exports = function(grunt) {
 
     bump: {
       options: {
-        files: ['package.json', 'docs/templates/*/categoryV*', 'docs/templates/*/nameV*'],
+        files: ['package.json', 'website/get.html', 'docs/templates/*/categoryV*', 'docs/templates/*/nameV*'],
         commit: true,
         commitMessage: 'Release v%VERSION%',
         createTag: true,
