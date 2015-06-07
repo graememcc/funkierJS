@@ -158,6 +158,14 @@ module.exports = function(grunt) {
         dest: 'website/css'
       },
 
+      websiteBuild: {
+        expand: true,
+        src: 'dist/*.js',
+        flatten: true,
+        dest: 'website'
+      },
+
+
       docs: {
         expand: true,
         src: 'docs/html/*.html',
@@ -206,6 +214,11 @@ module.exports = function(grunt) {
       websiteCSS: {
         files: ['docs/css/*'],
         tasks: ['copy:css']
+      },
+
+      websiteBuild: {
+        files: ['dist/*.js'],
+        tasks: ['copy:websiteBuild']
       },
 
       websiteDocs: {
