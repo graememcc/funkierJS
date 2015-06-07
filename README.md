@@ -35,6 +35,6 @@ funkierJS aims to make your life easier. To that end, it minimises your need to 
 
 ## Get funkierJS ##
 
-    npm install funkierJS
+    npm install funkierjs
 
 or download a [browser build](#https://graememcc.github.io/funkierJS/funkierJS.js)
