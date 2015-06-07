@@ -1,0 +1,377 @@
+/*
+ * Note that this file should be edited in docs/css. The version in website/css will be overwritten by the build system
+ *
+ */
+
+@font-face {
+  font-family: 'Chunkfive';
+  src: url('./Chunkfive.otf') format('otf'),
+       url('./Chunkfive.woff') format('woff'),
+       url('./Chunkfive.ttf') format('ttf');
+}
+
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background-color: #eee;
+}
+
+
+#wrapper {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Open Sans', sans-serif;
+  padding-bottom: 100px;
+}
+
+
+h1, h2, h3 {
+  font-weight: 700;
+  font-style: bold;
+}
+
+
+h3 {
+  font-size: 32px;
+}
+
+
+main, .funcHeading {
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+}
+
+
+dl {
+  margin-bottom: 20px;
+}
+
+
+.feature, .contentsSidebar, .functionRef, a.categoryLink, h2.categoryBanner {
+  border-radius: 5px;
+}
+
+
+.contentsSidebar {
+  background-color: #3CB371;
+  width: 20%
+}
+
+.contentsSidebar a:hover {
+  background-color: #3c8371;
+}
+
+
+.apiData {
+  width: 80%;
+  height: 100%;
+}
+
+
+.sidebarList a, .sidebarList a:visited, .sidebarList a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+
+.catStart {
+  display: none;
+}
+
+
+.functionRef {
+  border: 1px solid grey;
+  margin: 10px;
+  padding-left: 10px;
+  background-color: white;
+}
+
+
+.functionRef:nth-of-type(1) {
+  margin-top: 0px;
+}
+
+
+.synonyms {
+  margin-top: 5px;
+}
+
+
+.sidebarList, .navUL, .paramTypes, .parameterList, .returnTypes, .synonymsList {
+  list-style: none;
+}
+
+
+.paramTypes, .paramTypes li, .returnTypes, .returnTypes li, .synonymsList, .synonymsList li {
+  display: inline;
+}
+
+
+.paramTypes li {
+  text-align: right;
+}
+
+
+.parameters h4 {
+  text-decoration: underline;
+  margin-bottom: 0;
+}
+
+
+.returnsStart {
+  font-weight: bold;
+}
+
+
+.usageCode {
+  margin-left: 20px;
+}
+
+
+.funcHeading {
+  justify-content: space-between;
+  border-bottom: 1px solid grey;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+
+.funcHeading h3 {
+  margin-bottom: 5px;
+}
+
+
+.categoryLink {
+  align-self: flex-end;
+  margin: 16px;
+}
+
+
+.pageHeading {
+  font-size: 48px;
+  text-align: center;
+  color: black;
+}
+
+
+#headerNav {
+  display: -ms-flex;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  border-bottom: 1px solid #2f4f4f;
+  font-family: 'Chunkfive';
+}
+
+
+h1 {
+  font-family: 'Chunkfive';
+}
+
+
+.navUL {
+  font-size: 32px;
+  text-align: right;
+}
+
+
+.navUL li {
+  flex: 1;
+}
+
+
+.navUL a {
+  text-decoration: none;
+  color: dodgerblue;
+}
+
+a.categoryLink {
+  font-family:"Open Sans", sans-serif;
+  text-decoration: none;
+  font-weight: bold; 
+  color: white;
+  padding: 5px;
+}
+
+
+h2.categoryBanner {
+  color: white;
+  text-align: center;
+  margin: 10px;
+  height: 40px;
+}
+
+
+h2.categoryBanner:first-of-type {
+  margin-top: 0;
+}
+
+
+.catArray {
+  background-color: #159818
+}
+
+
+.catDataTypes {
+  background-color: #cc317c;
+}
+
+
+.catDate {
+  background-color: #0052cc;
+}
+
+
+.catFunction {
+  background-color: #eb6420;
+}
+
+
+.catLogical {
+  background-color: #006b75;
+}
+
+
+.catMaths {
+  background-color: #2f4f4f;
+}
+
+
+.catObject {
+  background-color: #207de5;
+}
+
+
+.catString {
+  background-color: #fbca04;
+}
+
+
+.catTypes {
+  background-color: #00ced1;
+}
+
+
+.category {
+  margin-top: 32px;
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+
+h1 {
+  font-size: 48px;
+  font-weight: normal;
+  color: #2f4f4f;
+}
+
+.navHeading {
+  flex: 2;
+  margin-bottom: -150px;
+}
+
+.navHeading em {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+}
+
+#headerNav {
+  width: 100%;
+}
+
+footer {
+  font-weight: normal;
+  background-color: #2f4f4f;
+  color: white;
+  height: 100px;
+  width: 100%;
+  margin: 0;
+}
+
+#page {
+ min-height: 100%;
+ position: relative;
+}
+
+
+#footerWrapper {
+  bottom: 0;
+  left: 0;
+  padding-top: 15px;
+}
+
+#footerWrapper h1, #footerWrapper a, #footerWrapper a:visited {
+  color: white;
+  font-size: 24px;
+  text-decoration: none;
+  text-align: center;
+}
+
+#footerWrapper h1 {
+}
+
+@media (max-width: 650px) {
+  .contentsSidebar {
+    display: none;
+  }
+  .functionRef  {
+    border: none;
+  }
+}
+
+
+main.noflex {
+  display: block;
+}
+
+.feature {
+  background-color: white;
+  border: 1px solid grey;
+  padding: 15px;
+  margin: 15px;
+}
+
+.feature h2 {
+   font-family: 'Chunkfive', sans-serif;
+   font-weight: normal;
+   color: cornflowerblue;
+  border-bottom: 1px solid grey;
+} 
+.right {
+  text-align: right;
+}
+
+.getIt {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.getIt a, .getIt a:visited {
+  color: white;
+  text-decoration: none;
+  font-family: 'Chunkfive', sans-serif;
+  font-size: 24px;
+  background-color: green;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.helpme {
+  border: 1px dotted red;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: lightyellow;
+  padding: 20px;
+}
+
+.getInstructions {
+  text-align: center;
+}
