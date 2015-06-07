@@ -55,7 +55,7 @@ module.exports = (function() {
 
     return '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' + types.map(function(t) {
       var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
-      return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
+      return (shouldLink ? '<a class="typeLink" href="#' + t + '">' : '') +
              '<code class="returnType type">' + t + '</code>' +
              (shouldLink ? '</a>' : '');
     }).join('</li><li class="returnItem">') + '</li></ul></div>\n';
@@ -87,7 +87,7 @@ module.exports = (function() {
 
         return name + '<code>:</code> <ul class="paramTypes"><li class="paramsItem">' + types.map(function(t) {
           var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
-          return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
+          return (shouldLink ? '<a class="typeLink" href="#' + t + '">' : '') +
             '<code class="paramType type">' + t + '</code>' + (shouldLink ? '</a>' : '');
         }).join('</li><li class="paramsItem">') + '</li></ul>';
       }).join('</li><li class="param">') + '</li></ol></section>\n';
@@ -118,7 +118,9 @@ module.exports = (function() {
 
 
   var makeMarkdownRenderer = function(toLink, options) {
-    options = options || {};
+    options = Object.create(options || {});
+    options.toLink = toLink;
+
     var renderer = new marked.Renderer();
 
 

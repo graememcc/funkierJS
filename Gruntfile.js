@@ -77,7 +77,9 @@ module.exports = function(grunt) {
             preReplace: [{search: /TITLE/,   replace: 'funkierJS API: By Category'},
                          {search: /HEADING/, replace: 'funkierJS API: By Category'}],
             post: '<%= templateDir %>/html/post.html'
-          }
+          },
+
+          toLink: ['arrayLike', 'natural', 'objectLike', 'objectLikeOrNull', 'strictArrayLike', 'strictNatural']
         },
 
         additional: {

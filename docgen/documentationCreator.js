@@ -327,6 +327,10 @@ module.exports = (function() {
 
   var createRequestedHTML = function(byNameMarkdown, byCategoryMarkdown, collated, HTMLRequest) {
     var typesToLink = collated.getNames();
+    // XXX Hack: Don't link "any": it's a function name as well as the notion of a type!
+    if (typesToLink.indexOf('any') !== -1)
+      typesToLink.splice(typesToLink.indexOf('any'), 1);
+
     if (Array.isArray(HTMLRequest.toLink))
       typesToLink = typesToLink.concat(HTMLRequest.toLink);
 
