@@ -1315,7 +1315,7 @@ module.exports = (function() {
 
   var printParameters = function(parameters, result) {
     var printAParam = function(param, i, arr) {
-      result.push(param.name + ' ' + param.type.map(printAType).join('') + (i !== arr.length - 1 ? '  ' : ''));
+      result.push('`' + param.name + '` ' + param.type.map(printAType).join('') + (i !== arr.length - 1 ? '  ' : ''));
     };
     result.push('Parameters:  ');
     parameters.forEach(printAParam);
@@ -1455,22 +1455,23 @@ module.exports = (function() {
 
   var renderCategory = function(text, options) {
     var catName = text.slice('Category: '.length).trim();
+    var catClass = 'cat' + catName.replace(/\s\+/g, '');
 
     if (options.isCategory)
-      return '<p class="category">Category: <a class="categoryLink" href="#' + catName + '">' +
-             catName + '</a></p>\n';
+      return '<p class="category categoryBanner"><span class="catStart">Category: </span><a class="categoryLink ' + catClass +
+             '" href="#' + catName + '">' + catName + '</a></p>\n';
 
     if (options.categoryFile === undefined)
       throw new Error('Cannot link to category: no category file specified!');
 
-    return '<p class="category">Category: <a class="categoryLink" href="' + options.categoryFile + '#' +
-           catName + '">' + catName + '</a></p>\n';
+    return '<p class="category"><span class="catStart">Category: </span><a class="categoryLink ' + catClass +
+           '" href="' + options.categoryFile + '#' + catName + '">' + catName + '</a></p>\n';
   };
 
 
   var renderUsage = function(text) {
     text = text.slice('<strong>Usage:</strong> '.length).trim();
-    return '<p class="usage"><strong>Usage:</strong> <code class="usageCode">' + text.split('<code>')[1] + '</p>\n';
+    return '<p class="usage"><strong class="usageStart">Usage: </strong><code class="usageCode">' + text.split('<code>')[1] + '</p>\n';
   };
 
 
@@ -1480,7 +1481,7 @@ module.exports = (function() {
     text = text.slice('Returns: <code>'.length).trim();
     var types = text.split(/<\/code>(?: \| <code>)?/).filter(function(s) { return s !== ''; });
 
-    return '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' + types.map(function(t) {
+    return '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' + types.map(function(t) {
       var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
       return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
              '<code class="returnType type">' + t + '</code>' +
@@ -1493,7 +1494,7 @@ module.exports = (function() {
     text = text.slice('<em>Synonyms:</em> <code>'.length).trim();
     var names = text.split(/<\/code>(?: \| <code>)?/).filter(function(s) { return s !== ''; });
 
-    return '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList">' +
+    return '<div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList">' +
       names.map(function(n) {
         return '<li class="synonym"><code class="synonymName">' + n + '</code></li>';
       }).join('') + '</ul></div>\n';
@@ -1512,7 +1513,7 @@ module.exports = (function() {
         var remaining = line.slice(splitPoint + ' <code>'.length);
         var types = remaining.split(/<\/code>(?: \| <code>)?/).filter(function(s) { return s !== ''; });
 
-        return name + ': <ul class="paramTypes"><li class="paramsItem">' + types.map(function(t) {
+        return name + '<code>:</code> <ul class="paramTypes"><li class="paramsItem">' + types.map(function(t) {
           var shouldLink = links.indexOf(t.toLowerCase()) !== -1;
           return (shouldLink ? '<a class="typeLink" href="#' + t.toLowerCase() + '">' : '') +
             '<code class="paramType type">' + t + '</code>' + (shouldLink ? '</a>' : '');
@@ -1523,10 +1524,10 @@ module.exports = (function() {
 
   var renderParagraph = function(text, options) {
     if (/^See\s</.test(text))
-      return renderSeeAlso(text);
+      return (options.isCategory ? '' : '</div>') + renderSeeAlso(text);
 
     if (/^Category:\s/.test(text))
-      return renderCategory(text, options);
+      return renderCategory(text, options) + (options.isCategory ? '' : '</div>');
 
     if (/<strong>Usage:</.test(text))
       return renderUsage(text);
@@ -1556,10 +1557,11 @@ module.exports = (function() {
         var pre = categoryOpened ? '</section>\n' : '';
         categoryOpened = true;
         return pre + '<section class="categoryRef" id="' + text + '">\n' +
-               '<h2 class="categoryName">' + text + '</h2>\n';
+               '<h2 class="categoryName categoryBanner cat' + text+ '">' + text + '</h2>\n';
       } else if (level === 3) {
         return '<section class="functionRef" id="' + text + '">\n' +
-               '<h3 class="functionName">' + text + '</h3>\n';
+               '<div class="funcHeading"><h3 class="functionName">' + text + '</h3>' +
+               (options.isCategory ? '</div>' : '') + '\n';
       } else if (level === 4) {
         return '<section class="examples"><h4>' + text + '</h4>\n';
       } else {
@@ -1569,7 +1571,8 @@ module.exports = (function() {
 
 
     renderer.paragraph = function(text) {
-      return renderParagraph(text, options);
+      var result = renderParagraph(text, options);
+      return result;
     };
 
 
@@ -3067,7 +3070,7 @@ module.exports = (function() {
    *
    * Category: array
    *
-   * Parameter: needle: any,
+   * Parameter: needle: any
    * Parameter: haystack: arrayLike
    * Returns: array
    *
@@ -3100,7 +3103,7 @@ module.exports = (function() {
    *
    * Category: array
    *
-   * Parameter: needle: any,
+   * Parameter: needle: any
    * Parameter: haystack: arrayLike
    * Returns: array
    *
@@ -21653,7 +21656,7 @@ module.exports = (function() {
           return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : '');
         });
         types = types.join('');
-        verifyLine(param.name + ' ' + types + (i !== arr.length - 1 ? '  ' : ''));
+        verifyLine('`' + param.name + '` ' + types + (i !== arr.length - 1 ? '  ' : ''));
       });
       verifyLine('');
     };
@@ -21842,7 +21845,7 @@ module.exports = (function() {
 
     it('Encountering a <h2> produces a section tag containing the <h2>', function() {
       var text = '## foo ##';
-      var expected = '<section class="categoryRef" id="foo">\n<h2 class="categoryName">foo</h2>\n';
+      var expected = '<section class="categoryRef" id="foo">\n<h2 class="categoryName categoryBanner catfoo">foo</h2>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21850,7 +21853,7 @@ module.exports = (function() {
 
     it('Encountering a <h3> produces a section tag containing the <h3>', function() {
       var text = '### foo ###';
-      var expected = '<section class="functionRef" id="foo">\n<h3 class="functionName">foo</h3>\n';
+      var expected = '<section class="functionRef" id="foo">\n<div class="funcHeading"><h3 class="functionName">foo</h3>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21858,7 +21861,7 @@ module.exports = (function() {
 
     it('Synonym reference lines should be returned essentially unchanged', function() {
       var text = 'See <code>bar</code>';
-      var expected = '<p class="see">See <a class="synonymLink" href="#bar"><code class="synonymCode">bar</code>' +
+      var expected = '</div><p class="see">See <a class="synonymLink" href="#bar"><code class="synonymCode">bar</code>' +
                      '</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
@@ -21900,7 +21903,8 @@ module.exports = (function() {
     it('Renderer produces correct output when category encountered with category filename and no isCategory flag', function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html'});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#Foo">Foo</a></p>\n';
+      var expected = '<p class="category"><span class="catStart">Category: </span><a class="categoryLink catFoo" ' +
+                     'href="a.html#Foo">Foo</a></p>\n</div>';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21910,7 +21914,7 @@ module.exports = (function() {
       function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html', isCategory: false});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="a.html#Foo">Foo</a></p>\n';
+      var expected = '<p class="category"><span class="catStart">Category: </span><a class="categoryLink catFoo" href="a.html#Foo">Foo</a></p>\n</div>';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21920,7 +21924,7 @@ module.exports = (function() {
       function() {
       var renderer = makeMarkdownRenderer([], {categoryFile: 'a.html', isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
+      var expected = '<p class="category categoryBanner"><span class="catStart">Category: </span><a class="categoryLink catFoo" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21930,7 +21934,7 @@ module.exports = (function() {
       function() {
       var renderer = makeMarkdownRenderer([], {isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
+      var expected = '<p class="category categoryBanner"><span class="catStart">Category: </span><a class="categoryLink catFoo" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21940,7 +21944,7 @@ module.exports = (function() {
       function() {
       var renderer = makeMarkdownRenderer([], {isCategory: true});
       var text = 'Category: Foo';
-      var expected = '<p class="category">Category: <a class="categoryLink" href="#Foo">Foo</a></p>\n';
+      var expected = '<p class="category categoryBanner"><span class="catStart">Category: </span><a class="categoryLink catFoo" href="#Foo">Foo</a></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
     });
@@ -21948,7 +21952,7 @@ module.exports = (function() {
 
     it('Usage line rendered correctly', function() {
       var text = '**Usage:** `var result = arity(f);`';
-      var expected = '<p class="usage"><strong>Usage:</strong> ' +
+      var expected = '<p class="usage"><strong class="usageStart">Usage: </strong>' +
                      '<code class="usageCode">var result = arity(f);</code></p>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
@@ -21957,7 +21961,7 @@ module.exports = (function() {
 
     it('Synonyms lines rendered correctly (1)', function() {
       var text = '*Synonyms:* `foo`';
-      var expected = '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
+      var expected = '<div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym">' +
                      '<code class="synonymName">foo</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
@@ -21966,7 +21970,7 @@ module.exports = (function() {
 
     it('Synonyms lines rendered correctly (2)', function() {
       var text = '*Synonyms:* `foo` | `bar`';
-      var expected = '<div class="synonyms"><em>Synonyms:</em> <ul class="synonymsList"><li class="synonym">' +
+      var expected = '<div class="synonyms"><em class="synonymsStart">Synonyms: </em><ul class="synonymsList"><li class="synonym">' +
                      '<code class="synonymName">foo</code></li>' +
                      '<li class="synonym"><code class="synonymName">bar</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -21976,7 +21980,7 @@ module.exports = (function() {
 
     it('Return type rendered correctly when nothing linkable provided', function() {
       var text = 'Returns: `number`';
-      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+      var expected = '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' +
                      '<code class="returnType type">number</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
@@ -21986,7 +21990,7 @@ module.exports = (function() {
     it('Return type rendered correctly when linkables provided but don\'t match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string']});
       var text = 'Returns: `number`';
-      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+      var expected = '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' +
                      '<code class="returnType type">number</code></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
       expect(rendered).to.equal(expected);
@@ -21996,7 +22000,7 @@ module.exports = (function() {
     it('Return type rendered correctly when linkables provided and match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['number']});
       var text = 'Returns: `number`';
-      var expected = '<div class="returns">Returns: <ul class="returnTypes"><li class="returnItem">' +
+      var expected = '<div class="returns"><span class="returnsStart">Returns: </span><ul class="returnTypes"><li class="returnItem">' +
                      '<a class="typeLink" href="#number">' +
                      '<code class="returnType type">number</code></a></li></ul></div>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -22007,8 +22011,8 @@ module.exports = (function() {
     it('Return type rendered correctly when linkables provided and some match', function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string', 'Foo']});
       var text = 'Returns: `number` | `string` | `Foo`';
-      var expected = '<div class="returns">Returns: ' +
-                     '<ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code>' +
+      var expected = '<div class="returns"><span class="returnsStart">Returns: ' +
+                     '</span><ul class="returnTypes"><li class="returnItem"><code class="returnType type">number</code>' +
                      '</li><li class="returnItem"><a class="typeLink" href="#string">' +
                      '<code class="returnType type">string</code></a></li><li class="returnItem">' +
                      '<a class="typeLink" href="#foo"><code class="returnType type">Foo</code></a></li></ul></div>\n';
@@ -22020,7 +22024,7 @@ module.exports = (function() {
     it('Parameters rendered correctly when no linkables provided (1)', function() {
       var text = 'Parameters:  \nf `function`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
-                     '<ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem">' +
+                     '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">function</code></li></ul>' +
                      '</li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -22031,9 +22035,9 @@ module.exports = (function() {
     it('Parameters rendered correctly when no linkables provided (2)', function() {
       var text = 'Parameters:  \nf `function`  \ng `number`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
-                     '<ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem">' +
+                     '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">function</code></li></ul>' +
-                     '</li><li class="param">g: <ul class="paramTypes"><li class="paramsItem">' +
+                     '</li><li class="param">g<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">number</code></li></ul>' +
                      '</li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -22045,7 +22049,7 @@ module.exports = (function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string']});
       var text = 'Parameters:  \nf `function`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
-                     '<ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem">' +
+                     '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">function</code></li></ul>' +
                      '</li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -22057,7 +22061,7 @@ module.exports = (function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['string']});
       var text = 'Parameters:  \nf `string`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
-                     '<ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem">' +
+                     '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<a class="typeLink" href="#string">' +
                      '<code class="paramType type">string</code></a></li></ul></li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});
@@ -22069,9 +22073,9 @@ module.exports = (function() {
       var renderer = makeMarkdownRenderer([], {toLink: ['Bar']});
       var text = 'Parameters:  \nf `function`  \ng `Bar`';
       var expected = '<section class="parameters"><h4 class="parametersHeader">Parameters</h4>' +
-                     '<ol class="parameterList"><li class="param">f: <ul class="paramTypes"><li class="paramsItem">' +
+                     '<ol class="parameterList"><li class="param">f<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<code class="paramType type">function</code></li></ul>' +
-                     '</li><li class="param">g: <ul class="paramTypes"><li class="paramsItem">' +
+                     '</li><li class="param">g<code>:</code> <ul class="paramTypes"><li class="paramsItem">' +
                      '<a class="typeLink" href="#bar"><code class="paramType type">Bar' +
                      '</code></a></li></ul></li></ol></section>\n';
       var rendered = marked(text, {renderer: renderer});

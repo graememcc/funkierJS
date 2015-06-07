@@ -1477,7 +1477,7 @@ module.exports = (function() {
    *
    * Category: array
    *
-   * Parameter: needle: any,
+   * Parameter: needle: any
    * Parameter: haystack: arrayLike
    * Returns: array
    *
@@ -1510,7 +1510,7 @@ module.exports = (function() {
    *
    * Category: array
    *
-   * Parameter: needle: any,
+   * Parameter: needle: any
    * Parameter: haystack: arrayLike
    * Returns: array
    *

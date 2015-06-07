@@ -6,7 +6,7 @@ Category: DataTypes
 **Usage:** `var result = Err(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Just`
 
@@ -22,7 +22,7 @@ Category: DataTypes
 **Usage:** `var result = Just(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Just`
 
@@ -57,7 +57,7 @@ Category: DataTypes
 **Usage:** `var result = Ok(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Ok`
 
@@ -73,8 +73,8 @@ Category: DataTypes
 **Usage:** `var result = Pair(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `Pair`
 
@@ -113,8 +113,8 @@ Category: Maths
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -132,8 +132,8 @@ Category: Logical
 **Usage:** `var result = and(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -148,8 +148,8 @@ Category: Logical
 **Usage:** `var result = andPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -179,8 +179,8 @@ Category: Array
 **Usage:** `var result = append(value, arr);`
 
 Parameters:  
-value `any`  
-arr `arrayLike`
+`value` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -202,8 +202,8 @@ Category: Function
 **Usage:** `var result = apply(args, f);`
 
 Parameters:  
-args `array`  
-f `function`
+`args` `array`  
+`f` `function`
 
 Returns: `any`
 
@@ -228,7 +228,7 @@ Category: Function
 **Usage:** `var result = arityOf(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `number`
 
@@ -246,7 +246,7 @@ Category: DataTypes
 **Usage:** `var result = asArray(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `array`
 
@@ -265,8 +265,8 @@ Category: Function
 **Usage:** `var result = bind(ctx, f);`
 
 Parameters:  
-ctx `objectlike`  
-f `function`
+`ctx` `objectlike`  
+`f` `function`
 
 Returns: `function`
 
@@ -324,9 +324,9 @@ Category: Function
 **Usage:** `var result = bindWithContextAndArity(n, ctx, f);`
 
 Parameters:  
-n `strictNatural`  
-ctx `objectlike`  
-f `function`
+`n` `strictNatural`  
+`ctx` `objectlike`  
+`f` `function`
 
 Returns: `function`
 
@@ -388,8 +388,8 @@ Category: Maths
 **Usage:** `var result = bitwiseAnd(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -404,7 +404,7 @@ Category: Maths
 **Usage:** `var result = bitwiseNot(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `number`
 
@@ -419,8 +419,8 @@ Category: Maths
 **Usage:** `var result = bitwiseOr(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -435,8 +435,8 @@ Category: Maths
 **Usage:** `var result = bitwiseXor(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -451,7 +451,7 @@ Category: Object
 **Usage:** `var result = callProp(prop);`
 
 Parameters:  
-prop `string`
+`prop` `string`
 
 Returns: `function`
 
@@ -469,8 +469,8 @@ Category: Object
 **Usage:** `var result = callPropWithArity(prop, arity);`
 
 Parameters:  
-prop `string`  
-arity `natural`
+`prop` `string`  
+`arity` `natural`
 
 Returns: `function`
 
@@ -493,7 +493,7 @@ Category: String
 **Usage:** `var result = chr(n);`
 
 Parameters:  
-n `number`
+`n` `number`
 
 Returns: `string`
 
@@ -511,7 +511,7 @@ Category: Object
 **Usage:** `var result = clone(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -531,8 +531,8 @@ Category: Function
 **Usage:** `var result = compose(f, g);`
 
 Parameters:  
-f `function`  
-g `function`
+`f` `function`  
+`g` `function`
 
 Returns: `function`
 
@@ -559,7 +559,7 @@ Category: Types
 **Usage:** `var result = composeMany(fns);`
 
 Parameters:  
-fns `array`
+`fns` `array`
 
 Returns: `function`
 
@@ -582,9 +582,9 @@ Category: Function
 **Usage:** `var result = composeOn(argCount, f, g);`
 
 Parameters:  
-argCount `positive`  
-f `function`  
-g `function`
+`argCount` `positive`  
+`f` `function`  
+`g` `function`
 
 Returns: `function`
 
@@ -614,8 +614,8 @@ Category: Array
 **Usage:** `var result = concat(arr1, arr2);`
 
 Parameters:  
-arr1 `arrayLike`  
-arr2 `arrayLike`
+`arr1` `arrayLike`  
+`arr2` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -637,8 +637,8 @@ Category: Function
 **Usage:** `var result = constant(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `any`
 
@@ -655,7 +655,7 @@ Category: Function
 **Usage:** `var result = constant0(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `function`
 
@@ -671,7 +671,7 @@ Category: Array
 **Usage:** `var result = copy(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -690,7 +690,7 @@ Category: Object
 **Usage:** `var result = createObject(protoObject);`
 
 Parameters:  
-protoObject `objectLike`
+`protoObject` `objectLike`
 
 Returns: `object`
 
@@ -710,8 +710,8 @@ Category: Object
 **Usage:** `var result = createObjectWithProps(protoObject, descriptorsObject);`
 
 Parameters:  
-protoObject `objectLike`  
-descriptorsObject `object`
+`protoObject` `objectLike`  
+`descriptorsObject` `object`
 
 Returns: `object`
 
@@ -732,9 +732,9 @@ Category: Object
 **Usage:** `var result = createProp(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -759,7 +759,7 @@ Category: Function
 **Usage:** `var result = curry(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -813,7 +813,7 @@ Category: Object
 **Usage:** `var result = curryOwn(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -839,8 +839,8 @@ Category: Function
 **Usage:** `var result = curryWithArity(n, f);`
 
 Parameters:  
-n `strictNatural`  
-f `function`
+`n` `strictNatural`  
+`f` `function`
 
 Returns: `function`
 
@@ -903,8 +903,8 @@ Category: Types
 **Usage:** `var result = deepEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -929,8 +929,8 @@ Category: Object
 **Usage:** `var result = defineProperties(descriptors, o);`
 
 Parameters:  
-descriptors `object`  
-o `objectLike`
+`descriptors` `object`  
+`o` `objectLike`
 
 Returns: `objectLike`
 
@@ -950,9 +950,9 @@ Category: Object
 **Usage:** `var result = defineProperty(prop, descriptor, o);`
 
 Parameters:  
-prop `string`  
-descriptor `object`  
-o `objectLike`
+`prop` `string`  
+`descriptor` `object`  
+`o` `objectLike`
 
 Returns: `objectLike`
 
@@ -972,8 +972,8 @@ Category: Object
 **Usage:** `var result = deleteProp(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -994,7 +994,7 @@ Category: Object
 **Usage:** `var result = descriptors(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -1013,8 +1013,8 @@ Category: Maths
 **Usage:** `var result = div(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -1029,8 +1029,8 @@ Category: Maths
 **Usage:** `var result = divide(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -1045,8 +1045,8 @@ Category: Array
 **Usage:** `var result = drop(count, arr);`
 
 Parameters:  
-count `number`  
-arr `arrayLike`
+`count` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -1064,8 +1064,8 @@ Category: Array
 **Usage:** `var result = dropWhile(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -1087,8 +1087,8 @@ Category: Array
 **Usage:** `each(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
 returns undefined.
@@ -1108,9 +1108,9 @@ Category: DataTypes
 **Usage:** `var result = either(f1, f2, r);`
 
 Parameters:  
-f1 `function`  
-f2 `function`  
-r `Result`
+`f1` `function`  
+`f2` `function`  
+`r` `Result`
 
 Returns: `function`
 
@@ -1137,8 +1137,8 @@ Category: Array
 **Usage:** `var result = element(val, arr);`
 
 Parameters:  
-val `any`  
-arr `arrayLike`
+`val` `any`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -1156,8 +1156,8 @@ Category: Array
 **Usage:** `var result = elementWith(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -1180,8 +1180,8 @@ Category: Types
 **Usage:** `var result = equals(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -1196,7 +1196,7 @@ Category: Maths
 **Usage:** `var result = even(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `boolean`
 
@@ -1214,8 +1214,8 @@ Category: Array
 **Usage:** `var result = every(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -1242,8 +1242,8 @@ Category: Maths
 **Usage:** `var result = exp(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -1258,8 +1258,8 @@ Category: Object
 **Usage:** `var result = extend(source, dest);`
 
 Parameters:  
-source `objectLike`  
-dest `objectLike`
+`source` `objectLike`  
+`dest` `objectLike`
 
 Returns: `objectLike`
 
@@ -1278,8 +1278,8 @@ Category: Object
 **Usage:** `var result = extendOwn(source, dest);`
 
 Parameters:  
-source `objectLike`  
-dest `objectLike`
+`source` `objectLike`  
+`dest` `objectLike`
 
 Returns: `objectLike`
 
@@ -1302,8 +1302,8 @@ Category: Object
 **Usage:** `var result = extract(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `object`
+`prop` `string`  
+`obj` `object`
 
 Returns: `any`
 
@@ -1320,9 +1320,9 @@ Category: Object
 **Usage:** `var result = extractOrDefault(prop, default, obj);`
 
 Parameters:  
-prop `string`  
-default `any`  
-obj `object`
+`prop` `string`  
+`default` `any`  
+`obj` `object`
 
 Returns: `any`
 
@@ -1341,8 +1341,8 @@ Category: Array
 **Usage:** `var result = filter(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -1367,8 +1367,8 @@ Category: String
 **Usage:** `var result = firstMatch(r, s);`
 
 Parameters:  
-r `Regexp`  
-s `string`
+`r` `Regexp`  
+`s` `string`
 
 Returns: `object` | `null`
 
@@ -1397,9 +1397,9 @@ Category: String
 **Usage:** `var result = firstMatchFrom(r, index, s);`
 
 Parameters:  
-r `Regexp`  
-index `natural`  
-s `string`
+`r` `Regexp`  
+`index` `natural`  
+`s` `string`
 
 Returns: `object` | `null`
 
@@ -1429,7 +1429,7 @@ Category: Array
 **Usage:** `var result = flatten(arr);`
 
 Parameters:  
-arr `array`
+`arr` `array`
 
 Returns: `array`
 
@@ -1447,8 +1447,8 @@ Category: Array
 **Usage:** `var result = flattenMap(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -1472,7 +1472,7 @@ Category: Function
 **Usage:** `var result = flip(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -1495,8 +1495,8 @@ Category: Function
 **Usage:** `var result = fmap(f, g);`
 
 Parameters:  
-f `function`  
-g `any`
+`f` `function`  
+`g` `any`
 
 Returns: `any`
 
@@ -1522,9 +1522,9 @@ Category: Array
 **Usage:** `var result = foldl(f, initial, arr);`
 
 Parameters:  
-f `function`  
-initial `any`  
-arr `arrayLike`
+`f` `function`  
+`initial` `any`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -1551,8 +1551,8 @@ Category: Array
 **Usage:** `var result = foldl1(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -1580,9 +1580,9 @@ Category: Array
 **Usage:** `var result = foldr(f, initial, arr);`
 
 Parameters:  
-f `function`  
-initial `any`  
-arr `arrayLike`
+`f` `function`  
+`initial` `any`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -1609,8 +1609,8 @@ Category: Array
 **Usage:** `var result = foldr1(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -1638,7 +1638,7 @@ Category: DataTypes
 **Usage:** `var result = fst(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `any`
 
@@ -1665,7 +1665,7 @@ Category: Date
 **Usage:** `var result = getDayOfMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1682,7 +1682,7 @@ Category: Date
 **Usage:** `var result = getDayOfWeek(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1699,7 +1699,7 @@ Category: DataTypes
 **Usage:** `var result = getErrValue(e);`
 
 Parameters:  
-e `Err`
+`e` `Err`
 
 Returns: `any`
 
@@ -1715,7 +1715,7 @@ Category: Date
 **Usage:** `var result = getFullYear(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1732,7 +1732,7 @@ Category: Date
 **Usage:** `var result = getHours(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1749,8 +1749,8 @@ Category: Array
 **Usage:** `var result = getIndex(index, arr);`
 
 Parameters:  
-index `number`  
-arr `arrayLike`
+`index` `number`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -1766,7 +1766,7 @@ Category: DataTypes
 **Usage:** `var result = getJustValue(j);`
 
 Parameters:  
-j `Just`
+`j` `Just`
 
 Returns: `any`
 
@@ -1782,7 +1782,7 @@ Category: Date
 **Usage:** `var result = getMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1799,7 +1799,7 @@ Category: Date
 **Usage:** `var result = getMinutes(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1816,7 +1816,7 @@ Category: Date
 **Usage:** `var result = getMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1833,7 +1833,7 @@ Category: DataTypes
 **Usage:** `var result = getOkValue(o);`
 
 Parameters:  
-o `Ok`
+`o` `Ok`
 
 Returns: `any`
 
@@ -1849,8 +1849,8 @@ Category: Object
 **Usage:** `var result = getOwnPropertyDescriptor(prop, o);`
 
 Parameters:  
-prop `string`  
-o `objectLike`
+`prop` `string`  
+`o` `objectLike`
 
 Returns: `object`
 
@@ -1870,7 +1870,7 @@ Category: Object
 **Usage:** `var result = getOwnPropertyNames(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -1888,7 +1888,7 @@ Category: Date
 **Usage:** `var result = getSeconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1905,7 +1905,7 @@ Category: Date
 **Usage:** `var result = getTimezoneOffset(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1918,7 +1918,7 @@ Category: Types
 **Usage:** `var result = getType(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `string`
 
@@ -1934,7 +1934,7 @@ Category: Date
 **Usage:** `var result = getUTCDayOfMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1947,7 +1947,7 @@ Category: Date
 **Usage:** `var result = getUTCDayOfWeek(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1960,7 +1960,7 @@ Category: Date
 **Usage:** `var result = getUTCFullYear(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1973,7 +1973,7 @@ Category: Date
 **Usage:** `var result = getUTCHours(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1986,7 +1986,7 @@ Category: Date
 **Usage:** `var result = getUTCMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1999,7 +1999,7 @@ Category: Date
 **Usage:** `var result = getUTCMinutes(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -2012,7 +2012,7 @@ Category: Date
 **Usage:** `var result = getUTCMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -2025,7 +2025,7 @@ Category: Date
 **Usage:** `var result = getUTCSeconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -2040,8 +2040,8 @@ Category: Maths
 **Usage:** `var result = greaterThan(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -2058,8 +2058,8 @@ Category: Maths
 **Usage:** `var result = greaterThanEqual(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -2080,8 +2080,8 @@ Category: Object
 **Usage:** `var result = hasOwnProperty(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -2099,8 +2099,8 @@ Category: Object
 **Usage:** `var result = hasProperty(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -2120,7 +2120,7 @@ Category: Array
 **Usage:** `var result = head(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -2136,7 +2136,7 @@ Category: Types
 **Usage:** `var result = id(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `any`
 
@@ -2151,7 +2151,7 @@ Category: Array
 **Usage:** `var result = init(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -2170,7 +2170,7 @@ Category: Array
 **Usage:** `var result = inits(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -2187,8 +2187,8 @@ Category: Object
 **Usage:** `var result = instanceOf(constructor, obj);`
 
 Parameters:  
-constructor `function`  
-obj `objectLike`
+`constructor` `function`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -2206,8 +2206,8 @@ Category: Array
 **Usage:** `var result = intersperse(val, arr);`
 
 Parameters:  
-val `any`  
-arr `arrayLike`
+`val` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -2229,8 +2229,8 @@ Category: Types
 **Usage:** `var result = is(type, value);`
 
 Parameters:  
-type `string`  
-value `any`
+`type` `string`  
+`value` `any`
 
 Returns: `boolean`
 
@@ -2246,7 +2246,7 @@ Category: Types
 **Usage:** `var result = isArray(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2261,7 +2261,7 @@ Category: Types
 **Usage:** `var result = isBoolean(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2276,7 +2276,7 @@ Category: Array
 **Usage:** `var result = isEmpty(arr);`
 
 Parameters:  
-arr `arraLike`
+`arr` `arraLike`
 
 Returns: `boolean`
 
@@ -2293,7 +2293,7 @@ Category: DataTypes
 **Usage:** `var result = isErr(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2308,7 +2308,7 @@ Category: DataTypes
 **Usage:** `var result = isJust(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2323,7 +2323,7 @@ Category: DataTypes
 **Usage:** `var result = isMaybe(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2338,7 +2338,7 @@ Category: DataTypes
 **Usage:** `var result = isNothing(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2353,7 +2353,7 @@ Category: Types
 **Usage:** `var result = isNull(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2368,7 +2368,7 @@ Category: Types
 **Usage:** `var result = isNumber(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2383,7 +2383,7 @@ Category: Types
 **Usage:** `var result = isObject(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2398,7 +2398,7 @@ Category: DataTypes
 **Usage:** `var result = isOk(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2413,7 +2413,7 @@ Category: DataTypes
 **Usage:** `var result = isPair(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2428,8 +2428,8 @@ Category: Object
 **Usage:** `var result = isPrototypeOf(protoObject, obj);`
 
 Parameters:  
-protoObject `objectLike`  
-obj `objectLike`
+`protoObject` `objectLike`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -2447,7 +2447,7 @@ Category: Types
 **Usage:** `var result = isRealObject(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2463,7 +2463,7 @@ Category: DataTypes
 **Usage:** `var result = isResult(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2478,7 +2478,7 @@ Category: Types
 **Usage:** `var result = isString(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2493,7 +2493,7 @@ Category: Types
 **Usage:** `var result = isUndefined(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -2508,8 +2508,8 @@ Category: Array
 **Usage:** `var result = join(separator, arr);`
 
 Parameters:  
-separator `any`  
-arr `array`
+`separator` `any`  
+`arr` `array`
 
 Returns: `string`
 
@@ -2527,7 +2527,7 @@ Category: Object
 **Usage:** `var result = keyValues(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -2546,7 +2546,7 @@ Category: Object
 **Usage:** `var result = keys(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -2563,7 +2563,7 @@ Category: Array
 **Usage:** `var result = last(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -2579,8 +2579,8 @@ Category: Maths
 **Usage:** `var result = leftShift(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2595,7 +2595,7 @@ Category: Array
 **Usage:** `var result = length(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -2612,8 +2612,8 @@ Category: Maths
 **Usage:** `var result = lessThan(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -2630,8 +2630,8 @@ Category: Maths
 **Usage:** `var result = lessThanEqual(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -2646,8 +2646,8 @@ Category: Maths
 **Usage:** `var result = log(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2669,7 +2669,7 @@ Category: Date
 **Usage:** `var result = makeDateFromMilliseconds(milliseconds);`
 
 Parameters:  
-milliseconds `number`
+`milliseconds` `number`
 
 Returns: `Date`
 
@@ -2686,7 +2686,7 @@ Category: Date
 **Usage:** `var result = makeDateFromString(dateString);`
 
 Parameters:  
-dateString `string`
+`dateString` `string`
 
 Returns: `Date`
 
@@ -2703,9 +2703,9 @@ Category: Date
 **Usage:** `var result = makeDayDate(year, month, day);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`
+`year` `number`  
+`month` `number`  
+`day` `number`
 
 Returns: `Date`
 
@@ -2722,10 +2722,10 @@ Category: Date
 **Usage:** `var result = makeHourDate(year, month, day, hour);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`
 
 Returns: `Date`
 
@@ -2742,7 +2742,7 @@ Category: DataTypes
 **Usage:** `var result = makeMaybeReturner(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2770,13 +2770,13 @@ Category: Date
 **Usage:** `var result = makeMillisecondDate(year, month, day, hour, minute, second, millisecond);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`  
-second `number`  
-millisecond `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`  
+`second` `number`  
+`millisecond` `number`
 
 Returns: `Date`
 
@@ -2794,11 +2794,11 @@ Category: Date
 **Usage:** `var result = makeMinuteDate(year, month, day, hour, minute);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`
 
 Returns: `Date`
 
@@ -2815,8 +2815,8 @@ Category: Date
 **Usage:** `var result = makeMonthDate(year, month);`
 
 Parameters:  
-year `number`  
-month `number`
+`year` `number`  
+`month` `number`
 
 Returns: `Date`
 
@@ -2833,7 +2833,7 @@ Category: DataTypes
 **Usage:** `var result = makeResultReturner(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2861,12 +2861,12 @@ Category: Date
 **Usage:** `var result = makeSecondDate(year, month, day, hour, minute, second);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`  
-second `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`  
+`second` `number`
 
 Returns: `Date`
 
@@ -2883,8 +2883,8 @@ Category: Array
 **Usage:** `var result = map(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -2905,8 +2905,8 @@ Category: String
 **Usage:** `var result = matches(r, s);`
 
 Parameters:  
-r `Regexp`  
-s `string`
+`r` `Regexp`  
+`s` `string`
 
 Returns: `array`
 
@@ -2937,9 +2937,9 @@ Category: String
 **Usage:** `var result = matchesFrom(r, index, s);`
 
 Parameters:  
-r `Regexp`  
-index `number`  
-s `string`
+`r` `Regexp`  
+`index` `number`  
+`s` `string`
 
 Returns: `array`
 
@@ -2971,8 +2971,8 @@ Category: Maths
 **Usage:** `var result = max(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2987,7 +2987,7 @@ Category: Array
 **Usage:** `var result = maximum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -3015,8 +3015,8 @@ Category: Object
 **Usage:** `var result = maybeExtract(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `object`
+`prop` `string`  
+`obj` `object`
 
 Returns: `Maybe`
 
@@ -3047,8 +3047,8 @@ Category: Maths
 **Usage:** `var result = min(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3063,7 +3063,7 @@ Category: Array
 **Usage:** `var result = minimum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -3084,9 +3084,9 @@ Category: Object
 **Usage:** `var result = modify(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3113,8 +3113,8 @@ Category: Maths
 **Usage:** `var result = multiply(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3129,7 +3129,7 @@ Category: Logical
 **Usage:** `var result = not(b);`
 
 Parameters:  
-b `boolean`
+`b` `boolean`
 
 Returns: `boolean`
 
@@ -3146,8 +3146,8 @@ Category: Types
 **Usage:** `var result = notEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -3165,7 +3165,7 @@ Category: Logical
 **Usage:** `var result = notPred(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -3191,7 +3191,7 @@ Category: Array
 **Usage:** `var result = nub(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -3211,8 +3211,8 @@ Category: Array
 **Usage:** `var result = nubWith(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -3239,7 +3239,7 @@ Category: Function
 **Usage:** `var result = objectCurry(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -3298,8 +3298,8 @@ Category: Function
 **Usage:** `var result = objectCurryWithArity(n, f);`
 
 Parameters:  
-n `strictNatural`  
-f `function`
+`n` `strictNatural`  
+`f` `function`
 
 Returns: `function`
 
@@ -3361,8 +3361,8 @@ Category: Array
 **Usage:** `var result = occurrences(needle, haystack);`
 
 Parameters:  
-needle `any` | ``  
-haystack `arrayLike`
+`needle` `any`  
+`haystack` `arrayLike`
 
 Returns: `array`
 
@@ -3380,8 +3380,8 @@ Category: Array
 **Usage:** `var result = occurrencesWith(needle, haystack);`
 
 Parameters:  
-needle `any` | ``  
-haystack `arrayLike`
+`needle` `any`  
+`haystack` `arrayLike`
 
 Returns: `array`
 
@@ -3406,7 +3406,7 @@ Category: Maths
 **Usage:** `var result = odd(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `boolean`
 
@@ -3422,8 +3422,8 @@ Category: Logical
 **Usage:** `var result = or(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -3438,8 +3438,8 @@ Category: Logical
 **Usage:** `var result = orPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -3466,7 +3466,7 @@ Category: String
 **Usage:** `ord(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to `toCharCode(0, s)`.
 
@@ -3479,7 +3479,7 @@ Category: Maths
 **Usage:** `var result = parseInt(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `number`
 
@@ -3501,7 +3501,7 @@ Category: Function
 **Usage:** `var result = permuteLeft(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -3528,7 +3528,7 @@ Category: Function
 **Usage:** `var result = permuteRight(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -3556,8 +3556,8 @@ Category: Function
 **Usage:** `var result = post(wrappingFunction, f);`
 
 Parameters:  
-wrappingFunction `function`  
-f `function`
+`wrappingFunction` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -3584,8 +3584,8 @@ Category: Function
 **Usage:** `var result = pre(wrappingFunction, f);`
 
 Parameters:  
-wrappingFunction `function`  
-f `function`
+`wrappingFunction` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -3612,8 +3612,8 @@ Category: Array
 **Usage:** `var result = prepend(value, arr);`
 
 Parameters:  
-value `any`  
-arr `arrayLike`
+`value` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -3635,7 +3635,7 @@ Category: Array
 **Usage:** `var result = product(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -3654,8 +3654,8 @@ Category: Array
 **Usage:** `var result = range(a, b);`
 
 Parameters:  
-a `number`  
-b `number`
+`a` `number`  
+`b` `number`
 
 Returns: `array`
 
@@ -3678,9 +3678,9 @@ Category: Array
 **Usage:** `var result = rangeStride(a, stride, b);`
 
 Parameters:  
-a `number`  
-stride `number`  
-b `number`
+`a` `number`  
+`stride` `number`  
+`b` `number`
 
 Returns: `array`
 
@@ -3712,8 +3712,8 @@ Category: String
 **Usage:** `var result = regExpSplit(delimiter, s);`
 
 Parameters:  
-delimiter `RegExp`  
-s `string`
+`delimiter` `RegExp`  
+`s` `string`
 
 Returns: `array`
 
@@ -3742,9 +3742,9 @@ Category: String
 **Usage:** `var result = regExpSplitMax(delimiter, limit, s);`
 
 Parameters:  
-delimiter `RegExp`  
-limit `natural`  
-s `string`
+`delimiter` `RegExp`  
+`limit` `natural`  
+`s` `string`
 
 Returns: `array`
 
@@ -3766,8 +3766,8 @@ Category: Maths
 **Usage:** `var result = rem(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3782,8 +3782,8 @@ Category: Array
 **Usage:** `var result = replicate(length, arr);`
 
 Parameters:  
-length `natural`  
-arr `arrayLike`
+`length` `natural`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -3799,7 +3799,7 @@ Category: Array
 **Usage:** `var result = reverse(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -3816,8 +3816,8 @@ Category: Maths
 **Usage:** `var result = rightShift(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3832,8 +3832,8 @@ Category: Maths
 **Usage:** `var result = rightShiftZero(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3856,9 +3856,9 @@ Category: Object
 **Usage:** `var result = safeCreateProp(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `Maybe`
 
@@ -3887,8 +3887,8 @@ Category: Object
 **Usage:** `var result = safeDeleteProp(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3913,9 +3913,9 @@ Category: Object
 **Usage:** `var result = safeModify(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3946,9 +3946,9 @@ Category: Object
 **Usage:** `var result = safeSet(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `Maybe`
 
@@ -3982,8 +3982,8 @@ Category: Function
 **Usage:** `var result = sectionLeft(f, x);`
 
 Parameters:  
-f `function`  
-x `any`
+`f` `function`  
+`x` `any`
 
 Returns: `function`
 
@@ -4005,8 +4005,8 @@ Category: Function
 **Usage:** `var result = sectionRight(f, x);`
 
 Parameters:  
-f `function`  
-x `any`
+`f` `function`  
+`x` `any`
 
 Returns: `function`
 
@@ -4029,9 +4029,9 @@ Category: Object
 **Usage:** `var result = set(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -4056,8 +4056,8 @@ Category: Date
 **Usage:** `var result = setDayOfMonth(day, d);`
 
 Parameters:  
-day `number`  
-d `Date`
+`day` `number`  
+`d` `Date`
 
 Returns: `Date`
 
@@ -4076,8 +4076,8 @@ Category: Date
 **Usage:** `var result = setFullYear(year, d);`
 
 Parameters:  
-year `number`  
-d `Date`
+`year` `number`  
+`d` `Date`
 
 Returns: `Date`
 
@@ -4096,8 +4096,8 @@ Category: Date
 **Usage:** `var result = setHours(hours, d);`
 
 Parameters:  
-hours `number`  
-d `Date`
+`hours` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4116,8 +4116,8 @@ Category: Date
 **Usage:** `var result = setMilliseconds(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4136,8 +4136,8 @@ Category: Date
 **Usage:** `var result = setMinutes(minutes, d);`
 
 Parameters:  
-minutes `number`  
-d `Date`
+`minutes` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4156,8 +4156,8 @@ Category: Date
 **Usage:** `var result = setMonth(month, d);`
 
 Parameters:  
-month `number`  
-d `Date`
+`month` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4178,8 +4178,8 @@ Category: Date
 **Usage:** `var result = setSeconds(seconds, d);`
 
 Parameters:  
-seconds `number`  
-d `Date`
+`seconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4198,8 +4198,8 @@ Category: Date
 **Usage:** `var result = setTimeSinceEpoch(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4217,8 +4217,8 @@ Category: Date
 **Usage:** `var result = setUTCDayOfMonth(day, d);`
 
 Parameters:  
-day `number`  
-d `Date`
+`day` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4233,8 +4233,8 @@ Category: Date
 **Usage:** `var result = setUTCFullYear(year, d);`
 
 Parameters:  
-year `number`  
-d `Date`
+`year` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4249,8 +4249,8 @@ Category: Date
 **Usage:** `var result = setUTCHours(hours, d);`
 
 Parameters:  
-hours `number`  
-d `Date`
+`hours` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4265,8 +4265,8 @@ Category: Date
 **Usage:** `var result = setUTCMilliseconds(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4282,8 +4282,8 @@ Category: Date
 **Usage:** `var result = setUTCMinutes(minutes, d);`
 
 Parameters:  
-minutes `number`  
-d `Date`
+`minutes` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4298,8 +4298,8 @@ Category: Date
 **Usage:** `var result = setUTCMonth(month, d);`
 
 Parameters:  
-month `number`  
-d `Date`
+`month` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4314,8 +4314,8 @@ Category: Date
 **Usage:** `var result = setUTCSeconds(seconds, d);`
 
 Parameters:  
-seconds `number`  
-d `Date`
+`seconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -4333,9 +4333,9 @@ Category: Array
 **Usage:** `var result = slice(from, to, arr);`
 
 Parameters:  
-from `number`  
-to `number`  
-arr `arrayLike`
+`from` `number`  
+`to` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4356,7 +4356,7 @@ Category: DataTypes
 **Usage:** `var result = snd(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `any`
 
@@ -4375,8 +4375,8 @@ Category: Array
 **Usage:** `var result = some(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -4401,7 +4401,7 @@ Category: Array
 **Usage:** `var result = sort(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4418,8 +4418,8 @@ Category: Array
 **Usage:** `var result = sortWith(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4443,8 +4443,8 @@ Category: String
 **Usage:** `var result = split(delimiter, s);`
 
 Parameters:  
-delimiter `string`  
-s `string`
+`delimiter` `string`  
+`s` `string`
 
 Returns: `array`
 
@@ -4473,9 +4473,9 @@ Category: String
 **Usage:** `var result = splitMax(delimiter, limit, s);`
 
 Parameters:  
-delimiter `string`  
-limit `natural`  
-s `string`
+`delimiter` `string`  
+`limit` `natural`  
+`s` `string`
 
 Returns: `array`
 
@@ -4500,8 +4500,8 @@ Category: Types
 **Usage:** `var result = strictEquals(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4521,8 +4521,8 @@ Category: Types
 **Usage:** `var result = strictNotEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4542,8 +4542,8 @@ Category: Maths
 **Usage:** `var result = stringToInt(base, s);`
 
 Parameters:  
-base `number`  
-s `string`
+`base` `number`  
+`s` `string`
 
 Returns: `number`
 
@@ -4560,8 +4560,8 @@ Category: Maths
 **Usage:** `var result = subtract(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -4579,7 +4579,7 @@ Category: Array
 **Usage:** `var result = sum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -4598,7 +4598,7 @@ Category: Array
 **Usage:** `var result = tail(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4617,7 +4617,7 @@ Category: Array
 **Usage:** `var result = tails(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4634,8 +4634,8 @@ Category: Array
 **Usage:** `var result = take(count, arr);`
 
 Parameters:  
-count `number`  
-arr `arrayLike`
+`count` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4653,8 +4653,8 @@ Category: Array
 **Usage:** `var result = takeWhile(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -4679,8 +4679,8 @@ Category: String
 **Usage:** `var result = test(regexp, s);`
 
 Parameters:  
-regexp `RegExp`  
-s `string`
+`regexp` `RegExp`  
+`s` `string`
 
 Returns: `boolean`
 
@@ -4703,8 +4703,8 @@ Category: Maths
 **Usage:** `var result = toBaseAndString(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -4720,8 +4720,8 @@ Category: String
 **Usage:** `var result = toCharCode(i, s);`
 
 Parameters:  
-i `number`  
-s `string`
+`i` `number`  
+`s` `string`
 
 Returns: `number`
 
@@ -4737,7 +4737,7 @@ Category: Date
 **Usage:** `var result = toDateString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -4754,7 +4754,7 @@ Category: Date
 **Usage:** `var result = toEpochMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -4767,8 +4767,8 @@ Category: Maths
 **Usage:** `var result = toExponential(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -4785,8 +4785,8 @@ Category: Maths
 **Usage:** `var result = toFixed(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -4803,7 +4803,7 @@ Category: Date
 **Usage:** `var result = toISOString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -4820,7 +4820,7 @@ Category: Date
 **Usage:** `var result = toLocaleDateString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -4833,7 +4833,7 @@ Category: String
 **Usage:** `var result = toLocaleLowerCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4849,7 +4849,7 @@ Category: String
 **Usage:** `var result = toLocaleString(val);`
 
 Parameters:  
-val `any`
+`val` `any`
 
 Returns: `string`
 
@@ -4864,7 +4864,7 @@ Category: String
 **Usage:** `toLocaleUpperCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Equivalent to `String.prototype.toLocaleUpperCase`. Takes a string s, and returns a uppercase version of s,
 converted following locale conventions.
@@ -4878,7 +4878,7 @@ Category: String
 **Usage:** `var result = toLowerCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4893,8 +4893,8 @@ Category: Maths
 **Usage:** `var result = toPrecision(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -4911,7 +4911,7 @@ Category: String
 **Usage:** `toString(val);`
 
 Parameters:  
-val `any`
+`val` `any`
 
 Calls val's `toString` property, and returns the result.
 
@@ -4924,7 +4924,7 @@ Category: Date
 **Usage:** `var result = toTimeString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -4937,7 +4937,7 @@ Category: Date
 **Usage:** `var result = toUTCString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -4950,7 +4950,7 @@ Category: String
 **Usage:** `var result = toUpperCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4965,7 +4965,7 @@ Category: String
 **Usage:** `var result = trim(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4986,7 +4986,7 @@ Category: Array
 **Usage:** `var result = unzip(source);`
 
 Parameters:  
-source `array`
+`source` `array`
 
 Returns: `Pair`
 
@@ -5004,9 +5004,9 @@ Category: Function
 **Usage:** `var result = wrap(before, after, f);`
 
 Parameters:  
-before `function`  
-after `function`  
-f `function`
+`before` `function`  
+`after` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -5041,8 +5041,8 @@ Category: Logical
 **Usage:** `var result = xor(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -5057,8 +5057,8 @@ Category: Logical
 **Usage:** `var result = xorPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -5085,8 +5085,8 @@ Category: Array
 **Usage:** `var result = zip(a, b);`
 
 Parameters:  
-a `arrayLike`  
-b `arrayLike`
+`a` `arrayLike`  
+`b` `arrayLike`
 
 Returns: `array`
 
@@ -5105,9 +5105,9 @@ Category: Array
 **Usage:** `zipWith(f, a, b);`
 
 Parameters:  
-f `function`  
-a `arrayLike`  
-b `arrayLike`
+`f` `function`  
+`a` `arrayLike`  
+`b` `arrayLike`
 
 Returns array
 

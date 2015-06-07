@@ -1,6 +1,6 @@
 # funkierJS API: By Category #
 
-## Array##
+## Array ##
 ### all ###
 See `every`
 ***
@@ -11,8 +11,8 @@ See `some`
 **Usage:** `var result = append(value, arr);`
 
 Parameters:  
-value `any`  
-arr `arrayLike`
+`value` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -32,8 +32,8 @@ get the result you expect.
 **Usage:** `var result = concat(arr1, arr2);`
 
 Parameters:  
-arr1 `arrayLike`  
-arr2 `arrayLike`
+`arr1` `arrayLike`  
+`arr2` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -53,7 +53,7 @@ otherwise it will be an array.
 **Usage:** `var result = copy(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -70,8 +70,8 @@ Throws a TypeError if the given value is not an arrayLike.
 **Usage:** `var result = drop(count, arr);`
 
 Parameters:  
-count `number`  
-arr `arrayLike`
+`count` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -87,8 +87,8 @@ Throws a TypeError if the count is not integral, or if the last argument is not 
 **Usage:** `var result = dropWhile(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -108,8 +108,8 @@ supplied to this function.
 **Usage:** `each(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Takes a function f, and an array, string or arrayLike arr. Calls f with each member of the array in sequence, and
 returns undefined.
@@ -127,8 +127,8 @@ to this function.
 **Usage:** `var result = element(val, arr);`
 
 Parameters:  
-val `any`  
-arr `arrayLike`
+`val` `any`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -144,8 +144,8 @@ Throws a TypeError if the second argument is not an arrayLike.
 **Usage:** `var result = elementWith(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -168,8 +168,8 @@ to this function.
 **Usage:** `var result = every(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -192,8 +192,8 @@ to this function.
 **Usage:** `var result = filter(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -213,7 +213,7 @@ to this function.
 **Usage:** `var result = flatten(arr);`
 
 Parameters:  
-arr `array`
+`arr` `array`
 
 Returns: `array`
 
@@ -229,8 +229,8 @@ Throws a TypeError if the supplied value is not arrayLike, or if any of the valu
 **Usage:** `var result = flattenMap(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -254,9 +254,9 @@ supplied to this function.
 **Usage:** `var result = foldl(f, initial, arr);`
 
 Parameters:  
-f `function`  
-initial `any`  
-arr `arrayLike`
+`f` `function`  
+`initial` `any`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -281,8 +281,8 @@ to this function.
 **Usage:** `var result = foldl1(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -308,9 +308,9 @@ to this function.
 **Usage:** `var result = foldr(f, initial, arr);`
 
 Parameters:  
-f `function`  
-initial `any`  
-arr `arrayLike`
+`f` `function`  
+`initial` `any`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -335,8 +335,8 @@ to this function.
 **Usage:** `var result = foldr1(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -360,8 +360,8 @@ to this function.
 **Usage:** `var result = getIndex(index, arr);`
 
 Parameters:  
-index `number`  
-arr `arrayLike`
+`index` `number`  
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -375,7 +375,7 @@ TypeError if the index is outside the range for the given object.
 **Usage:** `var result = head(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -389,7 +389,7 @@ empty arrayLike.
 **Usage:** `var result = init(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -406,7 +406,7 @@ Throws a TypeError if the arrayLike is empty, or if the given value is not an ar
 **Usage:** `var result = inits(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -421,8 +421,8 @@ Throws a TypeError if the given value is not an arrayLike.
 **Usage:** `var result = intersperse(val, arr);`
 
 Parameters:  
-val `any`  
-arr `arrayLike`
+`val` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -440,7 +440,7 @@ Throws a TypeError if the second argument is not arrayLike.
 **Usage:** `var result = isEmpty(arr);`
 
 Parameters:  
-arr `arraLike`
+`arr` `arraLike`
 
 Returns: `boolean`
 
@@ -455,8 +455,8 @@ Throws a TypeError if the argument is not arrayLike.
 **Usage:** `var result = join(separator, arr);`
 
 Parameters:  
-separator `any`  
-arr `array`
+`separator` `any`  
+`arr` `array`
 
 Returns: `string`
 
@@ -472,7 +472,7 @@ Throws a TypeError if the last element is not an array.
 **Usage:** `var result = last(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -486,7 +486,7 @@ empty arrayLike.
 **Usage:** `var result = length(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -499,8 +499,8 @@ Takes an array, string or other arrayLike value, and returns its length. Throws 
 **Usage:** `var result = map(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -519,7 +519,7 @@ this function.
 **Usage:** `var result = maximum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -537,7 +537,7 @@ to abuse it, but it will likely not do what you expect.
 **Usage:** `var result = minimum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `any`
 
@@ -556,7 +556,7 @@ free to abuse it, but it will likely not do what you expect.
 **Usage:** `var result = nub(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -574,8 +574,8 @@ Throws a TypeError if the given argument is not arrayLike.
 **Usage:** `var result = nubWith(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -600,8 +600,8 @@ to this function.
 **Usage:** `var result = occurrences(needle, haystack);`
 
 Parameters:  
-needle `any` | ``  
-haystack `arrayLike`
+`needle` `any`  
+`haystack` `arrayLike`
 
 Returns: `array`
 
@@ -617,8 +617,8 @@ Throws a TypeError if the haystack parameter is not arrayLike.
 **Usage:** `var result = occurrencesWith(needle, haystack);`
 
 Parameters:  
-needle `any` | ``  
-haystack `arrayLike`
+`needle` `any`  
+`haystack` `arrayLike`
 
 Returns: `array`
 
@@ -644,8 +644,8 @@ See `inits`
 **Usage:** `var result = prepend(value, arr);`
 
 Parameters:  
-value `any`  
-arr `arrayLike`
+`value` `any`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -665,7 +665,7 @@ get the result you expect.
 **Usage:** `var result = product(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -682,8 +682,8 @@ but it will likely not do what you expect.
 **Usage:** `var result = range(a, b);`
 
 Parameters:  
-a `number`  
-b `number`
+`a` `number`  
+`b` `number`
 
 Returns: `array`
 
@@ -704,9 +704,9 @@ See `rangeStride`
 **Usage:** `var result = rangeStride(a, stride, b);`
 
 Parameters:  
-a `number`  
-stride `number`  
-b `number`
+`a` `number`  
+`stride` `number`  
+`b` `number`
 
 Returns: `array`
 
@@ -734,8 +734,8 @@ See `foldr1`
 **Usage:** `var result = replicate(length, arr);`
 
 Parameters:  
-length `natural`  
-arr `arrayLike`
+`length` `natural`  
+`arr` `arrayLike`
 
 Returns: `array`
 
@@ -749,7 +749,7 @@ a TypeError if the given length is negative.
 **Usage:** `var result = reverse(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -764,9 +764,9 @@ Throws a TypeError if the argument is not arrayLike.
 **Usage:** `var result = slice(from, to, arr);`
 
 Parameters:  
-from `number`  
-to `number`  
-arr `arrayLike`
+`from` `number`  
+`to` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -785,8 +785,8 @@ Throws a TypeError if from or to are not positive integers, or if the last argum
 **Usage:** `var result = some(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `boolean`
 
@@ -809,7 +809,7 @@ to this function.
 **Usage:** `var result = sort(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -824,8 +824,8 @@ Throws a TypeError if the given argument is not arrayLike.
 **Usage:** `var result = sortWith(f, arr);`
 
 Parameters:  
-f `function`  
-arr `arrayLike`
+`f` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -850,7 +850,7 @@ See `tails`
 **Usage:** `var result = sum(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `number`
 
@@ -867,7 +867,7 @@ but it will likely not do what you expect.
 **Usage:** `var result = tail(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -884,7 +884,7 @@ Throws a TypeError if the arrayLike is empty, or if the given value is not an ar
 **Usage:** `var result = tails(arr);`
 
 Parameters:  
-arr `arrayLike`
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -899,8 +899,8 @@ Throws a TypeError if the given value is not an arrayLike.
 **Usage:** `var result = take(count, arr);`
 
 Parameters:  
-count `number`  
-arr `arrayLike`
+`count` `number`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -916,8 +916,8 @@ Throws a TypeError if the count is not integral, or if the last argument is not 
 **Usage:** `var result = takeWhile(pred, arr);`
 
 Parameters:  
-pred `function`  
-arr `arrayLike`
+`pred` `function`  
+`arr` `arrayLike`
 
 Returns: `arrayLike`
 
@@ -943,7 +943,7 @@ See `nubWith`
 **Usage:** `var result = unzip(source);`
 
 Parameters:  
-source `array`
+`source` `array`
 
 Returns: `Pair`
 
@@ -959,8 +959,8 @@ Throws a TypeError if the given argument is not an array, or if any element is n
 **Usage:** `var result = zip(a, b);`
 
 Parameters:  
-a `arrayLike`  
-b `arrayLike`
+`a` `arrayLike`  
+`b` `arrayLike`
 
 Returns: `array`
 
@@ -977,9 +977,9 @@ Throws a TypeError if neither argument is arrayLike.
 **Usage:** `zipWith(f, a, b);`
 
 Parameters:  
-f `function`  
-a `arrayLike`  
-b `arrayLike`
+`f` `function`  
+`a` `arrayLike`  
+`b` `arrayLike`
 
 Returns array
 
@@ -998,12 +998,12 @@ supplied to this function.
     var f = function(a, b) {return a + b;};
     funkierJS.zipWith(f, 'apple', 'banana'); // => ['ab', 'pa', 'pn', 'la', 'en']
 ***
-## DataTypes##
+## DataTypes ##
 ### Err ###
 **Usage:** `var result = Err(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Just`
 
@@ -1017,7 +1017,7 @@ Throws if called without any arguments
 **Usage:** `var result = Just(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Just`
 
@@ -1046,7 +1046,7 @@ A Nothing is a type of [`Maybe`](#Maybe) representing an unsuccessful computatio
 **Usage:** `var result = Ok(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `Ok`
 
@@ -1060,8 +1060,8 @@ Throws when called with no arguments.
 **Usage:** `var result = Pair(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `Pair`
 
@@ -1094,7 +1094,7 @@ It is an error to call Result.
 **Usage:** `var result = asArray(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `array`
 
@@ -1109,9 +1109,9 @@ Throws a TypeError if p is not a pair.
 **Usage:** `var result = either(f1, f2, r);`
 
 Parameters:  
-f1 `function`  
-f2 `function`  
-r `Result`
+`f1` `function`  
+`f2` `function`  
+`r` `Result`
 
 Returns: `function`
 
@@ -1141,7 +1141,7 @@ See `fst`
 **Usage:** `var result = fst(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `any`
 
@@ -1156,7 +1156,7 @@ constructor. Throws if called with a non-pair value.
 **Usage:** `var result = getErrValue(e);`
 
 Parameters:  
-e `Err`
+`e` `Err`
 
 Returns: `any`
 
@@ -1170,7 +1170,7 @@ than an [`Err`](#Err).
 **Usage:** `var result = getJustValue(j);`
 
 Parameters:  
-j `Just`
+`j` `Just`
 
 Returns: `any`
 
@@ -1184,7 +1184,7 @@ than a [`Just`](#Just).
 **Usage:** `var result = getOkValue(o);`
 
 Parameters:  
-o `Ok`
+`o` `Ok`
 
 Returns: `any`
 
@@ -1198,7 +1198,7 @@ than an [`Ok`](#Ok).
 **Usage:** `var result = isErr(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1211,7 +1211,7 @@ Returns true when the given value is a [`Err`](#Err) object, and false otherwise
 **Usage:** `var result = isJust(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1224,7 +1224,7 @@ Returns true if the given value is a [`Just`](#Just) object, and false otherwise
 **Usage:** `var result = isMaybe(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1237,7 +1237,7 @@ Returns true when the given value is a [`Maybe`](#Maybe) object, and false other
 **Usage:** `var result = isNothing(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1250,7 +1250,7 @@ Returns true if the given value is the [`Nothing`](#Nothing) object, and false o
 **Usage:** `var result = isOk(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1263,7 +1263,7 @@ Returns true when the given value is a [`Ok`](#Ok) object, and false otherwise.
 **Usage:** `var result = isPair(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1276,7 +1276,7 @@ Returns true if the given value is a [`Pair`](#Pair), and false otherwise.
 **Usage:** `var result = isResult(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -1289,7 +1289,7 @@ Returns true when the given value is a [`Result`](#Result) object, and false oth
 **Usage:** `var result = makeMaybeReturner(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -1315,7 +1315,7 @@ curried.
 **Usage:** `var result = makeResultReturner(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -1346,7 +1346,7 @@ See `snd`
 **Usage:** `var result = snd(p);`
 
 Parameters:  
-p `Pair`
+`p` `Pair`
 
 Returns: `any`
 
@@ -1357,7 +1357,7 @@ constructor. Throws if called with a non-pair value.
     var p = new funkierJS.Pair(2, 3);
     funkierJS.snd(p); // => 3',
 ***
-## Date##
+## Date ##
 ### getCurrentTimeString ###
 **Usage:** `var result = getCurrentTimeString();`
 
@@ -1370,7 +1370,7 @@ current date and time.
 **Usage:** `var result = getDayOfMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1385,7 +1385,7 @@ the month (1-31) of the given date.
 **Usage:** `var result = getDayOfWeek(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1400,7 +1400,7 @@ month (0-6) of the given date.
 **Usage:** `var result = getFullYear(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1415,7 +1415,7 @@ the year of the given date.
 **Usage:** `var result = getHours(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1430,7 +1430,7 @@ field (0-23) of the given date.
 **Usage:** `var result = getMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1445,7 +1445,7 @@ milliseconds field (0-999) of the given date.
 **Usage:** `var result = getMinutes(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1460,7 +1460,7 @@ field (0-59) of the given date.
 **Usage:** `var result = getMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1475,7 +1475,7 @@ field (0-11) of the given date.
 **Usage:** `var result = getSeconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1490,7 +1490,7 @@ field (0-59) of the given date.
 **Usage:** `var result = getTimezoneOffset(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1501,7 +1501,7 @@ between the Javascript environment and UTC.
 **Usage:** `var result = getUTCDayOfMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1512,7 +1512,7 @@ the month (1-31) of the given date, adjusted for UTC.
 **Usage:** `var result = getUTCDayOfWeek(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1523,7 +1523,7 @@ the week (0-6) of the given date, adjusted for UTC.
 **Usage:** `var result = getUTCFullYear(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1534,7 +1534,7 @@ the year of the given date, adjusted for UTC.
 **Usage:** `var result = getUTCHours(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1545,7 +1545,7 @@ field of the given date (0-23), adjusted for UTC.
 **Usage:** `var result = getUTCMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1556,7 +1556,7 @@ the milliseconds field of the given date (0-999), adjusted for UTC.
 **Usage:** `var result = getUTCMinutes(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1567,7 +1567,7 @@ minutes field of the given date (0-59), adjusted for UTC.
 **Usage:** `var result = getUTCMonth(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1578,7 +1578,7 @@ field of the given date (0-11), adjusted for UTC.
 **Usage:** `var result = getUTCSeconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1589,7 +1589,7 @@ seconds field of the given date (0-59), adjusted for UTC.
 **Usage:** `var result = makeDateFromMilliseconds(milliseconds);`
 
 Parameters:  
-milliseconds `number`
+`milliseconds` `number`
 
 Returns: `Date`
 
@@ -1604,7 +1604,7 @@ milliseconds since the epoch.
 **Usage:** `var result = makeDateFromString(dateString);`
 
 Parameters:  
-dateString `string`
+`dateString` `string`
 
 Returns: `Date`
 
@@ -1619,9 +1619,9 @@ represents that given in the string.
 **Usage:** `var result = makeDayDate(year, month, day);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`
+`year` `number`  
+`month` `number`  
+`day` `number`
 
 Returns: `Date`
 
@@ -1636,10 +1636,10 @@ are initialized to zero. Returns the new `Date`.
 **Usage:** `var result = makeHourDate(year, month, day, hour);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`
 
 Returns: `Date`
 
@@ -1654,13 +1654,13 @@ the `Date` are initialized to zero. Returns the new `Date`.
 **Usage:** `var result = makeMillisecondDate(year, month, day, hour, minute, second, millisecond);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`  
-second `number`  
-millisecond `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`  
+`second` `number`  
+`millisecond` `number`
 
 Returns: `Date`
 
@@ -1676,11 +1676,11 @@ Returns the new `Date`.
 **Usage:** `var result = makeMinuteDate(year, month, day, hour, minute);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`
 
 Returns: `Date`
 
@@ -1695,8 +1695,8 @@ fields in the `Date` are initialized to zero. Returns the new `Date`.
 **Usage:** `var result = makeMonthDate(year, month);`
 
 Parameters:  
-year `number`  
-month `number`
+`year` `number`  
+`month` `number`
 
 Returns: `Date`
 
@@ -1711,12 +1711,12 @@ initialized to zero, with the exception of the day, which is initialized to 1. R
 **Usage:** `var result = makeSecondDate(year, month, day, hour, minute, second);`
 
 Parameters:  
-year `number`  
-month `number`  
-day `number`  
-hour `number`  
-minute `number`  
-second `number`
+`year` `number`  
+`month` `number`  
+`day` `number`  
+`hour` `number`  
+`minute` `number`  
+`second` `number`
 
 Returns: `Date`
 
@@ -1731,8 +1731,8 @@ All other fields in the `Date` are initialized to zero. Returns the new `Date`.
 **Usage:** `var result = setDayOfMonth(day, d);`
 
 Parameters:  
-day `number`  
-d `Date`
+`day` `number`  
+`d` `Date`
 
 Returns: `Date`
 
@@ -1749,8 +1749,8 @@ object.
 **Usage:** `var result = setFullYear(year, d);`
 
 Parameters:  
-year `number`  
-d `Date`
+`year` `number`  
+`d` `Date`
 
 Returns: `Date`
 
@@ -1767,8 +1767,8 @@ Returns the given `Date` object.
 **Usage:** `var result = setHours(hours, d);`
 
 Parameters:  
-hours `number`  
-d `Date`
+`hours` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1785,8 +1785,8 @@ to other fields. Returns the given `Date` object.
 **Usage:** `var result = setMilliseconds(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1803,8 +1803,8 @@ a cascade of increments to other fields. Returns the given `Date` object.
 **Usage:** `var result = setMinutes(minutes, d);`
 
 Parameters:  
-minutes `number`  
-d `Date`
+`minutes` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1821,8 +1821,8 @@ to other fields. Returns the given `Date` object.
 **Usage:** `var result = setMonth(month, d);`
 
 Parameters:  
-month `number`  
-d `Date`
+`month` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1838,8 +1838,8 @@ value > 11, then the year will be incremented by month div 12. Returns the given
 **Usage:** `var result = setSeconds(seconds, d);`
 
 Parameters:  
-seconds `number`  
-d `Date`
+`seconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1856,8 +1856,8 @@ to other fields. Returns the given `Date` object.
 **Usage:** `var result = setTimeSinceEpoch(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1873,8 +1873,8 @@ time that is that many seconds since the epoch. Returns the given `Date`.
 **Usage:** `var result = setUTCDayOfMonth(day, d);`
 
 Parameters:  
-day `number`  
-d `Date`
+`day` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1887,8 +1887,8 @@ year. Returns the given `Date` object.
 **Usage:** `var result = setUTCFullYear(year, d);`
 
 Parameters:  
-year `number`  
-d `Date`
+`year` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1901,8 +1901,8 @@ a leap year. Returns the given `Date` object.
 **Usage:** `var result = setUTCHours(hours, d);`
 
 Parameters:  
-hours `number`  
-d `Date`
+`hours` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1915,8 +1915,8 @@ cascade of increments to other fields. Returns the given `Date` object.
 **Usage:** `var result = setUTCMilliseconds(milliseconds, d);`
 
 Parameters:  
-milliseconds `number`  
-d `Date`
+`milliseconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1930,8 +1930,8 @@ object.
 **Usage:** `var result = setUTCMinutes(minutes, d);`
 
 Parameters:  
-minutes `number`  
-d `Date`
+`minutes` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1944,8 +1944,8 @@ cascade of increments to other fields. Returns the given `Date` object.
 **Usage:** `var result = setUTCMonth(month, d);`
 
 Parameters:  
-month `number`  
-d `Date`
+`month` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1958,8 +1958,8 @@ object.
 **Usage:** `var result = setUTCSeconds(seconds, d);`
 
 Parameters:  
-seconds `number`  
-d `Date`
+`seconds` `number`  
+`d` `Date`
 
 Returns: `date`
 
@@ -1972,7 +1972,7 @@ a cascade of increments to other fields. Returns the local equivalent of the giv
 **Usage:** `var result = toDateString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -1987,7 +1987,7 @@ portion of the object.
 **Usage:** `var result = toEpochMilliseconds(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `number`
 
@@ -1998,7 +1998,7 @@ since midnight, January 1 1970.
 **Usage:** `var result = toISOString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -2013,7 +2013,7 @@ date in ISO format.
 **Usage:** `var result = toLocaleDateString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -2024,7 +2024,7 @@ portion of the object, formatted according to locale conventions.
 **Usage:** `var result = toTimeString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
@@ -2035,20 +2035,20 @@ portion of the object.
 **Usage:** `var result = toUTCString(d);`
 
 Parameters:  
-d `Date`
+`d` `Date`
 
 Returns: `string`
 
 A wrapper around `Date.prototype.toUTCString`. Takes a `Date` object, and returns a string representation of the
 equivalent date in UTC.
 ***
-## Function##
+## Function ##
 ### apply ###
 **Usage:** `var result = apply(args, f);`
 
 Parameters:  
-args `array`  
-f `function`
+`args` `array`  
+`f` `function`
 
 Returns: `any`
 
@@ -2071,7 +2071,7 @@ See `arityOf`
 **Usage:** `var result = arityOf(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `number`
 
@@ -2089,8 +2089,8 @@ the amount of arguments not yet supplied will be returned.
 **Usage:** `var result = bind(ctx, f);`
 
 Parameters:  
-ctx `objectlike`  
-f `function`
+`ctx` `objectlike`  
+`f` `function`
 
 Returns: `function`
 
@@ -2146,9 +2146,9 @@ See `bind`
 **Usage:** `var result = bindWithContextAndArity(n, ctx, f);`
 
 Parameters:  
-n `strictNatural`  
-ctx `objectlike`  
-f `function`
+`n` `strictNatural`  
+`ctx` `objectlike`  
+`f` `function`
 
 Returns: `function`
 
@@ -2208,8 +2208,8 @@ curry such functions won't throw, but they will not work as expected.
 **Usage:** `var result = compose(f, g);`
 
 Parameters:  
-f `function`  
-g `function`
+`f` `function`  
+`g` `function`
 
 Returns: `function`
 
@@ -2234,9 +2234,9 @@ function will also be considered as having been curried that way, with the corre
 **Usage:** `var result = composeOn(argCount, f, g);`
 
 Parameters:  
-argCount `positive`  
-f `function`  
-g `function`
+`argCount` `positive`  
+`f` `function`  
+`g` `function`
 
 Returns: `function`
 
@@ -2264,8 +2264,8 @@ This function is intended to afford an approximation of writing functions in a p
 **Usage:** `var result = constant(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `any`
 
@@ -2280,7 +2280,7 @@ and which always returns the first value.
 **Usage:** `var result = constant0(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `function`
 
@@ -2294,7 +2294,7 @@ Returns a function of arity zero that when called always returns the supplied va
 **Usage:** `var result = curry(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2346,8 +2346,8 @@ bound with the native `bind` method. Currying such functions might lead to unexp
 **Usage:** `var result = curryWithArity(n, f);`
 
 Parameters:  
-n `strictNatural`  
-f `function`
+`n` `strictNatural`  
+`f` `function`
 
 Returns: `function`
 
@@ -2409,7 +2409,7 @@ See `fmap`
 **Usage:** `var result = flip(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2430,8 +2430,8 @@ currying.
 **Usage:** `var result = fmap(f, g);`
 
 Parameters:  
-f `function`  
-g `any`
+`f` `function`  
+`g` `any`
 
 Returns: `any`
 
@@ -2453,7 +2453,7 @@ The actions taken are as follows:
 **Usage:** `var result = objectCurry(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2510,8 +2510,8 @@ curry such functions won't throw, but they will not work as expected.
 **Usage:** `var result = objectCurryWithArity(n, f);`
 
 Parameters:  
-n `strictNatural`  
-f `function`
+`n` `strictNatural`  
+`f` `function`
 
 Returns: `function`
 
@@ -2573,7 +2573,7 @@ curry such functions won't throw, but they will not work as expected.
 **Usage:** `var result = permuteLeft(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2598,7 +2598,7 @@ Throws a TypeError if f is not a function.
 **Usage:** `var result = permuteRight(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2621,8 +2621,8 @@ Throws a TypeError if f is not a function.
 **Usage:** `var result = post(wrappingFunction, f);`
 
 Parameters:  
-wrappingFunction `function`  
-f `function`
+`wrappingFunction` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -2644,8 +2644,8 @@ Throws a TypeError if either of the given values are not functions.
 **Usage:** `var result = pre(wrappingFunction, f);`
 
 Parameters:  
-wrappingFunction `function`  
-f `function`
+`wrappingFunction` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -2673,8 +2673,8 @@ See `permuteRight`
 **Usage:** `var result = sectionLeft(f, x);`
 
 Parameters:  
-f `function`  
-x `any`
+`f` `function`  
+`x` `any`
 
 Returns: `function`
 
@@ -2694,8 +2694,8 @@ the supplied function.
 **Usage:** `var result = sectionRight(f, x);`
 
 Parameters:  
-f `function`  
-x `any`
+`f` `function`  
+`x` `any`
 
 Returns: `function`
 
@@ -2714,9 +2714,9 @@ the supplied function.
 **Usage:** `var result = wrap(before, after, f);`
 
 Parameters:  
-before `function`  
-after `function`  
-f `function`
+`before` `function`  
+`after` `function`  
+`f` `function`
 
 Returns: `function`
 
@@ -2745,13 +2745,13 @@ This function is equivalent to calling [`post`](#post) and [`pre`](#pre) on some
     var loggedPlus = funkierJS.wrap(logger, postLogger, plus);
     loggedPlus(2, 2); // => outputs 'plus called with 2, 2' and 'plus returned 4' to console
 ***
-## Logical##
+## Logical ##
 ### and ###
 **Usage:** `var result = and(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -2764,8 +2764,8 @@ A wrapper around the logical and (&&) operator. Returns the logical and of the g
 **Usage:** `var result = andPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -2790,7 +2790,7 @@ in case you need to give the resulting function to one of the `withArity` functi
 **Usage:** `var result = not(b);`
 
 Parameters:  
-b `boolean`
+`b` `boolean`
 
 Returns: `boolean`
 
@@ -2803,7 +2803,7 @@ A wrapper around the logical not (!) operator. Returns the logical negation of t
 **Usage:** `var result = notPred(f);`
 
 Parameters:  
-f `function`
+`f` `function`
 
 Returns: `function`
 
@@ -2825,8 +2825,8 @@ function.
 **Usage:** `var result = or(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -2839,8 +2839,8 @@ A wrapper around the logical or (||) operator. Returns the logical or of the giv
 **Usage:** `var result = orPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -2865,8 +2865,8 @@ in case you need to give the resulting function to one of the `withArity` functi
 **Usage:** `var result = xor(x, y);`
 
 Parameters:  
-x `boolean`  
-y `boolean`
+`x` `boolean`  
+`y` `boolean`
 
 Returns: `boolean`
 
@@ -2879,8 +2879,8 @@ A wrapper around the logical xor operator. Returns the logical xor of the given 
 **Usage:** `var result = xorPred(f1, f2);`
 
 Parameters:  
-f1 `function`  
-f2 `function`
+`f1` `function`  
+`f2` `function`
 
 Returns: `function`
 
@@ -2901,15 +2901,15 @@ in case you need to give the resulting function to one of the `withArity` functi
     var f = funkierJS.xorPred(c, d);',
     f("foo"); // false',
 ***
-## Maths##
+## Maths ##
 ### add ###
 *Synonyms:* `plus`
 
 **Usage:** `var result = add(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2922,8 +2922,8 @@ A wrapper around the addition operator.
 **Usage:** `var result = bitwiseAnd(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2936,7 +2936,7 @@ A wrapper around the bitwise and (&) operator.
 **Usage:** `var result = bitwiseNot(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `number`
 
@@ -2949,8 +2949,8 @@ A wrapper around the bitwise not (~) operator.
 **Usage:** `var result = bitwiseOr(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2963,8 +2963,8 @@ A wrapper around the bitwise or (&) operator.
 **Usage:** `var result = bitwiseXor(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2977,8 +2977,8 @@ A wrapper around the bitwise xor (^) operator.
 **Usage:** `var result = div(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -2991,8 +2991,8 @@ Returns the quotient on dividing x by y.
 **Usage:** `var result = divide(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3005,7 +3005,7 @@ A wrapper around the division operator.
 **Usage:** `var result = even(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `boolean`
 
@@ -3021,8 +3021,8 @@ Given a number, returns true if it is divisible by 2, and false otherwise.
 **Usage:** `var result = exp(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3037,8 +3037,8 @@ A curried wrapper around Math.pow.
 **Usage:** `var result = greaterThan(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -3053,8 +3053,8 @@ A wrapper around the less than or equal (<=) operator.
 **Usage:** `var result = greaterThanEqual(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -3073,8 +3073,8 @@ See `greaterThanEqual`
 **Usage:** `var result = leftShift(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3089,8 +3089,8 @@ A wrapper around the left shift (<<) operator.
 **Usage:** `var result = lessThan(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -3105,8 +3105,8 @@ A wrapper around the less than (<) operator.
 **Usage:** `var result = lessThanEqual(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `boolean`
 
@@ -3119,8 +3119,8 @@ A wrapper around the less than or equal (<=) operator.
 **Usage:** `var result = log(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3140,8 +3140,8 @@ See `lessThanEqual`
 **Usage:** `var result = max(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3154,8 +3154,8 @@ A curried wrapper around `Math.max`. Takes exactly two arguments.
 **Usage:** `var result = min(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3168,8 +3168,8 @@ A curried wrapper around `Math.min`. Takes exactly two arguments.
 **Usage:** `var result = multiply(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3182,7 +3182,7 @@ A wrapper around the multiplication operator.
 **Usage:** `var result = odd(x);`
 
 Parameters:  
-x `number`
+`x` `number`
 
 Returns: `boolean`
 
@@ -3196,7 +3196,7 @@ Given a number, returns true if it is not divisible by 2, and false otherwise.
 **Usage:** `var result = parseInt(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `number`
 
@@ -3220,8 +3220,8 @@ See `exp`
 **Usage:** `var result = rem(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3234,8 +3234,8 @@ A wrapper around the remainder (%) operator.
 **Usage:** `var result = rightShift(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3248,8 +3248,8 @@ A wrapper around the right shift (>>) operator.
 **Usage:** `var result = rightShiftZero(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3264,8 +3264,8 @@ A wrapper around the left shift (>>>) operator.
 **Usage:** `var result = stringToInt(base, s);`
 
 Parameters:  
-base `number`  
-s `string`
+`base` `number`  
+`s` `string`
 
 Returns: `number`
 
@@ -3280,8 +3280,8 @@ not represent a valid number in the given base.
 **Usage:** `var result = subtract(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `number`
 
@@ -3299,8 +3299,8 @@ See `toBaseAndString`
 **Usage:** `var result = toBaseAndString(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -3314,8 +3314,8 @@ representing the given number in the given base.
 **Usage:** `var result = toExponential(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -3330,8 +3330,8 @@ with the specified number of places after the decimal point.
 **Usage:** `var result = toFixed(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -3346,8 +3346,8 @@ of places after the decimal point.
 **Usage:** `var result = toPrecision(x, y);`
 
 Parameters:  
-x `number`  
-y `number`
+`x` `number`  
+`y` `number`
 
 Returns: `string`
 
@@ -3358,12 +3358,12 @@ of significant digits.
 #### Examples ####
     funkierJS.toPrecision(3, 1); // => "1.000"
 ***
-## Object##
+## Object ##
 ### callProp ###
 **Usage:** `var result = callProp(prop);`
 
 Parameters:  
-prop `string`
+`prop` `string`
 
 Returns: `function`
 
@@ -3379,8 +3379,8 @@ property on the given object.
 **Usage:** `var result = callPropWithArity(prop, arity);`
 
 Parameters:  
-prop `string`  
-arity `natural`
+`prop` `string`  
+`arity` `natural`
 
 Returns: `function`
 
@@ -3403,7 +3403,7 @@ Note that the function is curried in the standard sense. In particular the funct
 **Usage:** `var result = clone(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3421,7 +3421,7 @@ corresponding property in the original.
 **Usage:** `var result = createObject(protoObject);`
 
 Parameters:  
-protoObject `objectLike`
+`protoObject` `objectLike`
 
 Returns: `object`
 
@@ -3439,8 +3439,8 @@ to the created object, use [createObjectWithProps](#createObjectWithProps).
 **Usage:** `var result = createObjectWithProps(protoObject, descriptorsObject);`
 
 Parameters:  
-protoObject `objectLike`  
-descriptorsObject `object`
+`protoObject` `objectLike`  
+`descriptorsObject` `object`
 
 Returns: `object`
 
@@ -3459,9 +3459,9 @@ form accepted by `Object.create`, `Object.defineProperties` etc.
 **Usage:** `var result = createProp(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3484,7 +3484,7 @@ create the property as required.
 **Usage:** `var result = curryOwn(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3511,8 +3511,8 @@ See `extractOrDefault`
 **Usage:** `var result = defineProperties(descriptors, o);`
 
 Parameters:  
-descriptors `object`  
-o `objectLike`
+`descriptors` `object`  
+`o` `objectLike`
 
 Returns: `objectLike`
 
@@ -3530,9 +3530,9 @@ properties of the descriptors parameter, and whose values are dictated by the de
 **Usage:** `var result = defineProperty(prop, descriptor, o);`
 
 Parameters:  
-prop `string`  
-descriptor `object`  
-o `objectLike`
+`prop` `string`  
+`descriptor` `object`  
+`o` `objectLike`
 
 Returns: `objectLike`
 
@@ -3550,8 +3550,8 @@ per the descriptor. Throws a TypeError if the descriptor is not an object.
 **Usage:** `var result = deleteProp(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3570,7 +3570,7 @@ depending on the outcome of the operation.
 **Usage:** `var result = descriptors(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -3587,8 +3587,8 @@ is not defined.
 **Usage:** `var result = extend(source, dest);`
 
 Parameters:  
-source `objectLike`  
-dest `objectLike`
+`source` `objectLike`  
+`dest` `objectLike`
 
 Returns: `objectLike`
 
@@ -3605,8 +3605,8 @@ afterwards `source.foo === dest.foo` will be true.
 **Usage:** `var result = extendOwn(source, dest);`
 
 Parameters:  
-source `objectLike`  
-dest `objectLike`
+`source` `objectLike`  
+`dest` `objectLike`
 
 Returns: `objectLike`
 
@@ -3627,8 +3627,8 @@ source whose value is an object, then afterwards `source.foo === dest.foo` will 
 **Usage:** `var result = extract(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `object`
+`prop` `string`  
+`obj` `object`
 
 Returns: `any`
 
@@ -3643,9 +3643,9 @@ Extracts the given property from the given object. Equivalent to evaluating `obj
 **Usage:** `var result = extractOrDefault(prop, default, obj);`
 
 Parameters:  
-prop `string`  
-default `any`  
-obj `object`
+`prop` `string`  
+`default` `any`  
+`obj` `object`
 
 Returns: `any`
 
@@ -3659,8 +3659,8 @@ chain, in which case the specified default value is returned.
 **Usage:** `var result = getOwnPropertyDescriptor(prop, o);`
 
 Parameters:  
-prop `string`  
-o `objectLike`
+`prop` `string`  
+`o` `objectLike`
 
 Returns: `object`
 
@@ -3678,7 +3678,7 @@ it returns undefined.
 **Usage:** `var result = getOwnPropertyNames(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -3694,8 +3694,8 @@ the property names is not defined.
 **Usage:** `var result = hasOwnProperty(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -3711,8 +3711,8 @@ property.
 **Usage:** `var result = hasProperty(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -3727,8 +3727,8 @@ returns true if the given object or some object in the prototype chain has the s
 **Usage:** `var result = instanceOf(constructor, obj);`
 
 Parameters:  
-constructor `function`  
-obj `objectLike`
+`constructor` `function`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -3744,8 +3744,8 @@ if the function's prototype property is in the prototype chain of the given obje
 **Usage:** `var result = isPrototypeOf(protoObject, obj);`
 
 Parameters:  
-protoObject `objectLike`  
-obj `objectLike`
+`protoObject` `objectLike`  
+`obj` `objectLike`
 
 Returns: `boolean`
 
@@ -3761,7 +3761,7 @@ whose prototype chain you wish to check.  Returns true if protoObj is in the pro
 **Usage:** `var result = keyValues(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -3778,7 +3778,7 @@ is not defined.
 **Usage:** `var result = keys(obj);`
 
 Parameters:  
-obj `objectLike`
+`obj` `objectLike`
 
 Returns: `array`
 
@@ -3801,8 +3801,8 @@ See `safeDeleteProp`
 **Usage:** `var result = maybeExtract(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `object`
+`prop` `string`  
+`obj` `object`
 
 Returns: `Maybe`
 
@@ -3833,9 +3833,9 @@ See `maybeExtract`
 **Usage:** `var result = modify(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3862,9 +3862,9 @@ See `modify`
 **Usage:** `var result = safeCreateProp(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `Maybe`
 
@@ -3891,8 +3891,8 @@ required.
 **Usage:** `var result = safeDeleteProp(prop, obj);`
 
 Parameters:  
-prop `string`  
-obj `objectLike`
+`prop` `string`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3915,9 +3915,9 @@ See `maybeExtract`
 **Usage:** `var result = safeModify(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -3946,9 +3946,9 @@ See `safeModify`
 **Usage:** `var result = safeSet(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `Maybe`
 
@@ -3979,9 +3979,9 @@ See `maybeExtract`
 **Usage:** `var result = set(prop, val, obj);`
 
 Parameters:  
-prop `string`  
-val `any`  
-obj `objectLike`
+`prop` `string`  
+`val` `any`  
+`obj` `objectLike`
 
 Returns: `objectLike`
 
@@ -4009,12 +4009,12 @@ See `clone`
 ### tap ###
 See `extract`
 ***
-## String##
+## String ##
 ### chr ###
 **Usage:** `var result = chr(n);`
 
 Parameters:  
-n `number`
+`n` `number`
 
 Returns: `string`
 
@@ -4028,8 +4028,8 @@ number.
 **Usage:** `var result = firstMatch(r, s);`
 
 Parameters:  
-r `Regexp`  
-s `string`
+`r` `Regexp`  
+`s` `string`
 
 Returns: `object` | `null`
 
@@ -4056,9 +4056,9 @@ Throws a TypeError if the first parameter is not a regular expression.
 **Usage:** `var result = firstMatchFrom(r, index, s);`
 
 Parameters:  
-r `Regexp`  
-index `natural`  
-s `string`
+`r` `Regexp`  
+`index` `natural`  
+`s` `string`
 
 Returns: `object` | `null`
 
@@ -4086,8 +4086,8 @@ Throws a TypeError if the first parameter is not a regular expression.
 **Usage:** `var result = matches(r, s);`
 
 Parameters:  
-r `Regexp`  
-s `string`
+`r` `Regexp`  
+`s` `string`
 
 Returns: `array`
 
@@ -4116,9 +4116,9 @@ Throws a TypeError if the first parameter is not a regular expression.
 **Usage:** `var result = matchesFrom(r, index, s);`
 
 Parameters:  
-r `Regexp`  
-index `number`  
-s `string`
+`r` `Regexp`  
+`index` `number`  
+`s` `string`
 
 Returns: `array`
 
@@ -4148,7 +4148,7 @@ Throws a TypeError if the first parameter is not a regular expression.
 **Usage:** `ord(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Takes a string s, and returns the Unicode value of the character at index 0. Equivalent to `toCharCode(0, s)`.
 
@@ -4161,8 +4161,8 @@ Takes a string s, and returns the Unicode value of the character at index 0. Equ
 **Usage:** `var result = regExpSplit(delimiter, s);`
 
 Parameters:  
-delimiter `RegExp`  
-s `string`
+`delimiter` `RegExp`  
+`s` `string`
 
 Returns: `array`
 
@@ -4189,9 +4189,9 @@ See `regExpSplitMax`
 **Usage:** `var result = regExpSplitMax(delimiter, limit, s);`
 
 Parameters:  
-delimiter `RegExp`  
-limit `natural`  
-s `string`
+`delimiter` `RegExp`  
+`limit` `natural`  
+`s` `string`
 
 Returns: `array`
 
@@ -4211,8 +4211,8 @@ To split without an upper bound, use [`split`](#split')/[`regExpSplit`](#regExpS
 **Usage:** `var result = split(delimiter, s);`
 
 Parameters:  
-delimiter `string`  
-s `string`
+`delimiter` `string`  
+`s` `string`
 
 Returns: `array`
 
@@ -4239,9 +4239,9 @@ See `splitMax`
 **Usage:** `var result = splitMax(delimiter, limit, s);`
 
 Parameters:  
-delimiter `string`  
-limit `natural`  
-s `string`
+`delimiter` `string`  
+`limit` `natural`  
+`s` `string`
 
 Returns: `array`
 
@@ -4264,8 +4264,8 @@ See `regExpSplit`
 **Usage:** `var result = test(regexp, s);`
 
 Parameters:  
-regexp `RegExp`  
-s `string`
+`regexp` `RegExp`  
+`s` `string`
 
 Returns: `boolean`
 
@@ -4281,8 +4281,8 @@ Throws a TypeError if regexp is not a RegExp, or if s is not a string.
 **Usage:** `var result = toCharCode(i, s);`
 
 Parameters:  
-i `number`  
-s `string`
+`i` `number`  
+`s` `string`
 
 Returns: `number`
 
@@ -4296,7 +4296,7 @@ the character at the given index in s.
 **Usage:** `var result = toLocaleLowerCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4310,7 +4310,7 @@ converted following locale conventions.
 **Usage:** `var result = toLocaleString(val);`
 
 Parameters:  
-val `any`
+`val` `any`
 
 Returns: `string`
 
@@ -4323,7 +4323,7 @@ Calls val's `toLocaleString` property, and returns the result.
 **Usage:** `toLocaleUpperCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Equivalent to `String.prototype.toLocaleUpperCase`. Takes a string s, and returns a uppercase version of s,
 converted following locale conventions.
@@ -4335,7 +4335,7 @@ converted following locale conventions.
 **Usage:** `var result = toLowerCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4348,7 +4348,7 @@ Equivalent to `String.prototype.toLowerCase`. Takes a string s, and returns a lo
 **Usage:** `toString(val);`
 
 Parameters:  
-val `any`
+`val` `any`
 
 Calls val's `toString` property, and returns the result.
 
@@ -4359,7 +4359,7 @@ Calls val's `toString` property, and returns the result.
 **Usage:** `var result = toUpperCase(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4372,7 +4372,7 @@ Equivalent to `String.prototype.toUpperCase`. Takes a string s, and returns a up
 **Usage:** `var result = trim(s);`
 
 Parameters:  
-s `string`
+`s` `string`
 
 Returns: `string`
 
@@ -4381,12 +4381,12 @@ Returns a string containing the contents of the original string, less any leadin
 #### Examples ####
     funkierJS.trim(' abc   '); // 'abc'
 ***
-## Types##
+## Types ##
 ### composeMany ###
 **Usage:** `var result = composeMany(fns);`
 
 Parameters:  
-fns `array`
+`fns` `array`
 
 Returns: `function`
 
@@ -4409,8 +4409,8 @@ The result of calling composeMany([f1, f2, f3](x) is equal to f1(f2(f3(x))).
 **Usage:** `var result = deepEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4430,8 +4430,8 @@ See `deepEqual`
 **Usage:** `var result = equals(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4444,7 +4444,7 @@ A wrapper around the non-strict equality (==) operator.
 **Usage:** `var result = getType(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `string`
 
@@ -4461,7 +4461,7 @@ See `is`
 **Usage:** `var result = id(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `any`
 
@@ -4476,8 +4476,8 @@ Returns the supplied value. Superfluous values are ignored.
 **Usage:** `var result = is(type, value);`
 
 Parameters:  
-type `string`  
-value `any`
+`type` `string`  
+`value` `any`
 
 Returns: `boolean`
 
@@ -4491,7 +4491,7 @@ object equals the given string. Throws if the first argument is not a string.
 **Usage:** `var result = isArray(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4504,7 +4504,7 @@ Returns true if the given value is an array, false otherwise
 **Usage:** `var result = isBoolean(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4517,7 +4517,7 @@ Returns true if typeof the given value equals `"boolean"`, false otherwise.
 **Usage:** `var result = isNull(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4530,7 +4530,7 @@ Returns true if the given object is `null`, false otherwise
 **Usage:** `var result = isNumber(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4543,7 +4543,7 @@ Returns true if typeof the given value equals "number", false otherwise.
 **Usage:** `var result = isObject(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4556,7 +4556,7 @@ Returns true if typeof the given value equals `"object"`, false otherwise.
 **Usage:** `var result = isRealObject(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4570,7 +4570,7 @@ and `funkierJS.isNull(a) === false` and `funkierJS.isArray(a) === false`.
 **Usage:** `var result = isString(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4583,7 +4583,7 @@ Returns true if typeof the given value equals `"string"`, false otherwise.
 **Usage:** `var result = isUndefined(a);`
 
 Parameters:  
-a `any`
+`a` `any`
 
 Returns: `boolean`
 
@@ -4598,8 +4598,8 @@ Returns true if typeof the given value equals `"undefined"`, false otherwise.
 **Usage:** `var result = notEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4615,8 +4615,8 @@ See `notEqual`
 **Usage:** `var result = strictEquals(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
@@ -4634,8 +4634,8 @@ See `strictNotEqual`
 **Usage:** `var result = strictNotEqual(a, b);`
 
 Parameters:  
-a `any`  
-b `any`
+`a` `any`  
+`b` `any`
 
 Returns: `boolean`
 
