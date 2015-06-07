@@ -130,7 +130,7 @@ module.exports = (function() {
 
   var printParameters = function(parameters, result) {
     var printAParam = function(param, i, arr) {
-      result.push(param.name + ' ' + param.type.map(printAType).join('') + (i !== arr.length - 1 ? '  ' : ''));
+      result.push('`' + param.name + '` ' + param.type.map(printAType).join('') + (i !== arr.length - 1 ? '  ' : ''));
     };
     result.push('Parameters:  ');
     parameters.forEach(printAParam);

@@ -202,7 +202,7 @@ module.exports = (function() {
     categories.forEach(function(cat) {
       var fns = collatedObjects.byCategory(cat);
 
-      fileContents.push('## ' + cat + '##');
+      fileContents.push('## ' + cat + ' ##');
       fns.forEach(function(fn) {
         fileContents = fileContents.concat(markdownCreator(fn, {includeCategory: false}).split('\n'));
       });
@@ -246,6 +246,7 @@ module.exports = (function() {
     var categories = collated.getCategories();
     var names = collated.getNames();
 
+    post = ['</div>'].concat(post);
     if (generationOptions.isCategory) {
       if (data.listNames) {
         pre.push('<div class="contentsSidebar">\n');
@@ -256,15 +257,6 @@ module.exports = (function() {
         pre.push('</ul>\n');
         pre.push('</div>\n');
       }
-
-      pre.push('<section class="categoryContents">\n');
-      pre.push('<h2 class="categoryListHeader">Categories</h2>\n');
-      pre.push('<ul class="categoryList">\n');
-      pre = pre.concat(categories.map(function(cat) {
-        return '<li class="categoryListItem"><a href="#' + cat + '">' + cat + '</a></li>\n';
-      }));
-      pre.push('</ul>\n');
-      pre.push('</section>\n');
 
       post = ['</section>'].concat(post);
     } else {
@@ -279,6 +271,7 @@ module.exports = (function() {
       }
     }
 
+    pre.push('<div class="apiData">');
     var categoryFile = null;
     if (generationOptions.categoryFile) {
       // The client provided options will presumably be relative to process.cwd. Resolve them and calculate

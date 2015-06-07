@@ -90,7 +90,7 @@
           return '`' + s + '`' + (i !== arr.length - 1 ? ' | ' : '');
         });
         types = types.join('');
-        verifyLine(param.name + ' ' + types + (i !== arr.length - 1 ? '  ' : ''));
+        verifyLine('`' + param.name + '` ' + types + (i !== arr.length - 1 ? '  ' : ''));
       });
       verifyLine('');
     };
