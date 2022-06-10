@@ -3,7 +3,7 @@
 
 
   var expect = require('chai').expect;
-  var marked = require('marked');
+  var { marked } = require('marked');
   var makeMarkdownRenderer = require('../../docgen/markdownRenderer');
 
 
